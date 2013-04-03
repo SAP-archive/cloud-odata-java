@@ -29,15 +29,13 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.exception.ODataNotAcceptableException;
-import com.sap.core.odata.api.processor.ODataErrorHandlerCallback;
+import com.sap.core.odata.api.processor.ODataErrorCallback;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
-import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * Creates an error response according to the format defined by the OData standard
@@ -60,86 +58,123 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   @Override
   public Response toResponse(final Exception exception) {
     try {
-      ODataResponse oDataResponse;
-
       final Exception toHandleException = extractException(exception);
+
+      ODataErrorContext errorContext;
       if (toHandleException instanceof ODataApplicationException) {
-        oDataResponse = buildResponseForApplicationException((ODataApplicationException) toHandleException);
+        errorContext = extractInformationForApplicationException((ODataApplicationException) toHandleException);
       } else if (toHandleException instanceof ODataHttpException) {
-        oDataResponse = buildResponseForHttpException((ODataHttpException) toHandleException);
+        errorContext = extractInformationForHttpException((ODataHttpException) toHandleException);
       } else if (toHandleException instanceof ODataMessageException) {
-        oDataResponse = buildResponseForMessageException((ODataMessageException) toHandleException);
+        errorContext = extractInformationForMessageException((ODataMessageException) toHandleException);
       } else if (toHandleException instanceof WebApplicationException) {
-        oDataResponse = buildResponseForWebApplicationException((WebApplicationException) toHandleException);
+        errorContext = extractInformationForWebApplicationException((WebApplicationException) toHandleException);
       } else {
-        oDataResponse = buildResponseForException(exception);
+        errorContext = extractInformationForException(exception);
       }
 
-      if (isInternalServerError(oDataResponse)) {
-        LOG.error(exception.getMessage(), exception);
-      }
-
-      ODataErrorHandlerCallback callback = getErrorHandlerCallback();
+      ODataResponse oDataResponse;
+      ODataErrorCallback callback = getErrorHandlerCallback();
       if (callback != null) {
-        oDataResponse = callback.handleError(oDataResponse, toHandleException);
+        oDataResponse = callback.handleError(errorContext);
+      } else {
+        //Hack till jason serialization is ready
+        if(errorContext.getContentType().equals(ContentType.APPLICATION_JSON.toContentTypeString())){
+          oDataResponse = ODataResponse.entity("Json is not yet supported")
+              .contentHeader(ContentType.APPLICATION_JSON.toContentTypeString())
+              .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+              .status(HttpStatusCodes.NOT_ACCEPTABLE).build();
+        }else{
+          oDataResponse = convertContextToODataResponse(errorContext);          
+        }
+      }
+      if (isInternalServerError(oDataResponse)) {
+        LOG.error("Internal Server Error: ", toHandleException);
       }
 
-      Response response = Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
-
-      return response;
+      //Convert ODataResponse to JAXRS Response
+      return Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
 
     } catch (Exception e) {
       //Exception mapper has to be robust thus we log the exception and just give back a generic error
       LOG.error(exception.getMessage(), exception);
-      ODataResponseBuilder responseBuilder = ODataResponse.entity("Fatal error when serializing an exception")
-          .contentHeader(ContentType.APPLICATION_XML.toContentTypeString())
-          .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
-          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-
-      if (e instanceof EntityProviderException) {
-        if (((EntityProviderException) e).getHttpExceptionCause() instanceof ODataNotAcceptableException) {
-          responseBuilder.status(HttpStatusCodes.NOT_ACCEPTABLE);
-        }
-      }
-      ODataResponse response = responseBuilder.build();
+      ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
+          .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
+          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
       return Util.convertResponse(response, response.getStatus(), null, null);
     }
   }
 
-  private ODataResponse buildResponseForMessageException(final ODataMessageException messageException) throws EntityProviderException {
-    HttpStatusCodes responseStatusCode;
+  private ODataErrorContext extractInformationForApplicationException(ODataApplicationException toHandleException) {
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(getContentType().toContentTypeString());
+    context.setHttpStatus(toHandleException.getHttpStatus());
+    context.setErrorCode(toHandleException.getCode());
+    context.setMessage(toHandleException.getMessage());
+    context.setLocale(toHandleException.getLocale());
+    context.setException(toHandleException);
+    return context;
+  }
 
-    if (messageException instanceof EntityProviderException) {
+  private ODataErrorContext extractInformationForHttpException(ODataHttpException toHandleException) {
+    MessageReference messageReference = toHandleException.getMessageReference();
+    Message localizedMessage = extractEntity(messageReference);
+
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(getContentType().toContentTypeString());
+    context.setHttpStatus(toHandleException.getHttpStatus());
+    context.setErrorCode(toHandleException.getErrorCode());
+    context.setMessage(localizedMessage.getText());
+    context.setLocale(localizedMessage.getLocale());
+    context.setException(toHandleException);
+    return context;
+  }
+
+  private ODataErrorContext extractInformationForMessageException(ODataMessageException toHandleException) {
+    HttpStatusCodes responseStatusCode;
+    if (toHandleException instanceof EntityProviderException) {
       responseStatusCode = HttpStatusCodes.BAD_REQUEST;
     } else {
       responseStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
     }
 
-    MessageReference messageReference = messageException.getMessageReference();
+    MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
-    String localizedMessageText = localizedMessage.getText();
-    Locale localizedMessageLocale = localizedMessage.getLocale();
-    return new ProviderFacadeImpl().writeErrorDocument(getContentType().toContentTypeString(), responseStatusCode, messageException.getErrorCode(), localizedMessageText, localizedMessageLocale, null);
+
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(getContentType().toContentTypeString());
+    context.setHttpStatus(responseStatusCode);
+    context.setErrorCode(toHandleException.getErrorCode());
+    context.setMessage(localizedMessage.getText());
+    context.setLocale(localizedMessage.getLocale());
+    context.setException(toHandleException);
+    return context;
   }
 
-  private ODataResponse buildResponseForWebApplicationException(final WebApplicationException webApplicationException) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(getContentType().toContentTypeString(), HttpStatusCodes.fromStatusCode(webApplicationException.getResponse().getStatus()), null, webApplicationException.getMessage(), DEFAULT_RESPONSE_LOCALE, null);
+  private ODataErrorContext extractInformationForWebApplicationException(WebApplicationException toHandleException) {
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(getContentType().toContentTypeString());
+    context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
+    context.setErrorCode(null);
+    context.setMessage(toHandleException.getMessage());
+    context.setLocale(DEFAULT_RESPONSE_LOCALE);
+    context.setException(toHandleException);
+    return context;
   }
 
-  private ODataResponse buildResponseForException(final Exception exception) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(getContentType().toContentTypeString(), HttpStatusCodes.INTERNAL_SERVER_ERROR, null, exception.getMessage(), DEFAULT_RESPONSE_LOCALE, null);
+  private ODataErrorContext extractInformationForException(Exception exception) {
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(getContentType().toContentTypeString());
+    context.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    context.setErrorCode(null);
+    context.setMessage(exception.getMessage());
+    context.setLocale(DEFAULT_RESPONSE_LOCALE);
+    context.setException(exception);
+    return context;
   }
 
-  private ODataResponse buildResponseForApplicationException(final ODataApplicationException exception) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(getContentType().toContentTypeString(), exception.getHttpStatus(), exception.getCode(), exception.getMessage(), exception.getLocale(), null);
-  }
-
-  private ODataResponse buildResponseForHttpException(final ODataHttpException httpException) throws EntityProviderException {
-    MessageReference messageReference = httpException.getMessageReference();
-    Message localizedMessage = extractEntity(messageReference);
-    String localizedMessageText = localizedMessage.getText();
-    Locale localizedMessageLocale = localizedMessage.getLocale();
-    return new ProviderFacadeImpl().writeErrorDocument(getContentType().toContentTypeString(), httpException.getHttpStatus(), httpException.getErrorCode(), localizedMessageText, localizedMessageLocale, null);
+  private ODataResponse convertContextToODataResponse(ODataErrorContext errorContext) throws EntityProviderException {
+    return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
   }
 
   private boolean isInternalServerError(final ODataResponse response) {
@@ -190,29 +225,24 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
         if (convertedContentType.isWildcard()
             || ContentType.APPLICATION_XML.equals(convertedContentType) || ContentType.APPLICATION_XML_CS_UTF_8.equals(convertedContentType)
             || ContentType.APPLICATION_ATOM_XML.equals(convertedContentType) || ContentType.APPLICATION_ATOM_XML_CS_UTF_8.equals(convertedContentType)) {
-          return ContentType.APPLICATION_XML_CS_UTF_8;
+          return ContentType.APPLICATION_XML;
         } else if (ContentType.APPLICATION_JSON.equals(convertedContentType) || ContentType.APPLICATION_JSON_CS_UTF_8.equals(convertedContentType)) {
-          return ContentType.APPLICATION_JSON_CS_UTF_8;
+          return ContentType.APPLICATION_JSON;
         }
       }
     }
-    return ContentType.APPLICATION_XML_CS_UTF_8;
+    return ContentType.APPLICATION_XML;
   }
 
-  private ODataErrorHandlerCallback getErrorHandlerCallback() {
-    try {
-      ODataErrorHandlerCallback callback = null;
-      final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
-      if (factoryClassName != null) {
-        Class<?> factoryClass = Class.forName(factoryClassName);
-        final ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
+  private ODataErrorCallback getErrorHandlerCallback() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    ODataErrorCallback callback = null;
+    final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
+    if (factoryClassName != null) {
+      Class<?> factoryClass = Class.forName(factoryClassName);
+      final ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
 
-        callback = serviceFactory.getCallback(ODataErrorHandlerCallback.class);
-      }
-      return callback;
-    } catch (Exception e) {
-      throw new ODataRuntimeException("Exception during error handling occured!", e);
+      callback = serviceFactory.getCallback(ODataErrorCallback.class);
     }
-
+    return callback;
   }
 }

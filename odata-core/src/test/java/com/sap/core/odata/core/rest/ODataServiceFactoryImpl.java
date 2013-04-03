@@ -5,7 +5,7 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataErrorHandlerCallback;
+import com.sap.core.odata.api.processor.ODataErrorCallback;
 
 public class ODataServiceFactoryImpl extends ODataServiceFactory {
 
@@ -23,7 +23,7 @@ public class ODataServiceFactoryImpl extends ODataServiceFactory {
   public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
     T callback = null;
 
-    if (callbackInterface == ODataErrorHandlerCallback.class) {
+    if (callbackInterface == ODataErrorCallback.class) {
       callback = (T) new ODataErrorHandlerCallbackImpl();
     }
 
