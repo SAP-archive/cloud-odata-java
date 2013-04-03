@@ -274,6 +274,70 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
+   * We only support <code>UTF-8</code> as character encoding.
+   * 
+   * @throws Exception
+   */
+  @Test(expected = EntityProviderException.class)
+  public void validationOfWrongXmlEncodingUtf32() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-32'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent("UTF-32"));
+  }
+
+  /**
+   * We only support <code>UTF-8</code> as character encoding.
+   * 
+   * @throws Exception
+   */
+  @Test(expected = EntityProviderException.class)
+  public void validationOfWrongXmlEncodingIso8859_1() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='iso-8859-1'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent("iso-8859-1"));
+  }
+
+  /**
+   * Character encodings are case insensitive.
+   * Hence <code>uTf-8</code> should work as well as <code>UTF-8</code>.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationCaseInsensitiveXmlEncodingUtf8() throws Exception {
+    String room =
+        "<?xml version='1.0' encoding='uTf-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(room);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    assertNotNull(result);
+    assertEquals("1", result.getProperties().get("Id"));
+  }
+
+  /**
    * For none media resource if <code>properties</code> tag is not within <code>content</code> tag it results in an exception.
    * 
    * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)
