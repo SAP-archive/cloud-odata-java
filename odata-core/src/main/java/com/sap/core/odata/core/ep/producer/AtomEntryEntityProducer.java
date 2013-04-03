@@ -150,7 +150,7 @@ public class AtomEntryEntityProducer {
     for (String name : eia.getSelectedNavigationPropertyNames()) {
       NavigationPropertyInfo info = eia.getNavigationPropertyInfo(name);
       boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
-      String  self = createSelfLink(eia, data, info.getName());
+      String self = createSelfLink(eia, data, info.getName());
       appendAtomNavigationLink(writer, self, info.getName(), isFeed, eia, data);
     }
   }

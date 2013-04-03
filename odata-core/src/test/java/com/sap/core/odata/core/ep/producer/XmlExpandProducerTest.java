@@ -74,7 +74,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:link", xmlString);
     verifyEmployees(employeeXPathString, xmlString);
   }
-  
+
   @Test
   public void expandSelectedEmployeesWithSelfLink() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Rooms('1')", "nr_Employees", "nr_Employees");
@@ -103,8 +103,8 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     assertXpathExists(employeeXPathString, xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString, xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString +"/m:inline/a:entry/a:content/m:properties", xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString, xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry/a:content/m:properties", xmlString);
   }
 
   @Test
@@ -119,10 +119,10 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     assertXpathExists(employeeXPathString, xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString, xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline", xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry", xmlString);
-    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry/a:content/m:properties/d:Id", xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString, xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString + "/m:inline", xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry", xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry/a:content/m:properties/d:Id", xmlString);
   }
 
   @Test

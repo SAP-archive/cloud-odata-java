@@ -43,7 +43,7 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
             callbacks.put(navPropName, this);
           }
           EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(roomToEmployee).build();
-          
+
           result.setFeedData(dataProvider.getEmployeesData());
           result.setInlineProperties(inlineProperties);
         }

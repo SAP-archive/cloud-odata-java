@@ -29,10 +29,10 @@ public class EntityProviderProperties {
    * Gets the self link from an application. May be null.
    * @return the self link
    */
-  public final URI getSelfLink(){
+  public final URI getSelfLink() {
     return selfLink;
   }
-  
+
   /**
    * Gets the service root.
    * @return the service root
@@ -156,8 +156,8 @@ public class EntityProviderProperties {
       properties.callbacks = callbacks;
       return this;
     }
-    
-    public ODataEntityProviderPropertiesBuilder selfLink(final URI selfLink){
+
+    public ODataEntityProviderPropertiesBuilder selfLink(final URI selfLink) {
       properties.selfLink = selfLink;
       return this;
     }

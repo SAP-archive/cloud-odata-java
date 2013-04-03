@@ -281,7 +281,7 @@ public final class EntityProvider {
   private static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.createEntityProvider();
   }
-  
+
   /**
    * <p>Serializes an error message according to the OData standard.</p>
    * <p>In case an error occurs, it is logged.
@@ -294,10 +294,9 @@ public final class EntityProvider {
    * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
    * @return            an {@link ODataResponse} containing the serialized error message
    */
-  public static ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException{
+  public static ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
     return createEntityProvider().writeErrorDocument(contentType, status, errorCode, message, locale, innerError);
   }
-
 
   /**
    * Write metadata document in XML format for the given schemas and the provided predefined 

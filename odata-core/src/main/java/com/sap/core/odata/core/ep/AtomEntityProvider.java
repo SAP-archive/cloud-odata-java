@@ -110,7 +110,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .status(status);
       return response.build();
     } catch (Exception e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {

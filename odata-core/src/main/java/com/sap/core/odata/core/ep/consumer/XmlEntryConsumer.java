@@ -185,7 +185,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readLink(final XMLStreamReader reader, EntityProviderReadProperties readProperties) throws EntityProviderException, XMLStreamException {
+  private void readLink(final XMLStreamReader reader, final EntityProviderReadProperties readProperties) throws EntityProviderException, XMLStreamException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
     final String rel = reader.getAttributeValue(null, FormatXml.ATOM_REL);
@@ -220,18 +220,18 @@ public class XmlEntryConsumer {
 
   }
 
-  private void readInlineContent(final XMLStreamReader reader, EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
+  private void readInlineContent(final XMLStreamReader reader, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
     reader.nextTag();
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
-    
+
     while (!(reader.isEndElement() && Edm.NAMESPACE_M_2007_08.equals(reader.getNamespaceURI()) && FormatXml.M_INLINE.equals(reader.getLocalName()))) {
       reader.next();
- 
+
       if (reader.isStartElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
         ReadCallbackResult callbackResult = doCallback(readProperties, linkAttributes);
-        
+
         if (callbackResult != null) {
           XmlEntryConsumer xec = new XmlEntryConsumer();
 
@@ -249,13 +249,13 @@ public class XmlEntryConsumer {
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }
 
-  private ReadCallbackResult doCallback(EntityProviderReadProperties properties, final Map<String, String> linkAttributes) {
+  private ReadCallbackResult doCallback(final EntityProviderReadProperties properties, final Map<String, String> linkAttributes) {
     OnReadEntryContent callback = properties.getCallback();
-    if(callback == null) {
+    if (callback == null) {
       return null;
     } else {
       EntityProviderReadProperties callbackProperties = EntityProviderReadProperties.initFrom(properties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
-      
+
       String title = linkAttributes.get(FormatXml.ATOM_TITLE);
       String type = linkAttributes.get(FormatXml.ATOM_TYPE);
       ReadEntryCallbackContext callbackContext = new ReadEntryCallbackContext(callbackProperties, type, title);
@@ -264,7 +264,6 @@ public class XmlEntryConsumer {
       return callback.retrieveReadResult(callbackContext);
     }
   }
-
 
   private void readContent(final XMLStreamReader reader, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_CONTENT);
