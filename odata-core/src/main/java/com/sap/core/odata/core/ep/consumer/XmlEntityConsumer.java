@@ -158,6 +158,7 @@ public class XmlEntityConsumer {
 
     if (content instanceof InputStream) {
       XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
+      // verify charset encoding set in content is supported (if not set UTF-8 is used as defined in 'http://www.w3.org/TR/2008/REC-xml-20081126/')
       String characterEncodingInContent = streamReader.getCharacterEncodingScheme();
       if (characterEncodingInContent != null && !DEFAULT_CHARSET.equalsIgnoreCase(characterEncodingInContent)) {
         throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
@@ -166,23 +167,5 @@ public class XmlEntityConsumer {
     }
     throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
         .addContent("Found not supported content of class '" + content.getClass() + "' to de-serialize."));
-  }
-
-  /**
-   * Verify that given <code>charsetEncoding</code> is declared at <code>xml content</code>.
-   * 
-   * @param reader with assigned <code>content</code> and <code>charset encdoing</code> 
-   *          (@see {@link XMLInputFactory#createXMLStreamReader(InputStream, String)}
-   * @param charsetEncoding charset encoding to be verified
-   * @throws EntityProviderException if verification fails.
-   * @throws XMLStreamException if an error during xml processing occurs. 
-   */
-  private void verifyCharsetEncoding(final XMLStreamReader reader, final String charsetEncoding) throws XMLStreamException, EntityProviderException {
-    String characterEncodingInContent = reader.getCharacterEncodingScheme();
-    if (characterEncodingInContent == null) {
-      throw new EntityProviderException(EntityProviderException.NOT_SET_CHARACTER_ENCODING);
-    } else if (!characterEncodingInContent.equalsIgnoreCase(charsetEncoding)) {
-      throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
-    }
   }
 }
