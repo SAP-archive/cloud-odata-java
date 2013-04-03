@@ -35,18 +35,6 @@ public class XmlEntityConsumer {
     super();
   }
 
-//  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
-//    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
-//    return readEntry(entitySet, content, properties);
-//  }
-//
-//  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
-//    EntityProviderReadProperties properties = EntityProviderReadProperties.init()
-//        .mergeSemantic(merge).addTypeMappings(typeMappings)
-//        .build();
-//    return readEntry(entitySet, content, properties);
-//  }
-
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -73,10 +61,6 @@ public class XmlEntityConsumer {
     }
   }
 
-//  Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean merge) throws EntityProviderException {
-//    return readProperty(edmProperty, content, EntityProviderReadProperties.init().mergeSemantic(merge));
-//  }
-
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -99,9 +83,9 @@ public class XmlEntityConsumer {
     }
   }
 
-//  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
-//    return readPropertyValue(edmProperty, content, null);
-//  }
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
+    return readPropertyValue(edmProperty, content, null);
+  }
 
   public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, final Class<?> typeMapping) throws EntityProviderException {
     try {
@@ -174,9 +158,43 @@ public class XmlEntityConsumer {
 
     if (content instanceof InputStream) {
       XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
+      String characterEncodingInContent = streamReader.getCharacterEncodingScheme();
+      if(characterEncodingInContent != null && !DEFAULT_CHARSET.equalsIgnoreCase(characterEncodingInContent)) {
+        throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
+      }
       return streamReader;
     }
     throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
         .addContent("Found not supported content of class '" + content.getClass() + "' to de-serialize."));
+  }
+
+  /**
+   * Verify that charset encoding set at {@link XMLStreamReader} is declared at <code>xml content</code>.
+   * 
+   * @param reader with assigned <code>content</code> and <code>charset encdoing</code> 
+   *          (@see {@link XMLInputFactory#createXMLStreamReader(InputStream, String)}
+   * @throws EntityProviderException if verification fails.
+   * @throws XMLStreamException if an error during xml processing occurs. 
+   */
+  private void verifyCharsetEncoding(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+    verifyCharsetEncoding(reader, reader.getEncoding());
+  }
+  
+  /**
+   * Verify that given <code>charsetEncoding</code> is declared at <code>xml content</code>.
+   * 
+   * @param reader with assigned <code>content</code> and <code>charset encdoing</code> 
+   *          (@see {@link XMLInputFactory#createXMLStreamReader(InputStream, String)}
+   * @param charsetEncoding charset encoding to be verified
+   * @throws EntityProviderException if verification fails.
+   * @throws XMLStreamException if an error during xml processing occurs. 
+   */
+  private void verifyCharsetEncoding(XMLStreamReader reader, String charsetEncoding) throws XMLStreamException, EntityProviderException {
+    String characterEncodingInContent = reader.getCharacterEncodingScheme();
+    if(characterEncodingInContent == null) {
+      throw new EntityProviderException(EntityProviderException.NOT_SET_CHARACTER_ENCODING);
+    } else if(!characterEncodingInContent.equalsIgnoreCase(charsetEncoding)) {
+      throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
+    }
   }
 }

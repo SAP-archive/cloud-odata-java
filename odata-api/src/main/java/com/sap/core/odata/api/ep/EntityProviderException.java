@@ -24,11 +24,15 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");
   /** INVALID_NAMESPACE requires 1 content value ('invalid tag/namespace') */
   public static final MessageReference INVALID_NAMESPACE = createMessageReference(EntityProviderException.class, "INVALID_NAMESPACE");
-  /** INVALID_PARENT_TAG requires 2 content value ('expected parent tag' and 'found parent tag') */
+  /** INVALID_PARENT_TAG requires 2 content values ('expected parent tag' and 'found parent tag') */
   public static final MessageReference INVALID_PARENT_TAG = createMessageReference(EntityProviderException.class, "INVALID_PARENT_TAG");
   public static final MessageReference EXPANDNOTSUPPORTED = createMessageReference(EntityProviderException.class, "EXPANDNOTSUPPORTED");
   /** DOUBLE_PROPERTY requires 1 content value ('double tag/property') */
   public static final MessageReference DOUBLE_PROPERTY = createMessageReference(EntityProviderException.class, "DOUBLE_PROPERTY");
+  /** NOT_SET_CHARACTER_ENCODING requires no content value */
+  public static final MessageReference NOT_SET_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "NOT_SET_CHARACTER_ENCODING");
+  /** UNSUPPORTED_CHARACTER_ENCODING requires 1 content value ('found but unsupported character encoding') */
+  public static final MessageReference UNSUPPORTED_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "UNSUPPORTED_CHARACTER_ENCODING");
 
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
