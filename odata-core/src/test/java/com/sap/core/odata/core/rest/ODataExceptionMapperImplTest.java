@@ -290,7 +290,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals("text/html", contentTypeHeader);
   }
 
-  private String verifyResponse(Response response, String message, HttpStatusCodes statusCode) throws Exception {
+  private String verifyResponse(final Response response, final String message, final HttpStatusCodes statusCode) throws Exception {
     assertNotNull(response);
     assertEquals(statusCode.getStatusCode(), response.getStatus());
     String errorXml = StringHelper.inputStreamToString((InputStream) response.getEntity());

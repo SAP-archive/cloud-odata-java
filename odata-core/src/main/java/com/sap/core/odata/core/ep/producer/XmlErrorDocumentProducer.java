@@ -22,7 +22,7 @@ public class XmlErrorDocumentProducer {
     writer.writeStartElement(FormatXml.M_MESSAGE);
     if (locale != null) {
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLocale(locale));
-    }else{
+    } else {
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, "");
     }
     if (message != null) {

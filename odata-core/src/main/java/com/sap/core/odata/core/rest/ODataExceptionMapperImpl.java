@@ -20,9 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceFactory;
-import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
@@ -78,15 +76,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       if (callback != null) {
         oDataResponse = callback.handleError(errorContext);
       } else {
-        //Hack till jason serialization is ready
-        if(errorContext.getContentType().equals(ContentType.APPLICATION_JSON.toContentTypeString())){
-          oDataResponse = ODataResponse.entity("Json is not yet supported")
-              .contentHeader(ContentType.APPLICATION_JSON.toContentTypeString())
-              .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
-              .status(HttpStatusCodes.NOT_ACCEPTABLE).build();
-        }else{
-          oDataResponse = convertContextToODataResponse(errorContext);          
-        }
+        oDataResponse = convertContextToODataResponse(errorContext);
       }
       if (isInternalServerError(oDataResponse)) {
         LOG.error("Internal Server Error: ", toHandleException);
@@ -105,7 +95,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     }
   }
 
-  private ODataErrorContext extractInformationForApplicationException(ODataApplicationException toHandleException) {
+  private ODataErrorContext extractInformationForApplicationException(final ODataApplicationException toHandleException) {
     ODataErrorContext context = new ODataErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
@@ -116,7 +106,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataErrorContext extractInformationForHttpException(ODataHttpException toHandleException) {
+  private ODataErrorContext extractInformationForHttpException(final ODataHttpException toHandleException) {
     MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
 
@@ -130,7 +120,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataErrorContext extractInformationForMessageException(ODataMessageException toHandleException) {
+  private ODataErrorContext extractInformationForMessageException(final ODataMessageException toHandleException) {
     HttpStatusCodes responseStatusCode;
     if (toHandleException instanceof EntityProviderException) {
       responseStatusCode = HttpStatusCodes.BAD_REQUEST;
@@ -151,7 +141,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataErrorContext extractInformationForWebApplicationException(WebApplicationException toHandleException) {
+  private ODataErrorContext extractInformationForWebApplicationException(final WebApplicationException toHandleException) {
     ODataErrorContext context = new ODataErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
@@ -162,7 +152,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataErrorContext extractInformationForException(Exception exception) {
+  private ODataErrorContext extractInformationForException(final Exception exception) {
     ODataErrorContext context = new ODataErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
@@ -173,7 +163,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataResponse convertContextToODataResponse(ODataErrorContext errorContext) throws EntityProviderException {
+  private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
     return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
   }
 

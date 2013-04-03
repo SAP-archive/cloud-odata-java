@@ -22,12 +22,12 @@ public final class LinksJsonReadOnlyTest extends AbstractRefTest {
 
   @Test
   public void links() throws Exception {
-//    HttpResponse response = callUri("Rooms('1')/$links/nr_Employees?$format=json");
-//    checkMediaType(response, HttpContentType.APPLICATION_JSON);
-//    assertEquals("{\"d\":[{\"uri\":\"" + getEndpoint() + "Employees('1')\"}]}", getBody(response));
-//
-//    response = callUri("Rooms('2')/$links/nr_Employees?$skip=99&$inlinecount=allpages&$format=json");
-//    checkMediaType(response, HttpContentType.APPLICATION_JSON);
-//    assertEquals("{\"d\":{\"__count\":\"4\",\"results\":[]}}", getBody(response));
+    //    HttpResponse response = callUri("Rooms('1')/$links/nr_Employees?$format=json");
+    //    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    //    assertEquals("{\"d\":[{\"uri\":\"" + getEndpoint() + "Employees('1')\"}]}", getBody(response));
+    //
+    //    response = callUri("Rooms('2')/$links/nr_Employees?$skip=99&$inlinecount=allpages&$format=json");
+    //    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    //    assertEquals("{\"d\":{\"__count\":\"4\",\"results\":[]}}", getBody(response));
   }
 }

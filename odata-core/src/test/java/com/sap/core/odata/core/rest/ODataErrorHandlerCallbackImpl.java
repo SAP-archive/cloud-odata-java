@@ -8,7 +8,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 public class ODataErrorHandlerCallbackImpl implements ODataErrorCallback {
 
   @Override
-  public ODataResponse handleError(ODataErrorContext context) {
+  public ODataResponse handleError(final ODataErrorContext context) {
     return ODataResponse.entity("bla").status(HttpStatusCodes.BAD_REQUEST).contentHeader("text/html").build();
   }
 
