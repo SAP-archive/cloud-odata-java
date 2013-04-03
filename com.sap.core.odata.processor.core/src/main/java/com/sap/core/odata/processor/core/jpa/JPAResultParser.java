@@ -36,69 +36,88 @@ public final class JPAResultParser {
 			resultParser = new JPAResultParser();
 		return resultParser;
 	}
-	
+
 	/**
-	 * The method returns a Hash Map of Properties and values for selected 
-	 * properties of an EdmEntity Type 
+	 * The method returns a Hash Map of Properties and values for selected
+	 * properties of an EdmEntity Type
 	 * 
 	 * @param jpaEntity
 	 * @param selectedItems
-	 * @return a Hash Map of Properties and values for given selected properties of an EdmEntity Type
+	 * @return a Hash Map of Properties and values for given selected properties
+	 *         of an EdmEntity Type
 	 * @throws ODataJPARuntimeException
 	 */
-	
-	public final Map<String, Object> parse2EdmPropertyValueMapFromList(Object jpaEntity, List<EdmProperty> selectPropertyList) throws ODataJPARuntimeException
-	{
+
+	public final Map<String, Object> parse2EdmPropertyValueMapFromList(
+			Object jpaEntity, List<EdmProperty> selectPropertyList)
+			throws ODataJPARuntimeException {
 		HashMap<String, Object> edmEntity = new HashMap<String, Object>();
 		String methodName = null;
-		for(int i = 0; i< selectPropertyList.size(); i++){
+		Method method = null;
+		for (int i = 0; i < selectPropertyList.size(); i++) {
 			String key = null;
 			Object propertyValue = null;
 			EdmProperty property = null;
 			property = selectPropertyList.get(i);
 			try {
 				methodName = getGetterName(property);
-				Method method = jpaEntity.getClass().getMethod(methodName, (Class<?>[]) null);
-				propertyValue = method.invoke(jpaEntity, null);
-				key = property.getName();
-				if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
-					try {
-						propertyValue = parse2EdmPropertyValueMap(propertyValue,
-								(EdmStructuralType) property.getType());
-					} catch (ODataJPARuntimeException e) {
-						throw e;
+				String[] nameParts = methodName.split("\\.");
+				if (nameParts.length > 1) {
+					Object propertyVal = new Object();
+					propertyVal = jpaEntity;
+					for (int itr = 0; itr < nameParts.length; itr++) {
+						method = propertyVal.getClass().getMethod(
+								nameParts[itr], (Class<?>[]) null);
+						propertyVal = method.invoke(propertyVal);
 					}
+					edmEntity.put(property.getName(), propertyVal);
+				} else {
+					method = jpaEntity.getClass().getMethod(methodName,
+							(Class<?>[]) null);
+					propertyValue = method.invoke(jpaEntity, null);
+					key = property.getName();
+					if (property.getType().getKind()
+							.equals(EdmTypeKind.COMPLEX)) {
+						try {
+							propertyValue = parse2EdmPropertyValueMap(
+									propertyValue,
+									(EdmStructuralType) property.getType());
+						} catch (ODataJPARuntimeException e) {
+							throw e;
+						}
+					}
+					edmEntity.put(key, propertyValue);
 				}
-				edmEntity.put(key, propertyValue);
 			} catch (EdmException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			} catch (SecurityException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			} catch (NoSuchMethodException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			} catch (IllegalArgumentException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			} catch (IllegalAccessException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			} catch (InvocationTargetException e) {
-				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			}
 		}
-		
+
 		return edmEntity;
 	}
+
 	/**
 	 * The method returns a Hash Map of Properties and values for an EdmEntity
 	 * Type The method uses reflection on object jpaEntity to get the list of
