@@ -473,7 +473,7 @@ public final class ODataSubLocator implements ODataLocator {
       }
     }
 
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(acceptedContentTypes.toString()));
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_ACCEPT_HEADER.addContent(acceptedContentTypes.toString()));
   }
 
   public void initialize(final InitParameter param) throws ODataException {
