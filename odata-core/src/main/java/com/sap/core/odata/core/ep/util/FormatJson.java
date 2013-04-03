@@ -23,4 +23,10 @@ public class FormatJson {
   public static final String ETAG = "etag";
   public static final String ENTITY_SETS = "EntitySets";
   public static final String NEXT = "__next";
+  public static final String ERROR = "error";
+  public static final String CODE = "code";
+  public static final String MESSAGE = "message";
+  public static final String LANG = "lang";
+  public static final String VALUE = "value";
+  public static final String INNER_ERROR = "innererror";
 }

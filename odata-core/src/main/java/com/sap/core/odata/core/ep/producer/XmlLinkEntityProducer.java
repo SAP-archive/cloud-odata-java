@@ -35,7 +35,7 @@ public class XmlLinkEntityProducer {
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
       }
-      writer.writeCharacters(createAbsoluteUri(entityInfo, data));
+      writer.writeCharacters(createAbsoluteUri(properties, entityInfo, data));
       writer.writeEndElement();
       writer.flush();
     } catch (final XMLStreamException e) {
@@ -43,26 +43,23 @@ public class XmlLinkEntityProducer {
     }
   }
 
-  private String createAbsoluteUri(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  protected static String createAbsoluteUri(final EntityProviderProperties properties, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     return properties.getServiceRoot() +
         (entityInfo.isDefaultEntityContainer() ? "" : Encoder.encode(entityInfo.getEntityContainerName()) + Edm.DELIMITER)
         + Encoder.encode(entityInfo.getEntitySetName())
         + "(" + createEntryKey(entityInfo, data) + ")";
-
   }
 
-  private static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  protected static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     final List<EntityPropertyInfo> keyPropertyInfos = entityInfo.getKeyPropertyInfos();
     String keys = "";
 
     for (final EntityPropertyInfo keyPropertyInfo : keyPropertyInfos) {
-      if (!keys.isEmpty()) {
+      if (!keys.isEmpty())
         keys += ",";
-      }
 
-      if (keyPropertyInfos.size() > 1) {
+      if (keyPropertyInfos.size() > 1)
         keys += Encoder.encode(keyPropertyInfo.getName()) + "=";
-      }
 
       final EdmSimpleType type = (EdmSimpleType) keyPropertyInfo.getType();
       try {

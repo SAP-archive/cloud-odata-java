@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sap.core.odata.core.ep.util;
 
 import static org.junit.Assert.assertEquals;
@@ -16,8 +12,7 @@ import org.junit.Test;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
- * 
- * @author d046871
+ * @author SAP AG
  */
 public class CircleStreamBufferTest extends BaseTest {
 

@@ -23,7 +23,7 @@ import com.sap.core.odata.api.edm.Edm;
  */
 public class ServiceJsonTest extends AbstractRefTest {
   @Test
-  @Ignore("Current implementation does not support JSON. See 'serviceDocumentDollarFormatJsonUnsupported'")
+  @Ignore("Current implementation does not support JSON.")
   public void serviceDocumentDollarFormatJson() throws Exception {
     HttpResponse response = callUri("?$format=json");
 
@@ -40,7 +40,7 @@ public class ServiceJsonTest extends AbstractRefTest {
   }
 
   @Test
-  @Ignore("Current implementation does not support JSON. See 'serviceDocumentDollarFormatJsonUnsupported'")
+  @Ignore("Current implementation does not support JSON.")
   public void serviceDocumentAcceptHeaderJson() throws Exception {
 
     HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
@@ -55,33 +55,6 @@ public class ServiceJsonTest extends AbstractRefTest {
     assertTrue(payload.contains("Managers"));
     assertTrue(payload.contains("Buildings"));
     assertTrue(payload.contains("Container2.Photos"));
-  }
-
-  /**
-   * Test for currently not supported JSON service document request.
-   * If JSON format is implemented replace this test with @see {@link #serviceDocumentAcceptHeaderJson()}
-   */
-  @Test
-  public void serviceDocumentAcceptHeaderJsonUnsupported() throws Exception {
-    HttpResponse response = callUri("?$format=json", HttpStatusCodes.NOT_ACCEPTABLE);
-
-    String body = getBody(response);
-    Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
-    assertXpathExists("/a:error", body);
-    assertXpathExists("/a:error/a:code", body);
-    assertXpathExists("/a:error/a:message", body);
-  }
-
-  /**
-   * Test for currently not supported JSON service document request.
-   * If JSON format is implemented replace this test with @see {@link #serviceDocumentDollarFormatJson()}
-   */
-  @Test
-  public void serviceDocumentDollarFormatJsonUnsupported() throws Exception {
-    disableLogging();
-    callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON, HttpStatusCodes.NOT_ACCEPTABLE);
   }
 
   @Test
