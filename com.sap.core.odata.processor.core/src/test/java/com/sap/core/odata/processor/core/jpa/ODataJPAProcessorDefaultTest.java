@@ -3,14 +3,20 @@ package com.sap.core.odata.processor.core.jpa;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.easymock.EasyMock;
@@ -39,9 +45,11 @@ import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
-import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -85,25 +93,6 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		
 	}
 
-	@Test
-	public void testReadEntityGetEntityUriInfoString() {
-		try {
-			GetEntitySetUriInfo getEntityView = getEntitySetUriInfo();
-			Assert.assertNotNull(objODataJPAProcessorDefault.readEntitySet(getEntityView, HttpContentType.APPLICATION_XML));
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e1) {//Expected
-			assertTrue(true);
-		} catch (ODataException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		catch(Exception e)
-		{
-			assertTrue(true);
-		}
-	}
 	
 	@Test
 	public void testcountEntitySet() {
@@ -120,16 +109,101 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 			assertTrue(true);
 		}
 	}
+	
+	@Test
+	public void testDeleteEntity() {
+		try {
+			Assert.assertNotNull(objODataJPAProcessorDefault.deleteEntity(getDeletetUriInfo(), HttpContentType.APPLICATION_XML));
+			Assert.assertEquals(TEXT_PLAIN_CHARSET_UTF_8, 
+					objODataJPAProcessorDefault.countEntitySet(getEntitySetCountUriInfo(), HttpContentType.APPLICATION_XML).getHeader(STR_CONTENT_TYPE));
+		} catch (ODataException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	
+	@Test
+	public void testCreateEntity() {
+		try {
+			Assert.assertNotNull(objODataJPAProcessorDefault.createEntity(getPostUriInfo(), getMockedInputStreamContent(), HttpContentType.APPLICATION_XML, HttpContentType.APPLICATION_XML));
+		} catch (ODataException e) {
+			Assert.assertTrue(true); //Expected TODO - need to revisit
+		}
+	}
+	
+	@Test
+	public void testUpdateEntity() {
+		try {
+			Assert.assertNotNull(objODataJPAProcessorDefault.updateEntity(getPutUriInfo(), getMockedInputStreamContent(), HttpContentType.APPLICATION_XML, false, HttpContentType.APPLICATION_XML));
+		} catch (ODataException e) {
+			Assert.assertTrue(true); //Expected TODO - need to revisit
+		}
+	}
+	
+	private PutMergePatchUriInfo getPutUriInfo() {
+		return (PutMergePatchUriInfo) getDeletetUriInfo();
+	}
+
+
+	private PostUriInfo getPostUriInfo() {
+		return (PostUriInfo) getDeletetUriInfo();
+	}
+
+
+	private InputStream getMockedInputStreamContent() {
+		return new ByteArrayInputStream(getEntityBody().getBytes());
+	}
+
+
+	private String getEntityBody() {
+		return 
+				"<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/\">"
+				+"<content type=\"application/xml\">"
+				+"<m:properties>"
+				+"<d:ID>2</d:ID>"
+				+"<d:CreationDate>2013-01-02T00:00:00</d:CreationDate>"
+				+"<d:CurrencyCode>Code_555</d:CurrencyCode>"
+				+"<d:BuyerAddressInfo m:type=\"SalesOrderProcessing.AddressInfo\">"
+				+"<d:Street>Test_Street_Name_055</d:Street>"
+				+"<d:Number>2</d:Number>"
+				+"<d:Country>Test_Country_2</d:Country>"
+				+"<d:City>Test_City_2</d:City>"
+				+"</d:BuyerAddressInfo>"
+				+"<d:GrossAmount>0.0</d:GrossAmount>"
+				+"<d:BuyerId>2</d:BuyerId>"
+				+"<d:DeliveryStatus>true</d:DeliveryStatus>"
+				+"<d:BuyerName>buyerName_2</d:BuyerName>"
+				+"<d:NetAmount>0.0</d:NetAmount>"
+				+"</m:properties>"
+				+"</content>"
+				+"</entry>"
+				;
+	}
 
 	private GetEntitySetCountUriInfo getEntitySetCountUriInfo() {
 		return getLocalUriInfo();
 	}
 
-
-	private GetEntitySetUriInfo getEntitySetUriInfo() {
-		return getLocalUriInfo();
+	private DeleteUriInfo getDeletetUriInfo() {
+		UriInfo objUriInfo = EasyMock.createMock(UriInfo.class);
+		EasyMock.expect(objUriInfo.getStartEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getTargetEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getSelect()).andStubReturn(null);
+		EasyMock.expect(objUriInfo.getOrderBy()).andStubReturn(getOrderByExpression());
+		EasyMock.expect(objUriInfo.getTop()).andStubReturn(getTop());
+		EasyMock.expect(objUriInfo.getSkip()).andStubReturn(getSkip());
+		EasyMock.expect(objUriInfo.getInlineCount()).andStubReturn(getInlineCount());
+		EasyMock.expect(objUriInfo.getFilter()).andStubReturn(getFilter());
+		EasyMock.expect(objUriInfo.getKeyPredicates()).andStubReturn(getKeyPredicates());
+		EasyMock.replay(objUriInfo);
+		return objUriInfo;
 	}
 
+
+	private List<KeyPredicate> getKeyPredicates() {
+		List<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
+		return keyPredicates;
+	}
 
 	/**
 	 * @return
@@ -145,7 +219,6 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		EasyMock.expect(objUriInfo.getInlineCount()).andStubReturn(getInlineCount());
 		EasyMock.expect(objUriInfo.getFilter()).andStubReturn(getFilter());
 		EasyMock.expect(objUriInfo.getFunctionImport()).andStubReturn(null);
-		EasyMock.expect(objUriInfo.getExpand()).andStubAnswer(null);
 		EasyMock.replay(objUriInfo);
 		return objUriInfo;
 	}
@@ -234,19 +307,39 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 	private EntityManagerFactory mockEntityManagerFactory() {
 		EntityManagerFactory emf = EasyMock.createMock(EntityManagerFactory.class);
 		EasyMock.expect(emf.getMetamodel()).andStubReturn(mockMetaModel());
-		EasyMock.expect(emf.createEntityManager()).andReturn(getLocalEntityManager());
+		EasyMock.expect(emf.createEntityManager()).andStubReturn(getLocalEntityManager());
+		EasyMock.replay(emf);
+		return emf;
+	}
+	private EntityManagerFactory mockEntityManagerFactory2() {// For create, to avoid stackoverflow
+		EntityManagerFactory emf = EasyMock.createMock(EntityManagerFactory.class);
+		EasyMock.expect(emf.getMetamodel()).andStubReturn(mockMetaModel());
 		EasyMock.replay(emf);
 		return emf;
 	}
 
 	private EntityManager getLocalEntityManager() {
 		EntityManager em = EasyMock.createMock(EntityManager.class);
-		EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andReturn(getQuery());
+		EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andStubReturn(getQuery());
 		EasyMock.expect(em.createQuery("SELECT COUNT ( E1 ) FROM SalesOrderHeaders E1")).andStubReturn(getQueryForSelectCount());
+		EasyMock.expect(em.getEntityManagerFactory()).andStubReturn(mockEntityManagerFactory2());// For create
+		EasyMock.expect(em.getTransaction()).andStubReturn(getLocalTransaction()); //For Delete
+		Address obj = new Address();
+		em.remove(obj);// testing void method
+		em.flush();
 		EasyMock.replay(em);
 		return em;
 	}
 
+	private EntityTransaction getLocalTransaction() {
+		EntityTransaction entityTransaction = EasyMock.createMock(EntityTransaction.class);
+		entityTransaction.begin(); // testing void method
+		entityTransaction.commit();// testing void method
+		entityTransaction.rollback();// testing void method
+		EasyMock.replay(entityTransaction);
+		return entityTransaction;
+	}
+	
 	private Query getQuery() {
 		Query query = EasyMock.createMock(Query.class);
 		EasyMock.expect(query.getResultList()).andStubReturn(getResultList());
@@ -274,16 +367,43 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 	}
 	
 	class Address{
+		private String soId = "12";
 		public String getSoId(){
-			return "12";
+			return soId;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			boolean isEqual = false;
+			if(obj instanceof Address)
+				isEqual = this.getSoId().equalsIgnoreCase(((Address)obj).getSoId());//
+			return isEqual;
 		}
 	}
 
 	private Metamodel mockMetaModel() {
 		Metamodel metaModel = EasyMock.createMock(Metamodel.class);
+		EasyMock.expect(metaModel.getEntities()).andStubReturn(getLocalEntities());
 		EasyMock.replay(metaModel);
 		return metaModel;
 	}
+
+	private Set<EntityType<?>> getLocalEntities() {
+		Set<EntityType<?>> entityTypeSet = new HashSet<EntityType<?>>();
+		entityTypeSet.add(getLocalJPAEntityType());
+		return entityTypeSet;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	private EntityType<EntityType> getLocalJPAEntityType() {
+		@SuppressWarnings("unchecked")
+		EntityType<EntityType> entityType = EasyMock.createMock(EntityType.class);
+		EasyMock.expect(entityType.getJavaType()).andStubReturn(EntityType.class);
+		EasyMock.replay(entityType);
+		return entityType;
+	}
+
 
 	private GetEntityUriInfo getEntityUriInfo() {
 		GetEntityUriInfo getEntityView = EasyMock
