@@ -35,23 +35,16 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
 
   private static ContentTypeBasedEntityProvider create(final ContentType contentType) throws EntityProviderException {
     try {
-      ContentTypeBasedEntityProvider provider;
-
       switch (contentType.getODataFormat()) {
       case ATOM:
       case XML:
-        provider = new AtomEntityProvider(contentType.getODataFormat());
-        break;
+        return new AtomEntityProvider(contentType.getODataFormat());
       case JSON:
-        // mibo_130125: currently JSON is a not supported content type
-        // -> 'throw NOT_SUPPORTED_CONTENT_TYPE' as 'ODataNotAcceptableException'
-        throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentType));
+        return new JsonEntityProvider();
       default:
         throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentType));
       }
-
-      return provider;
-    } catch (ODataNotAcceptableException e) {
+    } catch (final ODataNotAcceptableException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
