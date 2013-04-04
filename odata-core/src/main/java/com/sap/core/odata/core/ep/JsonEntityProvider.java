@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -28,10 +29,12 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinkEntityProducer;
+import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
@@ -74,14 +77,13 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null) {
+      if (outStream != null)
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
-      }
     }
   }
 
@@ -132,6 +134,36 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    return ODataResponse.entity(buffer.getInputStream())
+        .contentHeader(HttpContentType.APPLICATION_JSON)
+        .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+        .build();
+  }
+
+  @Override
+  public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
+    final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      new JsonLinksEntityProducer(properties).append(writer, entityInfo, data);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
       if (outStream != null) {
         try {
           outStream.close();
@@ -142,12 +174,10 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
       }
     }
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
-  }
-
-  @Override
-  public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
-    return null;
+    ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
+    if (properties.getInlineCountType() != InlineCount.ALLPAGES)
+      response = response.header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
+    return response.build();
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
