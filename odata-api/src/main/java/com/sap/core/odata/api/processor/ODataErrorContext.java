@@ -12,44 +12,53 @@ public class ODataErrorContext {
   private String message;
   private Locale locale;
   private Exception exception;
-   
+
   public Exception getException() {
     return exception;
   }
-  public void setException(Exception exception) {
+
+  public void setException(final Exception exception) {
     this.exception = exception;
   }
+
   public String getContentType() {
     return contentType;
   }
-  public void setContentType(String contentType) {
+
+  public void setContentType(final String contentType) {
     this.contentType = contentType;
   }
+
   public HttpStatusCodes getHttpStatus() {
     return httpStatus;
   }
-  public void setHttpStatus(HttpStatusCodes status) {
-    this.httpStatus = status;
+
+  public void setHttpStatus(final HttpStatusCodes status) {
+    httpStatus = status;
   }
+
   public String getErrorCode() {
     return errorCode;
   }
-  public void setErrorCode(String errorCode) {
+
+  public void setErrorCode(final String errorCode) {
     this.errorCode = errorCode;
   }
+
   public String getMessage() {
     return message;
   }
-  public void setMessage(String message) {
+
+  public void setMessage(final String message) {
     this.message = message;
   }
+
   public Locale getLocale() {
     return locale;
   }
-  public void setLocale(Locale locale) {
+
+  public void setLocale(final Locale locale) {
     this.locale = locale;
   }
-  
-  
-  
+
 }
