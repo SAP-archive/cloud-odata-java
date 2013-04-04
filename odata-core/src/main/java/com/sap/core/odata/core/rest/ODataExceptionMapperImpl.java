@@ -74,7 +74,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       ODataResponse oDataResponse;
       ODataErrorCallback callback = getErrorHandlerCallback();
       if (callback != null) {
-        oDataResponse = callback.handleError(errorContext);
+        try {
+          oDataResponse = callback.handleError(errorContext);
+        } catch (ODataApplicationException e) {
+          errorContext = extractInformationForApplicationException(e);
+          oDataResponse = convertContextToODataResponse(errorContext);
+        }
+        
       } else {
         oDataResponse = convertContextToODataResponse(errorContext);
       }
