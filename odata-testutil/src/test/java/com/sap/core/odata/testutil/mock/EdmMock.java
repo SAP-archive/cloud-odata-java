@@ -96,7 +96,7 @@ class EdmMock {
 
     final EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-    when(cityComplexType.getName()).thenReturn("City");
+    when(cityComplexType.getName()).thenReturn("c_City");
     when(cityComplexType.getNamespace()).thenReturn("RefScenario");
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
 

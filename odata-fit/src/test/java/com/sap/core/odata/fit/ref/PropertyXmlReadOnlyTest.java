@@ -12,11 +12,10 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 
 /**
- * Tests employing the reference scenario reading simple properties in XML format
+ * Tests employing the reference scenario reading properties in XML format.
  * @author SAP AG
  */
-public class SimplePropertyTest extends AbstractRefXmlTest {
-
+public class PropertyXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void simpleProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/Age/$value");
@@ -73,5 +72,19 @@ public class SimplePropertyTest extends AbstractRefXmlTest {
     response = callUri("Rooms('2')/nr_Employees('4')/Location/City/CityName");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     assertXpathEvaluatesTo(CITY_2_NAME, "/d:CityName", getBody(response));
+  }
+
+  @Test
+  public void complexProperty() throws Exception {
+    HttpResponse response = callUri("Employees('2')/Location/City/CityName/$value");
+    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
+    assertEquals(CITY_2_NAME, getBody(response));
+
+    response = callUri("Employees('2')/Location");
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
+    assertXpathEvaluatesTo(CITY_2_NAME, "/d:Location/d:City/d:CityName", getBody(response));
+
+    badRequest("Employees('2')/Location()");
+    notFound("Employees('2')/Location/City/$value");
   }
 }
