@@ -11,10 +11,10 @@ import org.junit.Test;
  * @author SAP AG
  */
 public class LoadXMLFactoryTest {
-
+  // CHECKSTYLE:OFF
   @Test
   public void loadWoodstockFactory() throws Exception {
-    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory");
+    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
     XMLOutputFactory factory = XMLOutputFactory.newInstance();
     assertNotNull(factory);
     assertEquals("com.ctc.wstx.stax.WstxOutputFactory", factory.getClass().getName());
@@ -22,9 +22,10 @@ public class LoadXMLFactoryTest {
 
   @Test
   public void loadSunFactory() throws Exception {
-    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
+    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl"); //NOSONAR
     XMLOutputFactory factory = XMLOutputFactory.newInstance();
     assertNotNull(factory);
     assertEquals("com.sun.xml.internal.stream.XMLOutputFactoryImpl", factory.getClass().getName());
   }
+  // CHECKSTYLE:ON
 }

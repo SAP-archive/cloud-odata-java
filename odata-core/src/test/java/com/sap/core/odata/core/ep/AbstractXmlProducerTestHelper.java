@@ -15,19 +15,22 @@ public abstract class AbstractXmlProducerTestHelper extends BaseTest {
     WOODSTOCKIMPL, SUNINTERNALIMPL;
   }
 
+  // CHECKSTYLE:OFF
   public AbstractXmlProducerTestHelper(final StreamWriterImplType type) {
     switch (type) {
     case WOODSTOCKIMPL:
-      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory");
+      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
       break;
     case SUNINTERNALIMPL:
-      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
+      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl"); //NOSONAR
       break;
     default:
-      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
+      System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl"); //NOSONAR
       break;
     }
   }
+
+  // CHECKSTYLE:On
 
   @Parameterized.Parameters
   public static List<Object[]> data() {

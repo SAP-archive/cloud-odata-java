@@ -10,9 +10,8 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
- * @com.sap.core.odata.DoNotImplement
- * <p>Wrapper for {@link WriteEntryCallbackContext} and {@link WriteFeedCallbackContext}.</p>
- *  
+ * Wrapper for {@link WriteEntryCallbackContext} and {@link WriteFeedCallbackContext}.
+ * @com.sap.core.odata.DoNotImplement 
  * @author SAP AG
  */
 public abstract class WriteCallbackContext {
@@ -38,6 +37,7 @@ public abstract class WriteCallbackContext {
   }
 
   /**
+   * Returns entity set which contains an entry that should be expanded
    * @return source entity set
    */
   public EdmEntitySet getSourceEntitySet() {
@@ -53,6 +53,7 @@ public abstract class WriteCallbackContext {
   }
 
   /**
+   * Navigation property which is contained in the expand clause.
    * @return navigation property pointing to the entity which has to be expanded.
    */
   public EdmNavigationProperty getNavigationProperty() {
