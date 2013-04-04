@@ -7,6 +7,7 @@
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+	
 	<servlet>
 		<servlet-name>ReferenceScenarioServlet</servlet-name>
 		<servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
@@ -20,8 +21,24 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+
+	<filter>
+		<filter-name>CsrfFilter</filter-name>
+		<filter-class>com.sap.core.js.csrf.RestCsrfPreventionFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CsrfFilter</filter-name>
+		<url-pattern>/CsrfReferenceScenario.svc/*</url-pattern>
+	</filter-mapping>
+
 	<servlet-mapping>
 		<servlet-name>ReferenceScenarioServlet</servlet-name>
 		<url-pattern>/ReferenceScenario.svc/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ReferenceScenarioServlet</servlet-name>
+		<url-pattern>/CsrfReferenceScenario.svc/*</url-pattern>
 	</servlet-mapping>
 </web-app>

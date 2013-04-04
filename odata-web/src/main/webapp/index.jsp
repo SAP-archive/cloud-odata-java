@@ -483,5 +483,10 @@ ul.tree li.last {
 		<li><a href="ReferenceScenario.svc/Container2.Photos(Id=1,Type='image/png')"
 			target="_blank">Container2.Photos(Id=1,Type='image/png')</a></li>
 	</ul>
+		<h3>Csrf Protected Service</h3>
+	<ul>
+		<li><a href="CsrfReferenceScenario.svc/" target="_blank">service document</a></li>
+	</ul>
+	
 </body>
 </html>
