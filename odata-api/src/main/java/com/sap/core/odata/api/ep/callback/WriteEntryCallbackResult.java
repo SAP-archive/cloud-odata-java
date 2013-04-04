@@ -5,7 +5,7 @@ import java.util.Map;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 
 /**
- * Result of a callback. It contains the data of the entry which is to be expanded as well as the BaseUri of the entry. Further callbacks for this entry can also be set.
+ * Result of a callback. It contains the data of the entry which is to be expanded as well as the properties of this entry.
  * @author SAP AG
  */
 public class WriteEntryCallbackResult {
