@@ -15,6 +15,9 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
+/**
+ * @author SAP AG
+ */
 public class JsonErrorProducerTest {
 
   @Test
@@ -45,5 +48,4 @@ public class JsonErrorProducerTest {
         + ",\"value\":" + (message == null ? "null" : "\"" + message + "\"") + "}}}",
         jsonErrorMessage);
   }
-
 }
