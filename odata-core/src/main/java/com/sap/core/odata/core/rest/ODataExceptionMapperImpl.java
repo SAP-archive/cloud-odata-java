@@ -80,7 +80,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
           errorContext = extractInformationForApplicationException(e);
           oDataResponse = convertContextToODataResponse(errorContext);
         }
-        
+
       } else {
         oDataResponse = convertContextToODataResponse(errorContext);
       }

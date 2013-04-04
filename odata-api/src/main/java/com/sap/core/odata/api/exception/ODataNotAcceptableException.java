@@ -13,7 +13,7 @@ public class ODataNotAcceptableException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataNotAcceptableException.class, "COMMON");
   public static final MessageReference NOT_SUPPORTED_CONTENT_TYPE = createMessageReference(ODataNotAcceptableException.class, "NOT_SUPPORTED_CONTENT_TYPE");
   public static final MessageReference NOT_SUPPORTED_ACCEPT_HEADER = createMessageReference(ODataNotAcceptableException.class, "NOT_SUPPORTED_ACCEPT_HEADER");
-  
+
   public ODataNotAcceptableException(final MessageReference context) {
     super(context, HttpStatusCodes.NOT_ACCEPTABLE);
   }

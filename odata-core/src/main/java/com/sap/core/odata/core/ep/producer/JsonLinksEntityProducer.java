@@ -24,7 +24,7 @@ public class JsonLinksEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
+  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
       JsonStreamWriter.beginObject(writer);
       JsonStreamWriter.name(writer, FormatJson.D);
@@ -39,10 +39,11 @@ public class JsonLinksEntityProducer {
       JsonStreamWriter.beginArray(writer);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           JsonStreamWriter.separator(writer);
+        }
         JsonStreamWriter.beginObject(writer);
         JsonStreamWriter.namedStringValue(writer, FormatJson.URI,
             XmlLinkEntityProducer.createAbsoluteUri(properties, entityInfo, entryData));
@@ -50,8 +51,9 @@ public class JsonLinksEntityProducer {
       }
       JsonStreamWriter.endArray(writer);
 
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         JsonStreamWriter.endObject(writer);
+      }
 
       JsonStreamWriter.endObject(writer);
     } catch (final IOException e) {
