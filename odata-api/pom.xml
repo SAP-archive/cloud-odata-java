@@ -22,7 +22,7 @@
 				<configuration>
 					<instructions>
 						<Import-Package>
-							com.sap.core.odata.core.rt;resolution=optional,
+							com.sap.core.odata.core.rt;resolution:=optional,
 							*
 						</Import-Package>
 						<Export-Package>
