@@ -28,6 +28,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -35,6 +36,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
+import com.sap.core.odata.core.ep.producer.JsonPropertyEntityProducer;
+import com.sap.core.odata.core.ep.producer.JsonServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
@@ -77,14 +80,13 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null) {
+      if (outStream != null)
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
-      }
     }
   }
 
@@ -97,27 +99,74 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
    */
   @Override
   public ODataResponse writeServiceDocument(final Edm edm, final String serviceRoot) throws EntityProviderException {
-    return null;
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      JsonServiceDocumentProducer.writeServiceDocument(writer, edm);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      return ODataResponse.entity(buffer.getInputStream())
+          .contentHeader(HttpContentType.APPLICATION_JSON)
+          .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+          .build();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
   }
 
   @Override
   public ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
   public ODataResponse writeProperty(final EdmProperty edmProperty, final Object value) throws EntityProviderException {
-    EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
-    return writeSingleTypedElement(propertyInfo, value);
+    return writeSingleTypedElement(EntityInfoAggregator.create(edmProperty), value);
   }
 
   private ODataResponse writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
-    return null;
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      new JsonPropertyEntityProducer().append(writer, propertyInfo, value);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      return ODataResponse.entity(buffer.getInputStream())
+          .contentHeader(HttpContentType.APPLICATION_JSON)
+          .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+          .build();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
   }
 
   @Override
   public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
@@ -135,14 +184,13 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null) {
+      if (outStream != null)
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
-      }
     }
 
     return ODataResponse.entity(buffer.getInputStream())
@@ -177,14 +225,13 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     }
 
     ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
-    if (properties.getInlineCountType() != InlineCount.ALLPAGES) {
+    if (properties.getInlineCountType() != InlineCount.ALLPAGES)
       response = response.header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
-    }
     return response.build();
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
@@ -212,21 +259,21 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
   public String readLink(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
   @Override
   public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
-    return null;
+    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 }

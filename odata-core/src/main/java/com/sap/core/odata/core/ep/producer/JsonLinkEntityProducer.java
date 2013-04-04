@@ -22,7 +22,7 @@ public class JsonLinkEntityProducer {
     this.properties = properties;
   }
 
-  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     final String uri = XmlLinkEntityProducer.createAbsoluteUri(properties, entityInfo, data);
     try {
       JsonStreamWriter.beginObject(writer);

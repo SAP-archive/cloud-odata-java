@@ -49,7 +49,7 @@ public class EntityInfoAggregatorTest extends AbstractProviderTest {
     EntityComplexPropertyInfo cityInfo = (EntityComplexPropertyInfo) locationInfo.getPropertyInfo("City");
     assertTrue(cityInfo.isComplex());
     assertEquals("City", cityInfo.getName());
-    assertEquals("City", cityInfo.getType().getName());
+    assertEquals("c_City", cityInfo.getType().getName());
     assertEquals(EdmTypeKind.COMPLEX, cityInfo.getType().getKind());
     assertEquals("CityName", cityInfo.getPropertyInfo("CityName").getName());
     assertFalse(cityInfo.getPropertyInfo("CityName").isComplex());

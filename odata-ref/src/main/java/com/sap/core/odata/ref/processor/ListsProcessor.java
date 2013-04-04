@@ -48,6 +48,7 @@ import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
@@ -844,7 +845,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     @Override
-    public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) {
+    public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) throws ODataApplicationException {
       try {
         final EdmEntityType entityType = context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType();
         final Object relatedData = readRelatedData(context);
@@ -857,12 +858,12 @@ public class ListsProcessor extends ODataSingleProcessor {
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
-        return null;
+        throw new ODataApplicationException(e.getLocalizedMessage(), Locale.ROOT, e);
       }
     }
 
     @Override
-    public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) {
+    public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) throws ODataApplicationException {
       try {
         final EdmEntityType entityType = context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType();
         final Object relatedData = readRelatedData(context);
@@ -872,7 +873,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
-        return null;
+        throw new ODataApplicationException(e.getLocalizedMessage(), Locale.ROOT, e);
       }
     }
 
