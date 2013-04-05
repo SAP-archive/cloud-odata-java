@@ -383,6 +383,19 @@ public class TestParserExceptions extends TestBase {
     //-->Expression of type 'System.Boolean' expected at position 0.
     GetPTF_onlyBinary("1 add 2")
         .aExMsgText("Expression of type \"Edm.Boolean\" expected at position 1 in \"1 add 2\" (actual type is \"Edm.SByte\").");
-
+    
+    //CASE 10
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=1%20add
+    //-->Expression expected at position 5.
+    GetPTF_onlyBinary("1 add")
+        .aExMsgText("Expression expected after position 5 in \"1 add\".");
+    
+    //CASE 11
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=1%20add
+    //-->Expression expected at position 5.
+    GetPTF_onlyBinary("1 add   ")
+        .aExMsgText("Expression expected after position 5 in \"1 add   \".");
   }
+  
+  
 }

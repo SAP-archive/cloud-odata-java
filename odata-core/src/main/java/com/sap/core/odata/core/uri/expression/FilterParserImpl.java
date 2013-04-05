@@ -123,6 +123,11 @@ public class FilterParserImpl implements FilterParser
     {
       tokenList.next(); //eat the operator
       rightNode = readElement(leftNode, operator); //throws FilterParserException, FilterParserInternalError
+      if (rightNode == null)
+      {
+    	  // Tested with TestParserExceptions.testAdditionalStuff CASE 10
+    	  throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(operator.getToken().getPosition()+ operator.getToken().getUriLiteral().length(), curExpression);
+      }
       nextOperator = readBinaryOperator();
 
       // It must be "while" because for example in "Filter=a or c eq d and e eq f"
