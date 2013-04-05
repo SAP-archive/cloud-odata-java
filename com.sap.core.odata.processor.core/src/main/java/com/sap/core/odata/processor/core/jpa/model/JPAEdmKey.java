@@ -3,8 +3,6 @@ package com.sap.core.odata.processor.core.jpa.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Facets;

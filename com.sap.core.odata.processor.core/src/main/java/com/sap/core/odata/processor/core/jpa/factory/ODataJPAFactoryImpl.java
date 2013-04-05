@@ -20,7 +20,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuil
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.ODataJPAProcessorDefault;
-import com.sap.core.odata.processor.core.jpa.access.data.JPAFuctionContext;
+import com.sap.core.odata.processor.core.jpa.access.data.JPAFunctionContext;
 import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImpl;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmMappingModelService;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
@@ -132,7 +132,7 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 			JPAMethodContextBuilder contextBuilder = null;
 			switch (contextType) {
 			case FUNCTION:
-				JPAFuctionContext methodConext = new JPAFuctionContext();
+				JPAFunctionContext methodConext = new JPAFunctionContext();
 				contextBuilder = methodConext.new JPAFunctionContextBuilder();
 
 				break;

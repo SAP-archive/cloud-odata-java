@@ -23,7 +23,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 
-public class JPAFuctionContext extends JPAMethodContext {
+public class JPAFunctionContext extends JPAMethodContext {
 
 	public class JPAFunctionContextBuilder extends JPAMethodContextBuilder {
 
@@ -42,8 +42,8 @@ public class JPAFuctionContext extends JPAMethodContext {
 
 					List<JPAFunction> jpaFunctionList = new ArrayList<JPAFunction>();
 					jpaFunctionList.add(generateJPAFunction());
-					JPAFuctionContext.this.setJpaFunction(jpaFunctionList);
-					JPAFuctionContext.this
+					JPAFunctionContext.this.setJpaFunction(jpaFunctionList);
+					JPAFunctionContext.this
 							.setEnclosingObject(generateEnclosingObject());
 				} catch (EdmException e) {
 					throw ODataJPARuntimeException.throwException(
@@ -76,7 +76,7 @@ public class JPAFuctionContext extends JPAMethodContext {
 				}
 			}
 
-			return JPAFuctionContext.this;
+			return JPAFunctionContext.this;
 		}
 
 		private JPAFunction generateJPAFunction() throws EdmException,
