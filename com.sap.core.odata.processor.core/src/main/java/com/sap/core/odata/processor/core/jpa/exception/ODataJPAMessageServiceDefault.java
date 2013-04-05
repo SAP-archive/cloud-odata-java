@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.expception;
+package com.sap.core.odata.processor.core.jpa.exception;
 
 import java.util.Arrays;
 import java.util.Formatter;
