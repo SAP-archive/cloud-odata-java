@@ -65,7 +65,7 @@ public class DataContainer {
     rooms.add(room2);
 
     Room room3 = createRoom();
-    room3.setSeats(4);
+    room3.setSeats(2);
     room3.setBuilding(building2);
     building2.getRooms().add(room3);
     room3.setVersion(3);

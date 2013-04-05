@@ -31,7 +31,7 @@ public class JsonLinksEntityProducer {
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         JsonStreamWriter.beginObject(writer);
-        JsonStreamWriter.namedStringValue(writer, FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
+        JsonStreamWriter.namedStringValueRaw(writer, FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
         JsonStreamWriter.separator(writer);
         JsonStreamWriter.name(writer, FormatJson.RESULTS);
       }
@@ -39,21 +39,16 @@ public class JsonLinksEntityProducer {
       JsonStreamWriter.beginArray(writer);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           JsonStreamWriter.separator(writer);
-        }
-        JsonStreamWriter.beginObject(writer);
-        JsonStreamWriter.namedStringValue(writer, FormatJson.URI,
-            XmlLinkEntityProducer.createAbsoluteUri(properties, entityInfo, entryData));
-        JsonStreamWriter.endObject(writer);
+        JsonLinkEntityProducer.appendUri(writer, properties, entityInfo, entryData);
       }
       JsonStreamWriter.endArray(writer);
 
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
         JsonStreamWriter.endObject(writer);
-      }
 
       JsonStreamWriter.endObject(writer);
     } catch (final IOException e) {

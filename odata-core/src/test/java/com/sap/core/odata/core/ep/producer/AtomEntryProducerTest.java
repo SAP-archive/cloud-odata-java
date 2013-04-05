@@ -5,7 +5,6 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -330,13 +328,8 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:entry", xmlString);
-    //    assertXpathExists("/a:entry/ру:Содержание", xmlString);
-    //    assertXpathEvaluatesTo("", "/a:entry/ру:Содержание/text()", xmlString);
-    // ugly, but problems with XMLUnit and 'namespace:ру'
-    final String tagcontent = (String) photoData.get("Содержание");
-    assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
-        //        Pattern.matches(".*<ру:Содержание xmlns:ру=\"http://localhost\">" + tagcontent + "</ру:Содержание>.*", xmlString));
-        Pattern.matches(".*:Содержание xmlns:..=\"http://localhost\">" + tagcontent + "</..:Содержание>.*", xmlString));
+    assertXpathExists("/a:entry/ру:Содержание", xmlString);
+    assertXpathEvaluatesTo((String) photoData.get("Содержание"), "/a:entry/ру:Содержание/text()", xmlString);
     verifyTagOrdering(xmlString, "category", "Содержание", "content", "properties");
   }
 
@@ -347,9 +340,11 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
     ODataResponse response = ser.writeEntry(entitySet, photoData, DEFAULT_PROPERTIES);
     String xmlString = verifyResponse(response);
+
     assertXpathExists("/a:entry", xmlString);
-    assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
-        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\".*", xmlString));
+    assertXpathExists("/a:entry/custom:CustomProperty", xmlString);
+    assertXpathNotExists("/a:entry/custom:CustomProperty/text()", xmlString);
+    assertXpathEvaluatesTo("true", "/a:entry/custom:CustomProperty/@m:null", xmlString);
     verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
   }
 
@@ -365,8 +360,10 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:entry", xmlString);
-    assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
-        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\".*", xmlString));
+    assertXpathExists("/a:entry/custom:CustomProperty", xmlString);
+    assertXpathNotExists("/a:entry/custom:CustomProperty/text()", xmlString);
+    assertXpathEvaluatesTo("true", "/a:entry/custom:CustomProperty/@m:null", xmlString);
+    assertXpathExists("/a:entry/m:properties/custom:CustomProperty", xmlString);
     verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
   }
 

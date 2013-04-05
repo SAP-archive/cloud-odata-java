@@ -33,6 +33,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
@@ -128,7 +129,34 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      JsonEntryEntityProducer producer = new JsonEntryEntityProducer(properties);
+      producer.append(writer, entityInfo, data, true);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      return ODataResponse.entity(buffer.getInputStream())
+          .contentHeader(HttpContentType.APPLICATION_JSON)
+          .eTag(producer.getETag())
+          .idLiteral(producer.getLocation())
+          .build();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
   }
 
   @Override

@@ -51,7 +51,7 @@ class EdmMock {
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.hasStream()).thenReturn(true);
     EdmMapping employeeTypeMapping = Mockito.mock(EdmMapping.class);
-    when(employeeTypeMapping.getMimeType()).thenReturn("image/jpeg");
+    when(employeeTypeMapping.getMimeType()).thenReturn("getImageType");
     when(employeeType.getMapping()).thenReturn(employeeTypeMapping);
     when(employeeType.getPropertyNames()).thenReturn(Arrays.asList(
         "EmployeeId", "EmployeeName", "ManagerId", "RoomId", "TeamId",
@@ -116,6 +116,7 @@ class EdmMock {
     when(teamType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Name", "isScrumTeam"));
     createProperty("Name", EdmSimpleTypeKind.String, teamType);
     createProperty("isScrumTeam", EdmSimpleTypeKind.Boolean, teamType);
+    when(teamType.getNavigationPropertyNames()).thenReturn(Arrays.asList("nt_Employees"));
     createNavigationProperty("nt_Employees", EdmMultiplicity.MANY, teamEntitySet, employeeEntitySet);
 
     EdmEntityType roomType = roomEntitySet.getEntityType();
@@ -179,7 +180,7 @@ class EdmMock {
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
     when(photoEntityType.hasStream()).thenReturn(true);
     EdmMapping photoEntityTypeMapping = Mockito.mock(EdmMapping.class);
-    when(photoEntityTypeMapping.getMimeType()).thenReturn("image/jpeg");
+    when(photoEntityTypeMapping.getMimeType()).thenReturn("getType");
     when(photoEntityType.getMapping()).thenReturn(photoEntityTypeMapping);
     EdmProperty photoIdProperty = createProperty("Id", EdmSimpleTypeKind.Int32, photoEntityType);
     EdmFacets photoIdFacet = mock(EdmFacets.class);

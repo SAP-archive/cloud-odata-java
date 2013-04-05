@@ -1,7 +1,6 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -20,8 +19,7 @@ public class PropertyJsonReadOnlyTest extends AbstractRefTest {
     assertEquals("{\"d\":{\"Age\":" + EMPLOYEE_2_AGE + "}}", getBody(response));
 
     response = callUri("Employees('2')/EntryDate?$format=json");
-    assertNotNull(getBody(response));
-    // assertEquals("{\"d\":{\"EntryDate\":\"\\/Date(1057017600000)\\/\"}}", getBody(response));
+    assertEquals("{\"d\":{\"EntryDate\":\"\\/Date(1057017600000)\\/\"}}", getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData?$format=json");
     assertEquals("{\"d\":{\"BinaryData\":null}}", getBody(response));

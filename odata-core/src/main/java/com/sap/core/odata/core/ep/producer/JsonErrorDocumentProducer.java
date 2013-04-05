@@ -20,7 +20,7 @@ public class JsonErrorDocumentProducer {
     JsonStreamWriter.separator(writer);
     JsonStreamWriter.name(writer, FormatJson.MESSAGE);
     JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.namedStringValue(writer, FormatJson.LANG,
+    JsonStreamWriter.namedStringValueRaw(writer, FormatJson.LANG,
         locale == null || locale.getLanguage() == null ? null :
             locale.getLanguage() + (locale.getCountry() == null || locale.getCountry().isEmpty() ? "" : ("-" + locale.getCountry())));
     JsonStreamWriter.separator(writer);

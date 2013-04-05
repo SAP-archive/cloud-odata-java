@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -28,7 +27,6 @@ public class ContentNegotiationTest extends AbstractRefTest {
   }
 
   @Test
-  @Ignore("JSON is currently not supported")
   public void formatJson() throws Exception {
     final HttpResponse response = callUri("?$format=json");
     checkMediaType(response, HttpContentType.APPLICATION_JSON_UTF8);
