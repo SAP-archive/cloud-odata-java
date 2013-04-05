@@ -47,6 +47,7 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.part.EntityProcessor;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
@@ -315,34 +316,26 @@ public final class ODataSubLocator implements ODataLocator {
     switch (uriInfo.getUriType()) {
     case URI1:
     case URI6B:
-    case URI2:
-      final Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
-      final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
-      if (UriType.URI1.equals(uriInfo.getUriType())) {
-        supportedContentTypes.add(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8);
-      }
-      if (uriInfo.isValue()) {
-        supportedContentTypes.add(ContentType.TEXT_PLAIN);
-      }
-      EdmEntityType entityType = uriInfo.getTargetEntitySet().getEntityType();
-      if (entityType.hasStream()) {
-        if (entityType.getMapping() != null && entityType.getMapping().getMimeType() != null) {
-          String mimeType = entityType.getMapping().getMimeType();
-          supportedContentTypes.add(ContentType.create(mimeType));
-        }
-        supportedContentTypes.addAll(Arrays.asList(ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8, ContentType.APPLICATION_OCTET_STREAM));
-      }
-      if (!isValidRequestContentType(contentType, supportedContentTypes)) {
+      final List<ContentType> supportedContentTypes =
+          uriInfo.getTargetEntitySet().getEntityType().hasStream() ?
+              Arrays.asList(ContentType.WILDCARD) : // A media resource can have any type.
+              getSupportedContentTypes(EntityProcessor.class); // The request must contain a single entity!
+
+      if (!isValidRequestContentType(contentType, supportedContentTypes))
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
-      }
+      break;
+
+    case URI2:
+      if (!isValidRequestContentType(contentType, getSupportedContentTypes(EntityProcessor.class)))
+        throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+      break;
 
     case URI4:
     case URI5:
-      if (uriInfo.isValue()) {
-        if (!isValidRequestContentTypeForProperty(getProperty(uriInfo), contentType)) {
-          throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
-        }
-      }
+      if (uriInfo.isValue()
+          && !isValidRequestContentTypeForProperty(getProperty(uriInfo), contentType))
+        throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+      break;
 
     default:
       break;

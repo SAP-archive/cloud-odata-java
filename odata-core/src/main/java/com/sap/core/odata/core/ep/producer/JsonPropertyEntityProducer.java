@@ -39,13 +39,13 @@ public class JsonPropertyEntityProducer {
     }
   }
 
-  private void appendProperty(Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
+  protected static void appendProperty(Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
     if (propertyInfo.isComplex()) {
       JsonStreamWriter.name(writer, propertyInfo.getName());
       JsonStreamWriter.beginObject(writer);
       JsonStreamWriter.name(writer, FormatJson.METADATA);
       JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.namedStringValue(writer, FormatJson.TYPE,
+      JsonStreamWriter.namedStringValueRaw(writer, FormatJson.TYPE,
           propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName());
       JsonStreamWriter.endObject(writer);
       for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {
@@ -57,14 +57,16 @@ public class JsonPropertyEntityProducer {
     } else {
       final EdmSimpleType type = (EdmSimpleType) propertyInfo.getType();
       final String valueAsString = type.valueToString(value, EdmLiteralKind.JSON, propertyInfo.getFacets());
-      if (type == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()
+      if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance())
+        JsonStreamWriter.namedStringValue(writer, propertyInfo.getName(), valueAsString);
+      else if (type == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance())
-        JsonStreamWriter.namedNumberValue(writer, propertyInfo.getName(), valueAsString);
+        JsonStreamWriter.namedValue(writer, propertyInfo.getName(), valueAsString);
       else
-        JsonStreamWriter.namedStringValue(writer, propertyInfo.getName(), valueAsString);
+        JsonStreamWriter.namedStringValueRaw(writer, propertyInfo.getName(), valueAsString);
     }
   }
 }

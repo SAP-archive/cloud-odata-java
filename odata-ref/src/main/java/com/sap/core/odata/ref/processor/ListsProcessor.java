@@ -1349,6 +1349,11 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     Map<String, Object> valueMap = new HashMap<String, Object>();
 
+    if (type.getMapping() != null && type.getMapping().getMimeType() != null) {
+      final String methodName = type.getMapping().getMimeType();
+      valueMap.put(methodName, getValue(data, methodName));
+    }
+
     for (final String propertyName : type.getPropertyNames()) {
       final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
       final Object value = getPropertyValue(data, property);

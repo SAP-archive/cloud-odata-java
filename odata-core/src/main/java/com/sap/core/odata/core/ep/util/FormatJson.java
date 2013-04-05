@@ -11,6 +11,7 @@ public class FormatJson {
   public static final String COUNT = "__count";
   public static final String METADATA = "__metadata";
   public static final String DEFERRED = "__deferred";
+  public static final String ID = "id";
   public static final String CONTENT_TYPE = "content_type";
   public static final String MEDIA_SRC = "media_src";
   public static final String MEDIA_ETAG = "media_etag";

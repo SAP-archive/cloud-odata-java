@@ -31,6 +31,7 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -461,14 +462,29 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   }
 
   @Test
-  public void requestContentTypeMediaResource() throws Exception {
-    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
-    checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
-    checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
+  public void requestContentType() throws Exception {
+    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+
+    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+
+    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+    checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
   }
 
   @Test
-  public void requestContentType() throws Exception {
+  public void requestContentTypeMediaResource() throws Exception {
+    checkRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, "image/jpeg");
+
+    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI17, false, true), null, "image/jpeg");
+  }
+
+  @Test
+  public void requestValueContentType() throws Exception {
     checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);
     checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN);
     checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN);
@@ -482,6 +498,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     checkValueContentType(ODataHttpMethod.DELETE, UriType.URI5, HttpContentType.TEXT_PLAIN);
     checkValueContentType(ODataHttpMethod.PATCH, UriType.URI5, HttpContentType.TEXT_PLAIN);
     checkValueContentType(ODataHttpMethod.MERGE, UriType.URI5, HttpContentType.TEXT_PLAIN);
+
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI17, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI17, HttpContentType.TEXT_PLAIN);
   }
 
   @Test
@@ -589,9 +608,6 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void wrongRequestContentType() throws Exception {
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
-
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
@@ -600,6 +616,8 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     ODataHttpMethod[] methodsToTest = { ODataHttpMethod.PUT, ODataHttpMethod.PATCH, ODataHttpMethod.MERGE };
 
     for (ODataHttpMethod oDataHttpMethod : methodsToTest) {
+      wrongRequestContentType(oDataHttpMethod, UriType.URI2, false, ContentType.create("image/jpeg"));
+
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_XML);
@@ -611,7 +629,12 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.create("image/jpeg"));
     }
-  }
+
+    EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
+    when(entityType.hasStream()).thenReturn(false);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+}
 
   @Test
   public void invalidRequestContentType() throws Exception {

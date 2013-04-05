@@ -15,10 +15,10 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 
 /**
- * Tests employing the reference scenario reading function-import output in XML format
+ * Tests employing the reference scenario reading function-import output in XML format.
  * @author SAP AG
  */
-public class FunctionImportTest extends AbstractRefXmlTest {
+public class FunctionImportXmlTest extends AbstractRefXmlTest {
 
   @Test
   public void functionImports() throws Exception {

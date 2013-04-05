@@ -21,18 +21,20 @@ public class JsonStreamWriterTest extends BaseTest {
     JsonStreamWriter.name(writer, "value");
     JsonStreamWriter.stringValue(writer, "value");
     JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedBooleanValue(writer, "boolean", false);
+    JsonStreamWriter.namedValue(writer, "boolean", FormatJson.FALSE);
     JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedBooleanValue(writer, "booleanTrue", true);
+    JsonStreamWriter.namedValue(writer, "booleanTrue", FormatJson.TRUE);
     JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedNumberValue(writer, "number", "42.42");
+    JsonStreamWriter.namedValue(writer, "number", "42.42");
     JsonStreamWriter.separator(writer);
     JsonStreamWriter.namedStringValue(writer, "string", "value");
+    JsonStreamWriter.separator(writer);
+    JsonStreamWriter.namedStringValueRaw(writer, "string raw", "1");
     JsonStreamWriter.endObject(writer);
     JsonStreamWriter.endArray(writer);
     writer.flush();
     assertEquals("[{\"value\":\"value\",\"boolean\":false,\"booleanTrue\":true,"
-        + "\"number\":42.42,\"string\":\"value\"}]",
+        + "\"number\":42.42,\"string\":\"value\",\"string raw\":\"1\"}]",
         writer.toString());
   }
 
@@ -40,14 +42,14 @@ public class JsonStreamWriterTest extends BaseTest {
   public void nullValues() throws Exception {
     StringWriter writer = new StringWriter();
     JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.namedBooleanValue(writer, "boolean", null);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedNumberValue(writer, "number", null);
+    JsonStreamWriter.namedValue(writer, "number", null);
     JsonStreamWriter.separator(writer);
     JsonStreamWriter.namedStringValue(writer, "string", null);
+    JsonStreamWriter.separator(writer);
+    JsonStreamWriter.namedStringValueRaw(writer, "raw", null);
     JsonStreamWriter.endObject(writer);
     writer.flush();
-    assertEquals("{\"boolean\":null,\"number\":null,\"string\":null}", writer.toString());
+    assertEquals("{\"number\":null,\"string\":null,\"raw\":null}", writer.toString());
   }
 
   @Test

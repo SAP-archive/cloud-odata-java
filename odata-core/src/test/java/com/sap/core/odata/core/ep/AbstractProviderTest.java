@@ -152,6 +152,8 @@ public abstract class AbstractProviderTest extends AbstractXmlProducerTestHelper
     prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
     prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
     prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("ру", "http://localhost");
+    prefixMap.put("custom", "http://localhost");
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 

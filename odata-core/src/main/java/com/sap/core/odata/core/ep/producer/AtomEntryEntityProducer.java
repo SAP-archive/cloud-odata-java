@@ -119,7 +119,7 @@ public class AtomEntryEntityProducer {
     return Boolean.TRUE.equals(customMapping.isFcKeepInContent());
   }
 
-  private String createETag(final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
+  protected static String createETag(final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       String etag = null;
 
@@ -290,22 +290,10 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
-    StringBuilder sb = new StringBuilder();
-    if (!eia.isDefaultEntityContainer()) {
-      String encodedEntityContainerName = eia.getEntityContainerName();
-      sb.append(encodedEntityContainerName).append(Edm.DELIMITER);
-    }
-    String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
-
-    sb.append(encodedEntitySetName).append("(").append(createEntryKey(eia, data, true)).append(")").append((extension == null ? "" : "/" + extension));
-    return sb.toString();
-  }
-
   private void appendAtomMandatoryParts(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
-      location = createAtomId(eia, createEntryKey(eia, data, false));
+      location = properties.getServiceRoot().toASCIIString() + createSelfLink(eia, data, null);
       writer.writeCharacters(location);
       writer.writeEndElement();
 
@@ -417,56 +405,38 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private String createAtomId(final EntityInfoAggregator eia, final String entryKey) throws EntityProviderException {
-    String id = "";
-
+  protected static String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
+    StringBuilder sb = new StringBuilder();
     if (!eia.isDefaultEntityContainer()) {
-      id += eia.getEntityContainerName() + Edm.DELIMITER;
+      sb.append(Encoder.encode(eia.getEntityContainerName())).append(Edm.DELIMITER);
     }
-    String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
-    String encodedEntryKey = Encoder.encode(entryKey);
-    id += encodedEntitySetName + "(" + encodedEntryKey + ")";
+    sb.append(Encoder.encode(eia.getEntitySetName()));
 
-    String uri = properties.getServiceRoot().toASCIIString() + id;
-    return uri;
+    sb.append("(").append(createEntryKey(eia, data)).append(")").append(extension == null ? "" : ("/" + extension));
+    return sb.toString();
   }
 
-  private String createEntryKey(final EntityInfoAggregator eia, final Map<String, Object> data, final boolean encode) throws EntityProviderException {
-    try {
-      List<EntityPropertyInfo> kp = eia.getKeyPropertyInfos();
-      String keys = "";
+  private static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+    final List<EntityPropertyInfo> keyPropertyInfos = entityInfo.getKeyPropertyInfos();
 
-      if (kp.size() == 1) {
-        EdmSimpleType st = (EdmSimpleType) kp.get(0).getType();
-        Object value = data.get(kp.get(0).getName());
-        keys = st.valueToString(value, EdmLiteralKind.URI, kp.get(0).getFacets());
-        if (encode) {
-          keys = Encoder.encode(keys);
-        }
-      } else {
-        int size = kp.size();
-        for (int i = 0; i < size; i++) {
-          EntityPropertyInfo keyp = kp.get(i);
-          Object value = data.get(keyp.getName());
+    StringBuilder keys = new StringBuilder();
+    for (final EntityPropertyInfo keyPropertyInfo : keyPropertyInfos) {
+      if (keys.length() > 0)
+        keys.append(',');
 
-          EdmSimpleType st = (EdmSimpleType) keyp.getType();
-          String strValue = st.valueToString(value, EdmLiteralKind.URI, kp.get(i).getFacets());
-          String name = keyp.getName();
-          if (encode) {
-            name = Encoder.encode(name);
-            strValue = Encoder.encode(strValue);
-          }
-          keys = keys + name + "=";
-          keys = keys + strValue;
-          if (i < size - 1) {
-            keys = keys + ",";
-          }
-        }
+      final String name = keyPropertyInfo.getName();
+      if (keyPropertyInfos.size() > 1)
+        keys.append(Encoder.encode(name)).append('=');
+
+      final EdmSimpleType type = (EdmSimpleType) keyPropertyInfo.getType();
+      try {
+        keys.append(Encoder.encode(type.valueToString(data.get(name), EdmLiteralKind.URI, keyPropertyInfo.getFacets())));
+      } catch (final EdmSimpleTypeException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
-      return keys;
-    } catch (EdmSimpleTypeException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+
+    return keys.toString();
   }
 
   private void appendProperties(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
