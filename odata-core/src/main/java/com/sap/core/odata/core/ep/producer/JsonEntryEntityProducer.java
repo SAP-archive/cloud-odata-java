@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -33,7 +32,7 @@ public class JsonEntryEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     try {
       if (isRootElement) {
         JsonStreamWriter.beginObject(writer);
@@ -84,11 +83,9 @@ public class JsonEntryEntityProducer {
         JsonStreamWriter.name(writer, navigationPropertyName);
         if (entityInfo.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
           if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
-            ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
+            properties.getCallbacks().get(navigationPropertyName);
             final NavigationPropertyInfo navigationPropertyInfo = entityInfo.getNavigationPropertyInfo(navigationPropertyName);
-            if (navigationPropertyInfo.getMultiplicity() == EdmMultiplicity.MANY) {
-            } else {
-            }
+            if (navigationPropertyInfo.getMultiplicity() == EdmMultiplicity.MANY) {} else {}
             throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
           }
         } else {
@@ -103,8 +100,9 @@ public class JsonEntryEntityProducer {
 
       JsonStreamWriter.endObject(writer);
 
-      if (isRootElement)
+      if (isRootElement) {
         JsonStreamWriter.endObject(writer);
+      }
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {

@@ -321,20 +321,23 @@ public final class ODataSubLocator implements ODataLocator {
               Arrays.asList(ContentType.WILDCARD) : // A media resource can have any type.
               getSupportedContentTypes(EntityProcessor.class); // The request must contain a single entity!
 
-      if (!isValidRequestContentType(contentType, supportedContentTypes))
+      if (!isValidRequestContentType(contentType, supportedContentTypes)) {
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+      }
       break;
 
     case URI2:
-      if (!isValidRequestContentType(contentType, getSupportedContentTypes(EntityProcessor.class)))
+      if (!isValidRequestContentType(contentType, getSupportedContentTypes(EntityProcessor.class))) {
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+      }
       break;
 
     case URI4:
     case URI5:
       if (uriInfo.isValue()
-          && !isValidRequestContentTypeForProperty(getProperty(uriInfo), contentType))
+          && !isValidRequestContentTypeForProperty(getProperty(uriInfo), contentType)) {
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+      }
       break;
 
     default:

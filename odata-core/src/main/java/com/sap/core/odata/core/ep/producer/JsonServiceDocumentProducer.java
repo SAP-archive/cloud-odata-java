@@ -20,7 +20,7 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonServiceDocumentProducer {
 
-  public static void writeServiceDocument(Writer writer, final Edm edm) throws EntityProviderException {
+  public static void writeServiceDocument(final Writer writer, final Edm edm) throws EntityProviderException {
     final EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
 
     try {
@@ -31,19 +31,24 @@ public class JsonServiceDocumentProducer {
       JsonStreamWriter.beginArray(writer);
 
       boolean first = true;
-      if (edmProvider.getSchemas() != null)
-        for (final Schema schema : edmProvider.getSchemas())
-          if (schema.getEntityContainers() != null)
-            for (final EntityContainer entityContainer : schema.getEntityContainers())
+      if (edmProvider.getSchemas() != null) {
+        for (final Schema schema : edmProvider.getSchemas()) {
+          if (schema.getEntityContainers() != null) {
+            for (final EntityContainer entityContainer : schema.getEntityContainers()) {
               for (final EntitySet entitySet : entityContainer.getEntitySets()) {
-                if (first)
+                if (first) {
                   first = false;
-                else
+                } else {
                   JsonStreamWriter.separator(writer);
+                }
                 JsonStreamWriter.stringValue(writer,
                     (entityContainer.isDefaultEntityContainer() ?
                         "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
               }
+            }
+          }
+        }
+      }
 
       JsonStreamWriter.endArray(writer);
       JsonStreamWriter.endObject(writer);

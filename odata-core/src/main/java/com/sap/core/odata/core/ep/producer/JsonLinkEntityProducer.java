@@ -22,7 +22,7 @@ public class JsonLinkEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     try {
       JsonStreamWriter.beginObject(writer);
       JsonStreamWriter.name(writer, FormatJson.D);
@@ -33,7 +33,7 @@ public class JsonLinkEntityProducer {
     }
   }
 
-  protected static void appendUri(Writer writer, final EntityProviderProperties properties, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  protected static void appendUri(final Writer writer, final EntityProviderProperties properties, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     final String uri = properties.getSelfLink() == null ?
         properties.getServiceRoot().toASCIIString() + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null) :
         properties.getSelfLink().toASCIIString();

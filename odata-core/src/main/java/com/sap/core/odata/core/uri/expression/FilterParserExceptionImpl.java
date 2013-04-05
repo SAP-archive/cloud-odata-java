@@ -59,7 +59,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
     return new ExpressionParserException(msgRef);
   }
-  
+
   static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final int position, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
@@ -69,7 +69,6 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
     return new ExpressionParserException(msgRef);
   }
-
 
   static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(final Token token, final String expression)
   {
