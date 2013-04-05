@@ -14,8 +14,7 @@ public class TestBase {
   protected TecEdmInfo edmInfo = null;
 
   public TestBase() {
-    final Edm edm = RuntimeDelegate
-        .createEdm(new TechnicalScenarioEdmProvider());
+    final Edm edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
     edmInfo = new TecEdmInfo(edm);
   }
 
@@ -31,8 +30,7 @@ public class TestBase {
     return new ParserTool(expression, false, true, false);
   }
 
-  static public ParserTool GetPTF(final EdmEntityType resourceEntityType,
-      final String expression) {
+  static public ParserTool GetPTF(final EdmEntityType resourceEntityType, final String expression) {
     return new ParserTool(expression, false, true, false,
         resourceEntityType);
   }
@@ -41,8 +39,7 @@ public class TestBase {
     return new ParserTool(expression, true, true, false);
   }
 
-  static public ParserTool GetPTO(final EdmEntityType resourceEntityType,
-      final String expression) {
+  static public ParserTool GetPTO(final EdmEntityType resourceEntityType, final String expression) {
     return new ParserTool(expression, true, true, false, resourceEntityType);
   }
 
@@ -50,8 +47,7 @@ public class TestBase {
     return new ParserTool(expression, false, false, false);
   }
 
-  static public ParserTool GetPTF_noTEST(
-      final EdmEntityType resourceEntityType, final String expression) {
+  static public ParserTool GetPTF_noTEST(final EdmEntityType resourceEntityType, final String expression) {
     return new ParserTool(expression, false, false, true,
         resourceEntityType);
   }
@@ -60,8 +56,7 @@ public class TestBase {
     return new ParserTool(expression, true, false, true);
   }
 
-  static public ParserTool GetPTO_noTEST(
-      final EdmEntityType resourceEntityType, final String expression) {
+  static public ParserTool GetPTO_noTEST(final EdmEntityType resourceEntityType, final String expression) {
     return new ParserTool(expression, true, false, true, resourceEntityType);
   }
 
