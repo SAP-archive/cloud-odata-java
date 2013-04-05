@@ -39,8 +39,7 @@ public class TestParser extends TestBase {
 
   @Test
   public void testQuick() {
-    GetPTF("substring('Test', 1 add 2)").aSerialized(
-        "{substring('Test',{1 add 2})}");
+    GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
   }
 
   @Test
@@ -53,28 +52,21 @@ public class TestParser extends TestBase {
     GetPTO("sven     desc").aSerialized("{oc({o(sven, desc)})}");
 
     GetPTO("sven, test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
-    GetPTO("sven   ,    test").aSerialized(
-        "{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven   ,    test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
 
-    GetPTO("sven, test asc").aSerialized(
-        "{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven, test asc").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
 
-    GetPTO("sven asc, test").aSerialized(
-        "{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven asc, test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
 
-    GetPTO("sven asc, test asc").aSerialized(
-        "{oc({o(sven, asc)},{o(test, asc)})}");
-    GetPTO("sven, test desc").aSerialized(
-        "{oc({o(sven, asc)},{o(test, desc)})}");
-    GetPTO("sven desc, test").aSerialized(
-        "{oc({o(sven, desc)},{o(test, asc)})}");
-    GetPTO("sven desc, test desc").aSerialized(
-        "{oc({o(sven, desc)},{o(test, desc)})}");
+    GetPTO("sven asc, test asc").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven, test desc").aSerialized("{oc({o(sven, asc)},{o(test, desc)})}");
+    GetPTO("sven desc, test").aSerialized("{oc({o(sven, desc)},{o(test, asc)})}");
+    GetPTO("sven desc, test desc").aSerialized("{oc({o(sven, desc)},{o(test, desc)})}");
 
     GetPTO("'sven', 77").order(1).aSortOrder(SortOrder.asc);
-    GetPTO("'sven', 77 desc").root().order(0).aSortOrder(SortOrder.asc)
-        .aExpr().aEdmType(EdmString.getInstance()).root().order(1)
-        .aSortOrder(SortOrder.desc).aExpr()
+    GetPTO("'sven', 77 desc")
+        .root().order(0).aSortOrder(SortOrder.asc).aExpr().aEdmType(EdmString.getInstance())
+        .root().order(1).aSortOrder(SortOrder.desc).aExpr()
         .aEdmType(Uint7.getInstance());
 
   }
@@ -121,72 +113,57 @@ public class TestParser extends TestBase {
   public void testProperties() {
     // GetPTF("sven").aSerialized("sven").aKind(ExpressionKind.PROPERTY);
     GetPTF("sven1 add sven2").aSerialized("{sven1 add sven2}")
-        .aKind(ExpressionKind.BINARY).root().left()
-        .aKind(ExpressionKind.PROPERTY).aUriLiteral("sven1").root()
-        .right().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven2");
+        .aKind(ExpressionKind.BINARY)
+        .root().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven1")
+        .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven2");
   }
 
   @Test
   public void testDeepProperties() {
     GetPTF("a/b").aSerialized("{a/b}").aKind(ExpressionKind.MEMBER);
-    GetPTF("a/b/c").aSerialized("{{a/b}/c}").root()
-        .aKind(ExpressionKind.MEMBER).root().left()
-        .aKind(ExpressionKind.MEMBER).root().left().left()
-        .aKind(ExpressionKind.PROPERTY).aUriLiteral("a").root().left()
-        .right().aKind(ExpressionKind.PROPERTY).aUriLiteral("b").root()
-        .right().aKind(ExpressionKind.PROPERTY).aUriLiteral("c");
+    GetPTF("a/b/c").aSerialized("{{a/b}/c}")
+        .root().aKind(ExpressionKind.MEMBER)
+        .root().left().aKind(ExpressionKind.MEMBER)
+        .root().left().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("a")
+        .root().left().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("b")
+        .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("c");
   }
 
   @Test
   public void testPropertiesWithEdm() {
     try {
       EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
-      EdmProperty string = (EdmProperty) edmEtAllTypes
-          .getProperty("String");
+      EdmProperty string = (EdmProperty) edmEtAllTypes.getProperty("String");
       EdmSimpleType stringType = (EdmSimpleType) string.getType();
-      EdmComplexPropertyImplProv complex = (EdmComplexPropertyImplProv) edmEtAllTypes
-          .getProperty("Complex");
+      EdmComplexPropertyImplProv complex = (EdmComplexPropertyImplProv) edmEtAllTypes.getProperty("Complex");
       EdmComplexType complexType = (EdmComplexType) complex.getType();
-      EdmProperty complexString = (EdmProperty) complexType
-          .getProperty("String");
-      EdmSimpleType complexStringType = (EdmSimpleType) complexString
-          .getType();
-      EdmComplexPropertyImplProv complexAddress = (EdmComplexPropertyImplProv) complexType
-          .getProperty("Address");
-      EdmComplexType complexAddressType = (EdmComplexType) complexAddress
-          .getType();
-      EdmProperty complexAddressCity = (EdmProperty) complexAddressType
-          .getProperty("City");
-      EdmSimpleType complexAddressCityType = (EdmSimpleType) complexAddressCity
-          .getType();
+      EdmProperty complexString = (EdmProperty) complexType.getProperty("String");
+      EdmSimpleType complexStringType = (EdmSimpleType) complexString.getType();
+      EdmComplexPropertyImplProv complexAddress = (EdmComplexPropertyImplProv) complexType.getProperty("Address");
+      EdmComplexType complexAddressType = (EdmComplexType) complexAddress.getType();
+      EdmProperty complexAddressCity = (EdmProperty) complexAddressType.getProperty("City");
+      EdmSimpleType complexAddressCityType = (EdmSimpleType) complexAddressCity.getType();
 
-      GetPTF(edmEtAllTypes, "String").aEdmProperty(string).aEdmType(
-          stringType);
+      GetPTF(edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
 
-      GetPTF(edmEtAllTypes, "'text' eq String").root().aKind(
-          ExpressionKind.BINARY);
+      GetPTF(edmEtAllTypes, "'text' eq String")
+          .root().aKind(ExpressionKind.BINARY);
 
-      GetPTF(edmEtAllTypes, "Complex/String").root().left()
-          .aEdmProperty(complex).aEdmType(complexType).root().right()
-          .aEdmProperty(complexString).aEdmType(complexStringType)
+      GetPTF(edmEtAllTypes, "Complex/String")
+          .root().left().aEdmProperty(complex).aEdmType(complexType)
+          .root().right().aEdmProperty(complexString).aEdmType(complexStringType)
+          .root().aKind(ExpressionKind.MEMBER).aEdmType(complexStringType);
+
+      GetPTF(edmEtAllTypes, "Complex/Address/City")
           .root().aKind(ExpressionKind.MEMBER)
-          .aEdmType(complexStringType);
+          .root().left().aKind(ExpressionKind.MEMBER)
+          .root().left().left().aKind(ExpressionKind.PROPERTY).aEdmProperty(complex).aEdmType(complexType)
+          .root().left().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddress).aEdmType(complexAddressType)
+          .root().left().aEdmType(complexAddressType)
+          .root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType)
+          .root().aEdmType(complexAddressCityType);
 
-      GetPTF(edmEtAllTypes, "Complex/Address/City").root()
-          .aKind(ExpressionKind.MEMBER).root().left()
-          .aKind(ExpressionKind.MEMBER).root().left().left()
-          .aKind(ExpressionKind.PROPERTY).aEdmProperty(complex)
-          .aEdmType(complexType).root().left().right()
-          .aKind(ExpressionKind.PROPERTY)
-          .aEdmProperty(complexAddress).aEdmType(complexAddressType)
-          .root().left().aEdmType(complexAddressType).root().right()
-          .aKind(ExpressionKind.PROPERTY)
-          .aEdmProperty(complexAddressCity)
-          .aEdmType(complexAddressCityType).root()
-          .aEdmType(complexAddressCityType);
-
-      EdmProperty boolean_ = (EdmProperty) edmEtAllTypes
-          .getProperty("Boolean");
+      EdmProperty boolean_ = (EdmProperty) edmEtAllTypes.getProperty("Boolean");
       EdmSimpleType boolean_Type = (EdmSimpleType) boolean_.getType();
 
       GetPTF(edmEtAllTypes, "not Boolean").aKind(ExpressionKind.UNARY)
@@ -201,26 +178,20 @@ public class TestParser extends TestBase {
 
   @Test
   public void testSimpleMethod() {
-    GetPTF("startswith('Test','Te')").aSerialized(
-        "{startswith('Test','Te')}");
+    GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
 
-    GetPTF("startswith('Test','Te')").aSerialized(
-        "{startswith('Test','Te')}");
+    GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
 
-    GetPTF("startswith('Test', concat('A','B'))").aSerialized(
-        "{startswith('Test',{concat('A','B')})}");
+    GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
 
-    GetPTF("substring('Test', 1 add 2)").aSerialized(
-        "{substring('Test',{1 add 2})}");
+    GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
   }
 
   @Test
   public void testMethodVariableParameters() {
     GetPTF("concat('Test', 'A' )").aSerialized("{concat('Test','A')}");
-    GetPTF("concat('Test', 'A', 'B' )").aSerialized(
-        "{concat('Test','A','B')}");
-    GetPTF("concat('Test', 'A', 'B', 'C' )").aSerialized(
-        "{concat('Test','A','B','C')}");
+    GetPTF("concat('Test', 'A', 'B' )").aSerialized("{concat('Test','A','B')}");
+    GetPTF("concat('Test', 'A', 'B', 'C' )").aSerialized("{concat('Test','A','B','C')}");
   }
 
   @Test
@@ -229,9 +200,9 @@ public class TestParser extends TestBase {
     GetPTF("1d div 2d").aSerialized("{1d div 2d}");
 
     GetPTF("1d add 2d").aSerialized("{1d add 2d}")
-        .aKind(ExpressionKind.BINARY).root().left()
-        .aKind(ExpressionKind.LITERAL).root().right()
-        .aKind(ExpressionKind.LITERAL);
+        .aKind(ExpressionKind.BINARY)
+        .root().left().aKind(ExpressionKind.LITERAL)
+        .root().right().aKind(ExpressionKind.LITERAL);
 
   }
 
@@ -249,46 +220,29 @@ public class TestParser extends TestBase {
 
   @Test
   public void testSimpleSameBinaryBinaryBinaryPriority() {
-    GetPTF("1d add 2d add 3d add 4d").aSerialized(
-        "{{{1d add 2d} add 3d} add 4d}");
-    GetPTF("1d add 2d add 3d div 4d").aSerialized(
-        "{{1d add 2d} add {3d div 4d}}");
-    GetPTF("1d add 2d div 3d add 4d").aSerialized(
-        "{{1d add {2d div 3d}} add 4d}");
-    GetPTF("1d add 2d div 3d div 4d").aSerialized(
-        "{1d add {{2d div 3d} div 4d}}");
-    GetPTF("1d div 2d add 3d add 4d").aSerialized(
-        "{{{1d div 2d} add 3d} add 4d}");
-    GetPTF("1d div 2d add 3d div 4d").aSerialized(
-        "{{1d div 2d} add {3d div 4d}}");
-    GetPTF("1d div 2d div 3d add 4d").aSerialized(
-        "{{{1d div 2d} div 3d} add 4d}");
-    GetPTF("1d div 2d div 3d div 4d").aSerialized(
-        "{{{1d div 2d} div 3d} div 4d}");
+    GetPTF("1d add 2d add 3d add 4d").aSerialized("{{{1d add 2d} add 3d} add 4d}");
+    GetPTF("1d add 2d add 3d div 4d").aSerialized("{{1d add 2d} add {3d div 4d}}");
+    GetPTF("1d add 2d div 3d add 4d").aSerialized("{{1d add {2d div 3d}} add 4d}");
+    GetPTF("1d add 2d div 3d div 4d").aSerialized("{1d add {{2d div 3d} div 4d}}");
+    GetPTF("1d div 2d add 3d add 4d").aSerialized("{{{1d div 2d} add 3d} add 4d}");
+    GetPTF("1d div 2d add 3d div 4d").aSerialized("{{1d div 2d} add {3d div 4d}}");
+    GetPTF("1d div 2d div 3d add 4d").aSerialized("{{{1d div 2d} div 3d} add 4d}");
+    GetPTF("1d div 2d div 3d div 4d").aSerialized("{{{1d div 2d} div 3d} div 4d}");
   }
 
   @Test
   public void testComplexMixedPriority() {
-    GetPTF("a      or c      and e     ").aSerializedCompr(
-        "{ a       or { c       and  e      }}");
-    GetPTF("a      or c      and e eq f").aSerializedCompr(
-        "{ a       or { c       and {e eq f}}}");
-    GetPTF("a      or c eq d and e     ").aSerializedCompr(
-        "{ a       or {{c eq d} and  e      }}");
-    GetPTF("a      or c eq d and e eq f").aSerializedCompr(
-        "{ a       or {{c eq d} and {e eq f}}}");
-    GetPTF("a eq b or c      and e     ").aSerializedCompr(
-        "{{a eq b} or { c       and  e      }}");
-    GetPTF("a eq b or c      and e eq f").aSerializedCompr(
-        "{{a eq b} or { c       and {e eq f}}}");
-    GetPTF("a eq b or c eq d and e     ").aSerializedCompr(
-        "{{a eq b} or {{c eq d} and  e      }}");
-    GetPTF("a eq b or c eq d and e eq f").aSerializedCompr(
-        "{{a eq b} or {{c eq d} and {e eq f}}}");
+    GetPTF("a      or c      and e     ").aSerializedCompr("{ a       or { c       and  e      }}");
+    GetPTF("a      or c      and e eq f").aSerializedCompr("{ a       or { c       and {e eq f}}}");
+    GetPTF("a      or c eq d and e     ").aSerializedCompr("{ a       or {{c eq d} and  e      }}");
+    GetPTF("a      or c eq d and e eq f").aSerializedCompr("{ a       or {{c eq d} and {e eq f}}}");
+    GetPTF("a eq b or c      and e     ").aSerializedCompr("{{a eq b} or { c       and  e      }}");
+    GetPTF("a eq b or c      and e eq f").aSerializedCompr("{{a eq b} or { c       and {e eq f}}}");
+    GetPTF("a eq b or c eq d and e     ").aSerializedCompr("{{a eq b} or {{c eq d} and  e      }}");
+    GetPTF("a eq b or c eq d and e eq f").aSerializedCompr("{{a eq b} or {{c eq d} and {e eq f}}}");
 
     // helper
-    GetPTF("(a eq b) or (c eq d) and (e eq f)").aSerialized(
-        "{{a eq b} or {{c eq d} and {e eq f}}}");
+    GetPTF("(a eq b) or (c eq d) and (e eq f)").aSerialized("{{a eq b} or {{c eq d} and {e eq f}}}");
   }
 
   @Test

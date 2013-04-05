@@ -55,8 +55,7 @@ public class ParserTool {
     ParserTool.log.debug(out);
   }
 
-  public ParserTool(final String expression, final boolean isOrder,
-      final boolean addTestfunctions, final boolean allowOnlyBinary) {
+  public ParserTool(final String expression, final boolean isOrder, final boolean addTestfunctions, final boolean allowOnlyBinary) {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
 
@@ -66,8 +65,7 @@ public class ParserTool {
         if (addTestfunctions) {
           parser.addTestfunctions();
         }
-        tree = parser.parseFilterString(expression, allowOnlyBinary)
-            .getExpression();
+        tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       } else {
         OrderByParserImpl parser = new OrderByParserImpl(null);
         tree = parser.parseOrderByString(expression);
@@ -81,24 +79,19 @@ public class ParserTool {
     curNode = tree;
   }
 
-  public ParserTool(final String expression, final boolean isOrder,
-      final boolean addTestfunctions, final boolean allowOnlyBinary,
-      final EdmEntityType resourceEntityType) {
+  public ParserTool(final String expression, final boolean isOrder, final boolean addTestfunctions, final boolean allowOnlyBinary, final EdmEntityType resourceEntityType) {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
 
     try {
       if (!isOrder) {
-        FilterParserImplTool parser = new FilterParserImplTool(
-            resourceEntityType);
+        FilterParserImplTool parser = new FilterParserImplTool(resourceEntityType);
         if (addTestfunctions) {
           parser.addTestfunctions();
         }
-        tree = parser.parseFilterString(expression, allowOnlyBinary)
-            .getExpression();
+        tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       } else {
-        OrderByParserImpl parser = new OrderByParserImpl(
-            resourceEntityType);
+        OrderByParserImpl parser = new OrderByParserImpl(resourceEntityType);
         tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {
@@ -112,8 +105,7 @@ public class ParserTool {
 
   ParserTool aKind(final ExpressionKind kind) {
     String info = "GetInfoKind(" + expression + ")-->";
-    dout("  " + info + "Expected: " + kind.toString() + " Actual: "
-        + curNode.getKind().toString());
+    dout("  " + info + "Expected: " + kind.toString() + " Actual: " + curNode.getKind().toString());
 
     assertEquals(info, kind, curNode.getKind());
     return this;
@@ -121,8 +113,7 @@ public class ParserTool {
 
   public ParserTool aUriLiteral(final String uriLiteral) {
     String info = "GetUriLiteral(" + expression + ")-->";
-    dout("  " + info + "Expected: " + uriLiteral + " Actual: "
-        + curNode.getUriLiteral());
+    dout("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.getUriLiteral());
 
     assertEquals(info, uriLiteral, curNode.getUriLiteral());
     return this;
@@ -142,12 +133,10 @@ public class ParserTool {
       fail("Error in aExType: Expected exception " + expected.getName());
     }
 
-    dout("  " + info + "Expected: " + expected.getName() + " Actual: "
-        + curException.getClass().getName());
+    dout("  " + info + "Expected: " + expected.getName() + " Actual: " + curException.getClass().getName());
 
     if (expected != curException.getClass()) {
-      fail("  " + info + "Expected: " + expected.getName() + " Actual: "
-          + curException.getClass().getName());
+      fail("  " + info + "Expected: " + expected.getName() + " Actual: " + curException.getClass().getName());
     }
     return this;
   }
@@ -175,10 +164,8 @@ public class ParserTool {
       return this;
     }
 
-    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE,
-        messageException.getMessageReference());
-    info = "  " + info + "Expected: '" + messageText + "' Actual: '"
-        + ms.getText() + "'";
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+    info = "  " + info + "Expected: '" + messageText + "' Actual: '" + ms.getText() + "'";
 
     dout(info);
     assertEquals(info, messageText, ms.getText());
@@ -207,8 +194,7 @@ public class ParserTool {
       return this;
     }
 
-    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE,
-        messageException.getMessageReference());
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
     info = "  " + info + "Messagetext: '" + ms.getText() + "contains [%";
 
     dout(info);
@@ -239,8 +225,7 @@ public class ParserTool {
       return this;
     }
 
-    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE,
-        messageException.getMessageReference());
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
     info = "  " + info + "check if Messagetext is empty";
     dout(info);
 
@@ -268,12 +253,10 @@ public class ParserTool {
     }
 
     String actualKey = messageException.getMessageReference().getKey();
-    dout("  " + info + "Expected key: " + expectedKey + " Actual: "
-        + actualKey);
+    dout("  " + info + "Expected key: " + expectedKey + " Actual: " + actualKey);
 
     if (expectedKey != actualKey) {
-      fail("  " + info + "Expected: " + expectedKey + " Actual: "
-          + actualKey);
+      fail("  " + info + "Expected: " + expectedKey + " Actual: " + actualKey);
     }
     return this;
   }
@@ -291,8 +274,7 @@ public class ParserTool {
       return this;
     }
 
-    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE,
-        messageException.getMessageReference());
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
     out("Messge --> ");
     out("  " + ms.getText());
     out("Messge <-- ");
@@ -302,8 +284,7 @@ public class ParserTool {
 
   public String getExceptionText() {
     ODataMessageException messageException = (ODataMessageException) curException;
-    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE,
-        messageException.getMessageReference());
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
 
     return ms.getText();
 
@@ -342,8 +323,7 @@ public class ParserTool {
 
   private void checkNoException(final String infoMethod) {
     if (curException != null) {
-      fail("Error in " + infoMethod + ": exception '"
-          + getExceptionText() + "' occured!");
+      fail("Error in " + infoMethod + ": exception '" + getExceptionText() + "' occured!");
     }
   }
 
@@ -353,13 +333,11 @@ public class ParserTool {
 
     try {
       if (curNode.getEdmType() == null) {
-        dout("  " + info + "Expected: " + type.getName() + " Actual: "
-            + "null");
+        dout("  " + info + "Expected: " + type.getName() + " Actual: " + "null");
         fail("Error in aEdmType: type of curNode is null");
       }
 
-      dout("  " + info + "Expected: " + type.getName() + " Actual: "
-          + curNode.getEdmType().getName());
+      dout("  " + info + "Expected: " + type.getName() + " Actual: " + curNode.getEdmType().getName());
 
     } catch (EdmException e) {
       fail("Error in aEdmType:" + e.getLocalizedMessage());
@@ -373,15 +351,13 @@ public class ParserTool {
     String info = "GetSortOrder(" + expression + ")-->";
 
     if (curNode.getKind() != ExpressionKind.ORDER) {
-      String out = info + "Expected: " + ExpressionKind.ORDER
-          + " Actual: " + curNode.getKind().toString();
+      String out = info + "Expected: " + ExpressionKind.ORDER + " Actual: " + curNode.getKind().toString();
       dout("  " + out);
       fail(out);
     }
 
     OrderExpressionImpl orderExpression = (OrderExpressionImpl) curNode;
-    dout("  " + info + "Expected: " + orderType.toString() + " Actual: "
-        + orderExpression.getSortOrder().toString());
+    dout("  " + info + "Expected: " + orderType.toString() + " Actual: " + orderExpression.getSortOrder().toString());
 
     assertEquals(info, orderType, orderExpression.getSortOrder());
     return this;
@@ -392,9 +368,7 @@ public class ParserTool {
 
     if ((curNode.getKind() != ExpressionKind.ORDER)
         && (curNode.getKind() != ExpressionKind.FILTER)) {
-      String out = info + "Expected: " + ExpressionKind.ORDER + " or "
-          + ExpressionKind.FILTER + " Actual: "
-          + curNode.getKind().toString();
+      String out = info + "Expected: " + ExpressionKind.ORDER + " or " + ExpressionKind.FILTER + " Actual: " + curNode.getKind().toString();
       dout("  " + out);
       fail(out);
     }
@@ -414,17 +388,14 @@ public class ParserTool {
     String info = "GetEdmProperty(" + expression + ")-->";
 
     if (curNode.getKind() != ExpressionKind.PROPERTY) {
-      String out = info + "Expected: " + ExpressionKind.PROPERTY
-          + " Actual: " + curNode.getKind().toString();
+      String out = info + "Expected: " + ExpressionKind.PROPERTY + " Actual: " + curNode.getKind().toString();
       dout("  " + out);
       fail(out);
     }
 
     PropertyExpressionImpl propertyExpression = (PropertyExpressionImpl) curNode;
     try {
-      dout("  " + info + "Expected: Property'" + string.getName()
-          + "' Actual: "
-          + propertyExpression.getEdmProperty().getName());
+      dout("  " + info + "Expected: Property'" + string.getName() + "' Actual: " + propertyExpression.getEdmProperty().getName());
     } catch (EdmException e) {
       fail("Error in aEdmProperty:" + e.getLocalizedMessage());
     }
@@ -470,10 +441,7 @@ public class ParserTool {
     case METHOD:
     case PROPERTY:
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: "
-          + ExpressionKind.BINARY.toString() + " or "
-          + ExpressionKind.MEMBER.toString() + " Actual: "
-          + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.BINARY.toString() + " or " + ExpressionKind.MEMBER.toString() + " Actual: " + curNode.getKind();
       dout(info);
       fail(info);
       break;
@@ -498,10 +466,7 @@ public class ParserTool {
     case METHOD:
     case PROPERTY:
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: "
-          + ExpressionKind.BINARY.toString() + " or "
-          + ExpressionKind.MEMBER.toString() + " Actual: "
-          + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.BINARY.toString() + " or " + ExpressionKind.MEMBER.toString() + " Actual: " + curNode.getKind();
       dout(info);
       fail(info);
       break;
@@ -517,9 +482,7 @@ public class ParserTool {
   public ParserTool order(final int i) {
     if (curNode.getKind() != ExpressionKind.ORDERBY) {
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: "
-          + ExpressionKind.ORDERBY.toString() + " Actual: "
-          + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.ORDERBY.toString() + " Actual: " + curNode.getKind();
       dout(info);
       fail(info);
     }
@@ -527,8 +490,7 @@ public class ParserTool {
     OrderByExpressionImpl orderByExpressionImpl = (OrderByExpressionImpl) curNode;
     if (i >= orderByExpressionImpl.getOrdersCount()) {
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Too wrong index! Expected max: "
-          + orderByExpressionImpl.getOrdersCount() + " Actual: " + i;
+      info = "  " + info + "Too wrong index! Expected max: " + orderByExpressionImpl.getOrdersCount() + " Actual: " + i;
       dout(info);
       fail(info);
     }
@@ -541,9 +503,7 @@ public class ParserTool {
   public ParserTool param(final int i) {
     if (curNode.getKind() != ExpressionKind.METHOD) {
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: "
-          + ExpressionKind.METHOD.toString() + " Actual: "
-          + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
       dout(info);
       fail(info);
     }
@@ -551,9 +511,7 @@ public class ParserTool {
     MethodExpressionImpl methodExpressionImpl = (MethodExpressionImpl) curNode;
     if (i >= methodExpressionImpl.getParameterCount()) {
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Too wrong index! Expected max: "
-          + methodExpressionImpl.getParameterCount() + " Actual: "
-          + i;
+      info = "  " + info + "Too wrong index! Expected max: " + methodExpressionImpl.getParameterCount() + " Actual: " + i;
       dout(info);
       fail(info);
     }
@@ -600,11 +558,9 @@ public class ParserTool {
       assertEquals("Error in parsertool", compress("{ a a }"), "{a a}");
       assertEquals("Error in parsertool", compress("{ a   a }"), "{a a}");
 
-      assertEquals("Error in parsertool",
-          compress("   {   a   a   }   "), "{a a}");
+      assertEquals("Error in parsertool", compress("   {   a   a   }   "), "{a a}");
 
-      assertEquals("Error in parsertool",
-          compress("   {   a { }  a   }   "), "{a {} a}");
+      assertEquals("Error in parsertool", compress("   {   a { }  a   }   "), "{a {} a}");
     }
   }
 
