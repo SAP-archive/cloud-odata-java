@@ -24,7 +24,7 @@ import com.sap.core.odata.processor.core.jpa.access.data.JPAFunctionContext;
 import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImpl;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmMappingModelService;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
-import com.sap.core.odata.processor.core.jpa.expception.ODataJPAMessageServiceDefault;
+import com.sap.core.odata.processor.core.jpa.exception.ODataJPAMessageServiceDefault;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectSingleContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectSingleStatementBuilder;
