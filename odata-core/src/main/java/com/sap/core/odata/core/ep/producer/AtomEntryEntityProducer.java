@@ -421,12 +421,14 @@ public class AtomEntryEntityProducer {
 
     StringBuilder keys = new StringBuilder();
     for (final EntityPropertyInfo keyPropertyInfo : keyPropertyInfos) {
-      if (keys.length() > 0)
+      if (keys.length() > 0) {
         keys.append(',');
+      }
 
       final String name = keyPropertyInfo.getName();
-      if (keyPropertyInfos.size() > 1)
+      if (keyPropertyInfos.size() > 1) {
         keys.append(Encoder.encode(name)).append('=');
+      }
 
       final EdmSimpleType type = (EdmSimpleType) keyPropertyInfo.getType();
       try {

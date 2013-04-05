@@ -125,8 +125,8 @@ public class FilterParserImpl implements FilterParser
       rightNode = readElement(leftNode, operator); //throws FilterParserException, FilterParserInternalError
       if (rightNode == null)
       {
-    	  // Tested with TestParserExceptions.testAdditionalStuff CASE 10
-    	  throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(operator.getToken().getPosition()+ operator.getToken().getUriLiteral().length(), curExpression);
+        // Tested with TestParserExceptions.testAdditionalStuff CASE 10
+        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(operator.getToken().getPosition() + operator.getToken().getUriLiteral().length(), curExpression);
       }
       nextOperator = readBinaryOperator();
 

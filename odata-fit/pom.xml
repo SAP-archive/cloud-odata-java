@@ -170,7 +170,6 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.testutil</artifactId>
 			<version>${project.version}</version>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

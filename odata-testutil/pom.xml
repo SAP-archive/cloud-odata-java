@@ -20,7 +20,7 @@
 				<executions>
 					<execution>
 						<id>test-jar</id>
-						<phase>test-compile</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>test-jar</goal>
 						</goals>

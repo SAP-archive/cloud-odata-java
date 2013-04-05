@@ -634,7 +634,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     when(entityType.hasStream()).thenReturn(false);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
-}
+  }
 
   @Test
   public void invalidRequestContentType() throws Exception {

@@ -78,8 +78,8 @@
 
 	<modules>
 		<module>odata-api</module>
-		<module>odata-core</module>
 		<module>odata-testutil</module>
+		<module>odata-core</module>
 		<module>odata-fit</module>
 		<module>odata-ref</module>
 		<module>odata-web</module>

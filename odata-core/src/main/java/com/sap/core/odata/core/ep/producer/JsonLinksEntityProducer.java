@@ -39,16 +39,18 @@ public class JsonLinksEntityProducer {
       JsonStreamWriter.beginArray(writer);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           JsonStreamWriter.separator(writer);
+        }
         JsonLinkEntityProducer.appendUri(writer, properties, entityInfo, entryData);
       }
       JsonStreamWriter.endArray(writer);
 
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         JsonStreamWriter.endObject(writer);
+      }
 
       JsonStreamWriter.endObject(writer);
     } catch (final IOException e) {
