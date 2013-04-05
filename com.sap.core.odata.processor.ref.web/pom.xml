@@ -41,12 +41,6 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>com.sap.core.odata</groupId>
-			<artifactId>com.sap.core.odata.api.annotation</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- OData4SAP Support -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
