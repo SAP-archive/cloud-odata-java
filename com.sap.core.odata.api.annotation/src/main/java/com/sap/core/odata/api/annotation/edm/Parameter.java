@@ -9,7 +9,21 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface Parameter {
 	enum Mode {
-		IN, OUT, INOUT
+		IN {
+			public String toString() {
+				return new String("In");
+			}
+		},
+		OUT {
+			public String toString() {
+				return new String("Out");
+			}
+		},
+		INOUT {
+			public String toString() {
+				return new String("InOut");
+			}
+		}
 	};
 
 	String name();

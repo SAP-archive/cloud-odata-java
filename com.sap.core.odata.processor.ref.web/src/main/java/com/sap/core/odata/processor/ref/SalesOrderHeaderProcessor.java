@@ -11,6 +11,7 @@ import com.sap.core.odata.api.annotation.edm.FunctionImport;
 import com.sap.core.odata.api.annotation.edm.FunctionImport.Multiplicity;
 import com.sap.core.odata.api.annotation.edm.FunctionImport.ReturnType;
 import com.sap.core.odata.api.annotation.edm.Parameter;
+import com.sap.core.odata.api.annotation.edm.Parameter.Mode;
 import com.sap.core.odata.processor.ref.jpa.Address;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
@@ -39,8 +40,8 @@ public class SalesOrderHeaderProcessor {
 
 	@FunctionImport(name = "CheckATP", returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE)
 	public boolean checkATP(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false)) Long soID,
-			@Parameter(name = "LiId", facets = @Facets(nullable = false)) Long lineItemID) {
+			@Parameter(name = "SoID", facets = @Facets(nullable = false), mode=Mode.IN) Long soID,
+			@Parameter(name = "LiId", facets = @Facets(nullable = false), mode=Mode.IN) Long lineItemID) {
 		if (soID == 2L)
 			return false;
 		else
