@@ -54,7 +54,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 		return consistentFunctionImportList;
 	}
 
-	private class JPAEdmFunctionImportBuilder implements JPAEdmBuilder {
+	protected class JPAEdmFunctionImportBuilder implements JPAEdmBuilder {
 
 		private JPAEdmEntityTypeView jpaEdmEntityTypeView = null;
 		private JPAEdmComplexTypeView jpaEdmComplexTypeView = null;
@@ -130,11 +130,14 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 					functionImport.setName(method.getName());
 				else
 					functionImport.setName(annotation.name());
+
 				JPAEdmMapping mapping = new JPAEdmMappingImpl();
 				((Mapping) mapping).setInternalName(method.getName());
 				mapping.setJPAType(method.getDeclaringClass());
 				functionImport.setMapping((Mapping) mapping);
-
+				
+				functionImport.setHttpMethod(annotation.httpMethod().name().toString());
+				
 				buildReturnType(functionImport, method, annotation);
 				buildParameter(functionImport, method);
 

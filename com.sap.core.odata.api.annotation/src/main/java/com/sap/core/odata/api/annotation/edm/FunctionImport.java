@@ -5,6 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.sap.core.odata.api.annotation.edmx.HttpMethod;
+import com.sap.core.odata.api.annotation.edmx.HttpMethod.Name;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface FunctionImport {
@@ -24,6 +27,8 @@ public @interface FunctionImport {
 	ReturnType returnType();
 
 	Multiplicity multiplicity() default Multiplicity.ONE;
-
+	
+	HttpMethod httpMethod( ) default @HttpMethod(name=Name.GET);
+	
 	Documentation documentation() default @Documentation;
 }
