@@ -53,7 +53,7 @@ public class AcceptHeaderCaller {
     try {
       port = Integer.parseInt(hostAndPort[1]);
     } catch (final NumberFormatException e) {
-      throw new IllegalArgumentException("Unable to parse proxy url because port is Not a Number. Supported format is 'hostname:port''");
+      throw new IllegalArgumentException("Unable to parse proxy url because port is Not a Number. Supported format is 'hostname:port''", e);
     }
     final HttpHost proxy = new HttpHost(host, port);
     LOG.info("Use proxy '{}:{}'", proxy.getHostName(), proxy.getPort());
