@@ -93,7 +93,7 @@ public class TestServer {
 
     } catch (final Exception e) {
       log.error(e);
-      new RuntimeException(e);
+      throw new ServerRuntimeException(e);
     }
   }
 
@@ -113,7 +113,7 @@ public class TestServer {
         log.trace("Stopped server at endpoint " + getEndpoint().toASCIIString());
       }
     } catch (final Exception e) {
-      throw new ServerException(e);
+      throw new ServerRuntimeException(e);
     }
   }
 }
