@@ -6,7 +6,20 @@ import java.util.Map;
 
 import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
 
+/**
+ * The {@link EntityProviderReadProperties} contains all necessary settings to read an entity with the {@link EntityProvider}.
+ * 
+ * The main settings are
+ * <ul>
+ * <li>the <code>mergeSemantic</code></li>
+ * <li>the <code>callback for inlined navigation properties</code></li>
+ * <li>and the <code>type mappings</code></li>
+ * </ul>
+ * 
+ * @author SAP AG
+ */
 public class EntityProviderReadProperties {
+  /** Callback which is necessary if entity contains inlined navigation properties. */
   private OnReadEntryContent callback;
   /**
    * if merge is <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 

@@ -5,6 +5,15 @@ import java.util.Map;
 
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 
+/**
+ * A {@link ReadEntryCallbackContext} contains all contextual information about an inlined navigation property.
+ * This is at least the <code>title</code> and <code>type</code> of the navigation property.
+ * Additional informations (which may be dependent on the given format (<code>e.g. XML/JSON/...</code>)) can be given
+ * as key/value pairs. 
+ * 
+ * @author SAP AG
+ *
+ */
 public class ReadEntryCallbackContext {
 
   private final Map<String, Object> infos = new HashMap<String, Object>();
