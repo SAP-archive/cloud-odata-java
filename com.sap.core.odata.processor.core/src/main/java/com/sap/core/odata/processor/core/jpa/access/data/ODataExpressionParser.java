@@ -241,8 +241,13 @@ public class ODataExpressionParser {
 		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
 		{
-			value = value.substring(0, value.indexOf('T'));
-			value = "{d \'"+value+"\'}";	//$NON-NLS-1$ 	//$NON-NLS-2$
+			String dateValue = value.substring(0, value.indexOf('T'));
+			String timeValue = value.substring(value.indexOf('T')+1, value.length());
+			String SPACE = " ";
+			String OFFSET = ".000";
+			 
+			value = "{ts \'"+dateValue+SPACE+timeValue+OFFSET+"\'}";
+			//$NON-NLS-1$ 	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
 			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance()){
