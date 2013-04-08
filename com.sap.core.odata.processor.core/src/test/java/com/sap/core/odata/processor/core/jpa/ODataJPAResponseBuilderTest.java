@@ -170,10 +170,6 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	
 	private List<ArrayList<NavigationPropertySegment>> getExpandList() {
 		List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
-		/*ArrayList<NavigationPropertySegment> navSegments = new ArrayList<NavigationPropertySegment>();
-		expandList.add(navSegments);
-		NavigationPropertySegment navProp = EasyMock.createMock(NavigationPropertySegment.class);
-		EasyMock.replay(navProp);*/
 		return expandList;
 	}
 
@@ -222,8 +218,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			EasyMock.expect(edmType.valueToString(new Integer(2), EdmLiteralKind.URI, facets)).andStubReturn("2");
 			EasyMock.expect(edmType.valueToString(new Integer(2), EdmLiteralKind.DEFAULT, facets)).andStubReturn("2");
 		} catch (EdmSimpleTypeException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			fail("There is an exception in mocking EdmType object "+e1.getMessage());
 		}
 		EasyMock.replay(edmType);
 		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
@@ -241,41 +236,12 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			EasyMock.replay(edmProperty);
 			
 		} catch (EdmException e) {
-			fail("There is an exception is mocking some object "+e.getMessage());
+			fail("There is an exception in mocking some object "+e.getMessage());
 		}
 		
 		return edmProperty;
 		
 		
-	}
-
-	private EdmProperty getEdmProperty() {
-		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
-		
-		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(edmMapping.getInternalName()).andStubReturn(
-				"Field1");
-		EasyMock.replay(edmMapping);
-		
-		EdmType edmType = EasyMock.createMock(EdmType.class);
-		
-		try {
-			EasyMock.expect(edmType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
-			EasyMock.expect(edmType.getName()).andStubReturn("identifier");
-			EasyMock.expect(edmTyped.getName()).andStubReturn("SalesOrderHeader");
-			EasyMock.expect(edmTyped.getMapping())
-					.andStubReturn(edmMapping);
-			
-			EasyMock.expect(edmTyped.getType()).andStubReturn(edmType);
-			EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
-			
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		EasyMock.replay(edmType);
-		EasyMock.replay(edmTyped);
-		return edmTyped;
 	}
 
 	private EdmEntitySet getLocalTargetEntitySet() {
