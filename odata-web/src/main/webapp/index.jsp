@@ -347,7 +347,7 @@ ul.tree li.last {
 	background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
 	background-repeat: repeat-x;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',
-		endColorstr='#fff2f2f2', GradientType=0 );
+		endColorstr='#fff2f2f2', GradientType=0);
 }
 
 .header .nav .logo {
@@ -414,7 +414,7 @@ ul.tree li.last {
 	background-image: linear-gradient(to bottom, #ffd671, #f0ab00);
 	background-repeat: repeat-x;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffd671',
-		endColorstr='#fff0ab00', GradientType=0 );
+		endColorstr='#fff0ab00', GradientType=0);
 	text-decoration: none;
 }
 
@@ -435,58 +435,77 @@ ul.tree li.last {
 </style>
 </head>
 <body>
-<div align="right">
-	<img align="top" src="pic/SAPLogo.png" />
-</div>
-<h1>SAP OData Library</h1>
-<hr />
-<div class="code">
-	<%
-	  String version = "gen/version.html";
-	%>
-	<%
-	  try {
-	%>
-	<jsp:include page='<%=version%>' />
-	<%
-	  } catch (Exception e) {
-	%>
-	<p>IDE Build</p>
-	<%
-	  }
-	%>
-</div>
-<hr />
-<h2>Reference Scenario</h2>
-	<h3>Service Document and Metadata</h3>
-	<ul>
-		<li><a href="ReferenceScenario.svc?_wadl" target="_blank">wadl</a></li>
-		<li><a href="ReferenceScenario.svc/" target="_blank">service document</a></li>
-		<li><a href="ReferenceScenario.svc/$metadata" target="_blank">metadata</a></li>
-	</ul>
-	<h3>EntitySets</h3>
-	<ul>
-		<li><a href="ReferenceScenario.svc/Employees" target="_blank">Employees</a></li>
-		<li><a href="ReferenceScenario.svc/Managers" target="_blank">Managers</a></li>
-		<li><a href="ReferenceScenario.svc/Buildings" target="_blank">Buildings</a></li>
-		<li><a href="ReferenceScenario.svc/Rooms" target="_blank">Rooms</a></li>
-		<li><a href="ReferenceScenario.svc/Container2.Photos" target="_blank">Container2.Photos</a></li>
-	</ul>
-	<h3>Entities</h3>
-	<ul>
-		<li><a href="ReferenceScenario.svc/Employees('1')"
-			target="_blank">Employees('1')</a></li>
-		<li><a href="ReferenceScenario.svc/Managers('1')" target="_blank">Managers('1')</a></li>
-		<li><a href="ReferenceScenario.svc/Buildings('1')"
-			target="_blank">Buildings('1')</a></li>
-		<li><a href="ReferenceScenario.svc/Rooms('1')" target="_blank">Rooms('1')</a></li>
-		<li><a href="ReferenceScenario.svc/Container2.Photos(Id=1,Type='image/png')"
-			target="_blank">Container2.Photos(Id=1,Type='image/png')</a></li>
-	</ul>
-		<h3>Csrf Protected Service</h3>
-	<ul>
-		<li><a href="CsrfReferenceScenario.svc/" target="_blank">service document</a></li>
-	</ul>
-	
+	<div align="right">
+		<img align="top" src="pic/SAPLogo.png" />
+	</div>
+	<h1>SAP OData Library</h1>
+	<hr />
+	<h2>Reference Scenario</h2>
+	<table border="1" cellspacing="10" cellpadding="20">
+		<tr>
+			<td valign="top">
+				<h3>Service Document and Metadata</h3>
+				<ul>
+					<li><a href="ReferenceScenario.svc?_wadl" target="_blank">wadl</a></li>
+					<li><a href="ReferenceScenario.svc/" target="_blank">service
+							document</a></li>
+					<li><a href="ReferenceScenario.svc/$metadata" target="_blank">metadata</a></li>
+				</ul>
+				<h3>EntitySets</h3>
+				<ul>
+					<li><a href="ReferenceScenario.svc/Employees" target="_blank">Employees</a></li>
+					<li><a href="ReferenceScenario.svc/Managers" target="_blank">Managers</a></li>
+					<li><a href="ReferenceScenario.svc/Buildings" target="_blank">Buildings</a></li>
+					<li><a href="ReferenceScenario.svc/Rooms" target="_blank">Rooms</a></li>
+					<li><a href="ReferenceScenario.svc/Container2.Photos"
+						target="_blank">Container2.Photos</a></li>
+				</ul>
+				<h3>Entities</h3>
+				<ul>
+					<li><a href="ReferenceScenario.svc/Employees('1')"
+						target="_blank">Employees('1')</a></li>
+					<li><a href="ReferenceScenario.svc/Managers('1')"
+						target="_blank">Managers('1')</a></li>
+					<li><a href="ReferenceScenario.svc/Buildings('1')"
+						target="_blank">Buildings('1')</a></li>
+					<li><a href="ReferenceScenario.svc/Rooms('1')" target="_blank">Rooms('1')</a></li>
+<!-- 					<li><a -->
+<!-- 						href="ReferenceScenario.svc/Container2.Photos(Id=1,Type='image/png')" -->
+<!-- 						target="_blank">Container2.Photos(Id=1,Type='image/png')</a></li> -->
+				</ul>
+			</td>
+			<td valign="top">
+				<h3>Csrf Protected Service</h3>
+				<ul>
+					<li><a href="CsrfReferenceScenario.svc/" target="_blank">service
+							document</a></li>
+				</ul>
+				<h3>QUnit Test Suite</h3>
+				<ul>
+					<li><a href="test/index.htm" target="_blank">quint test
+							suite</a></li>
+				</ul>
+			</td>
+			<td valign="bottom">
+				<div class="code">
+					<%
+					  String version = "gen/version.html";
+					%>
+					<%
+					  try {
+					%>
+					<jsp:include page='<%=version%>' />
+					<%
+					  } catch (Exception e) {
+					%>
+					<p>IDE Build</p>
+					<%
+					  }
+					%>
+				</div>
+
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
