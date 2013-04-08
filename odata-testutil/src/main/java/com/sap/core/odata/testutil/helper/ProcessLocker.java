@@ -40,7 +40,7 @@ public class ProcessLocker {
       }
     }
     if (fileLock == null) {
-      throw new RuntimeException("timeout after " + waitMS);
+      throw new ProcessLockerRuntimeException("timeout after " + waitMS);
     }
   }
 
@@ -51,7 +51,7 @@ public class ProcessLocker {
         fileLock.release();
         fileLock = null;
       } catch (final IOException e) {
-        throw new RuntimeException(e);
+        throw new ProcessLockerRuntimeException(e);
       }
     }
   }
@@ -69,5 +69,19 @@ public class ProcessLocker {
         crossProcessLockRelease();
       }
     });
+  }
+
+  private static class ProcessLockerRuntimeException extends RuntimeException {
+
+    public ProcessLockerRuntimeException(final String msg) {
+      super(msg);
+    }
+
+    public ProcessLockerRuntimeException(final Exception e) {
+      super(e);
+    }
+
+    private static final long serialVersionUID = 1L;
+
   }
 }
