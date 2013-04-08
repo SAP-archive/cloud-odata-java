@@ -9,6 +9,8 @@ import java.nio.channels.FileLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.testutil.TestUtilRuntimeException;
+
 /**
  * Interprocess synchronization to enable parallel test executions.
  * 
@@ -36,11 +38,11 @@ public class ProcessLocker {
           Thread.sleep(250); // 4 attempts/sec
         }
       } catch (final Exception e) {
-        throw new RuntimeException(e);
+        throw new TestUtilRuntimeException(e);
       }
     }
     if (fileLock == null) {
-      throw new ProcessLockerRuntimeException("timeout after " + waitMS);
+      throw new TestUtilRuntimeException("timeout after " + waitMS);
     }
   }
 
@@ -51,7 +53,7 @@ public class ProcessLocker {
         fileLock.release();
         fileLock = null;
       } catch (final IOException e) {
-        throw new ProcessLockerRuntimeException(e);
+        throw new TestUtilRuntimeException(e);
       }
     }
   }
@@ -71,17 +73,4 @@ public class ProcessLocker {
     });
   }
 
-  private static class ProcessLockerRuntimeException extends RuntimeException {
-
-    public ProcessLockerRuntimeException(final String msg) {
-      super(msg);
-    }
-
-    public ProcessLockerRuntimeException(final Exception e) {
-      super(e);
-    }
-
-    private static final long serialVersionUID = 1L;
-
-  }
 }
