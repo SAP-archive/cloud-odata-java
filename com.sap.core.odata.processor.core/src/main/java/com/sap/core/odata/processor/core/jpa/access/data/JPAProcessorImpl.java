@@ -202,6 +202,9 @@ public class JPAProcessorImpl implements JPAProcessor {
 			if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
+			}else if(e.getMessage().contains("Integrity constraint violation")){//$NON-NLS-1$
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_INTEGRITY_CONSTRAINT, e);
 			}else 
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.ERROR_JPQL_CREATE_CREATE, e);

@@ -43,6 +43,8 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "ERROR_JPQL_PARAM_VALUE");
 	public static final MessageReference ERROR_JPQL_UNIQUE_CONSTRAINT = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_UNIQUE_CONSTRAINT");
+	public static final MessageReference ERROR_JPQL_INTEGRITY_CONSTRAINT = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_INTEGRITY_CONSTRAINT");
 
 
 	private ODataJPARuntimeException(String localizedMessage, Throwable e,
