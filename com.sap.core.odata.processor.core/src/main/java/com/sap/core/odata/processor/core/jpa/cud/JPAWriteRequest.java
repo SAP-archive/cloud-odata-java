@@ -70,9 +70,11 @@ public class JPAWriteRequest {
 				}
 				String name = getSetterName(property);
 				String[] nameParts = name.split("\\.");
-				if (isCreate && nameParts.length > 1) {
-					jpaEmbeddableKeyObjectMap.put(propertyName, propertyClass);
-					embeddableKey.put(propertyName, name);
+				if (nameParts.length > 1) {
+					if(isCreate){
+						jpaEmbeddableKeyObjectMap.put(propertyName, propertyClass);
+						embeddableKey.put(propertyName, name);
+					}
 				} else
 					setters.put(
 							propertyName,
