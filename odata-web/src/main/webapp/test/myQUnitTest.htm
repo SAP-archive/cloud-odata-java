@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+  <title>OData Test Suite - GMD</title>
+  <link rel="stylesheet" href="../styles/qunit.css" />
+</head>
+<body>
+  <div id="qunit"></div>
+  <script src="../scripts/datajs-1.0.3.js"></script>
+  <script src="../scripts/qunit.js"></script>
+  <script src="../scripts/qunit-odata.js" data-service-root="/sap/bc/ds/my/"></script>
+  <script>
+    module("Service");   
+
+    /* Test 1.1 */      
+    var request = {
+      resourcePath: ".", 
+      headers: {Accept: "application/json"}
+    };
+    odataTest("Read Service Document", 5, request, function (response, data) {
+      equal(response.statusCode, 200, "StatusCode: 200");
+      equal(response.headers["Content-Type"], "application/json; charset=utf-8", "Content-Type: application/json");
+      equal(data.workspaces.length, 1, "One workspace");
+      equal(data.workspaces[0].collections.length, 1, "One collection");  
+      equal(data.workspaces[0].collections[0].title, "Products", "Collection title: Products");        
+    });
+    
+    module("Product");
+    
+    /* Test 2.1 */
+    request = "Products(1)";
+    odataTest("Read Product 1", 4, request , function (response, data) {
+      equal(response.statusCode, 200, "StatusCode: 200");
+      equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+      equal(data.Name, 'milk', "Name: milk");
+      deepEqual(data.Rating, 5, "Rating: 5");
+    });    
+    
+    module("Products");
+    
+    /* Test 2.1 */
+    request = "Products";
+    odataTest("Read Products", 3, request , function (response, data) {
+      equal(response.statusCode, 200, "StatusCode: 200");
+      equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+      equal(data.results.length, 3, "3 Products");
+    });
+  </script>
+</body>
+</html>
