@@ -13,6 +13,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import com.sap.core.odata.testutil.TestUtilRuntimeException;
 import com.sap.core.odata.testutil.tool.core.AcceptHeaderCaller;
 import com.sap.core.odata.testutil.tool.core.CallerConfig;
 import com.sap.core.odata.testutil.tool.core.CallerResultHandler;
@@ -34,68 +35,72 @@ public class TestCallTool {
    * 
    * @param args not used
    */
-  public static void main(final String[] args) throws Exception {
-    activateLoggingToJiraMarkupFile(ACCEPT_HEADER_REQUEST_JIRA_FILENAME);
+  public static void main(final String[] args) {
+    try {
+      activateLoggingToJiraMarkupFile(ACCEPT_HEADER_REQUEST_JIRA_FILENAME);
 
-    final List<String> paths = Arrays.asList(
-        "/", // URI0 et seq.
-        "/?$format=xml",
-        "/?$format=atom",
-        "/?$format=json",
-        "/Employees", // URI1 et seq.
-        // "/Managers", "/Rooms",
-        "/Employees?$format=xml",
-        "/Employees?$format=atom", // 
-        "/Employees?$format=json", // 
-        "/Employees('1')", // URI2 et seq.
-        "/Employees('1')?$format=xml",
-        "/Employees('1')?$format=atom",
-        "/Employees('1')?$format=json",
-        "/Employees('1')/Location", // URI3
-        "/Employees('1')/Location/Country", // URI4
-        "/Employees('1')/Age", // URI5
-        "/Employees('1')/ne_Room", // URI6A
-        "/Employees('1')/$links/ne_Room", // URI7
-        "/$metadata", // URI8
-        "/Employees('1')/$value", // URI17 (not supported?)
-        "/Employees('1')/Age/$value" // no specific URI-Type (variation of URI17 ?)
-    );
+      final List<String> paths = Arrays.asList(
+          "/", // URI0 et seq.
+          "/?$format=xml",
+          "/?$format=atom",
+          "/?$format=json",
+          "/Employees", // URI1 et seq.
+          // "/Managers", "/Rooms",
+          "/Employees?$format=xml",
+          "/Employees?$format=atom", // 
+          "/Employees?$format=json", // 
+          "/Employees('1')", // URI2 et seq.
+          "/Employees('1')?$format=xml",
+          "/Employees('1')?$format=atom",
+          "/Employees('1')?$format=json",
+          "/Employees('1')/Location", // URI3
+          "/Employees('1')/Location/Country", // URI4
+          "/Employees('1')/Age", // URI5
+          "/Employees('1')/ne_Room", // URI6A
+          "/Employees('1')/$links/ne_Room", // URI7
+          "/$metadata", // URI8
+          "/Employees('1')/$value", // URI17 (not supported?)
+          "/Employees('1')/Age/$value" // no specific URI-Type (variation of URI17 ?)
+      );
 
-    final List<String> headerValues = Arrays.asList(
-        "", // for request with none 'Accept-Header' set
-        "text/plain",
-        "application/xml",
-        "application/json",
-        "application/atom+xml",
-        "application/atomsvc+xml",
-        "text/plain; charset=utf-8",
-        "application/xml; charset=utf-8",
-        "application/json; charset=utf-8",
-        "application/atom+xml; charset=utf-8",
-        "application/atomsvc+xml; charset=utf-8"
-        );
-    final List<TestPath> testPaths = TestPath.createTestPaths(paths, headerValues);
-    // for a reduced test set
-    //    List<TestPath> testPaths = TestPath.createTestPaths(Arrays.asList("/", "/Employees"), 
-    //        Arrays.asList("", "application/xml"));
+      final List<String> headerValues = Arrays.asList(
+          "", // for request with none 'Accept-Header' set
+          "text/plain",
+          "application/xml",
+          "application/json",
+          "application/atom+xml",
+          "application/atomsvc+xml",
+          "text/plain; charset=utf-8",
+          "application/xml; charset=utf-8",
+          "application/json; charset=utf-8",
+          "application/atom+xml; charset=utf-8",
+          "application/atomsvc+xml; charset=utf-8"
+          );
+      final List<TestPath> testPaths = TestPath.createTestPaths(paths, headerValues);
+      // for a reduced test set
+      //    List<TestPath> testPaths = TestPath.createTestPaths(Arrays.asList("/", "/Employees"), 
+      //        Arrays.asList("", "application/xml"));
 
-    final CallerResultHandler handler = new CallerResultHandler();
+      final CallerResultHandler handler = new CallerResultHandler();
 
-    final String localBaseUrl = "http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc";
-    final CallerConfig localConfig = new CallerConfig(localBaseUrl, handler, testPaths);
-    AcceptHeaderCaller.create(localConfig).call();
+      final String localBaseUrl = "http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc";
+      final CallerConfig localConfig = new CallerConfig(localBaseUrl, handler, testPaths);
+      AcceptHeaderCaller.create(localConfig).call();
 
-    //    String nwcBaseUrl = "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc";
-    //    CallerConfig nwcConfig = new CallerConfig(nwcBaseUrl, handler, testPaths).setProxy("proxy:8080");
-    //    AcceptHeaderCaller.create(nwcConfig).call();
+      //    String nwcBaseUrl = "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc";
+      //    CallerConfig nwcConfig = new CallerConfig(nwcBaseUrl, handler, testPaths).setProxy("proxy:8080");
+      //    AcceptHeaderCaller.create(nwcConfig).call();
 
-    //    String gmdUrl = "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata";
-    //    CallerConfig gmdConfig = new CallerConfig(gmdUrl, handler, testPaths).setBasicAuthCredentials("user:pwd");
-    //    AcceptHeaderCaller.create(gmdConfig).call();
+      //    String gmdUrl = "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata";
+      //    CallerConfig gmdConfig = new CallerConfig(gmdUrl, handler, testPaths).setBasicAuthCredentials("user:pwd");
+      //    AcceptHeaderCaller.create(gmdConfig).call();
 
-    final String result = handler.getResult();
-    LOG.info("h2. Accept-Header (executed  at: " + new SimpleDateFormat().format(new Date()) + ")\n");
-    LOG.info(result);
+      final String result = handler.getResult();
+      LOG.info("h2. Accept-Header (executed  at: " + new SimpleDateFormat().format(new Date()) + ")\n");
+      LOG.info(result);
+    } catch (Exception e) {
+      throw new TestUtilRuntimeException(e);
+    }
   }
 
   /**
