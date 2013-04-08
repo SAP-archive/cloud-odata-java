@@ -31,25 +31,19 @@ import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
  * Atom/XML format reader/consumer for entries.
+ * 
+ * {@link XmlEntryConsumer} instance can be reused for several {@link #readEntry(XMLStreamReader, EntityInfoAggregator, EntityProviderReadProperties)} calls
+ * but be aware that the instance and their <code>readEntry*</code> methods are <b>NOT THREAD SAFE</b>.
  */
 public class XmlEntryConsumer {
 
-  final private Map<String, String> foundPrefix2NamespaceUri;
-  final private ODataEntryImpl readEntryResult;
-  final private Map<String, Object> properties;
-  final private MediaMetadataImpl mediaMetadata;
-  final private EntryMetadataImpl entryMetadata;
+  private Map<String, String> foundPrefix2NamespaceUri;
+  private ODataEntryImpl readEntryResult;
+  private Map<String, Object> properties;
+  private MediaMetadataImpl mediaMetadata;
+  private EntryMetadataImpl entryMetadata;
   private EntityTypeMapping typeMappings;
-
-  private String currentHandledStartTagName = null;
-
-  public XmlEntryConsumer() {
-    properties = new HashMap<String, Object>();
-    mediaMetadata = new MediaMetadataImpl();
-    entryMetadata = new EntryMetadataImpl();
-    readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
-    foundPrefix2NamespaceUri = new HashMap<String, String>();
-  }
+  private String currentHandledStartTagName;
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
     EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
@@ -58,8 +52,7 @@ public class XmlEntryConsumer {
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {
     try {
-      typeMappings = EntityTypeMapping.create(readProperties.getTypeMappings());
-      foundPrefix2NamespaceUri.putAll(readProperties.getValidatedPrefixNamespaceUris());
+      initialize(readProperties);
 
       while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName()))) {
         reader.next();
@@ -84,7 +77,25 @@ public class XmlEntryConsumer {
     }
   }
 
-  public void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
+  /**
+   * Initialize the {@link XmlEntryConsumer} to be ready for read of an entry.
+   * 
+   * @param readProperties
+   * @throws EntityProviderException
+   */
+  private void initialize(EntityProviderReadProperties readProperties) throws EntityProviderException {
+    properties = new HashMap<String, Object>();
+    mediaMetadata = new MediaMetadataImpl();
+    entryMetadata = new EntryMetadataImpl();
+    foundPrefix2NamespaceUri = new HashMap<String, String>();
+
+    readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
+    typeMappings = EntityTypeMapping.create(readProperties.getTypeMappings());
+    foundPrefix2NamespaceUri.putAll(readProperties.getValidatedPrefixNamespaceUris());
+  }
+
+  
+  private void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
     Collection<EntityPropertyInfo> propertyInfos = new ArrayList<EntityPropertyInfo>(eia.getPropertyInfos());
     propertyInfos.removeAll(eia.getKeyPropertyInfos());
     Map<String, Object> data = entry.getProperties();
