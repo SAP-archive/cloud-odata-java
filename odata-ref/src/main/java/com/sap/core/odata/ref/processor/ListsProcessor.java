@@ -292,6 +292,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse createEntity(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    if (!uriInfo.getNavigationSegments().isEmpty())
+      throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
+
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
 
@@ -314,11 +317,12 @@ public class ListsProcessor extends ODataSingleProcessor {
       dataSource.createData(entitySet, data);
 
       linkEntity(entitySet, data, entryValues.getMetadata());
+
+      createInlinedEntities(data, entitySet, entryValues);
     }
 
     return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).eTag(constructETag(entitySet, data)).build();
   }
-
 
   @Override
   public ODataResponse updateEntity(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
@@ -1001,6 +1005,25 @@ public class ListsProcessor extends ODataSingleProcessor {
         final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
         if (key != null)
           dataSource.writeRelation(entitySet, data, targetEntitySet, key);
+      }
+    }
+  }
+
+  private <T> void createInlinedEntities(final T data, final EdmEntitySet entitySet, final ODataEntry entryValues) throws ODataException {
+    final EdmEntityType entityType = entitySet.getEntityType();
+    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
+      @SuppressWarnings("unchecked")
+      final List<ODataEntry> relatedValueList = (List<ODataEntry>) entryValues.getProperties().get(navigationPropertyName);
+      if (relatedValueList != null) {
+        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
+        final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
+        for (final ODataEntry relatedValues : relatedValueList) {
+          Object relatedData = dataSource.newDataObject(relatedEntitySet);
+          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+          dataSource.createData(relatedEntitySet, relatedData);
+          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
+          createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
+        }
       }
     }
   }

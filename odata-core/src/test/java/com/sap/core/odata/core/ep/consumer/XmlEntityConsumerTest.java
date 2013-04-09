@@ -201,27 +201,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
-        .mergeSemantic(false)
-        .callback(new OnReadEntryContent() {
-          @Override
-          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
-            try {
-              String title = context.getTitle();
-              if (title.contains("Employees")) {
-                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
-              } else if (title.contains("Team")) {
-                EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
-              } else {
-                throw new RuntimeException("Invalid title");
-              }
-            } catch (Exception e) {
-              throw new RuntimeException();
-            }
-          }
-        }).build();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init().mergeSemantic(false).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -231,10 +211,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     //
-    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
     assertEquals(3, employees.size());
     //
-    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
@@ -244,10 +224,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
 
-    List<Object> inlinedTeamEmployeeNo2 = (List<Object>) employessNo2Props.get("ne_Team");
+    List<ODataEntry> inlinedTeamEmployeeNo2 = (List<ODataEntry>) employessNo2Props.get("ne_Team");
     assertEquals(1, inlinedTeamEmployeeNo2.size());
     //
-    ODataEntry inlinedTeam = (ODataEntry) inlinedTeamEmployeeNo2.get(0);
+    ODataEntry inlinedTeam = inlinedTeamEmployeeNo2.get(0);
     assertEquals("1", inlinedTeam.getProperties().get("Id"));
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
