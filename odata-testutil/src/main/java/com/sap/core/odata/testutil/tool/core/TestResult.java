@@ -42,7 +42,15 @@ public class TestResult implements Comparable<TestResult> {
   }
 
   public String getResponseHeader(final String name) {
-    return resHeaders.get(normalizeHeaderName(name));
+    return getResponseHeader(name, false);
+  }
+
+  public String getResponseHeader(final String name, boolean normalized) {
+    String value = resHeaders.get(normalizeHeaderName(name));
+    if(normalized) {
+      return normalizeHeaderValue(value);
+    }
+    return value;
   }
 
   public void addRequestHeader(final String name, final String value) {
@@ -71,6 +79,14 @@ public class TestResult implements Comparable<TestResult> {
     }
     return name.toLowerCase(Locale.ENGLISH);
   }
+  
+  private String normalizeHeaderValue(final String value) {
+    if (value == null) {
+      return null;
+    }
+    return value.replaceAll("\\s", "").toLowerCase(Locale.ENGLISH);
+  }
+
 
   /* (non-Javadoc)
    * @see java.lang.Object#hashCode()

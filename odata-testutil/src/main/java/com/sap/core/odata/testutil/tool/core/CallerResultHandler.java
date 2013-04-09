@@ -25,8 +25,50 @@ import org.slf4j.LoggerFactory;
  */
 public class CallerResultHandler {
 
-  private static final String RESPONSE_STATUS_CODE = "RESPONSE_STATUS_CODE";
-  private static final String REQUEST_METHOD = "REQUEST_METHOD";
+  public static final TestResultFilter USE_ALL_FILTER = new TestResultFilter() {
+    @Override
+    public boolean filterResults(Set<TestResult> results) {
+      return true;
+    }
+  };
+  
+  public static final TestResultFilter USE_DIFF_FILTER = new TestResultFilter() {
+    @Override
+    public boolean filterResults(Set<TestResult> results) {
+      if(results.size() > 1) {
+        TestResult last = null;
+        for (TestResult testResult : results) {
+          if(last != null && testResult.compareTo(last) != 0) {
+            String lastStatusCode = last.getSomeValue(RESPONSE_STATUS_CODE);
+            String currentStatusCode = testResult.getSomeValue(RESPONSE_STATUS_CODE);
+            String lastResponseHeader = last.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
+            String currentResponseHeader = testResult.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
+
+            if(isDifferent(lastStatusCode, currentStatusCode)
+                || isDifferent(lastResponseHeader, currentResponseHeader)) {
+              return true;
+            }
+          }
+          last = testResult;
+        }
+      }
+      return false;
+    }
+    
+    private boolean isDifferent(String first, String second) {
+      if(first == null && second == null) {
+        return false;
+      } else if(first == null) {
+        return true;
+      } else if(first.equals(second)) {
+        return false;
+      }
+      return true;
+    }
+  };
+
+  public static final String RESPONSE_STATUS_CODE = "RESPONSE_STATUS_CODE";
+  public static final String REQUEST_METHOD = "REQUEST_METHOD";
 
   private static final Logger LOG = LoggerFactory.getLogger(CallerResultHandler.class);
 
@@ -92,14 +134,21 @@ public class CallerResultHandler {
   }
 
   public String getJiraResult() {
+    return getJiraResult(USE_ALL_FILTER);
+  }
+  
+  public String getJiraResult(TestResultFilter filter) {
     final StringBuilder b = new StringBuilder();
 
     b.append(createJiraHeader());
     final List<TestPath> testPaths = new ArrayList<TestPath>(testPath2TestResult.keySet());
     Collections.sort(testPaths);
     for (final TestPath testPath : testPaths) {
-      final String line = createLineForJiraTable(testPath2TestResult.get(testPath));
-      b.append(line);
+      Set<TestResult> results = testPath2TestResult.get(testPath);
+      if(filter.filterResults(results)) {
+        final String line = createLineForJiraTable(results);
+        b.append(line);
+      }
     }
     //
     return b.toString();
