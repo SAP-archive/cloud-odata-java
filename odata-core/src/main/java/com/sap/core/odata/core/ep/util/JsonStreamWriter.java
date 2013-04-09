@@ -11,30 +11,36 @@ import java.util.regex.Pattern;
 public class JsonStreamWriter {
   private static final Pattern JSON_TO_BE_ESCAPED = Pattern.compile("\"|\\\\|\\p{Cntrl}");
 
-  public static void beginObject(Writer writer) throws IOException {
+  private final Writer writer;
+  
+  public JsonStreamWriter(Writer writer) {
+    this.writer = writer;
+  }
+  
+  public void beginObject() throws IOException {
     writer.append('{');
   }
 
-  public static void endObject(Writer writer) throws IOException {
+  public void endObject() throws IOException {
     writer.append('}');
   }
 
-  public static void beginArray(Writer writer) throws IOException {
+  public void beginArray() throws IOException {
     writer.append('[');
   }
 
-  public static void endArray(Writer writer) throws IOException {
+  public void endArray() throws IOException {
     writer.append(']');
   }
 
-  public static void name(Writer writer, final String name) throws IOException {
+  public void name(final String name) throws IOException {
     writer.append('"');
     writer.append(name);
     writer.append('"');
     writer.append(':');
   }
 
-  public static void stringValueRaw(Writer writer, final String value) throws IOException {
+  public void stringValueRaw(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
     } else {
@@ -44,32 +50,32 @@ public class JsonStreamWriter {
     }
   }
 
-  public static void stringValue(Writer writer, final String value) throws IOException {
+  public void stringValue(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
     } else {
       writer.append('"');
-      escape(writer, value);
+      escape(value);
       writer.append('"');
     }
   }
 
-  public static void namedStringValueRaw(Writer writer, final String name, final String value) throws IOException {
-    name(writer, name);
-    stringValueRaw(writer, value);
+  public void namedStringValueRaw(final String name, final String value) throws IOException {
+    name(name);
+    stringValueRaw(value);
   }
 
-  public static void namedStringValue(Writer writer, final String name, final String value) throws IOException {
-    name(writer, name);
-    stringValue(writer, value);
+  public void namedStringValue(final String name, final String value) throws IOException {
+    name(name);
+    stringValue(value);
   }
 
-  public static void namedValue(Writer writer, final String name, final String value) throws IOException {
-    name(writer, name);
+  public void namedValue(final String name, final String value) throws IOException {
+    name(name);
     writer.append(value == null ? FormatJson.NULL : value);
   }
 
-  public static void separator(Writer writer) throws IOException {
+  public void separator() throws IOException {
     writer.append(',');
   }
 
@@ -79,7 +85,7 @@ public class JsonStreamWriter {
    * @param value the Java String
    * @throws IOException if an I/O error occurs
    */
-  protected static void escape(Writer writer, final String value) throws IOException {
+  protected void escape(final String value) throws IOException {
     // RFC 4627 says: "All Unicode characters may be placed within the
     // quotation marks except for the characters that must be escaped:
     // quotation mark, reverse solidus, and the control characters

@@ -26,28 +26,29 @@ public class JsonFeedEntityProducer {
 
   public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.D);
-      JsonStreamWriter.beginObject(writer);
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.D);
+      jsonStreamWriter.beginObject();
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
-        JsonStreamWriter.namedStringValueRaw(writer, FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
-        JsonStreamWriter.separator(writer);
+        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
+        jsonStreamWriter.separator();
       }
 
-      JsonStreamWriter.name(writer, FormatJson.RESULTS);
-      JsonStreamWriter.beginArray(writer);
+      jsonStreamWriter.name(FormatJson.RESULTS);
+      jsonStreamWriter.beginArray();
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
         if (first)
           first = false;
         else
-          JsonStreamWriter.separator(writer);
+          jsonStreamWriter.separator();
         new JsonEntryEntityProducer(properties).append(writer, entityInfo, entryData, false);
       }
-      JsonStreamWriter.endArray(writer);
-      JsonStreamWriter.endObject(writer);
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endArray();
+      jsonStreamWriter.endObject();
+      jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }

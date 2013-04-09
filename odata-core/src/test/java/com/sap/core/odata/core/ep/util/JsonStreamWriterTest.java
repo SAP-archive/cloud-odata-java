@@ -16,22 +16,24 @@ public class JsonStreamWriterTest extends BaseTest {
   @Test
   public void basic() throws Exception {
     StringWriter writer = new StringWriter();
-    JsonStreamWriter.beginArray(writer);
-    JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.name(writer, "value");
-    JsonStreamWriter.stringValue(writer, "value");
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedValue(writer, "boolean", FormatJson.FALSE);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedValue(writer, "booleanTrue", FormatJson.TRUE);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedValue(writer, "number", "42.42");
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValue(writer, "string", "value");
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValueRaw(writer, "string raw", "1");
-    JsonStreamWriter.endObject(writer);
-    JsonStreamWriter.endArray(writer);
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
+    jsonStreamWriter.beginArray();
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.name("value");
+    jsonStreamWriter.stringValue("value");
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedValue("boolean", FormatJson.FALSE);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedValue("booleanTrue", FormatJson.TRUE);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedValue("number", "42.42");
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValue("string", "value");
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValueRaw("string raw", "1");
+    jsonStreamWriter.endObject();
+    jsonStreamWriter.endArray();
     writer.flush();
     assertEquals("[{\"value\":\"value\",\"boolean\":false,\"booleanTrue\":true,"
         + "\"number\":42.42,\"string\":\"value\",\"string raw\":\"1\"}]",
@@ -41,13 +43,14 @@ public class JsonStreamWriterTest extends BaseTest {
   @Test
   public void nullValues() throws Exception {
     StringWriter writer = new StringWriter();
-    JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.namedValue(writer, "number", null);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValue(writer, "string", null);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValueRaw(writer, "raw", null);
-    JsonStreamWriter.endObject(writer);
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.namedValue("number", null);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValue("string", null);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValueRaw("raw", null);
+    jsonStreamWriter.endObject();
     writer.flush();
     assertEquals("{\"number\":null,\"string\":null,\"raw\":null}", writer.toString());
   }
@@ -56,15 +59,16 @@ public class JsonStreamWriterTest extends BaseTest {
   public void escape() throws Exception {
     final String outsideBMP = String.valueOf(Character.toChars(0x1F603));
     StringWriter writer = new StringWriter();
-    JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.namedStringValue(writer, "normal", "abc / ? \u007F € \uFDFC");
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValue(writer, "outsideBMP", outsideBMP);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValue(writer, "control", "\b\t\n\f\r\u001F " + "€ \uFDFC " + outsideBMP);
-    JsonStreamWriter.separator(writer);
-    JsonStreamWriter.namedStringValue(writer, "escaped", "\"\\");
-    JsonStreamWriter.endObject(writer);
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.namedStringValue("normal", "abc / ? \u007F € \uFDFC");
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValue("outsideBMP", outsideBMP);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValue("control", "\b\t\n\f\r\u001F " + "€ \uFDFC " + outsideBMP);
+    jsonStreamWriter.separator();
+    jsonStreamWriter.namedStringValue("escaped", "\"\\");
+    jsonStreamWriter.endObject();
     writer.flush();
     assertEquals("{\"normal\":\"abc / ? \u007F € \uFDFC\","
         + "\"outsideBMP\":\"\uD83D\uDE03\","

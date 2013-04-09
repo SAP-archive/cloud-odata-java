@@ -24,14 +24,16 @@ public class JsonPropertyEntityProducer {
 
   public void append(Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.D);
-      JsonStreamWriter.beginObject(writer);
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.D);
+      jsonStreamWriter.beginObject();
 
       appendProperty(writer, propertyInfo.isComplex() ? (EntityComplexPropertyInfo) propertyInfo : propertyInfo, value);
 
-      JsonStreamWriter.endObject(writer);
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endObject();
+      jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {
@@ -39,34 +41,37 @@ public class JsonPropertyEntityProducer {
     }
   }
 
-  protected static void appendProperty(Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
+  protected static void appendProperty(final Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
     if (propertyInfo.isComplex()) {
-      JsonStreamWriter.name(writer, propertyInfo.getName());
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.METADATA);
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.namedStringValueRaw(writer, FormatJson.TYPE,
+      jsonStreamWriter.name(propertyInfo.getName());
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.METADATA);
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.namedStringValueRaw(FormatJson.TYPE,
           propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName());
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endObject();
       for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {
-        JsonStreamWriter.separator(writer);
+        jsonStreamWriter.separator();
         appendProperty(writer, childPropertyInfo,
             value instanceof Map ? ((Map<?, ?>) value).get(childPropertyInfo.getName()) : value);
       }
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endObject();
     } else {
       final EdmSimpleType type = (EdmSimpleType) propertyInfo.getType();
       final String valueAsString = type.valueToString(value, EdmLiteralKind.JSON, propertyInfo.getFacets());
-      if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance())
-        JsonStreamWriter.namedStringValue(writer, propertyInfo.getName(), valueAsString);
-      else if (type == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()
+      if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()) {
+        jsonStreamWriter.namedStringValue(propertyInfo.getName(), valueAsString);
+      } else if (type == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance()
           || type == EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance()
-          || type == EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance())
-        JsonStreamWriter.namedValue(writer, propertyInfo.getName(), valueAsString);
-      else
-        JsonStreamWriter.namedStringValueRaw(writer, propertyInfo.getName(), valueAsString);
+          || type == EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance()) {
+        jsonStreamWriter.namedValue(propertyInfo.getName(), valueAsString);
+      } else {
+        jsonStreamWriter.namedStringValueRaw(propertyInfo.getName(), valueAsString);
+      }
     }
   }
 }
