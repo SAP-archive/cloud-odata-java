@@ -11,10 +11,10 @@ import org.junit.Test;
 import com.sap.core.odata.api.commons.HttpContentType;
 
 /**
- * Tests employing the reference scenario reading entity sets in XML format
+ * Tests employing the reference scenario reading entity sets in XML format.
  * @author SAP AG
  */
-public class FeedTest extends AbstractRefXmlTest {
+public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
 
   @Test
   public void feed() throws Exception {

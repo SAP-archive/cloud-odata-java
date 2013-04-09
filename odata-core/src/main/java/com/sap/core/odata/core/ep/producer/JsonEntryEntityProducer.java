@@ -32,7 +32,7 @@ public class JsonEntryEntityProducer {
     this.properties = properties;
   }
 
-  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     try {
       if (isRootElement) {
         JsonStreamWriter.beginObject(writer);
@@ -43,10 +43,8 @@ public class JsonEntryEntityProducer {
 
       JsonStreamWriter.name(writer, FormatJson.METADATA);
       JsonStreamWriter.beginObject(writer);
-      final String self = properties.getSelfLink() == null ?
-          AtomEntryEntityProducer.createSelfLink(entityInfo, data, null) : properties.getSelfLink().toASCIIString();
-      location = properties.getSelfLink() == null ?
-          properties.getServiceRoot().toASCIIString() + self : self;
+      final String self = AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
+      location = properties.getServiceRoot().toASCIIString() + self;
       JsonStreamWriter.namedStringValue(writer, FormatJson.ID, location);
       JsonStreamWriter.separator(writer);
       JsonStreamWriter.namedStringValue(writer, FormatJson.URI, location);
@@ -85,24 +83,26 @@ public class JsonEntryEntityProducer {
           if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
             properties.getCallbacks().get(navigationPropertyName);
             final NavigationPropertyInfo navigationPropertyInfo = entityInfo.getNavigationPropertyInfo(navigationPropertyName);
-            if (navigationPropertyInfo.getMultiplicity() == EdmMultiplicity.MANY) {} else {}
+            if (navigationPropertyInfo.getMultiplicity() == EdmMultiplicity.MANY) {
+              ;
+            } else {
+              ;
+            }
             throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
           }
         } else {
           JsonStreamWriter.beginObject(writer);
           JsonStreamWriter.name(writer, FormatJson.DEFERRED);
-          JsonStreamWriter.beginObject(writer);
-          JsonStreamWriter.namedStringValue(writer, FormatJson.URI, location + "/" + Encoder.encode(navigationPropertyName));
-          JsonStreamWriter.endObject(writer);
+          JsonLinkEntityProducer.appendUri(writer, location + "/" + Encoder.encode(navigationPropertyName));
           JsonStreamWriter.endObject(writer);
         }
       }
 
       JsonStreamWriter.endObject(writer);
 
-      if (isRootElement) {
+      if (isRootElement)
         JsonStreamWriter.endObject(writer);
-      }
+
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {

@@ -22,27 +22,22 @@ public class JsonLinkEntityProducer {
     this.properties = properties;
   }
 
-  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
+    final String uri = properties.getServiceRoot().toASCIIString()
+        + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
     try {
       JsonStreamWriter.beginObject(writer);
       JsonStreamWriter.name(writer, FormatJson.D);
-      appendUri(writer, properties, entityInfo, data);
+      appendUri(writer, uri);
       JsonStreamWriter.endObject(writer);
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  protected static void appendUri(final Writer writer, final EntityProviderProperties properties, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
-    final String uri = properties.getSelfLink() == null ?
-        properties.getServiceRoot().toASCIIString() + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null) :
-        properties.getSelfLink().toASCIIString();
-    try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.namedStringValue(writer, FormatJson.URI, uri);
-      JsonStreamWriter.endObject(writer);
-    } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    }
+  protected static void appendUri(Writer writer, final String uri) throws IOException {
+    JsonStreamWriter.beginObject(writer);
+    JsonStreamWriter.namedStringValue(writer, FormatJson.URI, uri);
+    JsonStreamWriter.endObject(writer);
   }
 }
