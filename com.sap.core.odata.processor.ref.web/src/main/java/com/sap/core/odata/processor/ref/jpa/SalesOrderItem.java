@@ -7,8 +7,8 @@ import javax.persistence.*;
 public class SalesOrderItem {
 
 	public SalesOrderItem() {
-		//No arg constructor
-	}		
+		// No arg constructor
+	}
 
 	public SalesOrderItem(int quantity, double amount, double discount,
 			Material material) {
@@ -21,38 +21,43 @@ public class SalesOrderItem {
 
 	@EmbeddedId
 	private SalesOrderItemKey salesOrderItemKey;
-	
-	@Column(name = "Material_Id")
+
+	@Column(name = "Material_Id", nullable = false)
 	private long matId;
 
 	@Column
 	private int quantity;
-	
+
 	@Column
 	private double amount;
-	
+
 	@Column
 	private double discount;
-		
+
 	@Transient
-	private double netAmount;	
-	
-	@JoinColumn(name = "Material_Id", referencedColumnName = "MATERIAL_ID",insertable = false,updatable = false)
+	private double netAmount;
+
+	@JoinColumn(name = "Material_Id", referencedColumnName = "MATERIAL_ID", insertable = false, updatable = false)
 	@ManyToOne
 	private Material material;
-		
-	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID",insertable = false,updatable = false)
+	/*
+	 * @JoinColumn(insertable = false,updatable = false)
+	 * 
+	 * @ManyToOne private Material material;
+	 */
+
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", insertable = false, updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
-	
+
 	public SalesOrderItemKey getSalesOrderItemKey() {
 		return salesOrderItemKey;
 	}
 
 	public void setSalesOrderItemKey(SalesOrderItemKey salesOrderItemKey) {
 		this.salesOrderItemKey = salesOrderItemKey;
-	}	
-	
+	}
+
 	public long getMatId() {
 		return matId;
 	}
@@ -84,7 +89,7 @@ public class SalesOrderItem {
 	public void setDiscount(double discount) {
 		this.discount = discount;
 	}
-	
+
 	public double getNetAmount() {
 		return netAmount;
 	}
@@ -100,13 +105,13 @@ public class SalesOrderItem {
 	public void setMaterial(Material material) {
 		this.material = material;
 	}
-	
+
 	public SalesOrderHeader getSalesOrderHeader() {
 		return this.salesOrderHeader;
 	}
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		//this.salesOrderHeader.getSalesOrderItem().add(this);
+		// this.salesOrderHeader.getSalesOrderItem().add(this);
 	}
 }
