@@ -35,6 +35,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
+import com.sap.core.odata.core.ep.producer.JsonFeedEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonPropertyEntityProducer;
@@ -198,7 +199,29 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
+      new JsonFeedEntityProducer(properties).append(writer, entityInfo, data);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
   }
 
   @Override
@@ -258,9 +281,8 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     }
 
     ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
-    if (properties.getInlineCountType() != InlineCount.ALLPAGES) {
+    if (properties.getInlineCountType() != InlineCount.ALLPAGES)
       response = response.header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
-    }
     return response.build();
   }
 

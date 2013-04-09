@@ -13,14 +13,14 @@ import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 
 /**
- * Producer for writing a link collection in JSON.
+ * Producer for writing an entity collection (a feed) in JSON.
  * @author SAP AG
  */
-public class JsonLinksEntityProducer {
+public class JsonFeedEntityProducer {
 
   private final EntityProviderProperties properties;
 
-  public JsonLinksEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
+  public JsonFeedEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
@@ -28,29 +28,25 @@ public class JsonLinksEntityProducer {
     try {
       JsonStreamWriter.beginObject(writer);
       JsonStreamWriter.name(writer, FormatJson.D);
+      JsonStreamWriter.beginObject(writer);
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
-        JsonStreamWriter.beginObject(writer);
         JsonStreamWriter.namedStringValueRaw(writer, FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
         JsonStreamWriter.separator(writer);
-        JsonStreamWriter.name(writer, FormatJson.RESULTS);
       }
 
+      JsonStreamWriter.name(writer, FormatJson.RESULTS);
       JsonStreamWriter.beginArray(writer);
-      final String serviceRoot = properties.getServiceRoot().toASCIIString();
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
         if (first)
           first = false;
         else
           JsonStreamWriter.separator(writer);
-        JsonLinkEntityProducer.appendUri(writer, serviceRoot + AtomEntryEntityProducer.createSelfLink(entityInfo, entryData, null));
+        new JsonEntryEntityProducer(properties).append(writer, entityInfo, entryData, false);
       }
       JsonStreamWriter.endArray(writer);
-
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
-        JsonStreamWriter.endObject(writer);
-
+      JsonStreamWriter.endObject(writer);
       JsonStreamWriter.endObject(writer);
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
