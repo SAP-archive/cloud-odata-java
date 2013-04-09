@@ -26,18 +26,21 @@ public class JsonLinkEntityProducer {
     final String uri = properties.getServiceRoot().toASCIIString()
         + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
     try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.D);
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.D);
       appendUri(writer, uri);
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   protected static void appendUri(Writer writer, final String uri) throws IOException {
-    JsonStreamWriter.beginObject(writer);
-    JsonStreamWriter.namedStringValue(writer, FormatJson.URI, uri);
-    JsonStreamWriter.endObject(writer);
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.namedStringValue(FormatJson.URI, uri);
+    jsonStreamWriter.endObject();
   }
 }

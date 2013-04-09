@@ -23,31 +23,35 @@ public class JsonServiceDocumentProducer {
   public static void writeServiceDocument(Writer writer, final Edm edm) throws EntityProviderException {
     final EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
 
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
     try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.D);
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.ENTITY_SETS);
-      JsonStreamWriter.beginArray(writer);
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.D);
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.ENTITY_SETS);
+      jsonStreamWriter.beginArray();
 
       boolean first = true;
-      if (edmProvider.getSchemas() != null)
-        for (final Schema schema : edmProvider.getSchemas())
-          if (schema.getEntityContainers() != null)
-            for (final EntityContainer entityContainer : schema.getEntityContainers())
+      if (edmProvider.getSchemas() != null) {
+        for (final Schema schema : edmProvider.getSchemas()) {
+          if (schema.getEntityContainers() != null) {
+            for (final EntityContainer entityContainer : schema.getEntityContainers()) {
               for (final EntitySet entitySet : entityContainer.getEntitySets()) {
-                if (first)
+                if (first) {
                   first = false;
-                else
-                  JsonStreamWriter.separator(writer);
-                JsonStreamWriter.stringValue(writer,
-                    (entityContainer.isDefaultEntityContainer() ?
+                } else {
+                  jsonStreamWriter.separator();
+                }
+                jsonStreamWriter.stringValue((entityContainer.isDefaultEntityContainer() ?
                         "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
               }
-
-      JsonStreamWriter.endArray(writer);
-      JsonStreamWriter.endObject(writer);
-      JsonStreamWriter.endObject(writer);
+            }
+          }
+        }
+      }
+      jsonStreamWriter.endArray();
+      jsonStreamWriter.endObject();
+      jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final ODataException e) {

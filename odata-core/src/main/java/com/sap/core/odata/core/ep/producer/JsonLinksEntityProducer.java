@@ -26,32 +26,36 @@ public class JsonLinksEntityProducer {
 
   public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
-      JsonStreamWriter.beginObject(writer);
-      JsonStreamWriter.name(writer, FormatJson.D);
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.D);
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
-        JsonStreamWriter.beginObject(writer);
-        JsonStreamWriter.namedStringValueRaw(writer, FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
-        JsonStreamWriter.separator(writer);
-        JsonStreamWriter.name(writer, FormatJson.RESULTS);
+        jsonStreamWriter.beginObject();
+        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
+        jsonStreamWriter.separator();
+        jsonStreamWriter.name(FormatJson.RESULTS);
       }
 
-      JsonStreamWriter.beginArray(writer);
+      jsonStreamWriter.beginArray();
       final String serviceRoot = properties.getServiceRoot().toASCIIString();
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
-          JsonStreamWriter.separator(writer);
+        } else {
+          jsonStreamWriter.separator();
+        }
         JsonLinkEntityProducer.appendUri(writer, serviceRoot + AtomEntryEntityProducer.createSelfLink(entityInfo, entryData, null));
       }
-      JsonStreamWriter.endArray(writer);
+      jsonStreamWriter.endArray();
 
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
-        JsonStreamWriter.endObject(writer);
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
+        jsonStreamWriter.endObject();
+      }
 
-      JsonStreamWriter.endObject(writer);
+      jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
