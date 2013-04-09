@@ -12,8 +12,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -120,7 +122,7 @@ public class XmlEntryConsumer {
     } else if (FormatXml.ATOM_ENTRY.equals(currentHandledStartTagName)) {
       readEntry(reader);
     } else if (FormatXml.ATOM_LINK.equals(currentHandledStartTagName)) {
-      readLink(reader, readProperties);
+      readLink(reader, eia, readProperties);
     } else if (FormatXml.ATOM_CONTENT.equals(currentHandledStartTagName)) {
       readContent(reader, eia);
     } else if (FormatXml.M_PROPERTIES.equals(currentHandledStartTagName)) {
@@ -196,7 +198,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readLink(final XMLStreamReader reader, final EntityProviderReadProperties readProperties) throws EntityProviderException, XMLStreamException {
+  private void readLink(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException, XMLStreamException, EdmException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
     final String rel = reader.getAttributeValue(null, FormatXml.ATOM_REL);
@@ -220,18 +222,24 @@ public class XmlEntryConsumer {
         mediaMetadata.setEtag(etag);
       }
     } else {
-      Map<String, String> attributes = new HashMap<String, String>();
-      attributes.put(FormatXml.ATOM_REL, rel);
-      attributes.put(FormatXml.ATOM_HREF, uri);
-      attributes.put(FormatXml.ATOM_TYPE, type);
-      attributes.put(FormatXml.ATOM_TITLE, title);
-      attributes.put(FormatXml.M_ETAG, etag);
-      readInlineContent(reader, readProperties, attributes);
+      if (rel != null && rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
+        final String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
+        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+        final EdmEntitySet targetEntitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put(FormatXml.ATOM_REL, rel);
+        attributes.put(FormatXml.ATOM_HREF, uri);
+        attributes.put(FormatXml.ATOM_TYPE, type);
+        attributes.put(FormatXml.ATOM_TITLE, title);
+        attributes.put(FormatXml.M_ETAG, etag);
+        attributes.put("navigationPropertyName", navigationPropertyName);
+        readInlineContent(reader, targetEntitySet, readProperties, attributes);
+      }
     }
 
   }
 
-  private void readInlineContent(final XMLStreamReader reader, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
+  private void readInlineContent(final XMLStreamReader reader, final EdmEntitySet entitySet, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
     reader.nextTag();
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
@@ -243,9 +251,13 @@ public class XmlEntryConsumer {
       if (reader.isStartElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
         ReadCallbackResult callbackResult = doCallback(readProperties, linkAttributes);
 
-        if (callbackResult != null) {
-          XmlEntryConsumer xec = new XmlEntryConsumer();
-
+        XmlEntryConsumer xec = new XmlEntryConsumer();
+        if (callbackResult == null) {
+          final EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+          final ODataEntry inlineEntry = xec.readEntry(reader, eia,
+              EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build());
+          inlineEntries.add(inlineEntry);
+        } else {
           EntityInfoAggregator eia = EntityInfoAggregator.create(callbackResult.getEntitySet());
           EntityProviderReadProperties inlineConsumerProperties = callbackResult.getConsumerProperties();
 
@@ -255,7 +267,7 @@ public class XmlEntryConsumer {
       }
     }
 
-    properties.put(linkAttributes.get(FormatXml.ATOM_TITLE), inlineEntries);
+    properties.put(linkAttributes.get("navigationPropertyName"), inlineEntries);
 
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }

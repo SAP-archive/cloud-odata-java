@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpResponse;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -103,6 +104,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
+  @Ignore("Currently not supported in reference scenario implementation - missing linking back to previous entity")
   public void createMediaResourceUriType6b() throws Exception {
     HttpResponse response = postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
@@ -112,6 +114,60 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     response = callUri("Employees('7')/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("X", getBody(response));
+  }
+
+  @Test
+  public void createEntryWithInlineFeed() throws Exception {
+    final String buildingWithRooms = "<atom:entry xml:base=\"" + getEndpoint() + "\""
+    + " xmlns:atom=\"" + Edm.NAMESPACE_ATOM_2005 + "\""
+    + " xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+    + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+    + "<atom:content type=\"application/xml\">"
+    + "  <m:properties><d:Id>1</d:Id><d:Name>Building 1</d:Name></m:properties>"
+    + "</atom:content>"
+    + "<atom:id>Buildings('1')</atom:id>"
+    + "<atom:link href=\"Buildings('1')/nb_Rooms\" rel=\"" + Edm.NAMESPACE_REL_2007_08 + "nb_Rooms\""
+    + " type=\"application/atom+xml;type=feed\" title=\"included Rooms\">"
+    + "  <m:inline>"
+    + "    <atom:feed>"
+    + "      <atom:author><atom:name/></atom:author>"
+    + "      <atom:id>Rooms</atom:id>"
+    + "      <atom:entry>"
+    + "        <atom:content type=\"application/xml\">"
+    + "          <m:properties>"
+    + "            <d:Id>1</d:Id><d:Name>Room 1</d:Name><d:Seats>1</d:Seats><d:Version>1</d:Version>"
+    + "          </m:properties>"
+    + "        </atom:content>"
+    + "        <atom:id>Rooms('1')</atom:id>"
+    + "      </atom:entry>"
+    + "      <atom:entry>"
+    + "        <atom:content type=\"application/xml\">"
+    + "          <m:properties>"
+    + "            <d:Id>2</d:Id><d:Name>Room 2</d:Name><d:Seats>5</d:Seats><d:Version>2</d:Version>"
+    + "          </m:properties>"
+    + "        </atom:content>"
+    + "        <atom:id>Rooms('2')</atom:id>"
+    + "      </atom:entry>"
+    + "    </atom:feed>"
+    + "  </m:inline>"
+    + "</atom:link>"
+    + "<atom:title type=\"text\">Buildings('1')</atom:title>"
+    + "<atom:updated>2012-02-29T11:59:59Z</atom:updated>"
+    + "</atom:entry>";
+
+    HttpResponse response = postUri("Buildings", buildingWithRooms, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    assertEquals(getEndpoint() + "Buildings('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Id", getBody(response));
+    checkUri("Buildings('4')");
+    checkUri("Rooms('104')");
+    checkUri("Buildings('4')/nb_Rooms('104')");
+    checkUri("Rooms('104')/nr_Building");
+    checkUri("Rooms('105')");
+    checkUri("Buildings('4')/nb_Rooms('105')");
+    checkUri("Rooms('105')/nr_Building");
+    response = callUri("Buildings('4')/nb_Rooms('105')/Seats/$value");
+    assertEquals("5", getBody(response));
   }
 
   @Test
