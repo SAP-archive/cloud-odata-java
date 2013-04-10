@@ -32,7 +32,6 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 
 		StringBuilder jpqlQuery = new StringBuilder();
 		StringBuilder joinWhereCondition = null;
-		String tableAlias = context.getJPAEntityAlias();
 
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
 		if(this.context.getType().equals(JPQLContextType.JOIN_COUNT)){//$COUNT
@@ -125,9 +124,7 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 							.append(JPQLStatement.DELIMITER.SPACE);
 				}
 				Entry<String, String> entry = orderItr.next();
-				orderByBuilder.append(tableAlias)
-						.append(JPQLStatement.DELIMITER.PERIOD)
-						.append(entry.getKey())
+				orderByBuilder.append(entry.getKey())
 						.append(JPQLStatement.DELIMITER.SPACE);
 				orderByBuilder.append(entry.getValue());
 				i++;

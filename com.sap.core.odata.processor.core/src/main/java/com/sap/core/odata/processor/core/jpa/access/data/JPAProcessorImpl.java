@@ -143,7 +143,23 @@ public class JPAProcessorImpl implements JPAProcessor {
 	@Override
 	public <T> Object process(GetEntityUriInfo uriParserResultView)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		return readEntity(uriParserResultView);
+		
+		JPQLContextType contextType = null;
+			try {
+	           if(uriParserResultView instanceof GetEntityUriInfo){
+	                   uriParserResultView = ((GetEntityUriInfo)uriParserResultView);
+	                   if (!((GetEntityUriInfo) uriParserResultView).getStartEntitySet().getName()
+	                                 .equals(((GetEntityUriInfo) uriParserResultView).getTargetEntitySet().getName()))
+	                          contextType = JPQLContextType.JOIN_SINGLE;
+	                   else
+	                          contextType = JPQLContextType.SELECT_SINGLE;
+	            }
+	      } catch (EdmException e) {
+	            ODataJPARuntimeException.throwException(
+	                          ODataJPARuntimeException.GENERAL, e);
+	      }
+			
+		return readEntity(uriParserResultView, contextType);
 	}
 
 	@Override
@@ -219,8 +235,25 @@ public class JPAProcessorImpl implements JPAProcessor {
 	public <T> Object process(PutMergePatchUriInfo updateView,
 			InputStream content, String requestContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
+		
+		JPQLContextType contextType = null;
+		try {
+           if(updateView instanceof PutMergePatchUriInfo){
+        	   updateView = ((PutMergePatchUriInfo)updateView);
+                if (!((PutMergePatchUriInfo) updateView).getStartEntitySet().getName()
+                              .equals(((PutMergePatchUriInfo) updateView).getTargetEntitySet().getName()))
+                       contextType = JPQLContextType.JOIN_SINGLE;
+                else
+                       contextType = JPQLContextType.SELECT_SINGLE;
+            }
+      } catch (EdmException e) {
+            ODataJPARuntimeException.throwException(
+                          ODataJPARuntimeException.GENERAL, e);
+      }
+		
+		
 		JPAUpdateRequest jpaUpdateRequest = new JPAUpdateRequest();
-		Object updateObject = readEntity(updateView);
+		Object updateObject = readEntity(updateView, contextType);
 		try {
 			em.getTransaction().begin();
 			jpaUpdateRequest.process(updateObject, updateView, content,
@@ -245,9 +278,24 @@ public class JPAProcessorImpl implements JPAProcessor {
 	@Override
 	public Object process(DeleteUriInfo uriParserResultView, String contentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
+		JPQLContextType contextType = null;
+		try {
+            if(uriParserResultView instanceof DeleteUriInfo){
+                   uriParserResultView = ((DeleteUriInfo)uriParserResultView);
+                          if (!((DeleteUriInfo) uriParserResultView).getStartEntitySet().getName()
+                                        .equals(((DeleteUriInfo) uriParserResultView).getTargetEntitySet().getName()))
+                                 contextType = JPQLContextType.JOIN_SINGLE;
+                          else
+                                 contextType = JPQLContextType.SELECT_SINGLE;
+            }
+      } catch (EdmException e) {
+            ODataJPARuntimeException.throwException(
+                          ODataJPARuntimeException.GENERAL, e);
+      }
 
-		Object selectedObject = readEntity(uriParserResultView);
-
+		// First read the entity with read operation.
+		Object selectedObject = readEntity(uriParserResultView, contextType);
+		// Read operation done. This object would be passed on to entity manager for delete
 		if (selectedObject != null) {
 			try {
 				em.getTransaction().begin();
@@ -273,54 +321,17 @@ public class JPAProcessorImpl implements JPAProcessor {
 	 * This is a common method to be used by read and delete process.
 	 * 
 	 * @param uriParserResultView
+	 * @param contextType
 	 * @return
 	 * @throws ODataJPAModelException
 	 * @throws ODataJPARuntimeException
 	 */
-	private Object readEntity(Object uriParserResultView)
+     private Object readEntity(Object uriParserResultView, JPQLContextType contextType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		JPQLContextType contextType = null;
+            // = null;      
 		Object selectedObject = null;
 
-		if (uriParserResultView instanceof DeleteUriInfo
-				|| uriParserResultView instanceof GetEntityUriInfo
-				|| uriParserResultView instanceof PutMergePatchUriInfo) {
-			try {
-				if (uriParserResultView instanceof DeleteUriInfo) {
-					uriParserResultView = ((DeleteUriInfo) uriParserResultView);
-					if (!((DeleteUriInfo) uriParserResultView)
-							.getStartEntitySet()
-							.getName()
-							.equals(((DeleteUriInfo) uriParserResultView)
-									.getTargetEntitySet().getName()))
-						contextType = JPQLContextType.JOIN_SINGLE;
-					else
-						contextType = JPQLContextType.SELECT_SINGLE;
-				} else if (uriParserResultView instanceof PutMergePatchUriInfo) {
-					uriParserResultView = ((PutMergePatchUriInfo) uriParserResultView);
-					if (!((PutMergePatchUriInfo) uriParserResultView)
-							.getStartEntitySet()
-							.getName()
-							.equals(((PutMergePatchUriInfo) uriParserResultView)
-									.getTargetEntitySet().getName()))
-						contextType = JPQLContextType.JOIN_SINGLE;
-					else
-						contextType = JPQLContextType.SELECT_SINGLE;
-				} else {
-					uriParserResultView = ((GetEntityUriInfo) uriParserResultView);
-					if (!((GetEntityUriInfo) uriParserResultView)
-							.getStartEntitySet()
-							.getName()
-							.equals(((GetEntityUriInfo) uriParserResultView)
-									.getTargetEntitySet().getName()))
-						contextType = JPQLContextType.JOIN_SINGLE;
-					else
-						contextType = JPQLContextType.SELECT_SINGLE;
-				}
-			} catch (EdmException e) {
-				ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL, e);
-			}
+            if(uriParserResultView instanceof DeleteUriInfo || uriParserResultView instanceof GetEntityUriInfo || uriParserResultView instanceof PutMergePatchUriInfo){
 
 			// Build JPQL Context
 			JPQLContext selectJPQLContext = JPQLContext.createBuilder(

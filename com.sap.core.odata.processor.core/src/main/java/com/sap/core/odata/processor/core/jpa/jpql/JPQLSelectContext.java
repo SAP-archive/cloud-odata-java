@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa.jpql;
 
 import java.util.HashMap;
+
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
@@ -118,7 +119,7 @@ public class JPQLSelectContext extends JPQLContext implements
 		 * Generate Order By Clause Fields
 		 */
 		protected HashMap<String, String> generateOrderByFileds()
-				throws ODataJPARuntimeException {
+				throws ODataJPARuntimeException, EdmException {
 
 			if (entitySetView.getOrderBy() != null) {
 
@@ -128,11 +129,12 @@ public class JPQLSelectContext extends JPQLContext implements
 			} else if (entitySetView.getTop() != null
 					|| entitySetView.getSkip() != null) {
 
-				return ODataExpressionParser
-						.parseKeyPredicatesToJPAOrderByExpression(entitySetView
-								.getKeyPredicates(),getJPAEntityAlias());
+					return ODataExpressionParser
+							.parseKeyPropertiesToJPAOrderByExpression(entitySetView.getTargetEntitySet()
+									.getEntityType().getKeyProperties(),getJPAEntityAlias());
 			} else
 				return null;
+			
 		}
 
 		/*

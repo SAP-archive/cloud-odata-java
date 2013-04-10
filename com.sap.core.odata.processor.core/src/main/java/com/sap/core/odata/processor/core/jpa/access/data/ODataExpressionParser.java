@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -256,12 +257,17 @@ public class ODataExpressionParser {
 		return value;
 	}
 
-	public static HashMap<String, String> parseKeyPredicatesToJPAOrderByExpression(List<KeyPredicate> keyPredicates, String tableAlias) throws ODataJPARuntimeException {
+	public static HashMap<String, String> parseKeyPropertiesToJPAOrderByExpression(List<EdmProperty> edmPropertylist, String tableAlias) throws ODataJPARuntimeException {
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		String propertyName = null;		
-		for(KeyPredicate keyPredicate : keyPredicates){
+		for(EdmProperty edmProperty : edmPropertylist){
 			try {
-				propertyName = keyPredicate.getProperty().getMapping().getInternalName();				
+				EdmMapping mapping = edmProperty.getMapping();
+				if(mapping != null && mapping.getInternalName() != null){
+					propertyName = mapping.getInternalName();// For embedded/complex keys
+				}else{
+					propertyName = edmProperty.getName();
+				}
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.GENERAL.addContent(e
