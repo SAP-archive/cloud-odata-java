@@ -12,8 +12,9 @@ import com.sap.core.odata.api.ep.EntityProviderReadProperties;
  */
 public class ReadCallbackResult {
 
-  private EntityProviderReadProperties properties;
-  private EdmEntitySet entitySet;
+  private final EntityProviderReadProperties properties;
+  private final EdmEntitySet entitySet;
+  private final String navigationPropertyName;
 
   /**
    * Result of a read callback.
@@ -22,11 +23,13 @@ public class ReadCallbackResult {
    * 
    * @param properties the {@link EntityProviderReadProperties} for general entity provider read settings.
    * @param entitySet an {@link EdmEntitySet} which contains the Edm information about the inlined navigation property entity.
+   * @param navigationPropertyName the name of the navigation property which points to this entity/entities
    */
-  public ReadCallbackResult(final EntityProviderReadProperties properties, final EdmEntitySet entitySet) {
+  public ReadCallbackResult(final EntityProviderReadProperties properties, final EdmEntitySet entitySet, final String navigationPropertyName) {
     super();
     this.properties = properties;
     this.entitySet = entitySet;
+    this.navigationPropertyName = navigationPropertyName;
   }
 
   public EntityProviderReadProperties getConsumerProperties() {
@@ -37,4 +40,7 @@ public class ReadCallbackResult {
     return entitySet;
   }
 
+  public String getNavigationPropertyName() {
+    return navigationPropertyName;
+  }
 }

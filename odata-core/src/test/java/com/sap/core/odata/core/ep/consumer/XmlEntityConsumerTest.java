@@ -149,10 +149,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           @Override
           public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
             try {
-              String title = context.getTitle();
+              String title = context.getNavigationPropertyName();
               if (title.contains("Employees")) {
                 EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
+                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet, context.getNavigationPropertyName());
               } else {
                 throw new RuntimeException("Invalid title");
               }
@@ -297,13 +297,13 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           @Override
           public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
             try {
-              String title = context.getTitle();
+              String title = context.getNavigationPropertyName();
               if (title.contains("Employees")) {
                 EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
+                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet, context.getNavigationPropertyName());
               } else if (title.contains("Team")) {
                 EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
+                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet, context.getNavigationPropertyName());
               } else {
                 throw new RuntimeException("Invalid title");
               }
@@ -382,7 +382,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream reqContent = createContentAsStream(content);
 
     // execute
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"));
   }
 
   /**
@@ -392,7 +392,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * @throws Exception
    */
   @Test(expected=EntityProviderException.class)
-  public void validateTypeAttributeForInlineContent() throws Exception {
+  public void validateMissingTypeAttributeForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
                       .replace("type=\"application/atom+xml;type=feed\"", "");
@@ -402,7 +402,47 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream reqContent = createContentAsStream(content);
 
     // execute
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"));
+  }
+
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * -> Replaced parameter 'type=feed' with 'type=entry' attribute at expanded/inlined employees link tag
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validateWrongTypeAttributeForInlineContent() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml")
+                      .replace("type=\"application/atom+xml;type=feed\"", "type=\"application/atom+xml;type=entry\"");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_INLINE_CONTENT.addContent("feed"));
+  }
+
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * -> Replaced parameter 'type=feed' with 'type=entry' attribute at expanded/inlined employees link tag
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validateWrongTypeAttributeForInlineContentMany() throws Exception {
+    // prepare
+    String content = readFile("double_expanded_team.xml")
+                      .replace("type=\"application/atom+xml;type=entry\"", "type=\"application/atom+xml;type=feed\"");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_INLINE_CONTENT.addContent("entry"));
   }
 
   
