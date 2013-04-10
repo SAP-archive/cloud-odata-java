@@ -17,17 +17,19 @@ public class JsonStreamWriterTest extends BaseTest {
   public void basic() throws Exception {
     StringWriter writer = new StringWriter();
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-
     jsonStreamWriter.beginArray();
     jsonStreamWriter.beginObject();
     jsonStreamWriter.name("value");
     jsonStreamWriter.stringValue("value");
     jsonStreamWriter.separator();
-    jsonStreamWriter.namedValue("boolean", FormatJson.FALSE);
+    jsonStreamWriter.name("boolean");
+    jsonStreamWriter.unquotedValue(FormatJson.FALSE);
     jsonStreamWriter.separator();
-    jsonStreamWriter.namedValue("booleanTrue", FormatJson.TRUE);
+    jsonStreamWriter.name("booleanTrue");
+    jsonStreamWriter.unquotedValue(FormatJson.TRUE);
     jsonStreamWriter.separator();
-    jsonStreamWriter.namedValue("number", "42.42");
+    jsonStreamWriter.name("number");
+    jsonStreamWriter.unquotedValue("42.42");
     jsonStreamWriter.separator();
     jsonStreamWriter.namedStringValue("string", "value");
     jsonStreamWriter.separator();
@@ -45,7 +47,8 @@ public class JsonStreamWriterTest extends BaseTest {
     StringWriter writer = new StringWriter();
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
     jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedValue("number", null);
+    jsonStreamWriter.name("number");
+    jsonStreamWriter.unquotedValue(null);
     jsonStreamWriter.separator();
     jsonStreamWriter.namedStringValue("string", null);
     jsonStreamWriter.separator();

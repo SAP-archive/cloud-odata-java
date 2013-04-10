@@ -1,13 +1,12 @@
 package com.sap.core.odata.ref.model;
 
+/**
+ * @author SAP AG
+ */
 public class City {
 
   private String postalCode;
   private String cityName;
-
-  public City() {
-    this(null, null);
-  }
 
   public City(final String postalCode, final String name) {
     this.postalCode = postalCode;
@@ -32,7 +31,7 @@ public class City {
 
   @Override
   public String toString() {
-    return String.format("%s, %s ", cityName, postalCode);
+    return String.format("%s, %s", cityName, postalCode);
   }
 
 }

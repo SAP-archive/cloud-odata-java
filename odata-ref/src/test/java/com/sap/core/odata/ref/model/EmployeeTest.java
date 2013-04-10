@@ -83,7 +83,7 @@ public class EmployeeTest extends BaseTest {
 
   @Test
   public void testLocation() {
-    Location location = new Location();
+    Location location = new Location(null, null, null);
     Employee emp1 = new Employee(1, null);
     emp1.setLocation(location);
     assertEquals(location, emp1.getLocation());

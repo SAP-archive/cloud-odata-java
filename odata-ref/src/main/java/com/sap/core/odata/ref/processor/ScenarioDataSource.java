@@ -3,8 +3,8 @@ package com.sap.core.odata.ref.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -270,7 +270,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   private Map<Location, Integer> getLocations() throws ODataNotFoundException {
-    Map<Location, Integer> locations = new HashMap<Location, Integer>();
+    Map<Location, Integer> locations = new LinkedHashMap<Location, Integer>();
     for (Employee employee : dataContainer.getEmployees()) {
       if (employee.getLocation() != null && employee.getLocation().getCity() != null) {
         boolean found = false;
@@ -282,16 +282,14 @@ public class ScenarioDataSource implements ListsDataSource {
             locations.put(location, locations.get(location) + 1);
           }
         }
-        if (!found) {
+        if (!found)
           locations.put(employee.getLocation(), 1);
-        }
       }
     }
-    if (locations.isEmpty()) {
+    if (locations.isEmpty())
       throw new ODataNotFoundException(null);
-    } else {
+    else
       return locations;
-    }
   }
 
   private Location getMostCommonLocation() throws ODataNotFoundException {
@@ -308,11 +306,9 @@ public class ScenarioDataSource implements ListsDataSource {
 
   private Employee getOldestEmployee() {
     Employee oldestEmployee = null;
-    for (final Employee employee : dataContainer.getEmployees()) {
-      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge()) {
+    for (final Employee employee : dataContainer.getEmployees())
+      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge())
         oldestEmployee = employee;
-      }
-    }
     return oldestEmployee;
   }
 

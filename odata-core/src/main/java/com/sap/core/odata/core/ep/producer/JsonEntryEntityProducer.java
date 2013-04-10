@@ -75,7 +75,8 @@ public class JsonEntryEntityProducer {
 
       for (final String propertyName : entityInfo.getSelectedPropertyNames()) {
         jsonStreamWriter.separator();
-        JsonPropertyEntityProducer.appendProperty(jsonStreamWriter, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
+        jsonStreamWriter.name(propertyName);
+        JsonPropertyEntityProducer.appendPropertyValue(jsonStreamWriter, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
       }
 
       for (final String navigationPropertyName : entityInfo.getSelectedNavigationPropertyNames()) {

@@ -40,6 +40,10 @@ public class JsonStreamWriter {
     writer.append(':');
   }
 
+  public void unquotedValue(final String value) throws IOException {
+    writer.append(value == null ? FormatJson.NULL : value);
+  }
+
   public void stringValueRaw(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
@@ -68,11 +72,6 @@ public class JsonStreamWriter {
   public void namedStringValue(final String name, final String value) throws IOException {
     name(name);
     stringValue(value);
-  }
-
-  public void namedValue(final String name, final String value) throws IOException {
-    name(name);
-    writer.append(value == null ? FormatJson.NULL : value);
   }
 
   public void separator() throws IOException {

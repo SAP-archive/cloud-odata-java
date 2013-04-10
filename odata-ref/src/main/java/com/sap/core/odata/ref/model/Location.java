@@ -1,12 +1,11 @@
 package com.sap.core.odata.ref.model;
 
+/**
+ * @author SAP AG
+ */
 public class Location {
   private String country;
   private City city;
-
-  public Location() {
-    this(null, null, null);
-  }
 
   public Location(final String country, final String postalCode, final String cityName) {
     this.country = country;
