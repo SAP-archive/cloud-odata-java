@@ -20,9 +20,9 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
-public class FunctionImportTest extends AbstractProviderTest {
+public class XmlFunctionImportTest extends AbstractProviderTest {
 
-  public FunctionImportTest(final StreamWriterImplType type) {
+  public XmlFunctionImportTest(final StreamWriterImplType type) {
     super(type);
   }
 

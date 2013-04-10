@@ -16,9 +16,11 @@ import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -1127,6 +1129,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   public void testReadEntryMissingProperty() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
+    EdmFacets facets = Mockito.mock(EdmFacets.class);
+    Mockito.when(facets.isNullable()).thenReturn(false);
+    Mockito.when(property.getFacets()).thenReturn(facets);
     String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
     InputStream contentBody = createContentAsStream(content);
 

@@ -22,7 +22,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
@@ -33,6 +32,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.producer.JsonCollectionEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
 import com.sap.core.odata.core.ep.producer.JsonFeedEntityProducer;
@@ -270,14 +270,13 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null) {
+      if (outStream != null)
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
-      }
     }
 
     ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
@@ -287,23 +286,41 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      new JsonCollectionEntityProducer().append(writer, propertyInfo, data);
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (final IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
   }
 
   @Override
   public ODataResponse writeFunctionImport(final EdmFunctionImport functionImport, final Object data, final EntityProviderProperties properties) throws EntityProviderException {
     try {
-      final EdmType type = functionImport.getReturnType().getType();
-      final boolean isCollection = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY;
-
-      if (type.getKind() == EdmTypeKind.ENTITY) {
+      if (functionImport.getReturnType().getType().getKind() == EdmTypeKind.ENTITY) {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) data;
         return writeEntry(functionImport.getEntitySet(), map, properties);
       }
 
       final EntityPropertyInfo info = EntityInfoAggregator.create(functionImport);
-      if (isCollection) {
+      if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
         return writeCollection(info, (List<?>) data);
       } else {
         return writeSingleTypedElement(info, data);

@@ -17,19 +17,29 @@ public class FunctionImportJsonTest extends AbstractRefTest {
 
   @Test
   public void functionImports() throws Exception {
-    // HttpResponse response = callUri("EmployeeSearch?q='nat'&$format=json");
-    // checkMediaType(response, HttpContentType.APPLICATION_JSON);
-    // final String body = getBody(response);
-    // assertTrue(body.startsWith("{\"d\":{\"EmployeeSearch\":"));
-    // assertTrue(body.contains(EMPLOYEE_3_NAME));
+    HttpResponse response = callUri("EmployeeSearch?q='nat'&$format=json");
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    final String body = getBody(response);
+    assertEquals(getBody(callUri("Employees?$filter=substringof(EmployeeName,'nat')&$format=json")), body);
 
-    // response = callUri("AllLocations?$format=json");
-    // checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    response = callUri("AllLocations?$format=json");
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    assertEquals("{\"d\":{\"__metadata\":{\"type\":\"Collection(RefScenario.c_Location)\"},"
+        + "\"results\":[{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},"
+        + "\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},"
+        + "\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"},\"Country\":\"Germany\"},"
+        + "{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},"
+        + "\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},"
+        + "\"PostalCode\":\"69190\",\"CityName\":\"Walldorf\"},\"Country\":\"Germany\"}]}}",
+        getBody(response));
 
-    // response = callUri("AllUsedRoomIds?$format=json");
-    // checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    response = callUri("AllUsedRoomIds?$format=json");
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    assertEquals("{\"d\":{\"__metadata\":{\"type\":\"Collection(Edm.String)\"},"
+        + "\"results\":[\"1\",\"2\",\"3\"]}}",
+        getBody(response));
 
-    HttpResponse response = callUri("MaximalAge?$format=json");
+    response = callUri("MaximalAge?$format=json");
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
     assertEquals("{\"d\":{\"MaximalAge\":56}}", getBody(response));
 

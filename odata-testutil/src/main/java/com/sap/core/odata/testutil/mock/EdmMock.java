@@ -67,18 +67,17 @@ class EdmMock {
     createProperty("ManagerId", EdmSimpleTypeKind.String, employeeType);
     createProperty("RoomId", EdmSimpleTypeKind.String, employeeType);
     createProperty("TeamId", EdmSimpleTypeKind.String, employeeType);
-
-    EdmProperty employeeAgeProperty = createProperty("Age", EdmSimpleTypeKind.Int32, employeeType);
-    EdmFacets employeeAgeFacets = Mockito.mock(EdmFacets.class);
-    when(employeeAgeFacets.getMaxLength()).thenReturn(null);
-    when(employeeAgeFacets.isNullable()).thenReturn(Boolean.FALSE);
-    when(employeeAgeProperty.getFacets()).thenReturn(employeeAgeFacets);
+    createProperty("Age", EdmSimpleTypeKind.Int32, employeeType);
 
     EdmProperty employeeEntryDateProperty = createProperty("EntryDate", EdmSimpleTypeKind.DateTime, employeeType);
     EdmCustomizableFeedMappings employeeUpdatedMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeUpdatedMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
     when(employeeUpdatedMappings.isFcKeepInContent()).thenReturn(true);
     when(employeeEntryDateProperty.getCustomizableFeedMappings()).thenReturn(employeeUpdatedMappings);
+    EdmFacets employeeEntryDateFacets = mock(EdmFacets.class);
+    when(employeeEntryDateFacets.getMaxLength()).thenReturn(null);
+    when(employeeEntryDateFacets.isNullable()).thenReturn(Boolean.TRUE);
+    when(employeeEntryDateProperty.getFacets()).thenReturn(employeeEntryDateFacets);
 
     createProperty("ImageUrl", EdmSimpleTypeKind.String, employeeType);
 
@@ -288,6 +287,10 @@ class EdmMock {
     when(entityType.getNamespace()).thenReturn("RefScenario");
 
     final EdmProperty keyProperty = createProperty(keyPropertyId, kind, entityType);
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.getMaxLength()).thenReturn(null);
+    when(facets.isNullable()).thenReturn(false);
+    when(keyProperty.getFacets()).thenReturn(facets);
 
     when(entityType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(entityType.getPropertyNames()).thenReturn(Arrays.asList(keyPropertyId));
