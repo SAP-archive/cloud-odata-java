@@ -133,7 +133,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void readWithInlineContent() throws Exception {
+  public void readWithInlineContentAndCallback() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml");
     assertNotNull(content);
@@ -161,6 +161,48 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
             }
           }
         }).build();
+
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    //
+    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    assertEquals(3, employees.size());
+    //
+    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    Map<String, Object> employessNo2Props = employeeNo2.getProperties();
+    assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
+    assertEquals("2", employessNo2Props.get("RoomId"));
+    assertEquals(32, employessNo2Props.get("Age"));
+    Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
+    assertEquals("69190", emp2City.get("PostalCode"));
+    assertEquals("Walldorf", emp2City.get("CityName"));
+  }
+
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * 
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void readWithInlineContent() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -232,6 +274,74 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
 
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
+   * 
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void readWithDoubleInlineContentAndCallback() throws Exception {
+    // prepare
+    String content = readFile("double_expanded_team.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false)
+        .callback(new OnReadEntryContent() {
+          @Override
+          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
+            try {
+              String title = context.getTitle();
+              if (title.contains("Employees")) {
+                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
+              } else if (title.contains("Team")) {
+                EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
+              } else {
+                throw new RuntimeException("Invalid title");
+              }
+            } catch (Exception e) {
+              throw new RuntimeException();
+            }
+          }
+        }).build();
+
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    //
+    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
+    assertEquals(3, employees.size());
+    //
+    ODataEntry employeeNo2 = employees.get(1);
+    Map<String, Object> employessNo2Props = employeeNo2.getProperties();
+    assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
+    assertEquals("2", employessNo2Props.get("RoomId"));
+    assertEquals(32, employessNo2Props.get("Age"));
+    Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
+    assertEquals("69190", emp2City.get("PostalCode"));
+    assertEquals("Walldorf", emp2City.get("CityName"));
+
+    List<ODataEntry> inlinedTeamEmployeeNo2 = (List<ODataEntry>) employessNo2Props.get("ne_Team");
+    assertEquals(1, inlinedTeamEmployeeNo2.size());
+    //
+    ODataEntry inlinedTeam = inlinedTeamEmployeeNo2.get(0);
+    assertEquals("1", inlinedTeam.getProperties().get("Id"));
+    assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
+  }
+
   @Test
   public void readWithInlineContentIgnored() throws Exception {
     // prepare
@@ -253,6 +363,49 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
   }
 
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * -> Remove 'feed' start and end tags around expanded/inlined employees
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validateFeedForInlineContent() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml")
+//                      .replace("<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">", "")
+                      .replace("<feed xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">", "")
+                      .replace("</feed>", "");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+  }
+
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * -> Remove 'type' attribute at expanded/inlined employees link tag
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validateTypeAttributeForInlineContent() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml")
+                      .replace("type=\"application/atom+xml;type=feed\"", "");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+  }
+
+  
   /**
    * We only support <code>UTF-8</code> as character encoding.
    * 
