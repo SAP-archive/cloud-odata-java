@@ -22,7 +22,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
 import com.sap.core.odata.api.ep.callback.ReadCallbackResult;
-import com.sap.core.odata.api.ep.callback.ReadEntryCallbackContext;
+import com.sap.core.odata.api.ep.callback.ReadEntryResultContext;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -239,9 +239,14 @@ public class XmlEntryConsumer {
       throws XMLStreamException, EntityProviderException, EdmException {
 
     //
-    ReadCallbackResult callbackResult = doCallback(readProperties, eia, linkAttributes);
-    EntityInfoAggregator inlineEia = EntityInfoAggregator.create(callbackResult.getEntitySet());
-    EntityProviderReadProperties inlineConsumerProperties = callbackResult.getConsumerProperties();
+    String rel = linkAttributes.get(FormatXml.ATOM_REL);
+    String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
+
+    EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+    EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
+    EntityInfoAggregator inlineEia = EntityInfoAggregator.create(entitySet);
+    EntityProviderReadProperties inlineProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
+    
     // validations
     boolean isFeed = isInlineFeedValidated(reader, eia, linkAttributes);
 
@@ -251,7 +256,7 @@ public class XmlEntryConsumer {
 
       if (reader.isStartElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
         XmlEntryConsumer xec = new XmlEntryConsumer();
-        ODataEntry inlineEntry = xec.readEntry(reader, inlineEia, inlineConsumerProperties);
+        ODataEntry inlineEntry = xec.readEntry(reader, inlineEia, inlineProperties);
         inlineEntries.add(inlineEntry);
       }
       // next
@@ -264,7 +269,16 @@ public class XmlEntryConsumer {
     } else if (!inlineEntries.isEmpty()) {
       entry = inlineEntries.get(0);
     }
-    properties.put(callbackResult.getNavigationPropertyName(), entry);
+    OnReadEntryContent callback = readProperties.getCallback();
+    if(callback == null) {
+      properties.put(navigationPropertyName, entry);
+    } else {
+      ReadEntryResultContext callbackInfo = new ReadEntryResultContext(readProperties, navigationPropertyName, entry, isFeed);
+      ReadCallbackResult callbackResult = callback.handleReadResult(callbackInfo);
+      if(callbackResult != null) {
+        properties.put(callbackResult.getNavigationPropertyName(), callbackResult.getEntry());
+      }
+    }
 
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }
@@ -344,29 +358,6 @@ public class XmlEntryConsumer {
       }
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("feed"));
-    }
-  }
-
-  private ReadCallbackResult doCallback(final EntityProviderReadProperties properties, final EntityInfoAggregator eia,
-      final Map<String, String> linkAttributes) throws EntityProviderException, EdmException {
-
-    OnReadEntryContent callback = properties.getCallback();
-    String rel = linkAttributes.get(FormatXml.ATOM_REL);
-    String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
-
-    if (callback == null) {
-      EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
-      EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
-      EntityProviderReadProperties inlineProperties = EntityProviderReadProperties.initFrom(properties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
-      return new ReadCallbackResult(inlineProperties, entitySet, navigationPropertyName);
-    } else {
-      EntityProviderReadProperties callbackProperties = EntityProviderReadProperties.initFrom(properties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
-
-      String linkType = linkAttributes.get(FormatXml.ATOM_LINK);
-      ReadEntryCallbackContext callbackContext = new ReadEntryCallbackContext(callbackProperties, linkType, navigationPropertyName);
-      callbackContext.addInfos(linkAttributes);
-
-      return callback.retrieveReadResult(callbackContext);
     }
   }
 

@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -27,12 +28,11 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
 import com.sap.core.odata.api.ep.callback.ReadCallbackResult;
-import com.sap.core.odata.api.ep.callback.ReadEntryCallbackContext;
+import com.sap.core.odata.api.ep.callback.ReadEntryResultContext;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -202,6 +202,61 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "  </m:properties>" +
       "</entry>";
 
+  
+  private static class EmployeeCallback implements OnReadEntryContent {
+    List<ODataEntry> employees;
+    @SuppressWarnings("unchecked")
+    @Override
+    public ReadCallbackResult handleReadResult(final ReadEntryResultContext context) {
+      String navigationPropertyName = context.getNavigationPropertyName();
+      if (navigationPropertyName.contains("Employees")) {
+        employees = (List<ODataEntry>) context.getEntry();
+        return null;
+      } else {
+        throw new RuntimeException("Invalid title");
+      }
+    }
+  }
+
+  private static class DefaultCallback implements OnReadEntryContent {
+    private final Map<String, ReadEntryResultContext> propName2Context = new HashMap<String, ReadEntryResultContext>();
+    private final boolean sendResult;
+
+    public DefaultCallback() { this(false); }
+    
+    public DefaultCallback(boolean sendResult) {
+      this.sendResult = sendResult;
+    }
+    
+    @Override
+    public ReadCallbackResult handleReadResult(final ReadEntryResultContext context) {
+      String navigationPropertyName = context.getNavigationPropertyName();
+      if(navigationPropertyName != null) {
+        propName2Context.put(navigationPropertyName, context);
+        if(sendResult) {
+          return new ReadCallbackResult(navigationPropertyName, context.getEntry());
+        }
+        return null;
+      } else {
+        throw new RuntimeException("Invalid title");
+      }
+    }
+    
+    public Object getObject(String name) {
+      ReadEntryResultContext context = propName2Context.get(name);
+      if(context == null) {
+        return null;
+      } else if(context.isFeed()) {
+        return context.getODataFeed();
+      } else {
+        return context.getODataEntry();
+      }
+    }
+    
+    public ODataEntry asEntry(String name) { return (ODataEntry) getObject(name); }
+    public List<ODataEntry> asFeed(String name) { return (List<ODataEntry>) getObject(name); }
+  }
+
   /**
    * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
    * 
@@ -217,26 +272,13 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
 
+
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
+    EmployeeCallback defaultCallback = new EmployeeCallback();
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
-        .callback(new OnReadEntryContent() {
-          @Override
-          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
-            try {
-              String title = context.getNavigationPropertyName();
-              if (title.contains("Employees")) {
-                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet, context.getNavigationPropertyName());
-              } else {
-                throw new RuntimeException("Invalid title");
-              }
-            } catch (ODataException e) {
-              throw new RuntimeException(e);
-            }
-          }
-        }).build();
+        .callback(defaultCallback).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -245,8 +287,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("1", properties.get("Id"));
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    assertNull(properties.get("nt_Employees"));
     //
-    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    final List<ODataEntry> employees = defaultCallback.employees;
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
@@ -354,7 +397,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void readWithDoubleInlineContentAndCallback() throws Exception {
+  public void readWithDoubleInlineContentAndResendCallback() throws Exception {
     // prepare
     String content = readFile("double_expanded_team.xml");
     assertNotNull(content);
@@ -364,27 +407,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
+    DefaultCallback callbackHandler = new DefaultCallback(true);
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
-        .callback(new OnReadEntryContent() {
-          @Override
-          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
-            try {
-              String title = context.getNavigationPropertyName();
-              if (title.contains("Employees")) {
-                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet, context.getNavigationPropertyName());
-              } else if (title.contains("Team")) {
-                EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet, context.getNavigationPropertyName());
-              } else {
-                throw new RuntimeException("Invalid title");
-              }
-            } catch (Exception e) {
-              throw new RuntimeException();
-            }
-          }
-        }).build();
+        .callback(callbackHandler).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -408,6 +434,61 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Walldorf", emp2City.get("CityName"));
 
     ODataEntry inlinedTeam = (ODataEntry) employessNo2Props.get("ne_Team");
+    assertEquals("1", inlinedTeam.getProperties().get("Id"));
+    assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
+  }
+
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
+   * 
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void readWithDoubleInlineContentAndCallback() throws Exception {
+    // prepare
+    String content = readFile("double_expanded_team.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    DefaultCallback callbackHandler = new DefaultCallback();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false)
+        .callback(callbackHandler).build();
+
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    // teams has no inlined content set
+    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
+    assertNull(employees);
+    
+    // get inlined employees feed from callback
+    employees = callbackHandler.asFeed("nt_Employees");
+    assertEquals(3, employees.size());
+    ODataEntry employeeNo2 = employees.get(1);
+    Map<String, Object> employessNo2Props = employeeNo2.getProperties();
+    assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
+    assertEquals("2", employessNo2Props.get("RoomId"));
+    assertEquals(32, employessNo2Props.get("Age"));
+    Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
+    assertEquals("69190", emp2City.get("PostalCode"));
+    assertEquals("Walldorf", emp2City.get("CityName"));
+
+    // employees has no inlined content set
+    ODataEntry inlinedTeam = (ODataEntry) employessNo2Props.get("ne_Team");
+    assertNull(inlinedTeam);
+    // get inlined team from callback
+    inlinedTeam = callbackHandler.asEntry("ne_Team");
     assertEquals("1", inlinedTeam.getProperties().get("Id"));
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
