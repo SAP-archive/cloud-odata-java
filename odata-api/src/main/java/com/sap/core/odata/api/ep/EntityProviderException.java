@@ -19,6 +19,8 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INLINECOUNT_INVALID = createMessageReference(EntityProviderException.class, "INLINECOUNT_INVALID");
   /** INVALID_STATE requires 1 content value ('message') */
   public static final MessageReference INVALID_STATE = createMessageReference(EntityProviderException.class, "INVALID_STATE");
+  /** INVALID_INLINE_CONTENT requires 1 content value ('invalid inline message') */
+  public static final MessageReference INVALID_INLINE_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_INLINE_CONTENT");
   public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
   /** ILLEGAL_ARGUMENT requires 1 content value ('message') */
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");

@@ -18,13 +18,13 @@ public class ReadEntryCallbackContext {
 
   private final Map<String, Object> infos = new HashMap<String, Object>();
   private EntityProviderReadProperties readProperties;
-  private final String title;
+  private final String navigationPropertyName;
   private final String type;
 
-  public ReadEntryCallbackContext(final EntityProviderReadProperties properties, final String type, final String title) {
+  public ReadEntryCallbackContext(final EntityProviderReadProperties properties, final String type, final String navigationPropertyName) {
     readProperties = properties;
     this.type = type;
-    this.title = title;
+    this.navigationPropertyName = navigationPropertyName;
   }
 
   public EntityProviderReadProperties getReadProperties() {
@@ -45,8 +45,8 @@ public class ReadEntryCallbackContext {
     return infos.get(key);
   }
 
-  public String getTitle() {
-    return title;
+  public String getNavigationPropertyName() {
+    return navigationPropertyName;
   }
 
   public String getType() {
