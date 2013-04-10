@@ -19,6 +19,11 @@ public abstract class ODataServiceFactory {
   public static final String FACTORY_LABEL = "com.sap.core.odata.service.factory";
 
   /**
+   * Label used in core to access application class loader 
+   */
+  public static final String FACTORY_CLASSLOADER_LABEL = "com.sap.core.odata.service.factory.classloader";
+
+  /**
    * Label used in web.xml to assign servlet init parameter for a path split (service resolution).
    */
   public static final String PATH_SPLIT_LABEL = "com.sap.core.odata.path.split";

@@ -85,7 +85,7 @@ public class ODataRootLocator {
       throw new ODataRuntimeException("servlet config missing: com.sap.core.odata.processor.factory");
     }
 
-    ClassLoader cl = (ClassLoader) servletRequest.getAttribute(ODataServiceFactory.FACTORY_LABEL);
+    ClassLoader cl = (ClassLoader) servletRequest.getAttribute(ODataServiceFactory.FACTORY_CLASSLOADER_LABEL);
     Class<?> factoryClass;
     if (cl == null) {
       factoryClass = Class.forName(factoryClassName);
