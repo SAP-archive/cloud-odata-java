@@ -53,10 +53,10 @@
 				<configuration>
 					<instructions>
 						<Import-Package>
-							javax.ws.rs;version="[1.1,2)",
-							javax.ws.rs.*;version="[1.1,2)",
-							org.slf4j;version="[1.0,2)",
-							org.slf4j.*;version="[1.0,2)",
+							javax.ws.rs,
+							javax.ws.rs.*,
+							org.slf4j,
+							org.slf4j.*,
 							*
 						</Import-Package>
 						<Export-Package>
