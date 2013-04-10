@@ -76,4 +76,31 @@ public class JsonFeedEntityProducerTest extends BaseTest {
     assertNotNull(json);
     assertEquals("{\"d\":{\"__count\":\"42\",\"results\":[]}}", json);
   }
+
+  @Test
+  public void nextLink() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    Map<String, Object> roomData = new HashMap<String, Object>();
+    roomData.put("Id", "1");
+    roomData.put("Seats", 123);
+    roomData.put("Version", 1);
+    List<Map<String, Object>> roomsData = new ArrayList<Map<String, Object>>();
+    roomsData.add(roomData);
+
+    final ODataResponse response = new JsonEntityProvider().writeFeed(entitySet, roomsData,
+        EntityProviderProperties.serviceRoot(URI.create(BASE_URI)).nextLink("Rooms?$skiptoken=2").build());
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
+
+    final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(json);
+    assertEquals("{\"d\":{\"results\":[{\"__metadata\":{\"id\":\"" + BASE_URI + "Rooms('1')\","
+        + "\"uri\":\"" + BASE_URI + "Rooms('1')\",\"type\":\"RefScenario.Room\",\"etag\":\"W/\\\"1\\\"\"},"
+        + "\"Id\":\"1\",\"Name\":null,\"Seats\":123,\"Version\":1,"
+        + "\"nr_Employees\":{\"__deferred\":{\"uri\":\"" + BASE_URI + "Rooms('1')/nr_Employees\"}},"
+        + "\"nr_Building\":{\"__deferred\":{\"uri\":\"" + BASE_URI + "Rooms('1')/nr_Building\"}}}],"
+        + "\"__next\":\"Rooms?$skiptoken=2\"}}",
+        json);
+  }
 }
