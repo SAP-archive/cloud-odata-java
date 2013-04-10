@@ -25,8 +25,9 @@ public class JsonFeedEntityProducer {
   }
 
   public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+
     try {
-      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
       jsonStreamWriter.beginObject();
       jsonStreamWriter.name(FormatJson.D);
       jsonStreamWriter.beginObject();
@@ -38,15 +39,26 @@ public class JsonFeedEntityProducer {
 
       jsonStreamWriter.name(FormatJson.RESULTS);
       jsonStreamWriter.beginArray();
+      JsonEntryEntityProducer entryProducer = new JsonEntryEntityProducer(properties);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
         if (first)
           first = false;
         else
           jsonStreamWriter.separator();
-        new JsonEntryEntityProducer(properties).append(writer, entityInfo, entryData, false);
+        entryProducer.append(writer, entityInfo, entryData, false);
       }
       jsonStreamWriter.endArray();
+
+      // Write "next" link.
+      // To be compatible with other implementations out there, the link is
+      // written directly after "__next" and not as "{"uri":"next link"}",
+      // deviating from the OData 2.0 specification.
+      if (properties.getNextLink() != null) {
+        jsonStreamWriter.separator();
+        jsonStreamWriter.namedStringValue(FormatJson.NEXT, properties.getNextLink());
+      }
+
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();
     } catch (final IOException e) {

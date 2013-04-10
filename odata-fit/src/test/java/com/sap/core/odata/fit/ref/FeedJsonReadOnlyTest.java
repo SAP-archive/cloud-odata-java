@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -31,5 +32,14 @@ public class FeedJsonReadOnlyTest extends AbstractRefTest {
         + "\"nb_Rooms\":{\"__deferred\":{\"uri\":\"" + getEndpoint() + "Buildings('2')/nb_Rooms\"}}}"
         + "]}}",
         getBody(response));
+  }
+
+  @Test
+  public void feedwithCountAndNext() throws Exception {
+    final HttpResponse response = callUri("Rooms()?$inlinecount=allpages&$format=json");
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    final String json = getBody(response);
+    assertTrue(json.startsWith("{\"d\":{\"__count\":\"103\",\"results\":["));
+    assertTrue(json.endsWith("],\"__next\":\"Rooms?$skiptoken=97&$inlinecount=allpages\"}}"));
   }
 }

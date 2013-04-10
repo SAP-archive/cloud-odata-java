@@ -32,23 +32,18 @@ public class JsonServiceDocumentProducer {
       jsonStreamWriter.beginArray();
 
       boolean first = true;
-      if (edmProvider.getSchemas() != null) {
-        for (final Schema schema : edmProvider.getSchemas()) {
-          if (schema.getEntityContainers() != null) {
-            for (final EntityContainer entityContainer : schema.getEntityContainers()) {
+      if (edmProvider.getSchemas() != null)
+        for (final Schema schema : edmProvider.getSchemas())
+          if (schema.getEntityContainers() != null)
+            for (final EntityContainer entityContainer : schema.getEntityContainers())
               for (final EntitySet entitySet : entityContainer.getEntitySets()) {
-                if (first) {
+                if (first)
                   first = false;
-                } else {
+                else
                   jsonStreamWriter.separator();
-                }
                 jsonStreamWriter.stringValue((entityContainer.isDefaultEntityContainer() ?
                         "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
               }
-            }
-          }
-        }
-      }
       jsonStreamWriter.endArray();
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();

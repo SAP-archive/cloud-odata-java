@@ -23,14 +23,14 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 public class JsonPropertyEntityProducer {
 
   public void append(Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
-    try {
-      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
+    try {
       jsonStreamWriter.beginObject();
       jsonStreamWriter.name(FormatJson.D);
       jsonStreamWriter.beginObject();
 
-      appendProperty(writer, propertyInfo.isComplex() ? (EntityComplexPropertyInfo) propertyInfo : propertyInfo, value);
+      appendProperty(jsonStreamWriter, propertyInfo.isComplex() ? (EntityComplexPropertyInfo) propertyInfo : propertyInfo, value);
 
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();
@@ -41,9 +41,7 @@ public class JsonPropertyEntityProducer {
     }
   }
 
-  protected static void appendProperty(final Writer writer, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
-    JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-
+  protected static void appendProperty(JsonStreamWriter jsonStreamWriter, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
     if (propertyInfo.isComplex()) {
       jsonStreamWriter.name(propertyInfo.getName());
       jsonStreamWriter.beginObject();
@@ -54,7 +52,7 @@ public class JsonPropertyEntityProducer {
       jsonStreamWriter.endObject();
       for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {
         jsonStreamWriter.separator();
-        appendProperty(writer, childPropertyInfo,
+        appendProperty(jsonStreamWriter, childPropertyInfo,
             value instanceof Map ? ((Map<?, ?>) value).get(childPropertyInfo.getName()) : value);
       }
       jsonStreamWriter.endObject();

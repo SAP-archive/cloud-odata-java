@@ -75,7 +75,7 @@ public class JsonEntryEntityProducer {
 
       for (final String propertyName : entityInfo.getSelectedPropertyNames()) {
         jsonStreamWriter.separator();
-        JsonPropertyEntityProducer.appendProperty(writer, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
+        JsonPropertyEntityProducer.appendProperty(jsonStreamWriter, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
       }
 
       for (final String navigationPropertyName : entityInfo.getSelectedNavigationPropertyNames()) {
@@ -95,7 +95,7 @@ public class JsonEntryEntityProducer {
         } else {
           jsonStreamWriter.beginObject();
           jsonStreamWriter.name(FormatJson.DEFERRED);
-          JsonLinkEntityProducer.appendUri(writer, location + "/" + Encoder.encode(navigationPropertyName));
+          JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
           jsonStreamWriter.endObject();
         }
       }
