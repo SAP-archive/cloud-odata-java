@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -72,6 +73,60 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "  </m:properties>" +
           "</entry>";
 
+  public static final String EMPLOYEE_1_ROOM_XML =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+          "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/\"  m:etag=\"W/&quot;1&quot;\">" +
+          "  <id>http://localhost:19000/Employees('1')</id>" +
+          "  <title type=\"text\">Walter Winter</title>" +
+          "  <updated>1999-01-01T00:00:00Z</updated>" +
+          "  <category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+          "  <link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
+          "  <link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" m:etag=\"mmEtag\"/>" +
+          "  <link href=\"Employees('1')/ne_Room\" " +
+          "       rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" " +
+          "       type=\"application/atom+xml; type=entry\" title=\"ne_Room\">" +
+          "  <m:inline>" + 
+          "  <entry m:etag=\"W/1\" xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">" + 
+          "  <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-04-10T10:19:12Z</updated>" + 
+          "  <content type=\"application/xml\">" + 
+          "    <m:properties>" + 
+          "    <d:Id>1</d:Id>" + 
+          "    <d:Name>Room 1</d:Name>" + 
+          "    <d:Seats>1</d:Seats>" + 
+          "    <d:Version>1</d:Version>" + 
+          "    </m:properties>" + 
+          "    </content>" + 
+          "    </entry>" + 
+          "  </m:inline>" + 
+          " </link>" +
+          "  <content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
+          "  <m:properties>" +
+          "    <d:EmployeeId>1</d:EmployeeId>" +
+          "    <d:EmployeeName>Walter Winter</d:EmployeeName>" +
+          "  </m:properties>" +
+          "</entry>";
+
+  public static final String EMPLOYEE_1_NULL_ROOM_XML =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+          "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/\"  m:etag=\"W/&quot;1&quot;\">" +
+          "  <id>http://localhost:19000/Employees('1')</id>" +
+          "  <title type=\"text\">Walter Winter</title>" +
+          "  <updated>1999-01-01T00:00:00Z</updated>" +
+          "  <category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+          "  <link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
+          "  <link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" m:etag=\"mmEtag\"/>" +
+          "  <link href=\"Employees('1')/ne_Room\" " +
+          "       rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" " +
+          "       type=\"application/atom+xml; type=entry\" title=\"ne_Room\">" +
+          "  <m:inline/>" + 
+          " </link>" +
+          "  <content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
+          "  <m:properties>" +
+          "    <d:EmployeeId>1</d:EmployeeId>" +
+          "    <d:EmployeeName>Walter Winter</d:EmployeeName>" +
+          "  </m:properties>" +
+          "</entry>";
+
   private static final String ROOM_1_XML =
       "<?xml version='1.0' encoding='UTF-8'?>" +
           "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
@@ -81,6 +136,25 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "  <category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
           "  <link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/>" +
           "  <link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/>" +
+          "  <link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/>" +
+          "  <content type=\"application/xml\">" +
+          "    <m:properties>" +
+          "      <d:Id>1</d:Id>" +
+          "    </m:properties>" +
+          "  </content>" +
+          "</entry>";
+
+  private static final String ROOM_1_NULL_EMPLOYEE_XML =
+      "<?xml version='1.0' encoding='UTF-8'?>" +
+          "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+          "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+          "  <title type=\"text\">Room 1</title>" +
+          "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+          "  <category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+          "  <link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/>" +
+          "  <link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" " +
+          "        type=\"application/atom+xml; type=feed\" title=\"nr_Employees\">" +
+          " <m:inline/> </link> " +
           "  <link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/>" +
           "  <content type=\"application/xml\">" +
           "    <m:properties>" +
@@ -268,10 +342,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
 
-    List<ODataEntry> inlinedTeamEmployeeNo2 = (List<ODataEntry>) employessNo2Props.get("ne_Team");
-    assertEquals(1, inlinedTeamEmployeeNo2.size());
-    //
-    ODataEntry inlinedTeam = inlinedTeamEmployeeNo2.get(0);
+    ODataEntry inlinedTeam = (ODataEntry) employessNo2Props.get("ne_Team");
     assertEquals("1", inlinedTeam.getProperties().get("Id"));
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
@@ -336,10 +407,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
 
-    List<ODataEntry> inlinedTeamEmployeeNo2 = (List<ODataEntry>) employessNo2Props.get("ne_Team");
-    assertEquals(1, inlinedTeamEmployeeNo2.size());
-    //
-    ODataEntry inlinedTeam = inlinedTeamEmployeeNo2.get(0);
+    ODataEntry inlinedTeam = (ODataEntry) employessNo2Props.get("ne_Team");
     assertEquals("1", inlinedTeam.getProperties().get("Id"));
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
@@ -364,6 +432,78 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
   }
+  
+  @Test
+  public void readWithInlineContentEmployeeRoomEntry() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    Map<String, Object> roomProperties = room.getProperties();
+    assertEquals(4, roomProperties.size());
+    assertEquals("1", roomProperties.get("Id"));    
+    assertEquals("Room 1", roomProperties.get("Name"));    
+    assertEquals(Short.valueOf("1"), roomProperties.get("Seats"));    
+    assertEquals(Short.valueOf("1"), roomProperties.get("Version"));    
+  }
+
+  /**
+   * Read of employee with inlined but <code>NULL</code> room navigation property (which has {@link EdmMultiplicity#ONE}.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentEmployeeNullRoomEntry() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_NULL_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    assertNull(room);
+  }
+
+  /**
+   * Read of room with inlined but <code>NULL</code> employees navigation property (which has {@link EdmMultiplicity#MANY}.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentRoomNullEmployeesEntry() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(ROOM_1_NULL_EMPLOYEE_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Employees");
+    assertNull(room);
+  }
+
 
   /**
    * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
@@ -375,7 +515,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   public void validateFeedForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
-//                      .replace("<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">", "")
                       .replace("<feed xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">", "")
                       .replace("</feed>", "");
     assertNotNull(content);

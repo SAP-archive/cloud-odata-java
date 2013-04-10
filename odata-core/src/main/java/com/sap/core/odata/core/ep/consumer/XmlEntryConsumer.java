@@ -244,7 +244,7 @@ public class XmlEntryConsumer {
     EntityInfoAggregator inlineEia = EntityInfoAggregator.create(callbackResult.getEntitySet());
     EntityProviderReadProperties inlineConsumerProperties = callbackResult.getConsumerProperties();
     // validations
-    validateInlineTags(reader, eia, linkAttributes);
+    boolean isFeed = isInlineFeedValidated(reader, eia, linkAttributes);
 
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
 
@@ -259,27 +259,38 @@ public class XmlEntryConsumer {
       reader.next();
     }
 
-    properties.put(callbackResult.getNavigationPropertyName(), inlineEntries);
+    Object entry = null;
+    if(isFeed) {
+      entry = inlineEntries;
+    } else if(!inlineEntries.isEmpty()) {
+      entry = inlineEntries.get(0);      
+    }
+    properties.put(callbackResult.getNavigationPropertyName(), entry);
 
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }
 
   /**
-   * Validate that...
+   * Check whether it is an inline <code>Feed</code> or <code>Entry</code> and validate that...
    * <ul>
    * <li>...{@link FormatXml#M_INLINE} tag is correctly set.</li>
+   * <li>...based on {@link EdmMultiplicity} of {@link EdmNavigationProperty} all tags are correctly set.</li>
    * <li>...{@link FormatXml#ATOM_TYPE} tag is correctly set and according to {@link FormatXml#ATOM_ENTRY} or {@link FormatXml#ATOM_FEED} to following tags are available.</li>
    * </ul>
    * 
    * For the case that one of above validations fail an {@link EntityProviderException} is thrown.
+   * If validation was successful <code>true</code> is returned for <code>Feed</code> and <code>false</code> for <code>Entry</code>
+   * multiplicity.
    * 
    * @param reader xml content
    * @param edmEntitySet 
    * @param linkAttributes attributes of parent <code>link</code> tag
+   * @return <code>true</code> for <code>Feed</code> and <code>false</code> for <code>Entry</code>
    * @throws EntityProviderException is thrown if at least one validation fails.
-   * @throws EdmException 
+   * @throws EdmException if edm access fails
    */
-  private void validateInlineTags(final XMLStreamReader reader, EntityInfoAggregator eia, final Map<String, String> linkAttributes) throws EntityProviderException, EdmException {
+  private boolean isInlineFeedValidated(final XMLStreamReader reader, EntityInfoAggregator eia, final Map<String, String> linkAttributes) throws EntityProviderException, EdmException {
+    boolean isFeed = false;
     try {
       reader.nextTag();
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
@@ -297,26 +308,43 @@ public class XmlEntryConsumer {
 
       switch (navigationMultiplicity) {
         case MANY:
-          if(FormatXml.ATOM_FEED.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
-            reader.nextTag();
-            reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_FEED);
-          } else {
-            throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("feed"));
-          }
+          validateFeedTags(reader, cType);
+          isFeed = true;
           break;
-          
         case ONE:
         case ZERO_TO_ONE:
-          if(FormatXml.ATOM_ENTRY.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
-            reader.nextTag();
-            reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_ENTRY);
-          } else {
-            throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("entry"));
-          }
+          validateEntryTags(reader, cType);
           break;
       }
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"));
+    }
+    return isFeed;
+  }
+
+  private void validateEntryTags(final XMLStreamReader reader, ContentType cType) throws XMLStreamException, EntityProviderException {
+    if(FormatXml.ATOM_ENTRY.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
+      int next = reader.nextTag();
+      if(XMLStreamConstants.START_ELEMENT == next) {
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_ENTRY);
+      } else {
+        reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+      }
+    } else {
+      throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("entry"));
+    }
+  }
+
+  private void validateFeedTags(final XMLStreamReader reader, ContentType cType) throws XMLStreamException, EntityProviderException {
+    if(FormatXml.ATOM_FEED.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
+      int next = reader.nextTag();
+      if(XMLStreamConstants.START_ELEMENT == next) {
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_FEED);
+      } else {
+        reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+      }
+    } else {
+      throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("feed"));
     }
   }
 
