@@ -1,0 +1,34 @@
+
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xml:base="http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
+	<id>
+http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('7')
+</id>
+	<title type="text">Employee 7</title>
+	<updated>2013-04-10T13:52:37.965+02:00</updated>
+	<category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+	<link href="Employees('7')" rel="edit" title="Employee"/>
+	<link href="Employees('7')/$value" rel="edit-media" type="application/octet-stream"/>
+	<link href="Employees('7')/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager" title="ne_Manager" type="application/atom+xml; type=entry"/>
+	<link href="Employees('7')/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team" title="ne_Team" type="application/atom+xml; type=entry"/>
+	<link href="Employees('7')/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room" title="ne_Room" type="application/atom+xml; type=entry">
+		<m:inline/>
+	</link>
+	<content type="application/octet-stream" src="Employees('7')/$value"/>
+	<m:properties>
+		<d:EmployeeId>7</d:EmployeeId>
+		<d:EmployeeName>Employee 7</d:EmployeeName>
+		<d:ManagerId m:null="true"/>
+		<d:RoomId m:null="true"/>
+		<d:TeamId m:null="true"/>
+		<d:Location m:type="RefScenario.c_Location">
+			<d:City m:type="RefScenario.c_City">
+				<d:PostalCode m:null="true"/>
+				<d:CityName m:null="true"/>
+			</d:City>
+			<d:Country m:null="true"/>
+		</d:Location>
+		<d:Age>0</d:Age>
+		<d:EntryDate m:null="true"/>
+		<d:ImageUrl m:null="true"/>
+	</m:properties>
+</entry>
