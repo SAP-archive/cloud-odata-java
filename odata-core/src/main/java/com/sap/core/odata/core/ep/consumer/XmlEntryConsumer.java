@@ -23,6 +23,7 @@ import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
 import com.sap.core.odata.api.ep.callback.ReadCallbackResult;
 import com.sap.core.odata.api.ep.callback.ReadEntryCallbackContext;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
@@ -223,53 +224,92 @@ public class XmlEntryConsumer {
       }
     } else {
       if (rel != null && rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
-        final String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
-        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
-        final EdmEntitySet targetEntitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(FormatXml.ATOM_REL, rel);
         attributes.put(FormatXml.ATOM_HREF, uri);
         attributes.put(FormatXml.ATOM_TYPE, type);
         attributes.put(FormatXml.ATOM_TITLE, title);
         attributes.put(FormatXml.M_ETAG, etag);
-        attributes.put("navigationPropertyName", navigationPropertyName);
-        readInlineContent(reader, targetEntitySet, readProperties, attributes);
+        readInlineContent(reader, eia, readProperties, attributes);
       }
     }
-
   }
 
-  private void readInlineContent(final XMLStreamReader reader, final EdmEntitySet entitySet, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
-    reader.nextTag();
-    reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+  private void readInlineContent(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes) 
+        throws XMLStreamException, EntityProviderException, EdmException {
 
+    // validations
+    validateInlineTags(reader, linkAttributes);
+    
+    //
+    String rel = linkAttributes.get(FormatXml.ATOM_REL);
+    String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
+    
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
 
     while (!(reader.isEndElement() && Edm.NAMESPACE_M_2007_08.equals(reader.getNamespaceURI()) && FormatXml.M_INLINE.equals(reader.getLocalName()))) {
-      reader.next();
 
       if (reader.isStartElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
         ReadCallbackResult callbackResult = doCallback(readProperties, linkAttributes);
-
         XmlEntryConsumer xec = new XmlEntryConsumer();
+
         if (callbackResult == null) {
-          final EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-          final ODataEntry inlineEntry = xec.readEntry(reader, eia,
+          EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+          EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
+          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(entitySet);
+          ODataEntry inlineEntry = xec.readEntry(reader, inlineEia,
               EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build());
           inlineEntries.add(inlineEntry);
         } else {
-          EntityInfoAggregator eia = EntityInfoAggregator.create(callbackResult.getEntitySet());
+          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(callbackResult.getEntitySet());
           EntityProviderReadProperties inlineConsumerProperties = callbackResult.getConsumerProperties();
 
-          ODataEntry inlineEntry = xec.readEntry(reader, eia, inlineConsumerProperties);
+          ODataEntry inlineEntry = xec.readEntry(reader, inlineEia, inlineConsumerProperties);
           inlineEntries.add(inlineEntry);
         }
       }
+      // next
+      reader.next();
     }
 
-    properties.put(linkAttributes.get("navigationPropertyName"), inlineEntries);
+    properties.put(navigationPropertyName, inlineEntries);
 
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+  }
+
+  /**
+   * Validate that...
+   * <ul>
+   * <li>...{@link FormatXml#M_INLINE} tag is correctly set.</li>
+   * <li>...{@link FormatXml#ATOM_TYPE} tag is correctly set and according to {@link FormatXml#ATOM_ENTRY} or {@link FormatXml#ATOM_FEED} to following tags are available.</li>
+   * </ul>
+   * 
+   * For the case that one of above validations fail an {@link EntityProviderException} is thrown.
+   * 
+   * @param reader xml content
+   * @param linkAttributes attributes of parent <code>link</code> tag
+   * @throws EntityProviderException is thrown if at least one validation fails.
+   */
+  private void validateInlineTags(final XMLStreamReader reader, final Map<String, String> linkAttributes) throws EntityProviderException {
+    try {
+      reader.nextTag();
+      reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+      String type = linkAttributes.get(FormatXml.ATOM_TYPE);
+      ContentType cType = ContentType.parse(type);
+      if(cType != null && FormatXml.ATOM_FEED.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
+        // validate inlined set
+        reader.nextTag();
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_FEED);
+      } else if(cType != null && FormatXml.ATOM_ENTRY.equals(cType.getParameters().get(FormatXml.ATOM_TYPE))) {
+        // validate inlined entry
+        reader.nextTag();
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_ENTRY);
+      } else {
+        throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+      }
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Invalid inlined entry."));
+    }
   }
 
   private ReadCallbackResult doCallback(final EntityProviderReadProperties properties, final Map<String, String> linkAttributes) {
