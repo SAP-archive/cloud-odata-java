@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -33,17 +33,17 @@ public interface ContentTypeBasedEntityProvider {
 
   ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
 
-  ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
+  ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
-  ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
+  ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
   ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws EntityProviderException;
 
-  ODataResponse writeLink(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
+  ODataResponse writeLink(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
-  ODataResponse writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
+  ODataResponse writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
-  ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
+  ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
   ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
 }

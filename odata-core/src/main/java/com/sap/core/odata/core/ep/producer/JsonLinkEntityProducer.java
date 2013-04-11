@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
@@ -16,9 +16,9 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonLinkEntityProducer {
 
-  private final EntityProviderProperties properties;
+  private final EntityProviderWriteProperties properties;
 
-  public JsonLinkEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
+  public JsonLinkEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

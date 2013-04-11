@@ -97,7 +97,7 @@ public final class EntityProvider {
      * Write given <code>data</code> (which is given in form of a {@link List} with a {@link Map} for each entity. Such a {@link Map}
      * contains all properties [as <code>property name</code> to <code>property value</code> mapping] for the entry) in the specified
      * format (given as <code>contentType</code>) based on given <code>entity data model for an entity set</code> (given as {@link EdmEntitySet})
-     * and <code>properties</code> for this entity provider (given as {@link EntityProviderProperties}).
+     * and <code>properties</code> for this entity provider (given as {@link EntityProviderWriteProperties}).
      * 
      * @param contentType format in which the feed should be written
      * @param entitySet entity data model for given entity data set
@@ -107,13 +107,13 @@ public final class EntityProvider {
      * @return resulting {@link ODataResponse} with written feed content.
      * @throws EntityProviderException if writing of data (serialization) fails
      */
-    ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
+    ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
      * Write given <code>data</code> (which is given in form of a {@link Map} for which contains all properties 
      * as <code>property name</code> to <code>property value</code> mapping) for the entry in the specified
      * format (given as <code>contentType</code>) based on <code>entity data model for an entity set</code> (given as {@link EdmEntitySet})
-     * and <code>properties</code> for this entity provider (given as {@link EntityProviderProperties}).
+     * and <code>properties</code> for this entity provider (given as {@link EntityProviderWriteProperties}).
      * 
      * @param contentType format in which the entry should be written
      * @param entitySet entity data model for given entity data set
@@ -122,7 +122,7 @@ public final class EntityProvider {
      * @return resulting {@link ODataResponse} with written entry content
      * @throws EntityProviderException if writing of data (serialization) fails
      */
-    ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
+    ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
      * Write given <code>value</code> (which is given in form of an {@link Object}) for the property in the specified
@@ -142,7 +142,7 @@ public final class EntityProvider {
      * in the specified format (given as <code>contentType</code>).
      * The necessary key property values must be provided within the <code>data</code> (in the form of <code>property name</code>
      * to <code>property value</code> mapping) and <code>properties</code> for this entity provider must be set
-     * (given as {@link EntityProviderProperties}).
+     * (given as {@link EntityProviderWriteProperties}).
      * 
      * @param contentType format in which the entry should be written
      * @param entitySet entity data model for given entity data set
@@ -151,7 +151,7 @@ public final class EntityProvider {
      * @return resulting {@link ODataResponse} with written link content.
      * @throws EntityProviderException if writing of data (serialization) fails
      */
-    ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
+    ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
      * Write all <b>links</b> for key property based on <code>entity data model for an entity set</code> (given as {@link EdmEntitySet})
@@ -159,7 +159,7 @@ public final class EntityProvider {
      * The necessary key property values must be provided within the <code>data</code> (in form of a {@link List} with a {@link Map} 
      * for each entry. Such a {@link Map} contains all key properties [as <code>property name</code> to 
      * <code>property value</code> mapping] for the entry) and <code>properties</code> for this entity provider must be set
-     * (given as {@link EntityProviderProperties}).
+     * (given as {@link EntityProviderWriteProperties}).
      * 
      * @param contentType format in which the entry should be written
      * @param entitySet entity data model for given entity data set
@@ -169,12 +169,12 @@ public final class EntityProvider {
      * @return resulting {@link ODataResponse} with written links content.
      * @throws EntityProviderException if writing of data (serialization) fails
      */
-    ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
+    ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
      * Write <code>data</code> result (given as {@link Object}) of function import based on <code>return type</code> 
      * of {@link EdmFunctionImport} in specified format (given as <code>contentType</code>). Additional <code>properties</code> 
-     * for this entity provider must be set (given as {@link EntityProviderProperties}).
+     * for this entity provider must be set (given as {@link EntityProviderWriteProperties}).
      * 
      * @param contentType format in which the entry should be written
      * @param functionImport entity data model for executed function import
@@ -183,7 +183,7 @@ public final class EntityProvider {
      * @return resulting {@link ODataResponse} with written function import result content.
      * @throws EntityProviderException if writing of data (serialization) fails
      */
-    ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
+    ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
      * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
@@ -365,7 +365,7 @@ public final class EntityProvider {
    * Write given <code>data</code> (which is given in form of a {@link List} with a {@link Map} for each entity. Such a {@link Map}
    * contains all properties [as <code>property name</code> to <code>property value</code> mapping] for the entry) in the specified
    * format (given as <code>contentType</code>) based on given <code>entity data model for an entity set</code> (given as {@link EdmEntitySet})
-   * and <code>properties</code> for this entity provider (given as {@link EntityProviderProperties}).
+   * and <code>properties</code> for this entity provider (given as {@link EntityProviderWriteProperties}).
    * 
    * @param contentType format in which the feed should be written
    * @param entitySet entity data model for given entity data set
@@ -375,7 +375,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written feed content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeFeed(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeFeed(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFeed(contentType, entitySet, data, properties);
   }
 
@@ -383,7 +383,7 @@ public final class EntityProvider {
    * Write given <code>data</code> (which is given in form of a {@link Map} for which contains all properties 
    * as <code>property name</code> to <code>property value</code> mapping) for the entry in the specified
    * format (given as <code>contentType</code>) based on <code>entity data model for an entity set</code> (given as {@link EdmEntitySet})
-   * and <code>properties</code> for this entity provider (given as {@link EntityProviderProperties}).
+   * and <code>properties</code> for this entity provider (given as {@link EntityProviderWriteProperties}).
    * 
    * @param contentType format in which the entry should be written
    * @param entitySet entity data model for given entity data set
@@ -392,7 +392,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written entry content
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeEntry(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeEntry(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeEntry(contentType, entitySet, data, properties);
   }
 
@@ -416,7 +416,7 @@ public final class EntityProvider {
    * in the specified format (given as <code>contentType</code>).
    * The necessary key property values must be provided within the <code>data</code> (in the form of <code>property name</code>
    * to <code>property value</code> mapping) and <code>properties</code> for this entity provider must be set
-   * (given as {@link EntityProviderProperties}).
+   * (given as {@link EntityProviderWriteProperties}).
    * 
    * @param contentType format in which the entry should be written
    * @param entitySet entity data model for given entity data set
@@ -425,7 +425,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written link content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeLink(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeLink(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLink(contentType, entitySet, data, properties);
   }
 
@@ -435,7 +435,7 @@ public final class EntityProvider {
    * The necessary key property values must be provided within the <code>data</code> (in form of a {@link List} with a {@link Map} 
    * for each entry. Such a {@link Map} contains all key properties [as <code>property name</code> to 
    * <code>property value</code> mapping] for the entry) and <code>properties</code> for this entity provider must be set
-   * (given as {@link EntityProviderProperties}).
+   * (given as {@link EntityProviderWriteProperties}).
    * 
    * @param contentType format in which the entry should be written
    * @param entitySet entity data model for given entity data set
@@ -445,14 +445,14 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written links content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeLinks(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeLinks(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLinks(contentType, entitySet, data, properties);
   }
 
   /**
    * Write <code>data</code> result (given as {@link Object}) of function import based on <code>return type</code> 
    * of {@link EdmFunctionImport} in specified format (given as <code>contentType</code>). Additional <code>properties</code> 
-   * for this entity provider must be set (given as {@link EntityProviderProperties}).
+   * for this entity provider must be set (given as {@link EntityProviderWriteProperties}).
    * 
    * @param contentType format in which the entry should be written
    * @param functionImport entity data model for executed function import
@@ -461,7 +461,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written function import result content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeFunctionImport(final String contentType, final EdmFunctionImport functionImport, final Object data, final EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeFunctionImport(final String contentType, final EdmFunctionImport functionImport, final Object data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFunctionImport(contentType, functionImport, data, properties);
   }
 

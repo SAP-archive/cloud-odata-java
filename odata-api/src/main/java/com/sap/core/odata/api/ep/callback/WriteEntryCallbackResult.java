@@ -2,7 +2,7 @@ package com.sap.core.odata.api.ep.callback;
 
 import java.util.Map;
 
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 
 /**
  * Result of a callback. It contains the data of the entry which is to be expanded as well as the properties of this entry.
@@ -10,13 +10,13 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
  */
 public class WriteEntryCallbackResult {
 
-  EntityProviderProperties inlineProperties;
+  EntityProviderWriteProperties inlineProperties;
   Map<String, Object> oneEntryData;
 
   /**
    * @return the inline properties
    */
-  public EntityProviderProperties getInlineProperties() {
+  public EntityProviderWriteProperties getInlineProperties() {
     return inlineProperties;
   }
 
@@ -24,7 +24,7 @@ public class WriteEntryCallbackResult {
    * Sets the inline properties for this entry
    * @param inlineProperties
    */
-  public void setInlineProperties(final EntityProviderProperties inlineProperties) {
+  public void setInlineProperties(final EntityProviderWriteProperties inlineProperties) {
     this.inlineProperties = inlineProperties;
   }
 

@@ -8,7 +8,7 @@ import java.net.URI;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.InlineCount;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
@@ -19,7 +19,7 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
   @Test
   public void buildFeedProperties() throws Exception {
     URI serviceRoot = new URI("http://localhost:80/");
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(serviceRoot)
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(serviceRoot)
         .inlineCountType(InlineCount.ALLPAGES)
         .inlineCount(1)
         .nextLink("http://localhost")
@@ -34,7 +34,7 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
   @Test
   public void buildPropertiesDefaults() throws Exception {
     URI baseUri = new URI("http://localhost:80/");
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(baseUri).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(baseUri).build();
 
     assertEquals("http://localhost:80/", properties.getServiceRoot().toASCIIString());
     assertNull(properties.getInlineCountType());
@@ -47,7 +47,7 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
   public void buildEntryProperties() throws Exception {
     final String mediaResourceMimeType = "text/html";
     final URI serviceRoot = new URI("http://localhost:80/");
-    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(serviceRoot)
+    final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(serviceRoot)
         .mediaResourceMimeType(mediaResourceMimeType)
         .build();
     assertEquals("Wrong mime type.", "text/html", properties.getMediaResourceMimeType());

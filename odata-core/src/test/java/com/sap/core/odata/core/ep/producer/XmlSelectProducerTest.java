@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -63,7 +63,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void allPropertiesSelectStar() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("*", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -80,7 +80,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectEmployeeId() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("EmployeeId", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -97,7 +97,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectNavigationProperties() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("ne_Team, ne_Manager", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -114,7 +114,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectComplexProperties() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Location", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -131,7 +131,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectComplexAndNavigationProperties() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Location, ne_Room", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -148,7 +148,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectComplexAndNavigationAndKeyProperties() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Location, ne_Room, EmployeeId, TeamId", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -165,7 +165,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectEmployeeIdEmployeeNameImageUrl() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("EmployeeId, EmployeeName, ImageUrl", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
@@ -182,7 +182,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
   public void selectAge() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Age", null);
 
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 

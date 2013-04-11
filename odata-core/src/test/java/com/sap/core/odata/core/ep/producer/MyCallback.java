@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
@@ -42,7 +42,7 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
           for (String navPropName : context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType().getNavigationPropertyNames()) {
             callbacks.put(navPropName, this);
           }
-          EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(roomToEmployee).build();
+          EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(roomToEmployee).build();
 
           result.setFeedData(dataProvider.getEmployeesData());
           result.setInlineProperties(inlineProperties);
@@ -64,7 +64,7 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
           for (String navPropName : context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType().getNavigationPropertyNames()) {
             callbacks.put(navPropName, this);
           }
-          EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+          EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
           result.setEntryData(dataProvider.getRoomData());
           result.setInlineProperties(inlineProperties);
         } else if ("ne_Team".equals(context.getNavigationProperty().getName())) {

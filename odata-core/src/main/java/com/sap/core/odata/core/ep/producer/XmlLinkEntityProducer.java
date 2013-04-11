@@ -7,7 +7,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
@@ -17,9 +17,9 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlLinkEntityProducer {
 
-  private final EntityProviderProperties properties;
+  private final EntityProviderWriteProperties properties;
 
-  public XmlLinkEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
+  public XmlLinkEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

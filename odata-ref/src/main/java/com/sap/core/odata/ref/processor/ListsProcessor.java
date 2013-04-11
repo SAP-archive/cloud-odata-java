@@ -36,8 +36,8 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
@@ -163,7 +163,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       values.add(getStructuralTypeValueMap(entryData, entityType));
 
     ODataContext context = getContext();
-    final EntityProviderProperties feedProperties = EntityProviderProperties
+    final EntityProviderWriteProperties feedProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
@@ -235,7 +235,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     ODataContext context = getContext();
-    final EntityProviderProperties entryProperties = EntityProviderProperties
+    final EntityProviderWriteProperties entryProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(uriInfo.getInlineCount())
         .inlineCount(count)
@@ -369,7 +369,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       values.put(property.getName(), getPropertyValue(data, property));
 
     ODataContext context = getContext();
-    final EntityProviderProperties entryProperties = EntityProviderProperties
+    final EntityProviderWriteProperties entryProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .build();
 
@@ -728,7 +728,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     ODataContext context = getContext();
-    final EntityProviderProperties entryProperties = EntityProviderProperties
+    final EntityProviderWriteProperties entryProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFunctionImport");
@@ -858,7 +858,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           values.add(getStructuralTypeValueMap(entryData, entityType));
         WriteFeedCallbackResult result = new WriteFeedCallbackResult();
         result.setFeedData(values);
-        EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
@@ -873,7 +873,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         final Object relatedData = readRelatedData(context);
         WriteEntryCallbackResult result = new WriteEntryCallbackResult();
         result.setEntryData(getStructuralTypeValueMap(relatedData, entityType));
-        EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
@@ -911,7 +911,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
 
     ODataContext context = getContext();
-    ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderProperties
+    ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
         .callbacks(getCallbacks(data, entityType));

@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ep.JsonEntityProvider;
 import com.sap.core.odata.testutil.fit.BaseTest;
@@ -27,8 +27,8 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class JsonFeedEntityProducerTest extends BaseTest {
   protected static final String BASE_URI = "http://host:80/service/";
-  protected static final EntityProviderProperties DEFAULT_PROPERTIES =
-      EntityProviderProperties.serviceRoot(URI.create(BASE_URI)).build();
+  protected static final EntityProviderWriteProperties DEFAULT_PROPERTIES =
+      EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).build();
 
   @Test
   public void feed() throws Exception {
@@ -65,7 +65,7 @@ public class JsonFeedEntityProducerTest extends BaseTest {
   public void inlineCount() throws Exception {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Buildings");
     final ODataResponse response = new JsonEntityProvider().writeFeed(entitySet, new ArrayList<Map<String, Object>>(),
-        EntityProviderProperties.serviceRoot(URI.create(BASE_URI))
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI))
             .inlineCountType(InlineCount.ALLPAGES).inlineCount(42)
             .build());
     assertNotNull(response);
@@ -88,7 +88,7 @@ public class JsonFeedEntityProducerTest extends BaseTest {
     roomsData.add(roomData);
 
     final ODataResponse response = new JsonEntityProvider().writeFeed(entitySet, roomsData,
-        EntityProviderProperties.serviceRoot(URI.create(BASE_URI)).nextLink("Rooms?$skiptoken=2").build());
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).nextLink("Rooms?$skiptoken=2").build());
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
