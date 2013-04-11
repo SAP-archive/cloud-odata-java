@@ -3,6 +3,7 @@ package com.sap.core.odata.fit.ref;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,5 +51,22 @@ public class AbstractRefXmlTest extends AbstractRefTest {
     assertXpathExists("/m:error", xml);
     assertXpathExists("/m:error/m:code", xml);
     assertXpathExists("/m:error/m:message[@xml:lang=\"en\"]", xml);
+  }
+
+  protected String readFile(final String filename) throws IOException {
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+    if (in == null) {
+      throw new IOException("Requested file '" + filename + "' was not found.");
+    }
+  
+    byte[] tmp = new byte[8192];
+    int count = in.read(tmp);
+    StringBuffer b = new StringBuffer();
+    while (count >= 0) {
+      b.append(new String(tmp, 0, count));
+      count = in.read(tmp);
+    }
+  
+    return b.toString();
   }
 }
