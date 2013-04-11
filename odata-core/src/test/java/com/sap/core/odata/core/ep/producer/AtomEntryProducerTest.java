@@ -100,7 +100,29 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathEvaluatesTo("abc", "/a:entry/a:content/@type", xmlString);
     assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
     assertXpathExists("/a:entry/m:properties", xmlString);
+  }
 
+  /**
+   * Test serialization of empty syndication title property. EmployeeName is set to NULL after the update (which is allowed because EmployeeName has default Nullable behavior which is true).
+   * Write of an empty atom title tag is allowed within RFC4287 (http://tools.ietf.org/html/rfc4287#section-4.2.14).   
+   */
+  @Test
+  public void serializeEmployeeWithNullSyndicationTitleProperty() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    AtomEntityProvider ser = createAtomEntityProvider();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).build();
+    employeeData.put("EmployeeName", null);
+    ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+    String xmlString = verifyResponse(response);
+
+    assertXpathExists("/a:entry/a:title", xmlString);
+    assertXpathEvaluatesTo("", "/a:entry/a:title", xmlString);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+
+    assertXpathExists("/a:entry/a:content", xmlString);
+    assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
+    assertXpathExists("/a:entry/m:properties", xmlString);
   }
 
   @Test
