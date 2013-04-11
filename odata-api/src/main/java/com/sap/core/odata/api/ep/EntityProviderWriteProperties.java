@@ -9,10 +9,10 @@ import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
- * {@link EntityProviderProperties} contains all additional properties which are necessary to <b>write (serialize)</b> an
+ * {@link EntityProviderWriteProperties} contains all additional properties which are necessary to <b>write (serialize)</b> an
  * {@link com.sap.core.odata.api.ep.entry.ODataEntry} into an specific format (e.g. <code>XML</code> or <code>JSON</code> or ...).
  */
-public class EntityProviderProperties {
+public class EntityProviderWriteProperties {
 
   private URI serviceRoot;
   private String mediaResourceMimeType;
@@ -23,7 +23,7 @@ public class EntityProviderProperties {
   private Map<String, ODataCallback> callbacks = Collections.emptyMap();
   private URI selfLink;
 
-  private EntityProviderProperties() {}
+  private EntityProviderWriteProperties() {}
 
   /**
    * Gets the self link from an application. May be null.
@@ -91,7 +91,7 @@ public class EntityProviderProperties {
   }
 
   public static class ODataEntityProviderPropertiesBuilder {
-    private final EntityProviderProperties properties = new EntityProviderProperties();
+    private final EntityProviderWriteProperties properties = new EntityProviderWriteProperties();
 
     /**
      * @param mediaResourceMimeType  the mediaResourceMimeType to set
@@ -137,7 +137,7 @@ public class EntityProviderProperties {
      * Build properties object.
      * @return assembled properties object
      */
-    public final EntityProviderProperties build() {
+    public final EntityProviderWriteProperties build() {
       return properties;
     }
 
@@ -162,7 +162,7 @@ public class EntityProviderProperties {
       return this;
     }
 
-    public ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderProperties properties) {
+    public ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderWriteProperties properties) {
       this.properties.mediaResourceMimeType = properties.getMediaResourceMimeType();
       this.properties.inlineCountType = properties.getInlineCountType();
       this.properties.inlineCount = properties.getInlineCount();
@@ -175,8 +175,8 @@ public class EntityProviderProperties {
 
   }
 
-  public static ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderProperties properties) {
-    final ODataEntityProviderPropertiesBuilder b = EntityProviderProperties.serviceRoot(properties.getServiceRoot());
+  public static ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderWriteProperties properties) {
+    final ODataEntityProviderPropertiesBuilder b = EntityProviderWriteProperties.serviceRoot(properties.getServiceRoot());
     b.fromProperties(properties);
     return b;
   }

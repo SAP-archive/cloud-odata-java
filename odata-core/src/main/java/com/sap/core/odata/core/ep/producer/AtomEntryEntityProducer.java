@@ -21,7 +21,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
@@ -45,9 +45,9 @@ public class AtomEntryEntityProducer {
 
   private String etag;
   private String location;
-  private final EntityProviderProperties properties;
+  private final EntityProviderWriteProperties properties;
 
-  public AtomEntryEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
+  public AtomEntryEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
@@ -193,7 +193,7 @@ public class AtomEntryEntityProducer {
           WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
           List<Map<String, Object>> inlineData = result.getFeedData();
           if (inlineData != null) {
-            EntityProviderProperties inlineProperties = result.getInlineProperties();
+            EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
             EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
             AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
             EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
@@ -226,7 +226,7 @@ public class AtomEntryEntityProducer {
           WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
           Map<String, Object> inlineData = result.getEntryData();
           if (inlineData != null) {
-            EntityProviderProperties inlineProperties = result.getInlineProperties();
+            EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
             EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
             AtomEntryEntityProducer inlineProducer = new AtomEntryEntityProducer(inlineProperties);
             EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());

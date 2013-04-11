@@ -16,7 +16,7 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
@@ -31,8 +31,8 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class JsonEntryEntityProducerTest extends BaseTest {
   protected static final String BASE_URI = "http://host:80/service/";
-  protected static final EntityProviderProperties DEFAULT_PROPERTIES =
-      EntityProviderProperties.serviceRoot(URI.create(BASE_URI)).build();
+  protected static final EntityProviderWriteProperties DEFAULT_PROPERTIES =
+      EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).build();
 
   @Test
   public void entry() throws Exception {
@@ -67,7 +67,7 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     SelectItem selectItem = Mockito.mock(SelectItem.class);
     Mockito.when(selectItem.getNavigationPropertySegments()).thenReturn(Arrays.asList(segment));
     final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, buildingData,
-        EntityProviderProperties.serviceRoot(URI.create(BASE_URI))
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI))
             .expandSelectTree(UriParser.createExpandSelectTree(Arrays.asList(selectItem), null))
             .build());
     assertNotNull(response);
@@ -121,7 +121,7 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     SelectItem selectItem = Mockito.mock(SelectItem.class);
     Mockito.when(selectItem.getProperty()).thenReturn(property);
     final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, employeeData,
-        EntityProviderProperties.serviceRoot(URI.create(BASE_URI))
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI))
             .expandSelectTree(UriParser.createExpandSelectTree(Arrays.asList(selectItem), null))
             .build());
     assertNotNull(response);

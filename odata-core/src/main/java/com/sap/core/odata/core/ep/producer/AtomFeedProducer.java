@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -26,9 +26,9 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class AtomFeedProducer {
 
-  private final EntityProviderProperties properties;
+  private final EntityProviderWriteProperties properties;
 
-  public AtomFeedProducer(final EntityProviderProperties properties) {
+  public AtomFeedProducer(final EntityProviderWriteProperties properties) {
     this.properties = properties;
   }
 

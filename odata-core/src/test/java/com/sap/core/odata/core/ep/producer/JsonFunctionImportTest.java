@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ep.JsonEntityProvider;
 import com.sap.core.odata.testutil.fit.BaseTest;
@@ -107,8 +107,8 @@ public class JsonFunctionImportTest extends BaseTest {
   public void singleEntityType() throws Exception {
     final EdmFunctionImport functionImport = MockFacade.getMockEdm().getDefaultEntityContainer().getFunctionImport("OldestEmployee");
     final String uri = "http://host:80/service/";
-    final EntityProviderProperties properties =
-        EntityProviderProperties.serviceRoot(URI.create(uri)).build();
+    final EntityProviderWriteProperties properties =
+        EntityProviderWriteProperties.serviceRoot(URI.create(uri)).build();
     Map<String, Object> employeeData = new HashMap<String, Object>();
     employeeData.put("EmployeeId", "1");
     employeeData.put("getImageType", "image/jpeg");

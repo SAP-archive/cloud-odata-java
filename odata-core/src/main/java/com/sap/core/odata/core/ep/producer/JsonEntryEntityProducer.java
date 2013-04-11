@@ -10,7 +10,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
@@ -24,12 +24,12 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonEntryEntityProducer {
 
-  private final EntityProviderProperties properties;
+  private final EntityProviderWriteProperties properties;
   private String eTag;
   private String location;
   private JsonStreamWriter jsonStreamWriter;
 
-  public JsonEntryEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
+  public JsonEntryEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

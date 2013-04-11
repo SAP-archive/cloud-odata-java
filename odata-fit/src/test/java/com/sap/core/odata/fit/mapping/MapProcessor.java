@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProvider;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -44,7 +44,7 @@ public class MapProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
-    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
+    final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 
@@ -67,7 +67,7 @@ public class MapProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse readEntity(final GetEntityUriInfo uriInfo, final String contentType) throws ODataException {
-    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
+    final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     // query
     final String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();

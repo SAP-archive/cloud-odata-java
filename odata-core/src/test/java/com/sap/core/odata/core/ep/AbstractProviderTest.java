@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -47,7 +47,7 @@ public abstract class AbstractProviderTest extends AbstractXmlProducerTestHelper
       throw new RuntimeException(e);
     }
   }
-  protected static final EntityProviderProperties DEFAULT_PROPERTIES = EntityProviderProperties.serviceRoot(BASE_URI).build();
+  protected static final EntityProviderWriteProperties DEFAULT_PROPERTIES = EntityProviderWriteProperties.serviceRoot(BASE_URI).build();
 
   protected Map<String, Object> employeeData;
 
