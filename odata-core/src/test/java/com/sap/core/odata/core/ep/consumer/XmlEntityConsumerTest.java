@@ -85,19 +85,19 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "  <link href=\"Employees('1')/ne_Room\" " +
           "       rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" " +
           "       type=\"application/atom+xml; type=entry\" title=\"ne_Room\">" +
-          "  <m:inline>" + 
-          "  <entry m:etag=\"W/1\" xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">" + 
-          "  <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-04-10T10:19:12Z</updated>" + 
-          "  <content type=\"application/xml\">" + 
-          "    <m:properties>" + 
-          "    <d:Id>1</d:Id>" + 
-          "    <d:Name>Room 1</d:Name>" + 
-          "    <d:Seats>1</d:Seats>" + 
-          "    <d:Version>1</d:Version>" + 
-          "    </m:properties>" + 
-          "    </content>" + 
-          "    </entry>" + 
-          "  </m:inline>" + 
+          "  <m:inline>" +
+          "  <entry m:etag=\"W/1\" xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">" +
+          "  <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-04-10T10:19:12Z</updated>" +
+          "  <content type=\"application/xml\">" +
+          "    <m:properties>" +
+          "    <d:Id>1</d:Id>" +
+          "    <d:Name>Room 1</d:Name>" +
+          "    <d:Seats>1</d:Seats>" +
+          "    <d:Version>1</d:Version>" +
+          "    </m:properties>" +
+          "    </content>" +
+          "    </entry>" +
+          "  </m:inline>" +
           " </link>" +
           "  <content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
           "  <m:properties>" +
@@ -118,7 +118,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "  <link href=\"Employees('1')/ne_Room\" " +
           "       rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" " +
           "       type=\"application/atom+xml; type=entry\" title=\"ne_Room\">" +
-          "  <m:inline/>" + 
+          "  <m:inline/>" +
           " </link>" +
           "  <content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
           "  <m:properties>" +
@@ -432,7 +432,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
   }
-  
+
   @Test
   public void readWithInlineContentEmployeeRoomEntry() throws Exception {
 
@@ -451,10 +451,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     ODataEntry room = (ODataEntry) properties.get("ne_Room");
     Map<String, Object> roomProperties = room.getProperties();
     assertEquals(4, roomProperties.size());
-    assertEquals("1", roomProperties.get("Id"));    
-    assertEquals("Room 1", roomProperties.get("Name"));    
-    assertEquals(Short.valueOf("1"), roomProperties.get("Seats"));    
-    assertEquals(Short.valueOf("1"), roomProperties.get("Version"));    
+    assertEquals("1", roomProperties.get("Id"));
+    assertEquals("Room 1", roomProperties.get("Name"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Seats"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Version"));
   }
 
   /**
@@ -504,19 +504,18 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNull(room);
   }
 
-
   /**
    * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
    * -> Remove 'feed' start and end tags around expanded/inlined employees
    * 
    * @throws Exception
    */
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void validateFeedForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
-                      .replace("<feed xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">", "")
-                      .replace("</feed>", "");
+        .replace("<feed xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">", "")
+        .replace("</feed>", "");
     assertNotNull(content);
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
@@ -532,11 +531,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void validateMissingTypeAttributeForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
-                      .replace("type=\"application/atom+xml;type=feed\"", "");
+        .replace("type=\"application/atom+xml;type=feed\"", "");
     assertNotNull(content);
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
@@ -552,11 +551,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void validateWrongTypeAttributeForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
-                      .replace("type=\"application/atom+xml;type=feed\"", "type=\"application/atom+xml;type=entry\"");
+        .replace("type=\"application/atom+xml;type=feed\"", "type=\"application/atom+xml;type=entry\"");
     assertNotNull(content);
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
@@ -572,11 +571,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void validateWrongTypeAttributeForInlineContentMany() throws Exception {
     // prepare
     String content = readFile("double_expanded_team.xml")
-                      .replace("type=\"application/atom+xml;type=entry\"", "type=\"application/atom+xml;type=feed\"");
+        .replace("type=\"application/atom+xml;type=entry\"", "type=\"application/atom+xml;type=feed\"");
     assertNotNull(content);
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
@@ -586,7 +585,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_INLINE_CONTENT.addContent("entry"));
   }
 
-  
   /**
    * We only support <code>UTF-8</code> as character encoding.
    * 

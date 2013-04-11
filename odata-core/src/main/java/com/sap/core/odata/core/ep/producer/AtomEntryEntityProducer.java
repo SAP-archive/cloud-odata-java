@@ -304,7 +304,7 @@ public class AtomEntryEntityProducer {
         EdmSimpleType st = (EdmSimpleType) titleInfo.getType();
         Object object = data.get(titleInfo.getName());
         String title = st.valueToString(object, EdmLiteralKind.DEFAULT, titleInfo.getFacets());
-        if(title != null) {
+        if (title != null) {
           writer.writeCharacters(title);
         }
       } else {
