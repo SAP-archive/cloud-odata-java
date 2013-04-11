@@ -24,13 +24,16 @@ public class JsonFeedEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
+  public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data, final boolean isRootElement) throws EntityProviderException {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
       jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
-      jsonStreamWriter.beginObject();
+
+      if (isRootElement) {
+        jsonStreamWriter.name(FormatJson.D);
+        jsonStreamWriter.beginObject();
+      }
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
@@ -59,7 +62,9 @@ public class JsonFeedEntityProducer {
         jsonStreamWriter.namedStringValue(FormatJson.NEXT, properties.getNextLink());
       }
 
-      jsonStreamWriter.endObject();
+      if (isRootElement)
+        jsonStreamWriter.endObject();
+
       jsonStreamWriter.endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
