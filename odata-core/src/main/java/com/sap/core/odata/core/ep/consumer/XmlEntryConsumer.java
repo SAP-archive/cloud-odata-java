@@ -20,9 +20,9 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
-import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
-import com.sap.core.odata.api.ep.callback.ReadCallbackResult;
-import com.sap.core.odata.api.ep.callback.ReadEntryResultContext;
+import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
+import com.sap.core.odata.api.ep.callback.ReadEntryResult;
+import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -245,7 +245,16 @@ public class XmlEntryConsumer {
     EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
     EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
     EntityInfoAggregator inlineEia = EntityInfoAggregator.create(entitySet);
-    EntityProviderReadProperties inlineProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
+    OnReadInlineContent callback = readProperties.getCallback();
+    
+    final EntityProviderReadProperties inlineProperties;
+    if(callback == null) {
+      inlineProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
+    } else {
+      inlineProperties = callback.receiveReadProperties(
+          EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build(), 
+          navigationProperty);
+    }
     
     // validations
     boolean isFeed = isInlineFeedValidated(reader, eia, linkAttributes);
@@ -269,14 +278,15 @@ public class XmlEntryConsumer {
     } else if (!inlineEntries.isEmpty()) {
       entry = inlineEntries.get(0);
     }
-    OnReadEntryContent callback = readProperties.getCallback(navigationPropertyName);
     if(callback == null) {
       properties.put(navigationPropertyName, entry);
     } else {
-      ReadEntryResultContext callbackInfo = new ReadEntryResultContext(readProperties, navigationPropertyName, entry, isFeed);
-      ReadCallbackResult callbackResult = callback.handleReadResult(callbackInfo);
-      if(callbackResult != null) {
-        properties.put(callbackResult.getNavigationPropertyName(), callbackResult.getEntry());
+      if(isFeed) {
+        ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (List<ODataEntry>) entry);
+        callback.handleReadFeed(callbackInfo);
+      } else {
+        ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) entry);
+        callback.handleReadEntry(callbackInfo);
       }
     }
 

@@ -29,4 +29,14 @@ public interface ODataEntry {
    * @return {@link EntryMetadata} for this {@link ODataEntry} if available.
    */
   public EntryMetadata getMetadata();
+  
+  /**
+   * If this {@link ODataEntry} contains properties of an inline navigation property this method
+   * returns <code>true</code>. 
+   * Otherwise if this {@link ODataEntry} only contains it own properties this method
+   * returns <code>false</code>.
+   * 
+   * @return <code>true</code> if inline navigation properties are contained, otherwise <code>false</code>.
+   */
+  public boolean containsInlineEntry();
 }
