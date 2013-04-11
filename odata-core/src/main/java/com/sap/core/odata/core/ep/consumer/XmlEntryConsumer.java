@@ -269,7 +269,7 @@ public class XmlEntryConsumer {
     } else if (!inlineEntries.isEmpty()) {
       entry = inlineEntries.get(0);
     }
-    OnReadEntryContent callback = readProperties.getCallback();
+    OnReadEntryContent callback = readProperties.getCallback(navigationPropertyName);
     if(callback == null) {
       properties.put(navigationPropertyName, entry);
     } else {
