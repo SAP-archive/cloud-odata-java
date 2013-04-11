@@ -20,7 +20,7 @@ import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
  */
 public class EntityProviderReadProperties {
   /** Callback which is necessary if entity contains inlined navigation properties. */
-  private OnReadEntryContent callback;
+  private final Map<String, OnReadEntryContent> propertyName2Callback;
   /**
    * if merge is <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
    * otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
@@ -32,12 +32,13 @@ public class EntityProviderReadProperties {
    * into given <code>java class</code> an {@link EntityProviderException} is thrown.
    * Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
    */
-  final private Map<String, Object> typeMappings;
-  final private Map<String, String> validatedPrefix2NamespaceUri;
+  private final Map<String, Object> typeMappings;
+  private final Map<String, String> validatedPrefix2NamespaceUri;
 
   private EntityProviderReadProperties() {
     typeMappings = new HashMap<String, Object>();
     validatedPrefix2NamespaceUri = new HashMap<String, String>();
+    propertyName2Callback = new HashMap<String, OnReadEntryContent>();
   }
 
   public static EntityProviderReadPropertiesBuilder init() {
@@ -56,8 +57,8 @@ public class EntityProviderReadProperties {
     return Collections.unmodifiableMap(typeMappings);
   }
 
-  public OnReadEntryContent getCallback() {
-    return callback;
+  public OnReadEntryContent getCallback(String propertyName) {
+    return propertyName2Callback.get(propertyName);
   }
 
   public boolean getMergeSemantic() {
@@ -76,7 +77,7 @@ public class EntityProviderReadProperties {
 
     public EntityProviderReadPropertiesBuilder(final EntityProviderReadProperties propertiesFrom) {
       properties.merge = propertiesFrom.merge;
-      properties.callback = propertiesFrom.callback;
+      properties.propertyName2Callback.putAll(propertiesFrom.propertyName2Callback);
       addValidatedPrefixes(propertiesFrom.validatedPrefix2NamespaceUri);
       addTypeMappings(propertiesFrom.typeMappings);
     }
@@ -86,8 +87,13 @@ public class EntityProviderReadProperties {
       return this;
     }
 
-    public EntityProviderReadPropertiesBuilder callback(final OnReadEntryContent callback) {
-      properties.callback = callback;
+    public EntityProviderReadPropertiesBuilder callback(final String propertyName, OnReadEntryContent callback) {
+      properties.propertyName2Callback.put(propertyName, callback);
+      return this;
+    }
+
+    public EntityProviderReadPropertiesBuilder callbacks(final Map<String, OnReadEntryContent> callbacks) {
+      properties.propertyName2Callback.putAll(callbacks);
       return this;
     }
 

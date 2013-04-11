@@ -278,7 +278,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EmployeeCallback defaultCallback = new EmployeeCallback();
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
-        .callback(defaultCallback).build();
+        .callback("nt_Employees", defaultCallback)
+        .build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -410,7 +411,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     DefaultCallback callbackHandler = new DefaultCallback(true);
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
-        .callback(callbackHandler).build();
+        .callback("nt_Employees", callbackHandler).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -458,7 +459,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     DefaultCallback callbackHandler = new DefaultCallback();
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
-        .callback(callbackHandler).build();
+        .callback("nt_Employees", callbackHandler)
+        .callback("ne_Team", callbackHandler)
+        .build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
