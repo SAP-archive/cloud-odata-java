@@ -5,22 +5,29 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
+import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
+import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
+import com.sap.core.odata.api.ep.callback.WriteEntryCallbackResult;
+import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
+import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
-import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.UriParser;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.JsonEntityProvider;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -61,15 +68,13 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     Map<String, Object> buildingData = new HashMap<String, Object>();
     buildingData.put("Id", "1");
 
-    final EdmNavigationProperty property = (EdmNavigationProperty) entitySet.getEntityType().getProperty("nb_Rooms");
-    NavigationPropertySegment segment = Mockito.mock(NavigationPropertySegment.class);
-    Mockito.when(segment.getNavigationProperty()).thenReturn(property);
-    SelectItem selectItem = Mockito.mock(SelectItem.class);
-    Mockito.when(selectItem.getNavigationPropertySegments()).thenReturn(Arrays.asList(segment));
+    ExpandSelectTreeNode node = Mockito.mock(ExpandSelectTreeNode.class);
+    Map<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
+    links.put("nb_Rooms", null);
+    Mockito.when(node.getLinks()).thenReturn(links);
+
     final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, buildingData,
-        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI))
-            .expandSelectTree(UriParser.createExpandSelectTree(Arrays.asList(selectItem), null))
-            .build());
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).expandSelectTree(node).build());
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
@@ -118,12 +123,11 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     employeeData.put("getImageType", "image/jpeg");
 
     final EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EntryDate");
-    SelectItem selectItem = Mockito.mock(SelectItem.class);
-    Mockito.when(selectItem.getProperty()).thenReturn(property);
+    ExpandSelectTreeNode node = Mockito.mock(ExpandSelectTreeNode.class);
+    Mockito.when(node.getProperties()).thenReturn(Arrays.asList(property));
+
     final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, employeeData,
-        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI))
-            .expandSelectTree(UriParser.createExpandSelectTree(Arrays.asList(selectItem), null))
-            .build());
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).expandSelectTree(node).build());
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
@@ -137,6 +141,99 @@ public class JsonEntryEntityProducerTest extends BaseTest {
         + "\"media_src\":\"Employees('1')/$value\","
         + "\"edit_media\":\"" + BASE_URI + "Employees('1')/$value\"},"
         + "\"EntryDate\":\"\\/Date(0)\\/\"}}",
+        json);
+  }
+
+  @Test
+  public void entryWithExpandedEntry() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    Map<String, Object> roomData = new HashMap<String, Object>();
+    roomData.put("Id", "1");
+    roomData.put("Version", 1);
+
+    ExpandSelectTreeNode node2 = Mockito.mock(ExpandSelectTreeNode.class);
+    Map<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
+    links.put("nr_Building", node2);
+    ExpandSelectTreeNode node1 = Mockito.mock(ExpandSelectTreeNode.class);
+    Mockito.when(node1.getLinks()).thenReturn(links);
+
+    class EntryCallback implements ODataCallback, OnWriteEntryContent {
+      @Override
+      public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) throws ODataApplicationException {
+        Map<String, Object> buildingData = new HashMap<String, Object>();
+        buildingData.put("Id", "1");
+        WriteEntryCallbackResult result = new WriteEntryCallbackResult();
+        result.setEntryData(buildingData);
+        result.setInlineProperties(DEFAULT_PROPERTIES);
+        return result;
+      }
+    }
+    EntryCallback callback = new EntryCallback();
+    Map<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
+    callbacks.put("nr_Building", callback);
+
+    final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, roomData,
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).expandSelectTree(node1).callbacks(callbacks).build());
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
+
+    final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(json);
+    assertEquals("{\"d\":{\"__metadata\":{\"id\":\"" + BASE_URI + "Rooms('1')\","
+        + "\"uri\":\"" + BASE_URI + "Rooms('1')\",\"type\":\"RefScenario.Room\",\"etag\":\"W/\\\"1\\\"\"},"
+        + "\"nr_Building\":{\"__metadata\":{\"id\":\"" + BASE_URI + "Buildings('1')\","
+        + "\"uri\":\"" + BASE_URI + "Buildings('1')\",\"type\":\"RefScenario.Building\"},"
+        + "\"Id\":\"1\",\"Name\":null,\"Image\":null,"
+        + "\"nb_Rooms\":{\"__deferred\":{\"uri\":\"" + BASE_URI + "Buildings('1')/nb_Rooms\"}}}}}",
+        json);
+  }
+
+  @Test
+  public void entryWithExpandedFeed() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Buildings");
+    Map<String, Object> buildingData = new HashMap<String, Object>();
+    buildingData.put("Id", "1");
+
+    ExpandSelectTreeNode node2 = Mockito.mock(ExpandSelectTreeNode.class);
+    Map<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
+    links.put("nb_Rooms", node2);
+    ExpandSelectTreeNode node1 = Mockito.mock(ExpandSelectTreeNode.class);
+    Mockito.when(node1.getLinks()).thenReturn(links);
+
+    class FeedCallback implements ODataCallback, OnWriteFeedContent {
+      @Override
+      public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) throws ODataApplicationException {
+        Map<String, Object> roomData = new HashMap<String, Object>();
+        roomData.put("Id", "1");
+        roomData.put("Version", 1);
+        List<Map<String, Object>> roomsData = new ArrayList<Map<String, Object>>();
+        roomsData.add(roomData);
+        WriteFeedCallbackResult result = new WriteFeedCallbackResult();
+        result.setFeedData(roomsData);
+        result.setInlineProperties(DEFAULT_PROPERTIES);
+        return result;
+      }
+    }
+    FeedCallback callback = new FeedCallback();
+    Map<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
+    callbacks.put("nb_Rooms", callback);
+
+    final ODataResponse response = new JsonEntityProvider().writeEntry(entitySet, buildingData,
+        EntityProviderWriteProperties.serviceRoot(URI.create(BASE_URI)).expandSelectTree(node1).callbacks(callbacks).build());
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
+
+    final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(json);
+    assertEquals("{\"d\":{\"__metadata\":{\"id\":\"" + BASE_URI + "Buildings('1')\","
+        + "\"uri\":\"" + BASE_URI + "Buildings('1')\",\"type\":\"RefScenario.Building\"},"
+        + "\"nb_Rooms\":{\"results\":[{\"__metadata\":{\"id\":\"" + BASE_URI + "Rooms('1')\","
+        + "\"uri\":\"" + BASE_URI + "Rooms('1')\",\"type\":\"RefScenario.Room\",\"etag\":\"W/\\\"1\\\"\"},"
+        + "\"Id\":\"1\",\"Name\":null,\"Seats\":null,\"Version\":1,"
+        + "\"nr_Employees\":{\"__deferred\":{\"uri\":\"" + BASE_URI + "Rooms('1')/nr_Employees\"}},"
+        + "\"nr_Building\":{\"__deferred\":{\"uri\":\"" + BASE_URI + "Rooms('1')/nr_Building\"}}}]}}}",
         json);
   }
 }

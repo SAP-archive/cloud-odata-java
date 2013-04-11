@@ -24,8 +24,8 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -205,7 +205,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     try {
       OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
-      new JsonFeedEntityProducer(properties).append(writer, entityInfo, data);
+      new JsonFeedEntityProducer(properties).append(writer, entityInfo, data, true);
       writer.flush();
       outStream.flush();
       outStream.close();

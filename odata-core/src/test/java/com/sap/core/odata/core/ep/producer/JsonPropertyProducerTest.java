@@ -47,6 +47,13 @@ public class JsonPropertyProducerTest extends BaseTest {
   }
 
   @Test
+  public void serializeBinary() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Building").getProperty("Image");
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, new byte[] { 42, -42 });
+    assertEquals("{\"d\":{\"Image\":\"KtY=\"}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
   public void serializeNull() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
     final ODataResponse response = new JsonEntityProvider().writeProperty(property, null);

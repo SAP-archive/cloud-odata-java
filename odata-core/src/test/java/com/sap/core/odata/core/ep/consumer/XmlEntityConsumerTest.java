@@ -254,6 +254,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
     
     public ODataEntry asEntry(String name) { return (ODataEntry) getObject(name); }
+    @SuppressWarnings("unchecked")
     public List<ODataEntry> asFeed(String name) { return (List<ODataEntry>) getObject(name); }
   }
 
@@ -293,7 +294,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     final List<ODataEntry> employees = defaultCallback.employees;
     assertEquals(3, employees.size());
     //
-    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
