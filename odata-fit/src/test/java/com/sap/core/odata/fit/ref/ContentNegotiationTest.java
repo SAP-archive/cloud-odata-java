@@ -109,4 +109,13 @@ public class ContentNegotiationTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertTrue(getBody(response).length() > 100);
   }
+
+  @Test
+  public void postWithUnsupportedContentTypeFeed() throws Exception {
+    String body = getBody(callUri("Rooms('1')"));
+    final HttpResponse response = postUri("Rooms", body,
+        HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
+    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    assertTrue(getBody(response).length() > 100);
+  }
 }
