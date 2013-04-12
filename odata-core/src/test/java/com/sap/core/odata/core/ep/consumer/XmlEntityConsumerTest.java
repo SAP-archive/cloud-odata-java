@@ -207,9 +207,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "  </m:properties>" +
       "</entry>";
 
-  
   private static class EmployeeCallback implements OnReadInlineContent {
     List<ODataEntry> employees;
+
     @Override
     public void handleReadEntry(final ReadEntryResult context) {
       handleEntry(context);
@@ -219,20 +219,20 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     public void handleReadFeed(ReadFeedResult context) {
       handleEntry(context);
     }
-    
+
     private void handleEntry(ReadResult context) {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName.contains("Employees")) {
-          employees = ((ReadFeedResult)context).getResult();
+          employees = ((ReadFeedResult) context).getResult();
         } else {
           throw new RuntimeException("Invalid title");
         }
       } catch (EdmException e) {
-        throw new RuntimeException("Invalid title");        
+        throw new RuntimeException("Invalid title");
       }
     }
-    
+
     @Override
     public EntityProviderReadProperties receiveReadProperties(EntityProviderReadProperties readProperties, EdmNavigationProperty navString) {
       Map<String, Object> typeMappings = new HashMap<String, Object>();
@@ -248,7 +248,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     public void handleReadEntry(final ReadEntryResult context) {
       handle(context);
     }
-    
+
     @Override
     public void handleReadFeed(ReadFeedResult context) {
       handle(context);
@@ -257,8 +257,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     private void handle(ReadResult context) {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
-        if(navigationPropertyName != null) {
-//          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
+        if (navigationPropertyName != null) {
+          //          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
           propName2Context.put(navigationPropertyName, context);
         } else {
           throw new RuntimeException("Invalid title");
@@ -267,19 +267,24 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
         throw new RuntimeException("Invalid title");
       }
     }
-    
+
     public Object getObject(String name) {
       ReadResult context = propName2Context.get(name);
-      if(context == null) {
+      if (context == null) {
         return null;
       } else {
         return context.getResult();
       }
     }
-    
-    public ODataEntry asEntry(String name) { return (ODataEntry) getObject(name); }
+
+    public ODataEntry asEntry(String name) {
+      return (ODataEntry) getObject(name);
+    }
+
     @SuppressWarnings("unchecked")
-    public List<ODataEntry> asFeed(String name) { return (List<ODataEntry>) getObject(name); }
+    public List<ODataEntry> asFeed(String name) {
+      return (List<ODataEntry>) getObject(name);
+    }
 
     @Override
     public EntityProviderReadProperties receiveReadProperties(EntityProviderReadProperties readProperties, EdmNavigationProperty navigationProperty) {
@@ -301,7 +306,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
-
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
@@ -343,7 +347,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
 
-
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     DefaultCallback defaultCallback = new DefaultCallback();
@@ -369,7 +372,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
@@ -548,7 +553,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // teams has no inlined content set
     List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
     assertNull(employees);
-    
+
     // get inlined employees feed from callback
     employees = callbackHandler.asFeed("nt_Employees");
     assertEquals(3, employees.size());

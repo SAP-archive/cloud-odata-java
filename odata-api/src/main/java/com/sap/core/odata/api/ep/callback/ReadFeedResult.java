@@ -15,7 +15,6 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
  * <code>navigationPropertyName</code> and a <code>NULL</code> entry set.
  * 
  * @author SAP AG
- *
  */
 public class ReadFeedResult extends ReadResult {
 
@@ -25,7 +24,7 @@ public class ReadFeedResult extends ReadResult {
    * Constructor.
    * Parameters <b>MUST NOT BE NULL</b>.
    * 
-   * @param readProperties read properties which are used to read enclosing parent entity
+   * @param properties read properties which are used to read enclosing parent entity
    * @param navigationProperty emd navigation property information of found inline navigation property
    * @param entry read entities as list of {@link ODataEntry}
    */
@@ -34,24 +33,15 @@ public class ReadFeedResult extends ReadResult {
     this.entry = entry;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public List<ODataEntry> getResult() {
     return entry;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public boolean isFeed() {
     return true;
   }
-  
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public String toString() {
     return super.toString() + "\n\t" + entry.toString();

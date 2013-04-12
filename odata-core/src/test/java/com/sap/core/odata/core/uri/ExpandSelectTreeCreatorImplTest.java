@@ -24,6 +24,9 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class ExpandSelectTreeCreatorImplTest extends BaseTest {
   private static Edm edm;
 

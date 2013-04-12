@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 
 /**
- * Tests employing the reference scenario changing entities in XML format
+ * Tests employing the reference scenario changing entities in XML format.
  * @author SAP AG
  */
 public class EntryXmlChangeTest extends AbstractRefXmlTest {
@@ -72,13 +72,12 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   public void createInvalidXml() throws Exception {
     getBody(callUri("Employees('7')", HttpStatusCodes.NOT_FOUND));
 
-    String updateBody = "<invalidXml></invalid>";
-    HttpResponse postResult = postUri("Employees", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    final String updateBody = "<invalidXml></invalid>";
+    final HttpResponse postResult = postUri("Employees", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
     checkMediaType(postResult, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(postResult));
 
     final String requestBodyAfter = getBody(callUri("Employees('7')"));
-
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", requestBodyAfter);
   }
 
@@ -158,7 +157,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     HttpResponse response = postUri("Buildings", buildingWithRooms, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertEquals(getEndpoint() + "Buildings('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
-    assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Id", getBody(response));
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Id", body);
+    assertXpathEvaluatesTo("105", "/atom:entry/atom:link[@rel='" + Edm.NAMESPACE_REL_2007_08 + "nb_Rooms']/m:inline/atom:feed/atom:entry[2]/atom:content/m:properties/d:Id", body);
     checkUri("Buildings('4')");
     checkUri("Rooms('104')");
     checkUri("Buildings('4')/nb_Rooms('104')");
@@ -166,8 +167,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     checkUri("Rooms('105')");
     checkUri("Buildings('4')/nb_Rooms('105')");
     checkUri("Rooms('105')/nr_Building");
-    response = callUri("Buildings('4')/nb_Rooms('105')/Seats/$value");
-    assertEquals("5", getBody(response));
+    assertEquals("5", getBody(callUri("Buildings('4')/nb_Rooms('105')/Seats/$value")));
   }
 
   @Test
@@ -234,7 +234,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
   @Test
   public void delete() throws Exception {
-    String uri = "Employees('2')";
+    final String uri = "Employees('2')";
     deleteUriOk(uri);
     final String requestBody = getBody(callUri(uri, HttpStatusCodes.NOT_FOUND));
 
