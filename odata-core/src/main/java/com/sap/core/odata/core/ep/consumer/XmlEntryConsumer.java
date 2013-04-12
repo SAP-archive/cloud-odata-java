@@ -32,6 +32,7 @@ import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 import com.sap.core.odata.core.ep.util.FormatXml;
+import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
 /**
  * Atom/XML format reader/consumer for entries.
@@ -279,6 +280,10 @@ public class XmlEntryConsumer {
       entry = inlineEntries.get(0);
     }
     if(callback == null) {
+      readEntryResult.setContainsInlineEntry(true);
+      ExpandSelectTreeNodeImpl expandSelectTree = new ExpandSelectTreeNodeImpl();
+      // TODO: Implement here
+      readEntryResult.setExpandSelectTree(expandSelectTree);
       properties.put(navigationPropertyName, entry);
     } else {
       if(isFeed) {

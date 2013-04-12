@@ -2,6 +2,8 @@ package com.sap.core.odata.api.ep.entry;
 
 import java.util.Map;
 
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+
 /**
  * An {@link ODataEntry} contains all <b>properties</b> (in form of a {@link Map}) and possible <b>metadata</b> 
  * (in form of {@link MediaMetadata} and/or {@link EntryMetadata}) for an entry.
@@ -39,4 +41,11 @@ public interface ODataEntry {
    * @return <code>true</code> if inline navigation properties are contained, otherwise <code>false</code>.
    */
   public boolean containsInlineEntry();
+  
+  /**
+   * Gets the expand select tree data structure which can be used for <code>$expand</code> query option.
+   * 
+   * @return parsed tree structure representing the $expand
+   */
+  public ExpandSelectTreeNode getExpandSelectTree();
 }

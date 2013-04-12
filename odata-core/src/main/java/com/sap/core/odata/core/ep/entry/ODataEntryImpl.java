@@ -5,12 +5,14 @@ import java.util.Map;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 public class ODataEntryImpl implements ODataEntry {
 
   private Map<String, Object> data;
   private EntryMetadata entryMetadata;
   private MediaMetadata mediaMetadata;
+  private ExpandSelectTreeNode expandSelectTree;
   private boolean containsInlineEntry;
 
   public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata) {
@@ -44,9 +46,19 @@ public class ODataEntryImpl implements ODataEntry {
     return containsInlineEntry;
   }
   
+  @Override
+  public ExpandSelectTreeNode getExpandSelectTree() {
+    return expandSelectTree;
+  }
+  
   public void setContainsInlineEntry(boolean containsInlineEntry) {
     this.containsInlineEntry = containsInlineEntry;
   }
+  
+  public void setExpandSelectTree(ExpandSelectTreeNode expandSelectTree) {
+    this.expandSelectTree = expandSelectTree;
+  }
+  
 
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
