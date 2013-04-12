@@ -12,11 +12,11 @@ public class JsonStreamWriter {
   private static final Pattern JSON_TO_BE_ESCAPED = Pattern.compile("\"|\\\\|\\p{Cntrl}");
 
   private final Writer writer;
-  
+
   public JsonStreamWriter(Writer writer) {
     this.writer = writer;
   }
-  
+
   public void beginObject() throws IOException {
     writer.append('{');
   }
