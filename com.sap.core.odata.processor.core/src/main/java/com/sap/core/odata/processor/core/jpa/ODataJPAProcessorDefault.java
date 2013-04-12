@@ -6,6 +6,7 @@ import java.util.List;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -57,7 +58,20 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 		long jpaEntityCount = this.jpaProcessor.process(uriParserResultView);
 
 		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
-				jpaEntityCount, uriParserResultView, contentType, oDataJPAContext);
+				jpaEntityCount, oDataJPAContext);
+
+		return oDataResponse;
+	}
+	
+
+	@Override
+	public ODataResponse existsEntity(GetEntityCountUriInfo uriInfo,
+			String contentType) throws ODataException {
+		
+		long jpaEntityCount = this.jpaProcessor.process(uriInfo);
+
+		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
+				jpaEntityCount, oDataJPAContext);
 
 		return oDataResponse;
 	}

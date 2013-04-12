@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -198,6 +199,41 @@ public class JPAProcessorImpl implements JPAProcessor {
 			return Long.valueOf(resultList.get(0).toString());
 		else
 			return 0;// Invalid value
+	}
+	
+	@Override
+	public long process(GetEntityCountUriInfo resultsView) throws ODataJPAModelException, ODataJPARuntimeException {
+
+		JPQLContextType contextType = null;
+		try {
+			if (!resultsView.getStartEntitySet().getName()
+					.equals(resultsView.getTargetEntitySet().getName()))
+				contextType = JPQLContextType.JOIN_COUNT;
+			else
+				contextType = JPQLContextType.SELECT_COUNT;
+		} catch (EdmException e) {
+			ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.GENERAL, e);
+		}
+
+		JPQLContext jpqlContext = JPQLContext.createBuilder(contextType,
+				resultsView).build();
+
+		JPQLStatement jpqlStatement = JPQLStatement.createBuilder(jpqlContext)
+				.build();
+		Query query = null;
+		try {
+
+			query = em.createQuery(jpqlStatement.toString());
+		} catch (IllegalArgumentException e) {
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
+		}
+		List<?> resultList = query.getResultList();
+		if (resultList != null && resultList.size() == 1)
+			return Long.valueOf(resultList.get(0).toString());
+		else
+			return 0;
 	}
 
 	@Override

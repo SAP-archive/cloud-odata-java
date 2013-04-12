@@ -46,6 +46,7 @@ import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
@@ -109,6 +110,23 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 			assertTrue(true);
 		}
 	}
+	
+	@Test
+	public void testExistsEntity() {
+		try {
+			Assert.assertNotNull(objODataJPAProcessorDefault.existsEntity(getEntityCountCountUriInfo(), HttpContentType.APPLICATION_XML));
+			Assert.assertEquals(TEXT_PLAIN_CHARSET_UTF_8, 
+					objODataJPAProcessorDefault.existsEntity(getEntityCountCountUriInfo(), HttpContentType.APPLICATION_XML).getHeader(STR_CONTENT_TYPE));
+		} catch (ODataException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		catch(Exception e)
+		{
+			assertTrue(true);
+		}
+	}
+	
 	
 	@Test
 	public void testDeleteEntity() {
@@ -181,6 +199,10 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 	}
 
 	private GetEntitySetCountUriInfo getEntitySetCountUriInfo() {
+		return getLocalUriInfo();
+	}
+	
+	private GetEntityCountUriInfo getEntityCountCountUriInfo() {
 		return getLocalUriInfo();
 	}
 

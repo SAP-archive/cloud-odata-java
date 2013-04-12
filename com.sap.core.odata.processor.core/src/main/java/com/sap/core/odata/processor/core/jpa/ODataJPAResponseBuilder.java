@@ -27,7 +27,6 @@ import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
-import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
@@ -145,7 +144,6 @@ public final class ODataJPAResponseBuilder {
 	}
 
 	public static ODataResponse build(long jpaEntityCount,
-			GetEntitySetCountUriInfo uriInfo, String contentType,
 			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
 
 		ODataResponse odataResponse = null;
@@ -160,7 +158,7 @@ public final class ODataJPAResponseBuilder {
 		}
 		return odataResponse;
 	}
-
+	
 	public static ODataResponse build(Object createdObject,
 			PostUriInfo uriInfo, String contentType,
 			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,

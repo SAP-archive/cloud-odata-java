@@ -33,7 +33,6 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
@@ -108,7 +107,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	public void testBuildGetCount() {
 		ODataResponse objODataResponse = null;
 		try {
-			objODataResponse = ODataJPAResponseBuilder.build(1, getCountEntitySetUriInfo(), "application/xml", getODataJPAContext());
+			objODataResponse = ODataJPAResponseBuilder.build(1, getODataJPAContext());
 		} catch (ODataJPARuntimeException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -116,12 +115,6 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		assertNotNull(objODataResponse);
 	}
 	
-	private GetEntitySetCountUriInfo getCountEntitySetUriInfo() {
-		GetEntitySetCountUriInfo objGetEntitySetCountUriInfo = EasyMock.createMock(GetEntitySetCountUriInfo.class);
-		EasyMock.replay(objGetEntitySetCountUriInfo);
-		return objGetEntitySetCountUriInfo;
-	}
-
 	private ODataJPAContext getODataJPAContext() {
 		ODataJPAContext objODataJPAContext = EasyMock.createMock(ODataJPAContext.class);
 		EasyMock.expect(objODataJPAContext.getODataContext()).andStubReturn(getLocalODataContext());

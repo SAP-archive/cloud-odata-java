@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -57,8 +58,7 @@ public interface JPAProcessor {
 			throws ODataJPAModelException, ODataJPARuntimeException;
 
 	/**
-	 * Processes OData request for fetching Entity count. The method returns an
-	 * Object of type representing JPA Entity count
+	 * Processes OData request for fetching Entity count. The method returns JPA Entity count
 	 * 
 	 * @param requestView
 	 *            OData request for counting an entity set
@@ -69,6 +69,21 @@ public interface JPAProcessor {
 	 */
 
 	public long process(GetEntitySetCountUriInfo requestView)
+			throws ODataJPAModelException, ODataJPARuntimeException;
+	
+
+	/**
+	 * Processes OData request for fetching Entity count. The method returns count of target entity.
+	 * This is specific to situation where cardinality is 1:1
+	 * 
+	 * @param resultsView 
+	 * 			OData request for counting target entity.
+	 * @return long value representing count of JPA entity
+	 * 
+	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException
+	 */
+	public long process(GetEntityCountUriInfo resultsView) 
 			throws ODataJPAModelException, ODataJPARuntimeException;
 
 	/**
