@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmAnnotatable;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
@@ -140,6 +141,14 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
     } else {
       throw new EdmException(EdmException.COMMON);
     }
+  }
 
+  @Override
+  public String toString() {
+    try {
+      return namespace + Edm.DELIMITER + getName();
+    } catch (final EdmException e) {
+      return null;
+    }
   }
 }

@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.ep;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,7 +69,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonErrorDocumentProducer().writeErrorDocument(writer, errorCode, message, locale, innerError);
       writer.flush();
       outStream.flush();
@@ -106,7 +107,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       JsonServiceDocumentProducer.writeServiceDocument(writer, edm);
       writer.flush();
       outStream.flush();
@@ -137,7 +138,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       JsonEntryEntityProducer producer = new JsonEntryEntityProducer(properties);
       producer.append(writer, entityInfo, data, true);
       writer.flush();
@@ -173,7 +174,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonPropertyEntityProducer().append(writer, propertyInfo, value);
       writer.flush();
       outStream.flush();
@@ -199,17 +200,16 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
+    final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
-      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonFeedEntityProducer(properties).append(writer, entityInfo, data, true);
       writer.flush();
       outStream.flush();
       outStream.close();
-
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -231,7 +231,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonLinkEntityProducer(properties).append(writer, entityInfo, data);
       writer.flush();
       outStream.flush();
@@ -262,7 +262,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonLinksEntityProducer(properties).append(writer, entityInfo, data);
       writer.flush();
       outStream.flush();
@@ -290,7 +290,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     OutputStream outStream = buffer.getOutputStream();
 
     try {
-      OutputStreamWriter writer = new OutputStreamWriter(outStream, DEFAULT_CHARSET);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonCollectionEntityProducer().append(writer, propertyInfo, data);
       writer.flush();
       outStream.flush();

@@ -132,7 +132,7 @@ public class JsonEntryEntityProducer {
                 throw new EntityProviderException(EntityProviderException.COMMON, e);
               }
             } else {
-              throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
+              throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
             }
           } else {
             jsonStreamWriter.beginObject();
