@@ -38,6 +38,7 @@ import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
@@ -254,11 +255,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
 
     private void handle(ReadResult context) {
-      String navigationPropertyName;
       try {
-        navigationPropertyName = context.getNavigationProperty().getName();
+        String navigationPropertyName = context.getNavigationProperty().getName();
         if(navigationPropertyName != null) {
-          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
+//          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
           propName2Context.put(navigationPropertyName, context);
         } else {
           throw new RuntimeException("Invalid title");
@@ -402,6 +402,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("1", properties.get("Id"));
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    //
+    ExpandSelectTreeNode expandTree = entry.getExpandSelectTree();
+    assertNotNull(expandTree);
+    // TODO: do more testing here
     //
     List<Object> employees = (List<Object>) properties.get("nt_Employees");
     assertEquals(3, employees.size());
