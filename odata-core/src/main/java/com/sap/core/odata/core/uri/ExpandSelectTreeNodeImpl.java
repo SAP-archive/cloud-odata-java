@@ -10,6 +10,9 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
+/**
+ * @author SAP AG
+ */
 public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   public enum AllKinds {
@@ -27,7 +30,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   }
 
   private AllKinds isAll = AllKinds.IMPLICITLYTRUE;
-  private boolean isExplicitlySeleced = false;
+  private boolean isExplicitlySelected = false;
   private boolean isExpanded = false;
   private final List<EdmProperty> properties = new ArrayList<EdmProperty>();
   private final HashMap<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
@@ -47,12 +50,12 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     return links;
   }
 
-  public boolean isExplicitlySeleced() {
-    return isExplicitlySeleced;
+  public boolean isExplicitlySelected() {
+    return isExplicitlySelected;
   }
 
-  public void setExplicitlySeleced() {
-    isExplicitlySeleced = true;
+  public void setExplicitlySelected() {
+    isExplicitlySelected = true;
     setAllExplicitly();
   }
 

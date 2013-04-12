@@ -36,9 +36,8 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
-import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteCallbackContext;
@@ -57,6 +56,7 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.PathSegment;
@@ -267,7 +267,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).build();
+    final ExpandSelectTreeNode expandSelectTreeNode = UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand());
+    return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTreeNode, data, contentType)).build();
   }
 
   @Override
@@ -299,6 +300,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntityType entityType = entitySet.getEntityType();
 
     Object data = dataSource.newDataObject(entitySet);
+    ExpandSelectTreeNode expandSelectTree = null;
 
     if (entityType.hasStream()) {
       dataSource.createData(entitySet, data);
@@ -317,11 +319,12 @@ public class ListsProcessor extends ODataSingleProcessor {
       dataSource.createData(entitySet, data);
 
       linkEntity(entitySet, data, entryValues.getMetadata());
-
       createInlinedEntities(data, entitySet, entryValues);
+
+      expandSelectTree = entryValues.getExpandSelectTree();
     }
 
-    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).eTag(constructETag(entitySet, data)).build();
+    return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTree, data, contentType)).eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -905,20 +908,20 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private <T> ODataResponse writeEntry(final UriInfo uriInfo, final T data, final String contentType) throws ODataException, EntityProviderException {
-    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+  private <T> ODataResponse writeEntry(final EdmEntitySet entitySet, final ExpandSelectTreeNode expandSelectTree, final T data, final String contentType) throws ODataException, EntityProviderException {
     final EdmEntityType entityType = entitySet.getEntityType();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
 
     ODataContext context = getContext();
-    ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderWriteProperties
+    EntityProviderWriteProperties writeProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
-        .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
-        .callbacks(getCallbacks(data, entityType));
+        .expandSelectTree(expandSelectTree)
+        .callbacks(getCallbacks(data, entityType))
+        .build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
-    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties.build());
+    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, writeProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
 

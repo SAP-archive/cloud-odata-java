@@ -12,14 +12,14 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * Tests employing the reference scenario changing entities in XML format
+ * Tests employing the reference scenario changing entities in XML format.
  * @author SAP AG
  */
 public class EntryXmlCreateTest extends AbstractRefXmlTest {
 
   @Test
   public void createDeepInsertRoomWithFourEmployees() throws Exception {
-    
+
     // prepare
     String content = readFile("room_w_four_inlined_employees.xml");
     assertNotNull(content);
@@ -34,13 +34,14 @@ public class EntryXmlCreateTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("2", "/atom:entry/atom:content/m:properties/d:Version", body);
     assertXpathEvaluatesTo("104", "/atom:entry/atom:content/m:properties/d:Id", body);
     assertXpathEvaluatesTo("Room 2", "/atom:entry/atom:content/m:properties/d:Name", body);
+    assertXpathEvaluatesTo("7", "/atom:entry/atom:link/m:inline/atom:feed/atom:entry/m:properties/d:EmployeeId", body);
     //
     checkUri("Rooms('104')/nr_Employees('7')");
     checkUri("Employees('7')/ne_Room");
     response = callUri("Employees('7')/ne_Room/Seats/$value");
     body = getBody(response);
     assertEquals("5", body);
-    
+
     checkUri("Rooms('104')/nr_Employees('8')");
     checkUri("Employees('7')/ne_Room");
     response = callUri("Employees('7')/ne_Room/Id/$value");

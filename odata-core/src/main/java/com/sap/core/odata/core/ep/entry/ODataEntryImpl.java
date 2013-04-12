@@ -6,7 +6,11 @@ import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
+/**
+ * @author SAP AG
+ */
 public class ODataEntryImpl implements ODataEntry {
 
   private Map<String, Object> data;
@@ -18,11 +22,12 @@ public class ODataEntryImpl implements ODataEntry {
   public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata) {
     this(data, mediaMetadata, entryMetadata, false);
   }
-  
+
   public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata, final boolean containsInlineEntry) {
     this.data = data;
     this.entryMetadata = entryMetadata;
     this.mediaMetadata = mediaMetadata;
+    this.expandSelectTree = new ExpandSelectTreeNodeImpl();
     this.containsInlineEntry = containsInlineEntry;
   }
 
@@ -40,31 +45,31 @@ public class ODataEntryImpl implements ODataEntry {
   public EntryMetadata getMetadata() {
     return entryMetadata;
   }
-  
+
   @Override
   public boolean containsInlineEntry() {
     return containsInlineEntry;
   }
-  
+
   @Override
   public ExpandSelectTreeNode getExpandSelectTree() {
     return expandSelectTree;
   }
-  
+
   public void setContainsInlineEntry(boolean containsInlineEntry) {
     this.containsInlineEntry = containsInlineEntry;
   }
-  
+
   public void setExpandSelectTree(ExpandSelectTreeNode expandSelectTree) {
     this.expandSelectTree = expandSelectTree;
   }
-  
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
-    return "ODataEntryImpl [data=" + data + ", entryMetadata=" + entryMetadata + ", mediaMetadata=" + mediaMetadata + "]";
+    return "ODataEntryImpl [data=" + data + ", "
+        + "entryMetadata=" + entryMetadata + ", "
+        + "mediaMetadata=" + mediaMetadata + ", "
+        + "expandSelectTree=" + expandSelectTree + ", "
+        + "containsInlineEntry=" + containsInlineEntry + "]";
   }
 }

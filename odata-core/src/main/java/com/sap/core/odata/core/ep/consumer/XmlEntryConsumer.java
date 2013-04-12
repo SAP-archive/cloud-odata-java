@@ -24,6 +24,7 @@ import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
@@ -39,6 +40,7 @@ import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
  * 
  * {@link XmlEntryConsumer} instance can be reused for several {@link #readEntry(XMLStreamReader, EntityInfoAggregator, EntityProviderReadProperties)} calls
  * but be aware that the instance and their <code>readEntry*</code> methods are <b>NOT THREAD SAFE</b>.
+ * @author SAP AG
  */
 public class XmlEntryConsumer {
 
@@ -273,20 +275,23 @@ public class XmlEntryConsumer {
       reader.next();
     }
 
+    ExpandSelectTreeNode expandSelectTree = readEntryResult.getExpandSelectTree();
+    ((ExpandSelectTreeNodeImpl) expandSelectTree).setExpanded();
+    ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
+    expandSelectTree.getLinks().put(navigationPropertyName, subNode);
+
     Object entry = null;
     if (isFeed) {
       entry = inlineEntries;
     } else if (!inlineEntries.isEmpty()) {
       entry = inlineEntries.get(0);
     }
-    if(callback == null) {
+    if (callback == null) {
       readEntryResult.setContainsInlineEntry(true);
-      ExpandSelectTreeNodeImpl expandSelectTree = new ExpandSelectTreeNodeImpl();
-      // TODO: Implement here
-      readEntryResult.setExpandSelectTree(expandSelectTree);
       properties.put(navigationPropertyName, entry);
     } else {
-      if(isFeed) {
+      if (isFeed) {
+        @SuppressWarnings("unchecked")
         ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (List<ODataEntry>) entry);
         callback.handleReadFeed(callbackInfo);
       } else {

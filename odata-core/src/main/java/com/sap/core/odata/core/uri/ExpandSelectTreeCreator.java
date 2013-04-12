@@ -40,7 +40,7 @@ public class ExpandSelectTreeCreator {
       createSelectTree(root);
     } else {
       //If no select is given the root node is explicitly selected for all expand clauses
-      root.setExplicitlySeleced();
+      root.setExplicitlySelected();
     }
     //Merge in the expand tree
     mergeExpandTree(root);
@@ -80,8 +80,8 @@ public class ExpandSelectTreeCreator {
     while (iterator.hasNext()) {
       Map.Entry<String, ExpandSelectTreeNode> entry = iterator.next();
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
-      if (subNode.isExpanded() && node.isExplicitlySeleced()) {
-        subNode.setExplicitlySeleced();
+      if (subNode.isExpanded() && node.isExplicitlySelected()) {
+        subNode.setExplicitlySelected();
         consolidate(subNode);
       } else if (subNode.isExpanded()) {
         consolidate(subNode);
@@ -105,7 +105,7 @@ public class ExpandSelectTreeCreator {
         actualNode.setAllExplicitly();
       } else {
         //The actual node is a navigation property and has no property or star so it is explicitly selected
-        actualNode.setExplicitlySeleced();
+        actualNode.setExplicitlySelected();
       }
     }
   }
@@ -115,9 +115,9 @@ public class ExpandSelectTreeCreator {
     if (!links.containsKey(navigationPropertyName)) {
       ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
       links.put(navigationPropertyName, subNode);
-      if (actualNode.isExplicitlySeleced()) {
+      if (actualNode.isExplicitlySelected()) {
         //if a node was explicitly selected all sub nodes are explicitly selected
-        subNode.setExplicitlySeleced();
+        subNode.setExplicitlySelected();
       } else {
         if (actualNode.getAllKind() == AllKinds.IMPLICITLYTRUE) {
           actualNode.setAllKindFalse();
@@ -145,10 +145,10 @@ public class ExpandSelectTreeCreator {
   private ExpandSelectTreeNodeImpl addExpandNode(final ExpandSelectTreeNodeImpl actualNode, final String navigationPropertyName) {
     Map<String, ExpandSelectTreeNode> links = actualNode.getLinks();
     if (!links.containsKey(navigationPropertyName)) {
-      if (actualNode.isExplicitlySeleced() || (actualNode.isExplicitlySeleced() && actualNode.isExpanded())) {
+      if (actualNode.isExplicitlySelected() || (actualNode.isExplicitlySelected() && actualNode.isExpanded())) {
         ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
         subNode.setExpanded();
-        subNode.setExplicitlySeleced();
+        subNode.setExplicitlySelected();
         links.put(navigationPropertyName, subNode);
         return subNode;
       } else {

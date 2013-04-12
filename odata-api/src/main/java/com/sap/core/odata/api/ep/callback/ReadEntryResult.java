@@ -22,7 +22,7 @@ public class ReadEntryResult extends ReadResult {
    * Constructor.
    * Parameters <b>MUST NOT BE NULL</b>.
    * 
-   * @param readProperties read properties which are used to read enclosing parent entity
+   * @param properties read properties which are used to read enclosing parent entity
    * @param navigationProperty emd navigation property information of found inline navigation property
    * @param entry read entity as {@link ODataEntry}
    */
@@ -31,25 +31,16 @@ public class ReadEntryResult extends ReadResult {
     this.entry = entry;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public ODataEntry getResult() {
     return entry;
   }
-    
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public boolean isFeed() {
     return false;
   }
-  
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public String toString() {
     return super.toString() + "\n\t" + entry.toString();
