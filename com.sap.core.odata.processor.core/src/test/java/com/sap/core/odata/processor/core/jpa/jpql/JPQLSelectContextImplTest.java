@@ -31,6 +31,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
 
@@ -145,6 +146,8 @@ public class JPQLSelectContextImplTest {
 			} while (++i < 2);
 			EasyMock.expect(entityType.getMapping()).andStubReturn(null);
 			EasyMock.expect(entityType.getName()).andStubReturn(entityTypeName);
+			EasyMock.expect(entityType.getKeyProperties()).andStubReturn(getLocalKeyProperties());
+			
 			EasyMock.replay(entityType);
 			EasyMock.expect(entitySet.getEntityType())
 					.andStubReturn(entityType);
@@ -196,6 +199,21 @@ public class JPQLSelectContextImplTest {
 		} catch (ODataJPARuntimeException e) {
 			fail("Runtime Exception thrown");
 		}
+	}
+
+	private List<EdmProperty> getLocalKeyProperties() {
+		List<EdmProperty> propertyList = new ArrayList<EdmProperty>();
+		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
+		try {
+			EasyMock.expect(edmProperty.getName()).andStubReturn("Field1");
+			EasyMock.expect(edmProperty.getMapping()).andStubReturn(null);
+		} catch (EdmException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		EasyMock.replay(edmProperty);
+		propertyList.add(edmProperty);
+		return propertyList;
 	}
 
 	@Test

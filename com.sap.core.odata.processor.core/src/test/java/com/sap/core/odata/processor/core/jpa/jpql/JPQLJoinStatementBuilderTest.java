@@ -40,8 +40,8 @@ public class JPQLJoinStatementBuilderTest {
 		EasyMock.expect(context.getSelectExpression()).andStubReturn("mat");
 		EasyMock.expect(context.getWhereExpression()).andStubReturn("soh.buyerId = 2");
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
-		orderByMap.put("buyerId", "asc");
-		orderByMap.put("city", "desc");
+		orderByMap.put("mat.buyerId", "asc");
+		orderByMap.put("mat.city", "desc");
 		EasyMock.expect(context.getOrderByCollection()).andStubReturn(orderByMap);
 		EasyMock.expect(context.getJPAJoinClauses()).andStubReturn(joinClauseList);
 		EasyMock.replay(context);		
