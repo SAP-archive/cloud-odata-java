@@ -1,4 +1,4 @@
-cloud-odata-library-for-java
+cloud-odata-java
 ============================
 
 oData library for Java
