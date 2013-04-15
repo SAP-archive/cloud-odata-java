@@ -13,17 +13,17 @@
 	<parent>
 		<groupId>com.sap.ldi</groupId>
 		<artifactId>ldi-parent</artifactId>
-		<version>6.6.0</version> 
+		<version>6.6.0</version>
 	</parent>
-	
-<!-- 	<licenses> -->
-<!-- 		<license> -->
-<!-- 			<name>The Apache Software License, Version 2.0</name> -->
-<!-- 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> -->
-<!-- 			<distribution>repo</distribution> -->
-<!-- 			<comments>A business-friendly OSS license</comments> -->
-<!-- 		</license> -->
-<!-- 	</licenses> -->
+
+	<!-- <licenses> -->
+	<!-- <license> -->
+	<!-- <name>The Apache Software License, Version 2.0</name> -->
+	<!-- <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> -->
+	<!-- <distribution>repo</distribution> -->
+	<!-- <comments>A business-friendly OSS license</comments> -->
+	<!-- </license> -->
+	<!-- </licenses> -->
 
 	<developers>
 		<developer>
@@ -147,6 +147,11 @@
 					<artifactId>maven-bundle-plugin</artifactId>
 					<version>2.3.7</version>
 				</plugin>
+				<plugin>
+					<groupId>com.mycila.maven-license-plugin</groupId>
+					<artifactId>maven-license-plugin</artifactId>
+					<version>1.9.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -198,7 +203,7 @@
 								<tag>
 									<name>com.sap.core.odata.DoNotImplement</name>
 									<placement>a</placement>
-									<head>Do not implement this interface or class to avoid incompatibility issues.</head>
+									<head>Do not implement this interface or class</head>
 								</tag>
 							</tags>
 							<additionalJOptions>
@@ -220,6 +225,33 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<header>src/etc/header.txt</header>
+					<quiet>false</quiet>
+					<failIfMissing>false</failIfMissing>
+					<aggregate>false</aggregate>
+					<excludes>
+						<exclude>target/**</exclude>
+						<excludes>**/.gitignore</excludes>
+						<excludes>**/*.g</excludes>
+						<excludes>**/*.template</excludes>
+					</excludes>
+					<useDefaultExcludes>true</useDefaultExcludes>
+					<aggregate>true</aggregate>
+					<encoding>UTF-8</encoding>
+					<strictCheck>true</strictCheck>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
