@@ -239,7 +239,7 @@
 				<configuration>
 					<header>src/etc/header.txt</header>
 					<quiet>false</quiet>
-					<failIfMissing>true</failIfMissing>
+					<failIfMissing>false</failIfMissing>
 					<aggregate>true</aggregate>
 					<excludes>
 						<exclude>target/**</exclude>
