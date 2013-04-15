@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    (c) {$year} by SAP AG
+
+-->
+<!--
+
+    /*
+     * (c) 2013 by SAP AG
+     */
+
+-->
 <profiles version="2">
 <profile kind="CleanUpProfile" name="odata lib cleanup profile" version="2">
 <setting id="cleanup.remove_unused_private_fields" value="true"/>

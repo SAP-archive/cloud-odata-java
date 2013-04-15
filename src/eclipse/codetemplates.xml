@@ -1,0 +1,13 @@
+<!--
+
+    (c) 2013 by SAP AG
+
+-->
+<!--
+
+    (c) {$year} by SAP AG
+
+-->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="filecomment_context" deleted="false" description="Comment for created Java files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.filecomment" name="filecomment">/**
+ * (c) ${year} by SAP AG
+ */</template></templates>

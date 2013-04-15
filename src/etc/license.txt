@@ -1,3 +1,0 @@
-/*
- * (c) ${year} by SAP AG
- */
