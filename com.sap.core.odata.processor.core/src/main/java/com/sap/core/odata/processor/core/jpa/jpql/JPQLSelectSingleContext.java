@@ -1,14 +1,11 @@
 package com.sap.core.odata.processor.core.jpa.jpql;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
-import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;

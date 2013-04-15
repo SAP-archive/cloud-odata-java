@@ -40,11 +40,10 @@ public class SalesOrderHeaderProcessor {
 		return soList;
 	}
 
-	@FunctionImport(name = "CheckATP", returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE, httpMethod = @HttpMethod(name = Name.GET) )
+	@FunctionImport(name = "CheckATP", returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE, httpMethod = @HttpMethod(name = Name.GET))
 	public boolean checkATP(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false), mode=Mode.IN) Long soID,
-			@Parameter(name = "LiId", facets = @Facets(nullable = false), mode=Mode.IN) Long lineItemID)
-	{
+			@Parameter(name = "SoID", facets = @Facets(nullable = false), mode = Mode.IN) Long soID,
+			@Parameter(name = "LiId", facets = @Facets(nullable = false), mode = Mode.IN) Long lineItemID) {
 		if (soID == 2L)
 			return false;
 		else
@@ -83,6 +82,16 @@ public class SalesOrderHeaderProcessor {
 			return soList.get(0).getBuyerAddress();
 		else
 			return null;
+	}
+
+	/*
+	 * This method will not be transformed into Function Import Function Import
+	 * with return type as void is not supported yet.
+	 */
+	@FunctionImport(returnType = ReturnType.NONE)
+	public void process(
+			@Parameter(name = "SoID", facets = @Facets(nullable = false)) Long soID) {
+		return;
 	}
 
 }

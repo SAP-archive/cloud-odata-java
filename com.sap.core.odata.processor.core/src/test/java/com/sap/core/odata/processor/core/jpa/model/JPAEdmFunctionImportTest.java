@@ -35,7 +35,7 @@ import com.sap.core.odata.processor.core.jpa.mock.model.JPACustomProcessorMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPACustomProcessorNegativeMock;
 
 public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
-	private static final int METHOD_COUNT = 7;
+	private static final int METHOD_COUNT = 6;
 	private static int VARIANT = 0;
 	private JPAEdmFunctionImport jpaEdmfunctionImport;
 
@@ -155,13 +155,13 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 		List<FunctionImport> functionImportList = jpaEdmfunctionImport
 				.getConsistentFunctionImportList();
 
-		assertEquals(functionImportList.size(), 1);
+		assertEquals(functionImportList.size(), 0);
 
-		FunctionImport functionImport = functionImportList.get(0);
-		assertEquals(functionImport.getName(), "method4");
-		assertNotNull(functionImport.getMapping());
-
-		assertNull(functionImport.getReturnType());
+		// FunctionImport functionImport = functionImportList.get(0);
+		// assertEquals(functionImport.getName(), "method4");
+		// assertNotNull(functionImport.getMapping());
+		//
+		// assertNull(functionImport.getReturnType());
 
 	}
 
@@ -423,6 +423,46 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 	}
 
+	/**
+	 * Test Case - Function Import test for ReturnType.SCALAR but method returns
+	 * void
+	 */
+	@Test
+	public void testWrongReturnTypeScalar() {
+		VARIANT = 16;
+
+		try {
+			jpaEdmfunctionImport.getBuilder().build();
+			fail("Exception Expected");
+		} catch (ODataJPAModelException e) {
+			assertEquals(ODataJPAModelException.FUNC_RETURN_TYPE_EXP.getKey(), e
+					.getMessageReference().getKey());
+		} catch (ODataJPARuntimeException e) {
+			fail("Model Exception Expected");
+		}
+
+	}
+	
+	/**
+	 * Test Case - Function Import test for ReturnType.COMPLEX but method returns
+	 * void
+	 */
+	@Test
+	public void testWrongReturnTypeComplex() {
+		VARIANT = 17;
+
+		try {
+			jpaEdmfunctionImport.getBuilder().build();
+			fail("Exception Expected");
+		} catch (ODataJPAModelException e) {
+			assertEquals(ODataJPAModelException.FUNC_RETURN_TYPE_EXP.getKey(), e
+					.getMessageReference().getKey());
+		} catch (ODataJPARuntimeException e) {
+			fail("Model Exception Expected");
+		}
+
+	}
+
 	@Test
 	public void testNoFunctionImport() {
 		VARIANT = 99;
@@ -499,6 +539,12 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 		} else if (VARIANT == 15) {
 			customOperations.put(JPACustomProcessorMock.class,
 					new String[] { "method3" });
+		} else if (VARIANT == 16) {
+			customOperations.put(JPACustomProcessorNegativeMock.class,
+					new String[] { "method16" });
+		} else if (VARIANT == 17) {
+			customOperations.put(JPACustomProcessorNegativeMock.class,
+					new String[] { "method17" });
 		} else {
 			return null;
 		}

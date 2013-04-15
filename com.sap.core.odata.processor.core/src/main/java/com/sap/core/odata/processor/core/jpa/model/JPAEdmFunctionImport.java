@@ -123,7 +123,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 
 			com.sap.core.odata.api.annotation.edm.FunctionImport annotation = method
 					.getAnnotation(com.sap.core.odata.api.annotation.edm.FunctionImport.class);
-			if (annotation != null) {
+			if (annotation != null && annotation.returnType() != ReturnType.NONE) {
 				FunctionImport functionImport = new FunctionImport();
 
 				if (annotation.name().equals(""))
@@ -207,6 +207,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 				throws ODataJPAModelException {
 			ReturnType returnType = annotation.returnType();
 			Multiplicity multiplicity = null;
+			
 			if (returnType != ReturnType.NONE) {
 				com.sap.core.odata.api.edm.provider.ReturnType functionReturnType = new com.sap.core.odata.api.edm.provider.ReturnType();
 				multiplicity = annotation.multiplicity();

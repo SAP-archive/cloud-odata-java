@@ -38,4 +38,14 @@ public class JPACustomProcessorNegativeMock {
 	public int method13(@Parameter(name = "") int y) {
 		return 0;
 	}
+	
+	@FunctionImport(returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE)
+	public void method16(@Parameter(name = "") int y) {
+		return;
+	}
+	
+	@FunctionImport(returnType = ReturnType.COMPLEX_TYPE, multiplicity = Multiplicity.ONE)
+	public void method17(@Parameter(name = "") int y) {
+		return;
+	}
 }
