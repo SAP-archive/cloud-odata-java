@@ -58,7 +58,7 @@ public class AbstractRefXmlTest extends AbstractRefTest {
     if (in == null) {
       throw new IOException("Requested file '" + filename + "' was not found.");
     }
-  
+
     byte[] tmp = new byte[8192];
     int count = in.read(tmp);
     StringBuffer b = new StringBuffer();
@@ -66,7 +66,7 @@ public class AbstractRefXmlTest extends AbstractRefTest {
       b.append(new String(tmp, 0, count));
       count = in.read(tmp);
     }
-  
+
     return b.toString();
   }
 }

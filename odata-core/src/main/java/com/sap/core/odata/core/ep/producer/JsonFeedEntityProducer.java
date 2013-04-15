@@ -24,7 +24,7 @@ public class JsonFeedEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data, final boolean isRootElement) throws EntityProviderException {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
@@ -45,10 +45,11 @@ public class JsonFeedEntityProducer {
       JsonEntryEntityProducer entryProducer = new JsonEntryEntityProducer(properties);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         entryProducer.append(writer, entityInfo, entryData, false);
       }
       jsonStreamWriter.endArray();
@@ -62,8 +63,9 @@ public class JsonFeedEntityProducer {
         jsonStreamWriter.namedStringValue(FormatJson.NEXT, properties.getNextLink());
       }
 
-      if (isRootElement)
+      if (isRootElement) {
         jsonStreamWriter.endObject();
+      }
 
       jsonStreamWriter.endObject();
     } catch (final IOException e) {

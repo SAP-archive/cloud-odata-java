@@ -14,7 +14,7 @@ public class JsonErrorDocumentProducer {
 
   public void writeErrorDocument(final Writer writer, final String errorCode, final String message, final Locale locale, final String innerError) throws IOException {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-    
+
     jsonStreamWriter.beginObject();
     jsonStreamWriter.name(FormatJson.ERROR);
     jsonStreamWriter.beginObject();

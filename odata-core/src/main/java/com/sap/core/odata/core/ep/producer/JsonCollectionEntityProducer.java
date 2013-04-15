@@ -17,7 +17,7 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonCollectionEntityProducer {
 
-  public void append(Writer writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
+  public void append(final Writer writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
@@ -28,7 +28,7 @@ public class JsonCollectionEntityProducer {
       jsonStreamWriter.name(FormatJson.METADATA);
       jsonStreamWriter.beginObject();
       jsonStreamWriter.namedStringValueRaw(FormatJson.TYPE,
-          "Collection("+ propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName() + ")");
+          "Collection(" + propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName() + ")");
       jsonStreamWriter.endObject();
       jsonStreamWriter.separator();
 
@@ -36,10 +36,11 @@ public class JsonCollectionEntityProducer {
       jsonStreamWriter.beginArray();
       boolean first = true;
       for (final Object item : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         JsonPropertyEntityProducer.appendPropertyValue(jsonStreamWriter, propertyInfo, item);
       }
       jsonStreamWriter.endArray();

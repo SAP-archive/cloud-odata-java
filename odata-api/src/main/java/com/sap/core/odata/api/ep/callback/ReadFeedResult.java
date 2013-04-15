@@ -38,6 +38,7 @@ public class ReadFeedResult extends ReadResult {
     return entry;
   }
 
+  @Override
   public boolean isFeed() {
     return true;
   }

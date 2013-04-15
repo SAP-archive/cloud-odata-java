@@ -20,7 +20,7 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonServiceDocumentProducer {
 
-  public static void writeServiceDocument(Writer writer, final Edm edm) throws EntityProviderException {
+  public static void writeServiceDocument(final Writer writer, final Edm edm) throws EntityProviderException {
     final EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
 
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
@@ -32,18 +32,23 @@ public class JsonServiceDocumentProducer {
       jsonStreamWriter.beginArray();
 
       boolean first = true;
-      if (edmProvider.getSchemas() != null)
-        for (final Schema schema : edmProvider.getSchemas())
-          if (schema.getEntityContainers() != null)
-            for (final EntityContainer entityContainer : schema.getEntityContainers())
+      if (edmProvider.getSchemas() != null) {
+        for (final Schema schema : edmProvider.getSchemas()) {
+          if (schema.getEntityContainers() != null) {
+            for (final EntityContainer entityContainer : schema.getEntityContainers()) {
               for (final EntitySet entitySet : entityContainer.getEntitySets()) {
-                if (first)
+                if (first) {
                   first = false;
-                else
+                } else {
                   jsonStreamWriter.separator();
+                }
                 jsonStreamWriter.stringValue((entityContainer.isDefaultEntityContainer() ?
-                        "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
+                    "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
               }
+            }
+          }
+        }
+      }
       jsonStreamWriter.endArray();
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();

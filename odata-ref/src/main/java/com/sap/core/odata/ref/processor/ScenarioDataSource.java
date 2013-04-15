@@ -282,14 +282,16 @@ public class ScenarioDataSource implements ListsDataSource {
             locations.put(location, locations.get(location) + 1);
           }
         }
-        if (!found)
+        if (!found) {
           locations.put(employee.getLocation(), 1);
+        }
       }
     }
-    if (locations.isEmpty())
+    if (locations.isEmpty()) {
       throw new ODataNotFoundException(null);
-    else
+    } else {
       return locations;
+    }
   }
 
   private Location getMostCommonLocation() throws ODataNotFoundException {
@@ -306,9 +308,11 @@ public class ScenarioDataSource implements ListsDataSource {
 
   private Employee getOldestEmployee() {
     Employee oldestEmployee = null;
-    for (final Employee employee : dataContainer.getEmployees())
-      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge())
+    for (final Employee employee : dataContainer.getEmployees()) {
+      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge()) {
         oldestEmployee = employee;
+      }
+    }
     return oldestEmployee;
   }
 

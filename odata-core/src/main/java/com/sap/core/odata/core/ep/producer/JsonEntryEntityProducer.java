@@ -44,7 +44,7 @@ public class JsonEntryEntityProducer {
     this.properties = properties;
   }
 
-  public void append(Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     final EdmEntityType type = entityInfo.getEntityType();
 
     try {
@@ -85,14 +85,15 @@ public class JsonEntryEntityProducer {
       }
       jsonStreamWriter.endObject();
 
-      for (final String propertyName : type.getPropertyNames())
+      for (final String propertyName : type.getPropertyNames()) {
         if (entityInfo.getSelectedPropertyNames().contains(propertyName)) {
           jsonStreamWriter.separator();
           jsonStreamWriter.name(propertyName);
           JsonPropertyEntityProducer.appendPropertyValue(jsonStreamWriter, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
         }
+      }
 
-      for (final String navigationPropertyName : type.getNavigationPropertyNames())
+      for (final String navigationPropertyName : type.getNavigationPropertyNames()) {
         if (entityInfo.getSelectedNavigationPropertyNames().contains(navigationPropertyName)) {
           jsonStreamWriter.separator();
           jsonStreamWriter.name(navigationPropertyName);
@@ -141,11 +142,13 @@ public class JsonEntryEntityProducer {
             jsonStreamWriter.endObject();
           }
         }
+      }
 
       jsonStreamWriter.endObject();
 
-      if (isRootElement)
+      if (isRootElement) {
         jsonStreamWriter.endObject();
+      }
 
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
