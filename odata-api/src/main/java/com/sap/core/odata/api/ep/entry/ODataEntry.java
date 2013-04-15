@@ -31,7 +31,7 @@ public interface ODataEntry {
    * @return {@link EntryMetadata} for this {@link ODataEntry} if available.
    */
   public EntryMetadata getMetadata();
-  
+
   /**
    * If this {@link ODataEntry} contains properties of an inline navigation property this method
    * returns <code>true</code>. 
@@ -41,7 +41,7 @@ public interface ODataEntry {
    * @return <code>true</code> if inline navigation properties are contained, otherwise <code>false</code>.
    */
   public boolean containsInlineEntry();
-  
+
   /**
    * Gets the expand select tree data structure which can be used for <code>$expand</code> query option.
    * 

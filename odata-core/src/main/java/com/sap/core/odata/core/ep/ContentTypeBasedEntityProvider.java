@@ -11,8 +11,8 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
 

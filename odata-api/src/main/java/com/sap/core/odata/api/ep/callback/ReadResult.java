@@ -27,7 +27,7 @@ public abstract class ReadResult {
    * @param readProperties read properties which are used to read enclosing parent entity
    * @param navigationProperty emd navigation property information of found inline navigation property
    */
-  public ReadResult(EntityProviderReadProperties readProperties, EdmNavigationProperty navigationProperty) {
+  public ReadResult(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
     this.readProperties = readProperties;
     this.navigationProperty = navigationProperty;
   }
@@ -45,14 +45,14 @@ public abstract class ReadResult {
   public EdmNavigationProperty getNavigationProperty() {
     return navigationProperty;
   }
-  
+
   /**
    * Common access method to read result.
    * 
    * @return an {@link ODataEntry} for the case of an single read entry or a list of {@link ODataEntry} in the case of an read feed.
    */
   public abstract Object getResult();
-  
+
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

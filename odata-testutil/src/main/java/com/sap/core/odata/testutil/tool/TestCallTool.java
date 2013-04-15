@@ -31,30 +31,30 @@ import com.sap.core.odata.testutil.tool.core.TestResultFilter;
  * @author SAP AG
  */
 public class TestCallTool {
-  
+
   public static final TestResultFilter SPECIAL_FILTER = new TestResultFilter() {
     @Override
-    public boolean filterResults(Set<TestResult> results) {
-      if(results.size() > 1) {
+    public boolean filterResults(final Set<TestResult> results) {
+      if (results.size() > 1) {
         TestResult last = null;
         for (TestResult testResult : results) {
-          if(contains(testResult.getPath(), "json") || contains(testResult.getRequestHeader(HttpHeaders.ACCEPT), "json")) {
+          if (contains(testResult.getPath(), "json") || contains(testResult.getRequestHeader(HttpHeaders.ACCEPT), "json")) {
             return false;
           }
           //
-          if(last != null) {
+          if (last != null) {
             String lastStatusCode = last.getSomeValue(CallerResultHandler.RESPONSE_STATUS_CODE);
             String currentStatusCode = testResult.getSomeValue(CallerResultHandler.RESPONSE_STATUS_CODE);
 
-            if(isDifferent(lastStatusCode, currentStatusCode)) {
+            if (isDifferent(lastStatusCode, currentStatusCode)) {
               return true;
             } else {
               String lastResponseHeader = last.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
               String currentResponseHeader = testResult.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
-              
-              if(lastResponseHeader == null || currentResponseHeader == null) {
+
+              if (lastResponseHeader == null || currentResponseHeader == null) {
                 return false;
-              } else if(isDifferent(lastResponseHeader, currentResponseHeader)) {
+              } else if (isDifferent(lastResponseHeader, currentResponseHeader)) {
                 return true;
               }
             }
@@ -64,26 +64,25 @@ public class TestCallTool {
       }
       return false;
     }
-    
-    private boolean contains(String value, String containing) {
-      if(value == null) {
+
+    private boolean contains(final String value, final String containing) {
+      if (value == null) {
         return false;
-      } 
+      }
       return value.contains(containing.toLowerCase(Locale.ENGLISH));
     }
-    
-    private boolean isDifferent(String first, String second) {
-      if(first == null && second == null) {
+
+    private boolean isDifferent(final String first, final String second) {
+      if (first == null && second == null) {
         return false;
-      } else if(first == null) {
+      } else if (first == null) {
         return true;
-      } else if(first.equals(second)) {
+      } else if (first.equals(second)) {
         return false;
       }
       return true;
     }
   };
-
 
   private static final String ACCEPT_HEADER_REQUEST_JIRA_FILENAME = "./target/AcceptHeaderRequest.jira";
   private static final Logger LOG = Logger.getLogger(TestCallTool.class);
@@ -145,13 +144,13 @@ public class TestCallTool {
       final CallerConfig localConfig = new CallerConfig(localBaseUrl, handler, testPaths);
       AcceptHeaderCaller.create(localConfig).call();
 
-//      String nwcBaseUrl = "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc";
-//      CallerConfig nwcConfig = new CallerConfig(nwcBaseUrl, handler, testPaths).setProxy("proxy:8080");
-//      AcceptHeaderCaller.create(nwcConfig).call();
+      //      String nwcBaseUrl = "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc";
+      //      CallerConfig nwcConfig = new CallerConfig(nwcBaseUrl, handler, testPaths).setProxy("proxy:8080");
+      //      AcceptHeaderCaller.create(nwcConfig).call();
 
-//      String gmdUrl = "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata";
-//      CallerConfig gmdConfig = new CallerConfig(gmdUrl, handler, testPaths).setBasicAuthCredentials("user:pwd");
-//      AcceptHeaderCaller.create(gmdConfig).call();
+      //      String gmdUrl = "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata";
+      //      CallerConfig gmdConfig = new CallerConfig(gmdUrl, handler, testPaths).setBasicAuthCredentials("user:pwd");
+      //      AcceptHeaderCaller.create(gmdConfig).call();
 
       final String result = handler.getJiraResult(SPECIAL_FILTER);
       LOG.info("h2. Accept-Header (executed  at: " + new SimpleDateFormat().format(new Date()) + ")\n");

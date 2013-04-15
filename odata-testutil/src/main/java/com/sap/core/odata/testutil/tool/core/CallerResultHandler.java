@@ -27,24 +27,24 @@ public class CallerResultHandler {
 
   public static final TestResultFilter USE_ALL_FILTER = new TestResultFilter() {
     @Override
-    public boolean filterResults(Set<TestResult> results) {
+    public boolean filterResults(final Set<TestResult> results) {
       return true;
     }
   };
-  
+
   public static final TestResultFilter USE_DIFF_FILTER = new TestResultFilter() {
     @Override
-    public boolean filterResults(Set<TestResult> results) {
-      if(results.size() > 1) {
+    public boolean filterResults(final Set<TestResult> results) {
+      if (results.size() > 1) {
         TestResult last = null;
         for (TestResult testResult : results) {
-          if(last != null && testResult.compareTo(last) != 0) {
+          if (last != null && testResult.compareTo(last) != 0) {
             String lastStatusCode = last.getSomeValue(RESPONSE_STATUS_CODE);
             String currentStatusCode = testResult.getSomeValue(RESPONSE_STATUS_CODE);
             String lastResponseHeader = last.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
             String currentResponseHeader = testResult.getResponseHeader(HttpHeaders.CONTENT_TYPE, true);
 
-            if(isDifferent(lastStatusCode, currentStatusCode)
+            if (isDifferent(lastStatusCode, currentStatusCode)
                 || isDifferent(lastResponseHeader, currentResponseHeader)) {
               return true;
             }
@@ -54,13 +54,13 @@ public class CallerResultHandler {
       }
       return false;
     }
-    
-    private boolean isDifferent(String first, String second) {
-      if(first == null && second == null) {
+
+    private boolean isDifferent(final String first, final String second) {
+      if (first == null && second == null) {
         return false;
-      } else if(first == null) {
+      } else if (first == null) {
         return true;
-      } else if(first.equals(second)) {
+      } else if (first.equals(second)) {
         return false;
       }
       return true;
@@ -136,8 +136,8 @@ public class CallerResultHandler {
   public String getJiraResult() {
     return getJiraResult(USE_ALL_FILTER);
   }
-  
-  public String getJiraResult(TestResultFilter filter) {
+
+  public String getJiraResult(final TestResultFilter filter) {
     final StringBuilder b = new StringBuilder();
 
     b.append(createJiraHeader());
@@ -145,7 +145,7 @@ public class CallerResultHandler {
     Collections.sort(testPaths);
     for (final TestPath testPath : testPaths) {
       Set<TestResult> results = testPath2TestResult.get(testPath);
-      if(filter.filterResults(results)) {
+      if (filter.filterResults(results)) {
         final String line = createLineForJiraTable(results);
         b.append(line);
       }

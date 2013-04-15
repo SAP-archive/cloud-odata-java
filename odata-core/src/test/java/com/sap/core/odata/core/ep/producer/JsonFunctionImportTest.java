@@ -69,7 +69,7 @@ public class JsonFunctionImportTest extends BaseTest {
   public void collectionOfSimpleTypes() throws Exception {
     final EdmFunctionImport functionImport = MockFacade.getMockEdm().getDefaultEntityContainer().getFunctionImport("AllUsedRoomIds");
 
-    final ODataResponse response = new JsonEntityProvider().writeFunctionImport(functionImport, Arrays.asList("1","2","3"), null);
+    final ODataResponse response = new JsonEntityProvider().writeFunctionImport(functionImport, Arrays.asList("1", "2", "3"), null);
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());

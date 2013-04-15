@@ -27,7 +27,7 @@ public class ODataEntryImpl implements ODataEntry {
     this.data = data;
     this.entryMetadata = entryMetadata;
     this.mediaMetadata = mediaMetadata;
-    this.expandSelectTree = new ExpandSelectTreeNodeImpl();
+    expandSelectTree = new ExpandSelectTreeNodeImpl();
     this.containsInlineEntry = containsInlineEntry;
   }
 
@@ -56,11 +56,11 @@ public class ODataEntryImpl implements ODataEntry {
     return expandSelectTree;
   }
 
-  public void setContainsInlineEntry(boolean containsInlineEntry) {
+  public void setContainsInlineEntry(final boolean containsInlineEntry) {
     this.containsInlineEntry = containsInlineEntry;
   }
 
-  public void setExpandSelectTree(ExpandSelectTreeNode expandSelectTree) {
+  public void setExpandSelectTree(final ExpandSelectTreeNode expandSelectTree) {
     this.expandSelectTree = expandSelectTree;
   }
 

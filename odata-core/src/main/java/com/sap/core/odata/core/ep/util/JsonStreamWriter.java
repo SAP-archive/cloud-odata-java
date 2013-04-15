@@ -13,7 +13,7 @@ public class JsonStreamWriter {
 
   private final Writer writer;
 
-  public JsonStreamWriter(Writer writer) {
+  public JsonStreamWriter(final Writer writer) {
     this.writer = writer;
   }
 
@@ -89,14 +89,14 @@ public class JsonStreamWriter {
     // quotation marks except for the characters that must be escaped:
     // quotation mark, reverse solidus, and the control characters
     // (U+0000 through U+001F)."
-    if (JSON_TO_BE_ESCAPED.matcher(value).find())
+    if (JSON_TO_BE_ESCAPED.matcher(value).find()) {
       for (int i = 0; i < value.length(); i++) {
         final char c = value.charAt(i);
-        if (c == '\\')
+        if (c == '\\') {
           writer.append("\\\\");
-        else if (c == '"')
+        } else if (c == '"') {
           writer.append("\\\"");
-        else if (c <= '\u001F')
+        } else if (c <= '\u001F') {
           switch (c) {
           case '\b':
             writer.append("\\b");
@@ -116,10 +116,12 @@ public class JsonStreamWriter {
           default:
             writer.append(String.format("\\u%04X", (short) c));
           }
-        else
+        } else {
           writer.write(c);
+        }
       }
-    else
+    } else {
       writer.append(value);
+    }
   }
 }

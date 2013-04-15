@@ -31,7 +31,7 @@ public interface OnReadInlineContent {
    * @return read properties which are used to read (de-serialize) found inline navigation property
    */
   EntityProviderReadProperties receiveReadProperties(EntityProviderReadProperties readProperties, EdmNavigationProperty navigationProperty);
-  
+
   /**
    * Handle method for read (de-serialization) entry result. The given {@link ReadEntryResult} object contains all 
    * contextual information about the de-serialized inline navigation property and the entry as {@link ODataEntry}.

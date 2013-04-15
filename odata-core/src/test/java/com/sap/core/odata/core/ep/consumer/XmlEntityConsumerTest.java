@@ -216,11 +216,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
 
     @Override
-    public void handleReadFeed(ReadFeedResult context) {
+    public void handleReadFeed(final ReadFeedResult context) {
       handleEntry(context);
     }
 
-    private void handleEntry(ReadResult context) {
+    private void handleEntry(final ReadResult context) {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName.contains("Employees")) {
@@ -234,7 +234,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
 
     @Override
-    public EntityProviderReadProperties receiveReadProperties(EntityProviderReadProperties readProperties, EdmNavigationProperty navString) {
+    public EntityProviderReadProperties receiveReadProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navString) {
       Map<String, Object> typeMappings = new HashMap<String, Object>();
       typeMappings.put("EmployeeName", String.class);
       return EntityProviderReadProperties.initFrom(readProperties).addTypeMappings(typeMappings).build();
@@ -250,11 +250,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
 
     @Override
-    public void handleReadFeed(ReadFeedResult context) {
+    public void handleReadFeed(final ReadFeedResult context) {
       handle(context);
     }
 
-    private void handle(ReadResult context) {
+    private void handle(final ReadResult context) {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName != null) {
@@ -268,7 +268,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       }
     }
 
-    public Object getObject(String name) {
+    public Object getObject(final String name) {
       ReadResult context = propName2Context.get(name);
       if (context == null) {
         return null;
@@ -277,17 +277,17 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       }
     }
 
-    public ODataEntry asEntry(String name) {
+    public ODataEntry asEntry(final String name) {
       return (ODataEntry) getObject(name);
     }
 
     @SuppressWarnings("unchecked")
-    public List<ODataEntry> asFeed(String name) {
+    public List<ODataEntry> asFeed(final String name) {
       return (List<ODataEntry>) getObject(name);
     }
 
     @Override
-    public EntityProviderReadProperties receiveReadProperties(EntityProviderReadProperties readProperties, EdmNavigationProperty navigationProperty) {
+    public EntityProviderReadProperties receiveReadProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
       return readProperties;
     }
   }

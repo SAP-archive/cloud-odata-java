@@ -249,16 +249,16 @@ public class XmlEntryConsumer {
     EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
     EntityInfoAggregator inlineEia = EntityInfoAggregator.create(entitySet);
     OnReadInlineContent callback = readProperties.getCallback();
-    
+
     final EntityProviderReadProperties inlineProperties;
-    if(callback == null) {
+    if (callback == null) {
       inlineProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
     } else {
       inlineProperties = callback.receiveReadProperties(
-          EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build(), 
+          EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build(),
           navigationProperty);
     }
-    
+
     // validations
     boolean isFeed = isInlineFeedValidated(reader, eia, linkAttributes);
 
