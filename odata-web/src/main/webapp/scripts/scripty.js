@@ -1,3 +1,6 @@
+/*
+ * (c) 2013 by SAP AG
+ */
     /*!
      * jQuery Scripty Plugin
      * http://www.sap.com/

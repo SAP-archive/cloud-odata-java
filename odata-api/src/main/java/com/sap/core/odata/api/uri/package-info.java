@@ -1,4 +1,7 @@
 /**
+ * (c) 2013 by SAP AG
+ */
+/**
  * <p>URI Parser Facade</p>
  * <p>The URI package has one central class {@link com.sap.core.odata.api.uri.UriParser}  to parse a request URI
  * as well as several interfaces that provide access to parsed parts of the URI.

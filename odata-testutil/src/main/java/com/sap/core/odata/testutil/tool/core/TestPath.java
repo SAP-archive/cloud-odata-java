@@ -1,3 +1,6 @@
+/**
+ * (c) 2013 by SAP AG
+ */
 package com.sap.core.odata.testutil.tool.core;
 
 import java.util.ArrayList;

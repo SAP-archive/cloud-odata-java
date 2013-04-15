@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    (c) 2013 by SAP AG
+
+-->
 <entry xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/" xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">
     <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')</id>
     <title type="text">Team 1</title>
