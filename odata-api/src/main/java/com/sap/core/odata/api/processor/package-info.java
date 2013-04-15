@@ -1,4 +1,7 @@
 /**
+ * (c) 2013 by SAP AG
+ */
+/**
  * Data Processor<p>
  * 
  * A data processor implements all create, read, update and delete (CRUD) methods of an OData service. A processor as 

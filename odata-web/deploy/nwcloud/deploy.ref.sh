@@ -1,5 +1,9 @@
 #!/bin/bash
 #
+# (c) 2013 by SAP AG
+#
+
+#
 # Example for Linux/Mac shell script
 #
 ########

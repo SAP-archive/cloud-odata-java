@@ -1,3 +1,6 @@
+/*
+ * (c) 2013 by SAP AG
+ */
 (function( window ) {
   
   var QUnit = window.QUnit, 

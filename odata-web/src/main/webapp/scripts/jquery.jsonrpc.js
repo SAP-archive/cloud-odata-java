@@ -1,3 +1,6 @@
+/*
+ * (c) 2013 by SAP AG
+ */
 (function($) {
   $.extend({
     jsonRPC: {

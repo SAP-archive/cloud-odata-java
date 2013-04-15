@@ -1,4 +1,7 @@
 /**
+ * (c) 2013 by SAP AG
+ */
+/**
  * Entity Data Model Provider API
  * <p>Classes in this package are used to provide an EDM to the library as well as to the application. To do this the class {@link com.sap.core.odata.api.edm.provider.EdmProvider} has to be implemented.</p>
  * <p>Inside the OData library we are using a lazy loading concept which means the EdmProvider is only called for an element if it is needed. See some sample coding for an EdmProvider below</p>

@@ -239,13 +239,14 @@
 				<configuration>
 					<header>src/etc/header.txt</header>
 					<quiet>false</quiet>
-					<failIfMissing>false</failIfMissing>
-					<aggregate>false</aggregate>
+					<failIfMissing>true</failIfMissing>
+					<aggregate>true</aggregate>
 					<excludes>
 						<exclude>target/**</exclude>
 						<excludes>**/.gitignore</excludes>
 						<excludes>**/*.g</excludes>
 						<excludes>**/*.template</excludes>
+						<excludes>**/*.edmx</excludes>
 					</excludes>
 					<useDefaultExcludes>true</useDefaultExcludes>
 					<aggregate>true</aggregate>

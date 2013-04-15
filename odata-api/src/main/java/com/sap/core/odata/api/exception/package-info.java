@@ -1,4 +1,7 @@
 /**
+ * (c) 2013 by SAP AG
+ */
+/**
  * Exception Classes used in the OData library as well as the implementing application
  * <p>APPLICATION DEVELOPERS: Please use {@link com.sap.core.odata.api.exception.ODataApplicationException} for custom exceptions.
  * 

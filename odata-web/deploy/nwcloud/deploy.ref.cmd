@@ -1,3 +1,7 @@
+@REM
+@REM (c) 2013 by SAP AG
+@REM
+
 set HTTPS_PROXY_HOST=proxy
 set HTTPS_PROXY_PORT=8080
 

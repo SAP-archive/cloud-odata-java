@@ -1,3 +1,7 @@
+====
+    (c) 2013 by SAP AG
+====
+
 Used by deploy build job on Jenkins:
 
 http://libwww.wdf.sap.corp:8080/jenkins/job/com.sap.core.odata.deploy/   

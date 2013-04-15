@@ -1,4 +1,9 @@
 grammar ODataFilter4;
+
+/*
+	 (c) 2013 by SAP AG
+*/
+
 options {
     language  = Java; 
     output = AST;
