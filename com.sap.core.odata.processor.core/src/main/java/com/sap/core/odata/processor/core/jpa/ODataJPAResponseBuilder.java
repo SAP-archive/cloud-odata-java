@@ -11,6 +11,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmStructuralType;
@@ -24,6 +25,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
@@ -34,6 +36,7 @@ import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.access.data.JPAExpandCallBack;
 
 public final class ODataJPAResponseBuilder {
 
@@ -43,6 +46,7 @@ public final class ODataJPAResponseBuilder {
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
+		List<ArrayList<NavigationPropertySegment>> expandList = null;
 
 		try {
 			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
@@ -53,8 +57,10 @@ public final class ODataJPAResponseBuilder {
 			if (selectedItems != null && selectedItems.size() > 0) {
 				for (Object jpaEntity : jpaEntities) {
 					edmPropertyValueMap = jpaResultParser
-							.parse2EdmPropertyValueMapFromList(jpaEntity,
-									buildSelectItemList(selectedItems, resultsView.getTargetEntitySet().getEntityType()));
+							.parse2EdmPropertyValueMapFromList(
+									jpaEntity,
+									buildSelectItemList(selectedItems,
+											edmEntityType));
 					edmEntityList.add(edmPropertyValueMap);
 				}
 			} else {
@@ -64,7 +70,17 @@ public final class ODataJPAResponseBuilder {
 					edmEntityList.add(edmPropertyValueMap);
 				}
 			}
-
+			expandList = resultsView.getExpand();
+			if (expandList != null && expandList.size() != 0) {
+				int count = 0;
+				for (Object jpaEntity : jpaEntities) {
+					jpaResultParser.parse2EdmPropertyListMap(
+							edmEntityList.get(count), jpaEntity,
+							constructListofNavProperty(expandList));
+					count++;
+				}
+			}
+			
 			EntityProviderProperties feedProperties = null;
 			// Getting the entity feed properties
 			feedProperties = getEntityProviderProperties(odataJPAContext,
@@ -87,12 +103,12 @@ public final class ODataJPAResponseBuilder {
 
 		return odataResponse;
 	}
-
 	public static ODataResponse build(Object jpaEntity,
 			GetEntityUriInfo resultsView, String contentType,
 			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
 			ODataNotFoundException {
 
+		List<ArrayList<NavigationPropertySegment>> expandList = null;
 		if (jpaEntity == null)
 			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
 																				// to
@@ -101,7 +117,6 @@ public final class ODataJPAResponseBuilder {
 																				// with
 																				// Message
 																				// body
-
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
 
@@ -113,13 +128,19 @@ public final class ODataJPAResponseBuilder {
 			JPAResultParser jpaResultParser = JPAResultParser.create();
 			final List<SelectItem> selectedItems = resultsView.getSelect();
 			if (selectedItems != null && selectedItems.size() > 0) {
-				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMapFromList(jpaEntity, buildSelectItemList(selectedItems, 
-						resultsView.getTargetEntitySet().getEntityType()));
-			}
-			else
-				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
-					jpaEntity, edmEntityType);
+				edmPropertyValueMap = jpaResultParser
+						.parse2EdmPropertyValueMapFromList(
+								jpaEntity,
+								buildSelectItemList(selectedItems, resultsView
+										.getTargetEntitySet().getEntityType()));
+			} else
+				edmPropertyValueMap = jpaResultParser
+						.parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
 
+			expandList = resultsView.getExpand();
+			if (expandList != null && expandList.size() != 0)
+				jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap,
+						jpaEntity, constructListofNavProperty(expandList));
 			EntityProviderProperties feedProperties = null;
 			feedProperties = getEntityProviderProperties(oDataJPAContext,
 					resultsView);
@@ -239,7 +260,6 @@ public final class ODataJPAResponseBuilder {
 																		// successful
 																		// update;
 	}
-
 	public static ODataResponse build(Object deletedObject,
 			DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException,
 			ODataNotFoundException {
@@ -413,11 +433,16 @@ public final class ODataJPAResponseBuilder {
 							.getPathInfo().getServiceRoot());
 			expandSelectTree = UriParser.createExpandSelectTree(
 					resultsView.getSelect(), resultsView.getExpand());
+			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+			entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
+					.getCallbacks(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot(), expandSelectTree,
+							resultsView.getExpand()));
 		} catch (ODataException e) {
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.INNER_EXCEPTION, e);
 		}
-		entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+
 		return entityFeedPropertiesBuilder.build();
 	}
 
@@ -447,6 +472,14 @@ public final class ODataJPAResponseBuilder {
 							.addContent(e.getMessage()), e);
 		}
 		return selectPropertyList;
+	}
+	private static List<EdmNavigationProperty> constructListofNavProperty(
+			List<ArrayList<NavigationPropertySegment>> expandList) {
+		List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
+		for (ArrayList<NavigationPropertySegment> navpropSegment : expandList)
+			navigationPropertyList.add(navpropSegment.get(0)
+					.getNavigationProperty());
+		return navigationPropertyList;
 	}
 
 }

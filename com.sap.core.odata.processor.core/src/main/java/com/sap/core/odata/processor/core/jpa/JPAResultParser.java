@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -59,8 +60,10 @@ public final class JPAResultParser {
 			Object propertyValue = null;
 			EdmProperty property = null;
 			property = selectPropertyList.get(i);
+
 			try {
-				methodName = getGetterName(property);
+				methodName = getGetterName(property.getName(),
+						property.getMapping());
 				String[] nameParts = methodName.split("\\.");
 				if (nameParts.length > 1) {
 					Object propertyVal = new Object();
@@ -74,7 +77,7 @@ public final class JPAResultParser {
 				} else {
 					method = jpaEntity.getClass().getMethod(methodName,
 							(Class<?>[]) null);
-					propertyValue = method.invoke(jpaEntity, null);
+					propertyValue = method.invoke(jpaEntity);
 					key = property.getName();
 					if (property.getType().getKind()
 							.equals(EdmTypeKind.COMPLEX)) {
@@ -212,25 +215,63 @@ public final class JPAResultParser {
 		return edmEntity;
 	}
 
-	private String getGetterName(EdmProperty property)
+	// This method appends the associated entities as a java list to an expanded
+	// map of a source entity
+	public final void parse2EdmPropertyListMap(Map<String, Object> edmEntity,
+			Object jpaEntity, List<EdmNavigationProperty> navigationPropertyList)
 			throws ODataJPARuntimeException {
-		EdmMapping mapping = null;
-		String name = null;
-		try {
-			mapping = property.getMapping();
+		Object result = null;
+		String methodName = null;
+		if (navigationPropertyList != null
+				&& navigationPropertyList.size() != 0) {
 
-			if (mapping == null || mapping.getInternalName() == null)
-				name = property.getName();
-			else {
-				name = mapping.getInternalName();
+			try {
+				for (EdmNavigationProperty navigationProperty : navigationPropertyList) {
+					methodName = getGetterName(navigationProperty.getName(),
+							navigationProperty.getMapping());
+					Method getterMethod = jpaEntity.getClass()
+							.getDeclaredMethod(methodName, (Class<?>[]) null);
+					result = getterMethod.invoke(jpaEntity);
+					edmEntity.put(navigationProperty.getName(), result);
+				}
+			} catch (IllegalArgumentException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
+			} catch (IllegalAccessException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
+			} catch (InvocationTargetException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
+			} catch (EdmException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
 			}
-
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
+			catch (SecurityException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
+			} catch (NoSuchMethodException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL.addContent(e
+								.getMessage()), e);
+			}
 		}
 
+	}
+
+	private static String getGetterName(String propertyName, EdmMapping mapping)
+			throws ODataJPARuntimeException {
+		String name = null;
+		if (mapping == null || mapping.getInternalName() == null)
+			name = propertyName;
+		else {
+			name = mapping.getInternalName();
+		}
 		String[] nameParts = name.split("\\.");
 		StringBuilder builder = new StringBuilder();
 
@@ -274,7 +315,8 @@ public final class JPAResultParser {
 				EdmProperty property = (EdmProperty) structuralType
 						.getProperty(propertyName);
 
-				String name = getGetterName(property);
+				String name = getGetterName(property.getName(),
+						property.getMapping());
 				String[] nameParts = name.split("\\.");
 				if (nameParts.length > 1) {
 					embeddableKey.put(propertyName, name);
