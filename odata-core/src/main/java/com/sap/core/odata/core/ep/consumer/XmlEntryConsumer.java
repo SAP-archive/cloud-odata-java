@@ -350,7 +350,7 @@ public class XmlEntryConsumer {
         break;
       }
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"));
+      throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"), e);
     }
     return isFeed;
   }
