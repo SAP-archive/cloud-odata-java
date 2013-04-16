@@ -1,7 +1,4 @@
 /**
- * (c) 2013 by SAP AG
- */
-/**
  * OData Library API
  * <p>
  * OData Library is a protocol implementation of the OData V2.0 standard. For details of this standard 

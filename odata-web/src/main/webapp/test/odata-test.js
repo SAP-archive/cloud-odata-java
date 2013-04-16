@@ -1,6 +1,3 @@
-/*
- * (c) 2013 by SAP AG
- */
 module("Service",{ foo : "bar" } );   
 
 /* Test 1.1 */		

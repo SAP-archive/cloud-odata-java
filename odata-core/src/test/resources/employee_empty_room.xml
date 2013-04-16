@@ -1,8 +1,3 @@
-<!--
-
-    (c) 2013 by SAP AG
-
--->
 
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xml:base="http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
 	<id>

@@ -1,6 +1,3 @@
-/**
- * (c) 2013 by SAP AG
- */
 package com.sap.core.odata.api.uri.info;
 
 import java.util.Map;

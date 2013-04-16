@@ -1,7 +1,4 @@
 /**
- * (c) 2013 by SAP AG
- */
-/**
  * Expression Parser
  * <p>This package contains all classes necessary to decribe an expression tree(e.g. a filter or order by tree)
  * 

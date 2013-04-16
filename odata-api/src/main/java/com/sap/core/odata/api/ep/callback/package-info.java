@@ -1,7 +1,4 @@
 /**
- * (c) 2013 by SAP AG
- */
-/**
  * Entity Provider Callbacks<p>
  * These callbacks will be used to support the $expand query option. Callbacks have to implement the {@link com.sap.core.odata.api.ODataCallback} as a marker. 
  * <br>To support an expanded entry the {@link com.sap.core.odata.api.ep.callback.OnWriteEntryContent} interface has to be implemented.

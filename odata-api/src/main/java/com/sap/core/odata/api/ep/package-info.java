@@ -1,7 +1,4 @@
 /**
- * (c) 2013 by SAP AG
- */
-/**
  * Entity Provider<p>
  * 
  * The <b>com.sap.core.odata.api.ep</b> package contains all classes related and necessary to provide an {@link com.sap.core.odata.api.ep.EntityProvider}.
