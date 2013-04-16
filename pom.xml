@@ -147,11 +147,6 @@
 					<artifactId>maven-bundle-plugin</artifactId>
 					<version>2.3.7</version>
 				</plugin>
-				<plugin>
-					<groupId>com.mycila.maven-license-plugin</groupId>
-					<artifactId>maven-license-plugin</artifactId>
-					<version>1.9.0</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -225,34 +220,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<header>src/etc/header.txt</header>
-					<quiet>false</quiet>
-					<failIfMissing>false</failIfMissing>
-					<aggregate>true</aggregate>
-					<excludes>
-						<exclude>target/**</exclude>
-						<excludes>**/.gitignore</excludes>
-						<excludes>**/*.g</excludes>
-						<excludes>**/*.template</excludes>
-						<excludes>**/*.edmx</excludes>
-					</excludes>
-					<useDefaultExcludes>true</useDefaultExcludes>
-					<aggregate>true</aggregate>
-					<encoding>UTF-8</encoding>
-					<strictCheck>true</strictCheck>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

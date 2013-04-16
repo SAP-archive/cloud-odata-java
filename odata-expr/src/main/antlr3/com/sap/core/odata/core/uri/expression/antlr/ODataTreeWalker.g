@@ -1,8 +1,4 @@
 tree grammar ODataTreeWalker;
-
-/*
-	 (c) 2013 by SAP AG
-*/
  
 options{
 language = Java; 
