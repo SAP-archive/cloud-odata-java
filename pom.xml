@@ -10,20 +10,13 @@
 
 	<inceptionYear>2012</inceptionYear>
 
-	<parent>
-		<groupId>com.sap.ldi</groupId>
-		<artifactId>ldi-parent</artifactId>
-		<version>6.6.0</version>
-	</parent>
-
-	<!-- <licenses> -->
-	<!-- <license> -->
-	<!-- <name>The Apache Software License, Version 2.0</name> -->
-	<!-- <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> -->
-	<!-- <distribution>repo</distribution> -->
-	<!-- <comments>A business-friendly OSS license</comments> -->
-	<!-- </license> -->
-	<!-- </licenses> -->
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<developers>
 		<developer>
@@ -86,15 +79,7 @@
 		<module>odata-expr</module>
 	</modules>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshot.repository</id>
-			<url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<build>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
