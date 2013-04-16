@@ -6,3 +6,4 @@ bin
 *.bak
 classes
 .DS_Store
+nwcloud.properties

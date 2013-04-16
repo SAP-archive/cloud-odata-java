@@ -170,7 +170,7 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    * @throws IllegalArgumentException if input string is not parseable
    */
-  public static ContentType create(String format) {
+  public static ContentType create(final String format) {
     if (format == null) {
       throw new IllegalArgumentException("Parameter format MUST NOT be NULL.");
     }
@@ -259,7 +259,7 @@ public class ContentType {
         String[] keyValue = parameter.split("=");
         String key = keyValue[0].trim().toLowerCase(Locale.ENGLISH);
         if (isParameterAllowed(key)) {
-          String value = ((keyValue != null && keyValue.length > 1) ? keyValue[1].trim() : null);
+          String value = keyValue.length > 1 ? keyValue[1].trim() : null;
           parameterMap.put(key, value);
         }
       }
@@ -267,13 +267,8 @@ public class ContentType {
     return parameterMap;
   }
 
-  private static boolean isParameterAllowed(String key) {
-    if (key == null) {
-      return false;
-    } else if (PARAMETER_Q.equals(key.toLowerCase(Locale.US))) {
-      return false;
-    }
-    return true;
+  private static boolean isParameterAllowed(final String key) {
+    return key != null && !PARAMETER_Q.equals(key.toLowerCase(Locale.US));
   }
 
   public String getType() {
