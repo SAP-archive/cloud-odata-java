@@ -1,6 +1,6 @@
 cloud-odata-java
 ============================
 
-oData library for Java
+OData library for Java
 
 skl
