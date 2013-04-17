@@ -32,7 +32,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Facets;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -66,14 +66,14 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
 		Object[] actualParameters = { oDataJPAContext, getEntitySetUriInfo,edmEntityList };
 		Class<?>[] formalParameters = { ODataJPAContext.class,
 				GetEntitySetUriInfo.class,List.class };
-		EntityProviderProperties providerProperties = null;
+		EntityProviderWriteProperties providerProperties = null;
 		try {
 			ODataJPAResponseBuilder responseBuilder = (ODataJPAResponseBuilder) clazz
 					.newInstance();
 			Method method = clazz.getDeclaredMethod(
 					"getEntityProviderProperties", formalParameters);
 			method.setAccessible(true);
-			providerProperties = (EntityProviderProperties) method.invoke(
+			providerProperties = (EntityProviderWriteProperties) method.invoke(
 					responseBuilder, actualParameters);
 			assertEquals(1, providerProperties.getExpandSelectTree().getLinks()
 					.size());
@@ -111,14 +111,14 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
 		Object[] actualParameters = { oDataJPAContext, getEntityUriInfo };
 		Class<?>[] formalParameters = { ODataJPAContext.class,
 				GetEntityUriInfo.class };
-		EntityProviderProperties providerProperties = null;
+		EntityProviderWriteProperties providerProperties = null;
 		try {
 			ODataJPAResponseBuilder responseBuilder = (ODataJPAResponseBuilder) clazz
 					.newInstance();
 			Method method = clazz.getDeclaredMethod(
 					"getEntityProviderProperties", formalParameters);
 			method.setAccessible(true);
-			providerProperties = (EntityProviderProperties) method.invoke(
+			providerProperties = (EntityProviderWriteProperties) method.invoke(
 					responseBuilder, actualParameters);
 			assertEquals(1, providerProperties.getExpandSelectTree().getLinks()
 					.size());

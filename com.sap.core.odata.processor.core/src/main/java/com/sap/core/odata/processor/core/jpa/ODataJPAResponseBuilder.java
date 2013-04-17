@@ -19,8 +19,8 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -81,7 +81,7 @@ public final class ODataJPAResponseBuilder {
 				}
 			}
 			
-			EntityProviderProperties feedProperties = null;
+			EntityProviderWriteProperties feedProperties = null;
 			// Getting the entity feed properties
 			feedProperties = getEntityProviderProperties(odataJPAContext,
 					resultsView, edmEntityList);
@@ -141,7 +141,7 @@ public final class ODataJPAResponseBuilder {
 			if (expandList != null && expandList.size() != 0)
 				jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap,
 						jpaEntity, constructListofNavProperty(expandList));
-			EntityProviderProperties feedProperties = null;
+			EntityProviderWriteProperties feedProperties = null;
 			feedProperties = getEntityProviderProperties(oDataJPAContext,
 					resultsView);
 			odataResponse = EntityProvider.writeEntry(contentType,
@@ -206,9 +206,9 @@ public final class ODataJPAResponseBuilder {
 			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
 					createdObject, edmEntityType);
 
-			EntityProviderProperties feedProperties = null;
+			EntityProviderWriteProperties feedProperties = null;
 			try {
-				feedProperties = EntityProviderProperties.serviceRoot(
+				feedProperties = EntityProviderWriteProperties.serviceRoot(
 						oDataJPAContext.getODataContext().getPathInfo()
 								.getServiceRoot()).build();
 			} catch (ODataException e) {
@@ -331,9 +331,9 @@ public final class ODataJPAResponseBuilder {
 			List<Map<String, Object>> edmEntityList = null;
 			Object result = null;
 			try {
-				EntityProviderProperties feedProperties = null;
+				EntityProviderWriteProperties feedProperties = null;
 
-				feedProperties = EntityProviderProperties.serviceRoot(
+				feedProperties = EntityProviderWriteProperties.serviceRoot(
 						oDataJPAContext.getODataContext().getPathInfo()
 								.getServiceRoot()).build();
 
@@ -396,7 +396,7 @@ public final class ODataJPAResponseBuilder {
 	 * Method to build the entity provider Property.Callbacks for $expand would
 	 * be registered here
 	 */
-	private static EntityProviderProperties getEntityProviderProperties(
+	private static EntityProviderWriteProperties getEntityProviderProperties(
 			ODataJPAContext odataJPAContext, GetEntitySetUriInfo resultsView,
 			List<Map<String, Object>> edmEntityList)
 			throws ODataJPARuntimeException {
@@ -404,7 +404,7 @@ public final class ODataJPAResponseBuilder {
 		Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
 				.size() : null;
 		try {
-			entityFeedPropertiesBuilder = EntityProviderProperties
+			entityFeedPropertiesBuilder = EntityProviderWriteProperties
 					.serviceRoot(odataJPAContext.getODataContext()
 							.getPathInfo().getServiceRoot());
 			entityFeedPropertiesBuilder.inlineCount(count);
@@ -413,6 +413,10 @@ public final class ODataJPAResponseBuilder {
 			ExpandSelectTreeNode expandSelectTree = UriParser
 					.createExpandSelectTree(resultsView.getSelect(),
 							resultsView.getExpand());
+			entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
+					.getCallbacks(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot(), expandSelectTree,
+							resultsView.getExpand()));
 			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
 
 		} catch (ODataException e) {
@@ -422,13 +426,13 @@ public final class ODataJPAResponseBuilder {
 
 		return entityFeedPropertiesBuilder.build();
 	}
-	private static EntityProviderProperties getEntityProviderProperties(
+	private static EntityProviderWriteProperties getEntityProviderProperties(
 			ODataJPAContext odataJPAContext, GetEntityUriInfo resultsView)
 			throws ODataJPARuntimeException {
 		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
 		ExpandSelectTreeNode expandSelectTree = null;
 		try {
-			entityFeedPropertiesBuilder = EntityProviderProperties
+			entityFeedPropertiesBuilder = EntityProviderWriteProperties
 					.serviceRoot(odataJPAContext.getODataContext()
 							.getPathInfo().getServiceRoot());
 			expandSelectTree = UriParser.createExpandSelectTree(

@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
-import com.sap.core.odata.processor.core.jpa.JPAResultParser;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteCallbackContext;
@@ -21,8 +20,10 @@ import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackResult;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.processor.core.jpa.JPAResultParser;
 
 
 public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryContent, ODataCallback {
@@ -141,8 +142,8 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
 
 	}		
 	
-	private EntityProviderProperties getInlineEntityProviderProperties(WriteCallbackContext context) throws EdmException{
-		ODataEntityProviderPropertiesBuilder propertiesBuilder = EntityProviderProperties.serviceRoot(baseUri);
+	private EntityProviderWriteProperties getInlineEntityProviderProperties(WriteCallbackContext context) throws EdmException{
+		ODataEntityProviderPropertiesBuilder propertiesBuilder = EntityProviderWriteProperties.serviceRoot(baseUri);
 		propertiesBuilder.callbacks(getCallbacks(baseUri, context.getCurrentExpandSelectTreeNode(),this.expandList));
 		propertiesBuilder.expandSelectTree(context.getCurrentExpandSelectTreeNode());
 		return propertiesBuilder.build();
