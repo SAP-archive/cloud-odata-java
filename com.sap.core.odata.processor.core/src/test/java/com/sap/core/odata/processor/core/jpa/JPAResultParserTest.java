@@ -4,29 +4,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.easymock.EasyMock;
 import org.junit.Test;
-
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPAResultParserTest {
-
-	private static String[] fields = { "field1", "field2" };
-
 	/*
 	 * TestCase - JPAResultParser is a singleton class Check if the same
 	 * instance is returned when create method is called
@@ -55,7 +51,7 @@ public class JPAResultParserTest {
 		try {
 			EasyMock.expect(edmType.getKind())
 					.andStubReturn(EdmTypeKind.SIMPLE);
-			EasyMock.expect(edmType.getName()).andStubReturn("identifier");
+			EasyMock.expect(edmTyped.getName()).andStubReturn("identifier");
 			EasyMock.replay(edmType);
 			EasyMock.expect(edmMapping.getInternalName()).andStubReturn("id");
 			EasyMock.replay(edmMapping);
@@ -67,7 +63,7 @@ public class JPAResultParserTest {
 
 			EasyMock.expect(edmType01.getKind()).andStubReturn(
 					EdmTypeKind.SIMPLE);
-			EasyMock.expect(edmType01.getName()).andStubReturn("value");
+			EasyMock.expect(edmTyped01.getName()).andStubReturn("Value");
 			EasyMock.replay(edmType01);
 			EasyMock.expect(edmMapping01.getInternalName()).andStubReturn(
 					"value");
@@ -92,7 +88,8 @@ public class JPAResultParserTest {
 		}
 
 		try {
-			resultParser.parse2EdmPropertyValueMap(jpaEntity, structuralType);
+			Map<String,Object> result = resultParser.parse2EdmPropertyValueMap(jpaEntity, structuralType);
+			assertEquals(2, result.size());
 		} catch (ODataJPARuntimeException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -161,6 +158,156 @@ public class JPAResultParserTest {
 		}
 
 	}
+	
+	@Test
+	public void testparse2EdmPropertyListMap()
+	{
+		JPAResultParser resultParser = JPAResultParser.create();
+		Map<String,Object> edmEntity = new HashMap<String, Object>();
+		edmEntity.put("SoId", 1);
+		DemoRelatedEntity relatedEntity = new DemoRelatedEntity("NewOrder");
+		demoItem jpaEntity = new demoItem("laptop",1);
+		jpaEntity.setRelatedEntity(relatedEntity);
+		List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
+		// Mocking a navigation property and its mapping object
+		EdmNavigationProperty navigationProperty = EasyMock.createMock(EdmNavigationProperty.class);
+		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+		try {
+			EasyMock.expect(edmMapping.getInternalName()).andStubReturn("relatedEntity");
+			EasyMock.replay(edmMapping);
+			EasyMock.expect(navigationProperty.getName()).andStubReturn("RelatedEntities");
+			EasyMock.expect(navigationProperty.getMapping()).andStubReturn(edmMapping);
+			EasyMock.replay(navigationProperty);
+		} catch (EdmException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		
+		navigationPropertyList.add(navigationProperty);
+		try {
+			resultParser.parse2EdmPropertyListMap(edmEntity, jpaEntity, navigationPropertyList);
+			assertEquals(relatedEntity, edmEntity.get("RelatedEntities"));
+			
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	@Test
+	public void testparse2EdmPropertyValueMapFromList()
+	{
+		JPAResultParser resultParser = JPAResultParser.create();
+		demoItem jpaEntity = new demoItem("laptop", 1);
+		DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
+		jpaEntity.setRelatedEntity(relatedEntity);
+		List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
+		// Mocking EdmProperties
+		EdmProperty edmProperty1 = EasyMock.createMock(EdmProperty.class);
+		EdmProperty edmProperty2 = EasyMock.createMock(EdmProperty.class);
+		EdmType edmType1 = EasyMock.createMock(EdmType.class);
+		EdmType edmType2 = EasyMock.createMock(EdmType.class);
+		EdmMapping mapping1 = EasyMock.createMock(EdmMapping.class);
+		EdmMapping mapping2 = EasyMock.createMock(EdmMapping.class);
+		try {
+			EasyMock.expect(edmType1.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.replay(edmType1);
+			EasyMock.expect(mapping1.getInternalName()).andStubReturn("id");
+			EasyMock.replay(mapping1);
+			EasyMock.expect(edmProperty1.getName()).andStubReturn("Id");
+			EasyMock.expect(edmProperty1.getMapping()).andStubReturn(mapping1);
+			EasyMock.expect(edmProperty1.getType()).andStubReturn(edmType1);
+			EasyMock.replay(edmProperty1);
+			EasyMock.expect(edmType2.getKind()).andStubReturn(EdmTypeKind.COMPLEX);
+			EasyMock.replay(edmType2);
+			EasyMock.expect(mapping2.getInternalName()).andStubReturn("relatedEntity.order");
+			EasyMock.replay(mapping2);
+			EasyMock.expect(edmProperty2.getName()).andStubReturn("Order");
+			EasyMock.expect(edmProperty2.getMapping()).andStubReturn(mapping2);
+			EasyMock.expect(edmProperty2.getType()).andStubReturn(edmType2);
+			EasyMock.replay(edmProperty2);
+			
+		} catch (EdmException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		selectPropertyList.add(edmProperty1);
+		selectPropertyList.add(edmProperty2);
+		try {
+			Map<String,Object> result = resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, selectPropertyList);
+			assertEquals("DemoOrder", result.get("Order"));
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		
+	}
+	// This unit tests when there is a complex type in the select list
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testparse2EdmPropertyValueMapFromListComplex()
+	{
+		JPAResultParser resultParser = JPAResultParser.create();
+		demoItem jpaEntity = new demoItem("laptop", 1);
+		DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
+		jpaEntity.setRelatedEntity(relatedEntity);
+		List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
+		// Mocking EdmProperties
+		EdmProperty edmProperty1 = EasyMock.createMock(EdmProperty.class);
+		EdmProperty edmProperty2 = EasyMock.createMock(EdmProperty.class);
+		EdmProperty edmComplexProperty = EasyMock.createMock(EdmProperty.class);
+		EdmType edmType1 = EasyMock.createMock(EdmType.class);
+		EdmStructuralType edmType2 = EasyMock.createMock(EdmStructuralType.class);
+		EdmType edmComplexType = EasyMock.createMock(EdmType.class);
+		EdmMapping mapping1 = EasyMock.createMock(EdmMapping.class);
+		EdmMapping mapping2 = EasyMock.createMock(EdmMapping.class);
+		EdmMapping complexMapping = EasyMock.createMock(EdmMapping.class);
+		try {
+			EasyMock.expect(edmType1.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.replay(edmType1);
+			EasyMock.expect(mapping1.getInternalName()).andStubReturn("id");
+			EasyMock.replay(mapping1);
+			EasyMock.expect(edmProperty1.getName()).andStubReturn("Id");
+			EasyMock.expect(edmProperty1.getMapping()).andStubReturn(mapping1);
+			EasyMock.expect(edmProperty1.getType()).andStubReturn(edmType1);
+			EasyMock.replay(edmProperty1);
+			// Mocking the complex properties
+			EasyMock.expect(edmComplexType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.replay(edmComplexType);
+			EasyMock.expect(complexMapping.getInternalName()).andStubReturn("order");
+			EasyMock.replay(complexMapping);
+			EasyMock.expect(edmComplexProperty.getName()).andStubReturn("OrderName");
+			EasyMock.expect(edmComplexProperty.getMapping()).andStubReturn(complexMapping);
+			EasyMock.expect(edmComplexProperty.getType()).andStubReturn(edmComplexType);
+			EasyMock.replay(edmComplexProperty);
+			EasyMock.expect(edmType2.getKind()).andStubReturn(EdmTypeKind.COMPLEX);
+			EasyMock.expect(edmType2.getProperty("OrderName")).andStubReturn(edmComplexProperty);
+			List<String> propertyNames = new ArrayList<String>();
+			propertyNames.add("OrderName");
+			EasyMock.expect(edmType2.getPropertyNames()).andStubReturn(propertyNames);
+			EasyMock.replay(edmType2);
+			EasyMock.expect(mapping2.getInternalName()).andStubReturn("relatedEntity");
+			EasyMock.replay(mapping2);
+			EasyMock.expect(edmProperty2.getName()).andStubReturn("Order");
+			EasyMock.expect(edmProperty2.getMapping()).andStubReturn(mapping2);
+			EasyMock.expect(edmProperty2.getType()).andStubReturn(edmType2);
+			EasyMock.replay(edmProperty2);
+			
+		} catch (EdmException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		selectPropertyList.add(edmProperty1);
+		selectPropertyList.add(edmProperty2);
+		try {
+			Map<String,Object> result = resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, selectPropertyList);
+			assertEquals(1, ((HashMap<String, Object>)result.get("Order")).size());
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		
+	}
+
 
 	/*
 	 * TestCase - getGetterName is a private method in JPAResultParser. The
@@ -170,29 +317,22 @@ public class JPAResultParserTest {
 	@Test
 	public void testGetGettersWithOutMapping() {
 		JPAResultParser resultParser = JPAResultParser.create();
-		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-
 		try {
 
 			/*
 			 * Case 1 - Property having No mapping
 			 */
-			EasyMock.expect(edmProperty.getName()).andStubReturn(fields[0]);
-			EasyMock.expect(edmProperty.getMapping()).andStubReturn(null);
-			EasyMock.replay(edmProperty);
-
+			Class<?>[] pars = {String.class,EdmMapping.class};
+			Object[] params = {"Field1",null};
 			Method getGetterName = resultParser.getClass().getDeclaredMethod(
-					"getGetterName", EdmProperty.class);
+					"getGetterName", pars);
 			getGetterName.setAccessible(true);
 
 			String name = (String) getGetterName.invoke(resultParser,
-					edmProperty);
+					params);
 
 			assertEquals("getField1", name);
 
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -215,74 +355,21 @@ public class JPAResultParserTest {
 	@Test
 	public void testGetGettersWithNullPropname() {
 		JPAResultParser resultParser = JPAResultParser.create();
-		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-
 		try {
 
 			/*
-			 * Case 1 - Property having No mapping
+			 * Case 1 - Property having No mapping and no name
 			 */
-			EasyMock.expect(edmProperty.getName()).andStubReturn(null);
-			EasyMock.expect(edmProperty.getMapping()).andStubReturn(null);
-			EasyMock.replay(edmProperty);
-
+			Class<?>[] pars = {String.class,EdmMapping.class};
+			Object[] params = {null,null};
 			Method getGetterName = resultParser.getClass().getDeclaredMethod(
-					"getGetterName", EdmProperty.class);
-			getGetterName.setAccessible(true);
-
-			getGetterName.invoke(resultParser,
-					edmProperty);
-
-			fail("Exception expected");
-
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (IllegalAccessException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (IllegalArgumentException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (InvocationTargetException e) {
-			assertTrue(true);
-		} catch (NoSuchMethodException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (SecurityException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-
-		}
-	}
-
-	@Test
-	public void testGetGettersITException() {
-		JPAResultParser resultParser = JPAResultParser.create();
-		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-
-		try {
-
-			/*
-			 * Case 1 - Property having No mapping
-			 */
-			EasyMock.expect(edmProperty.getName()).andStubThrow(
-					new EdmException(null));
-			EasyMock.expect(edmProperty.getMapping()).andStubReturn(null);
-			EasyMock.replay(edmProperty);
-
-			Method getGetterName = resultParser.getClass().getDeclaredMethod(
-					"getGetterName", EdmProperty.class);
+					"getGetterName", pars);
 			getGetterName.setAccessible(true);
 
 			String name = (String) getGetterName.invoke(resultParser,
-					edmProperty);
+					params);
+			assertNull(name);
 
-			assertEquals("getField1", name);
-
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -290,52 +377,8 @@ public class JPAResultParserTest {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
-			assertTrue(true);
-		} catch (NoSuchMethodException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (SecurityException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-	}
-
-	@Test
-	public void testGetGettersEdmException() {
-		JPAResultParser resultParser = JPAResultParser.create();
-		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-		MessageReference mr = MessageReference.create(EdmException.class, "");
-
-		try {
-
-			/*
-			 * Case 1 - Property having No mapping
-			 */
-			EasyMock.expect(edmProperty.getName()).andStubThrow(
-					new EdmException(mr));
-			EasyMock.expect(edmProperty.getMapping()).andStubReturn(null);
-			EasyMock.replay(edmProperty);
-
-			Method getGetterName = resultParser.getClass().getDeclaredMethod(
-					"getGetterName", EdmProperty.class);
-			getGetterName.setAccessible(true);
-
-			String name = (String) getGetterName.invoke(resultParser,
-					edmProperty);
-
-			assertEquals("getField1", name);
-
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (IllegalAccessException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (IllegalArgumentException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (InvocationTargetException e) {
-			assertTrue(true);
 		} catch (NoSuchMethodException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -357,34 +400,21 @@ public class JPAResultParserTest {
 	@Test
 	public void testGetGettersWithMapping() {
 		JPAResultParser resultParser = JPAResultParser.create();
-		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("field1");
+		EasyMock.replay(edmMapping);
 		try {
 
+			Class<?>[] pars = {String.class,EdmMapping.class};
+			Object[] params = {"myField",edmMapping};
 			Method getGetterName = resultParser.getClass().getDeclaredMethod(
-					"getGetterName", EdmProperty.class);
+					"getGetterName", pars);
 			getGetterName.setAccessible(true);
 
-			/*
-			 * Case 2 - Property having mapping
-			 */
-			EasyMock.expect(edmMapping.getInternalName()).andStubReturn(
-					fields[1]);
-			EasyMock.replay(edmMapping);
-
-			edmProperty = EasyMock.createMock(EdmProperty.class);
-			EasyMock.expect(edmProperty.getMapping()).andStubReturn(edmMapping);
-			EasyMock.expect(edmProperty.getName()).andStubReturn(fields[0]);
-			EasyMock.replay(edmProperty);
-
 			String name = (String) getGetterName.invoke(resultParser,
-					edmProperty);
-			assertEquals("getField2", name);
+					params);
+			assertEquals("getField1", name);
 
-		} catch (EdmException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -492,13 +522,21 @@ public class JPAResultParserTest {
 	class demoItem {
 		private String id;
 		private int value;
-
+		private DemoRelatedEntity relatedEntity;
 		public String getId() {
 			return id;
 		}
 
 		public void setId(String id) {
 			this.id = id;
+		}
+
+		public DemoRelatedEntity getRelatedEntity() {
+			return relatedEntity;
+		}
+
+		public void setRelatedEntity(DemoRelatedEntity relatedEntity) {
+			this.relatedEntity = relatedEntity;
 		}
 
 		public int getValue() {
@@ -514,6 +552,24 @@ public class JPAResultParserTest {
 			this.value = value;
 		}
 
+	}
+	class DemoRelatedEntity
+	{
+		String order;
+
+		public String getOrder() {
+			return order;
+		}
+
+		public void setOrder(String order) {
+			this.order = order;
+		}
+
+		public DemoRelatedEntity(String order) {
+			super();
+			this.order = order;
+		}
+		
 	}
 	
 	private List<EdmProperty> getEdmPropertyList() {

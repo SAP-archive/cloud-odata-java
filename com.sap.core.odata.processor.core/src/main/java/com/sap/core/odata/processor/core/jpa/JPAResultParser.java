@@ -187,6 +187,10 @@ public final class JPAResultParser {
 					edmEntity.put(key, propertyValue);
 				}
 			}
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
 		} catch (SecurityException e) {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
@@ -195,15 +199,11 @@ public final class JPAResultParser {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
 							.addContent(e.getMessage()), e);
-		} catch (EdmException e) {
+		} catch (IllegalArgumentException e) {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
 							.addContent(e.getMessage()), e);
 		} catch (IllegalAccessException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (IllegalArgumentException e) {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
 							.addContent(e.getMessage()), e);
@@ -250,8 +250,7 @@ public final class JPAResultParser {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.GENERAL.addContent(e
 								.getMessage()), e);
-			}
-			catch (SecurityException e) {
+			} catch (SecurityException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.GENERAL.addContent(e
 								.getMessage()), e);
@@ -267,14 +266,15 @@ public final class JPAResultParser {
 	private static String getGetterName(String propertyName, EdmMapping mapping)
 			throws ODataJPARuntimeException {
 		String name = null;
+		StringBuilder builder = new StringBuilder();
+		String[] nameParts = {};
 		if (mapping == null || mapping.getInternalName() == null)
 			name = propertyName;
 		else {
 			name = mapping.getInternalName();
 		}
-		String[] nameParts = name.split("\\.");
-		StringBuilder builder = new StringBuilder();
-
+		if (name != null)
+			nameParts = name.split("\\.");
 		if (nameParts.length == 1) {
 			if (name != null) {
 				char c = Character.toUpperCase(name.charAt(0));

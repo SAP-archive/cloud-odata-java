@@ -62,11 +62,9 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
 			}
 			result.setInlineProperties(getInlineEntityProviderProperties(context));
 		} catch (EdmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		} catch (ODataJPARuntimeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 		
 		return result;
