@@ -247,7 +247,6 @@ public class JPAProcessorImpl implements JPAProcessor {
 		try {
 			em.getTransaction().begin();
 			em.persist(createObjectList.get(0));
-//			em.flush();
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();

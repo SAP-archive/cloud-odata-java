@@ -17,7 +17,6 @@ import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -110,13 +109,12 @@ public class JPACreateRequest extends JPAWriteRequest{
 		try {
 			createInlinedEntities(jpaEntity, entitySet, entryValues, currentEntityName);
 		} catch (ODataException e) { 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw ODataJPARuntimeException
+			.throwException(ODataJPARuntimeException.GENERAL
+					.addContent(e.getMessage()), e);
 		}
 		expandSelectTree = entryValues.getExpandSelectTree();
-//		return jpaEntity;
-//		return expandSelectTree;
-		List<T> objectList = new ArrayList();
+		List<T> objectList = new ArrayList<T>();
 		objectList.add((T) jpaEntity);
 		objectList.add((T) expandSelectTree);
 		return objectList;
@@ -168,7 +166,6 @@ public class JPACreateRequest extends JPAWriteRequest{
 					} else 
 						setters.get(key).invoke(jpaEntity,propertyValue);
 				}
-
 			}
 			
 			if (embeddableKeys != null) {
@@ -265,24 +262,24 @@ public class JPACreateRequest extends JPAWriteRequest{
 				.throwException(ODataJPARuntimeException.GENERAL
 						.addContent(e.getMessage()), e);
 			}
-
 	}
 	
+	@SuppressWarnings("unchecked")
 	private <T> void createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
 		Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
 		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
 	    final EdmEntityType entityType = entitySet.getEntityType();
 	    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
 	    	final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
-	    	List<ODataEntry> relatedValueList = new ArrayList<ODataEntry>();
+	    	List<ODataEntry> relatedValueList = null;
 	    	if(navigationProperty.getMultiplicity() == EdmMultiplicity.ONE){
 	    		ODataEntry oDataEntry = (ODataEntry)entryValues.getProperties().get(navigationPropertyName);
+	    		relatedValueList = new ArrayList<ODataEntry>();
 	    		relatedValueList.add(oDataEntry);
 	    	}else{	      
 	      relatedValueList = (List<ODataEntry>) entryValues.getProperties().get(navigationPropertyName);
 	    }
 	      if (relatedValueList != null) {
-//	        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
 	        final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
 	        for (final ODataEntry relatedValues : relatedValueList) {
 	        	
@@ -299,8 +296,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 	    	    	throw ODataJPARuntimeException
 	    			.throwException(ODataJPARuntimeException.GENERAL
 	    					.addContent(e1.getMessage()), e1);
-	    	    }
-	        	
+	    	    }	        	
 	        	
 		        Object relatedData = null;
 		  		Set<EntityType<?>> entityTypeSet = this.metamodel.getEntities();
@@ -323,14 +319,10 @@ public class JPACreateRequest extends JPAWriteRequest{
 		  				}
 		  			}
 		  		}
-//	          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
 		  		if(relatedValues != null && relatedEntitySet != null)
 		  			parse2JPAEntityValueMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(),currentEntityName);
 		  		else continue;
 	          relatedPropertyValueMap.put(navigationProperty.getMapping().getInternalName(), relatedData);
-	          
-	          //	          dataSource.createData(relatedEntitySet, relatedData);
-//	          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
 	          createInlinedEntities(relatedData, relatedEntitySet, relatedValues,currentEntityName);
 	        }
 	      }
@@ -339,27 +331,21 @@ public class JPACreateRequest extends JPAWriteRequest{
 	  }
 	
 	
+	@SuppressWarnings("unchecked")
 	private void setNavigationProperties(
-			Object jpaEntity, EdmEntitySet entitySet, Map<String, Object> propertyValueMap,String entityName, Map<String, Class<?>> relatedClassMap){
+			Object jpaEntity, EdmEntitySet entitySet, Map<String, Object> propertyValueMap,String entityName, Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException{
 		if (jpaEntity == null || entitySet == null || propertyValueMap == null || propertyValueMap.size() == 0)
 			return ;
 		List<HashMap<?, ?>> mapList = getSettersForNavigationProperties(jpaEntity, entitySet, relatedClassMap);
 		HashMap<String, Method> setters = (HashMap<String, Method>) mapList.get(0);
 		HashMap<String, EdmMultiplicity> multiplicityMap = (HashMap<String, EdmMultiplicity>) mapList.get(1);
 		for (String key : setters.keySet()) {
-			/*EdmNavigationProperty property = (EdmNavigationProperty) edmEntityType.getProperty(key);				
-			if(property.getMapping() != null && property.getMapping().getInternalName() !=  null){
-				propertyName = property.getMapping().getInternalName();
-			}else { 
-				propertyName = property.getName();
-			}*/
-			
 			Method method = setters.get(key);
 			Object propertyValue = propertyValueMap.get(key);
 			if(propertyValue == null) continue;
 			try {
 				if(multiplicityMap.get(key) == EdmMultiplicity.MANY){
-					List propertyList = new ArrayList();
+					List<Object> propertyList = new ArrayList<Object>();
 					propertyList.add(propertyValue);
 					propertyValue = propertyList;
 				}else{
@@ -367,20 +353,23 @@ public class JPACreateRequest extends JPAWriteRequest{
 				}
 				method.invoke(jpaEntity,propertyValue);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
 			}
 		}
 		
 	}
 
-	private List<HashMap<?, ?>> getSettersForNavigationProperties(Object jpaEntity, EdmEntitySet edmEntitySet,Map<String, Class<?>> relatedClassMap) {
+	private List<HashMap<?, ?>> getSettersForNavigationProperties(Object jpaEntity, EdmEntitySet edmEntitySet,Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException {
 		List<HashMap<?,?>> mapList = new ArrayList<HashMap<?,?>>(); 
 		HashMap<String, Method> setters = new HashMap<String, Method>();
 		HashMap<String, EdmMultiplicity> multiplicityMap = new HashMap<String, EdmMultiplicity>();
@@ -388,19 +377,16 @@ public class JPACreateRequest extends JPAWriteRequest{
 		try {
 			edmEntityType = edmEntitySet.getEntityType();
 		} catch (EdmException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			throw ODataJPARuntimeException
+			.throwException(ODataJPARuntimeException.GENERAL
+					.addContent(e2.getMessage()), e2);
 		}
 	
 		try {
 			for (final String navigationPropertyName : edmEntityType.getNavigationPropertyNames()) {
 				final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) edmEntityType.getProperty(navigationPropertyName);
-		        final EdmEntitySet relatedEntitySet = edmEntitySet.getRelatedEntitySet(navigationProperty);
-//		        for (final ODataEntry relatedValues : relatedValueList) {
-		        	
-		        	String entityName = null;
-		        	EdmEntityType relatedEntityType = relatedEntitySet.getEntityType();
-		    	    try{
+		        String entityName = null;
+		        try{
 		    	    if(navigationProperty.getMapping() != null && navigationProperty.getMapping().getInternalName() != null)
 		    	    {
 		    	    	entityName = navigationProperty.getMapping().getInternalName();
@@ -408,22 +394,12 @@ public class JPACreateRequest extends JPAWriteRequest{
 		    	    	entityName = navigationProperty.getName();
 		    	    }
 		    	    }catch(EdmException e1){
-		    	    	try {
-							throw ODataJPARuntimeException
-							.throwException(ODataJPARuntimeException.GENERAL
-									.addContent(e1.getMessage()), e1);
-						} catch (ODataJPARuntimeException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+		    	    	throw ODataJPARuntimeException
+						.throwException(ODataJPARuntimeException.GENERAL
+								.addContent(e1.getMessage()), e1);
 		    	    }
-		    	    String name = null;
-					try {
-						name = getSetterName(entityName);
-					} catch (ODataJPARuntimeException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		    	    String name = getSetterName(entityName);
+					
 		    	    Class<?> propertyClass = null;
 		    	    if(navigationProperty.getMultiplicity() == EdmMultiplicity.MANY){
 		    	    	propertyClass = List.class;
@@ -437,16 +413,19 @@ public class JPACreateRequest extends JPAWriteRequest{
 								entityName,
 								jpaEntity.getClass().getMethod(name,propertyClass));
 					} catch (NoSuchMethodException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw ODataJPARuntimeException
+						.throwException(ODataJPARuntimeException.GENERAL
+								.addContent(e.getMessage()), e);
 					} catch (SecurityException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw ODataJPARuntimeException
+						.throwException(ODataJPARuntimeException.GENERAL
+								.addContent(e.getMessage()), e);
 					}
 			}
 		} catch (EdmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw ODataJPARuntimeException
+			.throwException(ODataJPARuntimeException.GENERAL
+					.addContent(e.getMessage()), e);
 		}
 		mapList.add(0,setters);
 		mapList.add(1,multiplicityMap);
@@ -455,34 +434,11 @@ public class JPACreateRequest extends JPAWriteRequest{
 	
 	private String getSetterName(String navigationPropertyName)
 			throws ODataJPARuntimeException {
-		EdmMapping mapping = null;
-		String name = navigationPropertyName;		
-
-		String[] nameParts = name.split("\\.");		//$NON-NLS-1$
 		StringBuilder builder = new StringBuilder();
+		char c = Character.toUpperCase(navigationPropertyName.charAt(0));
 
-		if (nameParts.length == 1) {
-			if (name != null) {
-				char c = Character.toUpperCase(name.charAt(0));
-
-				builder.append("set").append(c).append(name.substring(1))	//$NON-NLS-1$
-						.toString();
-			}
-		} else if (nameParts.length > 1) {
-
-			for (int i = 0; i < nameParts.length; i++) {
-				name = nameParts[i];
-				char c = Character.toUpperCase(name.charAt(0));
-				if (i == 0)
-					builder.append("set").append(c).append(name.substring(1)); 	//$NON-NLS-1$
-				else
-					builder.append(".").append("set").append(c)	//$NON-NLS-1$ //$NON-NLS-2$
-							.append(name.substring(1));
-			}
-		} else {
-			return null;
-		}
-
+		builder.append("set").append(c).append(navigationPropertyName.substring(1))	//$NON-NLS-1$
+				.toString();
 		if (builder.length() > 0)
 			return builder.toString();
 		else
