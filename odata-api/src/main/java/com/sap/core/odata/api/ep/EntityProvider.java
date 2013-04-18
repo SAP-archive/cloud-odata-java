@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -250,6 +252,15 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+    
+    /**
+     * Read (de-serialize) data from metadata (as {@link InputStream}) 
+     * 
+     * @param inputStream the given input stream
+     * @return edm as {@link Edm}
+     * @throws EntityProviderException if reading of data (de-serialization) fails
+     */
+    Edm readMetadata(InputStream inputStream) throws EntityProviderException, XMLStreamException;
 
     /**
      * Read (de-serialize) binary data from <code>content</code> (as {@link InputStream}) and provide it as <code>byte[]</code>.
@@ -563,5 +574,15 @@ public final class EntityProvider {
    */
   public static byte[] readBinary(final InputStream content) throws EntityProviderException {
     return createEntityProvider().readBinary(content);
+  }
+  /**
+   * Read (de-serialize) data from metadata (as {@link InputStream}) 
+   * 
+   * @param inputStream the given input stream
+   * @return edm as {@link Edm}
+   * @throws EntityProviderException if reading of data (de-serialization) fails
+   */
+  public static Edm readMetadata(final InputStream inputStream) throws EntityProviderException, XMLStreamException{
+    return createEntityProvider().readMetadata(inputStream);
   }
 }

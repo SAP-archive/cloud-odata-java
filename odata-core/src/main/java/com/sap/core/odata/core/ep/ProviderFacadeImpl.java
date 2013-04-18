@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -19,6 +22,8 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.edm.parser.EdmxProvider;
+import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG
@@ -137,6 +142,12 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   @Override
   public ODataResponse writeMetadata(final List<Schema> schemas, final Map<String, String> predefinedNamespaces) throws EntityProviderException {
     return create().writeMetadata(schemas, predefinedNamespaces);
+  }
+
+  @Override
+  public Edm readMetadata(final InputStream in) throws EntityProviderException, XMLStreamException {
+    EdmProvider provider = new EdmxProvider(in);
+    return new EdmImplProv(provider);
   }
 
 }
