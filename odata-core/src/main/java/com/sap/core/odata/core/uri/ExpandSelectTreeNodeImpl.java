@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,11 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   @Override
   public Map<String, ExpandSelectTreeNode> getLinks() {
-    return links;
+    return Collections.unmodifiableMap(links);
+  }
+  
+  public void putLinkNode(String name, ExpandSelectTreeNode node) {
+    links.put(name, node);
   }
 
   public boolean isExplicitlySelected() {

@@ -14,6 +14,7 @@ public class EntityProviderException extends ODataMessageException {
 
   public static final MessageReference COMMON = createMessageReference(EntityProviderException.class, "COMMON");
   public static final MessageReference MISSING_PROPERTY = createMessageReference(EntityProviderException.class, "MISSING_PROPERTY");
+  /** INVALID_PARENT_TAG requires 2 content values ('missing attribute name' and 'tag name') */  
   public static final MessageReference MISSING_ATTRIBUTE = createMessageReference(EntityProviderException.class, "MISSING_ATTRIBUTE");
   public static final MessageReference UNSUPPORTED_PROPERTY_TYPE = createMessageReference(EntityProviderException.class, "UNSUPPORTED_PROPERTY_TYPE");
   public static final MessageReference INLINECOUNT_INVALID = createMessageReference(EntityProviderException.class, "INLINECOUNT_INVALID");

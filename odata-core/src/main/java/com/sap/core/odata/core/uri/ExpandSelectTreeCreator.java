@@ -1,10 +1,13 @@
 package com.sap.core.odata.core.uri;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -68,17 +71,20 @@ public class ExpandSelectTreeCreator {
       Map.Entry<String, ExpandSelectTreeNode> entry = iterator.next();
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
       if (!subNode.isExpanded()) {
-        entry.setValue(null);
+        node.putLinkNode(entry.getKey(), null);
       } else {
         consolidate(subNode);
       }
     }
   }
 
+  
+  @SuppressWarnings("unchecked")
   private void consolidateTrueNode(final ExpandSelectTreeNodeImpl node) {
-    Iterator<Map.Entry<String, ExpandSelectTreeNode>> iterator = node.getLinks().entrySet().iterator();
-    while (iterator.hasNext()) {
-      Map.Entry<String, ExpandSelectTreeNode> entry = iterator.next();
+    Map<String, ExpandSelectTreeNode> links = accessField(node, "links", Map.class);
+    
+    Set<Entry<String, ExpandSelectTreeNode>> iterator = links.entrySet();
+    for (Entry<String, ExpandSelectTreeNode> entry : iterator) {
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
       if (subNode.isExpanded() && node.isExplicitlySelected()) {
         subNode.setExplicitlySelected();
@@ -86,8 +92,19 @@ public class ExpandSelectTreeCreator {
       } else if (subNode.isExpanded()) {
         consolidate(subNode);
       } else {
-        iterator.remove();
+        links.remove(entry.getKey());
       }
+    }
+  }
+
+  
+  private <T> T accessField(Object node, String string, Class<T> clazz) {
+    try {
+      Field f = node.getClass().getDeclaredField(string);
+      f.setAccessible(true);
+      return clazz.cast(f.get(node));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -114,7 +131,7 @@ public class ExpandSelectTreeCreator {
     Map<String, ExpandSelectTreeNode> links = actualNode.getLinks();
     if (!links.containsKey(navigationPropertyName)) {
       ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
-      links.put(navigationPropertyName, subNode);
+      actualNode.putLinkNode(navigationPropertyName, subNode);
       if (actualNode.isExplicitlySelected()) {
         //if a node was explicitly selected all sub nodes are explicitly selected
         subNode.setExplicitlySelected();
@@ -149,7 +166,7 @@ public class ExpandSelectTreeCreator {
         ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
         subNode.setExpanded();
         subNode.setExplicitlySelected();
-        links.put(navigationPropertyName, subNode);
+        actualNode.putLinkNode(navigationPropertyName, subNode);
         return subNode;
       } else {
         return null;
