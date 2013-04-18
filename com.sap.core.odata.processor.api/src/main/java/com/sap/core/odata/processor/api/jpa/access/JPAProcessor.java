@@ -15,7 +15,9 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 /**
- * The interface provides methods for processing OData Requests.
+ * The interface provides methods for processing OData Requests for Create, Read, Update, Delete operations. 
+ * You need to pass the OData request and the API created a JPA response. The JPA response is a JPA entity. 
+ * You can now work with the JPA entities directly once it is retrieved from the persistence.
  * 
  * @author SAP AG
  */
@@ -100,7 +102,7 @@ public interface JPAProcessor {
 	 * @throws ODataJPARuntimeException
 	 */
 
-	public <T> Object process(PostUriInfo createView, InputStream content,
+	public <T> List<T> process(PostUriInfo createView, InputStream content,
 			String requestContentType) throws ODataJPAModelException,
 			ODataJPARuntimeException;
 

@@ -4,7 +4,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 /**
- * Interface provides methods for building elements of an Entity Data Model from
+ * JPAEdmBuilder interface provides methods for building elements of an Entity Data Model (EDM) from
  * a Java Persistence Model.
  * 
  * @author SAP AG

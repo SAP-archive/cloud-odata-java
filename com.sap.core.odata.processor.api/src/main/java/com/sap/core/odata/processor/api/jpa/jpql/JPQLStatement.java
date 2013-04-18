@@ -4,12 +4,13 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
- * The class represents a JPQL Statement. The JPQL statement is built using a
- * builder namely
+ * The class represents a Java Persistence Query Language (JPQL) Statement. 
+ * The JPQL statement is built using a builder namely 
  * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder}
  * . Based upon the JPQL Context types (
  * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType} different
- * kinds of JPQL statements are built.
+ * kinds of JPQL statements are built. 
+ * The JPQL statements thus generated can be executed using JPA Query APIs to fetch JPA entities.
  * 
  * @author SAP AG
  * @see com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory
