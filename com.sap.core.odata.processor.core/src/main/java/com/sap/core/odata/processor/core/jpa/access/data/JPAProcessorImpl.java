@@ -237,17 +237,17 @@ public class JPAProcessorImpl implements JPAProcessor {
 	}
 
 	@Override
-	public <T> Object process(PostUriInfo createView, InputStream content,
+	public <T> List<T> process(PostUriInfo createView, InputStream content,
 			String requestedContentType) throws ODataJPAModelException,
 			ODataJPARuntimeException {
 		JPACreateRequest jpaCreateRequest = new JPACreateRequest(em
 				.getEntityManagerFactory().getMetamodel());
-		Object createObject = jpaCreateRequest.process(createView, content,
+		List<T> createObjectList = jpaCreateRequest.process(createView, content,
 				requestedContentType);
 		try {
 			em.getTransaction().begin();
-			em.persist(createObject);
-			em.flush();
+			em.persist(createObjectList.get(0));
+//			em.flush();
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
@@ -261,8 +261,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.ERROR_JPQL_CREATE_CREATE, e);
 		}
-		if (em.contains(createObject)) {
-			return createObject;
+		if (em.contains(createObjectList.get(0))) {
+			return createObjectList;
 		}
 		return null;
 	}

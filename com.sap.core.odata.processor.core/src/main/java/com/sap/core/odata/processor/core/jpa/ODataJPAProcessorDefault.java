@@ -81,10 +81,10 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 			String requestContentType, String contentType)
 			throws ODataException {
 		
-		Object jpaEntity = this.jpaProcessor.process(uriParserResultView, content,
+		List<Object> createdJpaEntityList = this.jpaProcessor.process(uriParserResultView, content,
 				requestContentType);
 
-		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(jpaEntity,
+		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(createdJpaEntityList,
 				uriParserResultView, contentType, oDataJPAContext);
 
 		return oDataResponse;
