@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -140,14 +139,15 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       OutputStream outputStream = csb.getOutputStream();
       writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
-      AtomServiceDocumentProducer.writeServiceDocument(edm, serviceRoot, writer);
+      AtomServiceDocumentProducer as = new AtomServiceDocumentProducer(edm, serviceRoot);
+      as.writeServiceDocument(writer);
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
           .build();
-
+      
       return response;
-    } catch (UnsupportedEncodingException e) {
+    } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (writer != null) {

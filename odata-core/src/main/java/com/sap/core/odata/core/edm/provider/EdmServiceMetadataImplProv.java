@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -15,9 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.edm.EdmEntitySetInfo;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -36,6 +40,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
   private EdmProvider edmProvider;
   private String dataServiceVersion;
   private List<Schema> schemas;
+  private List<EdmEntitySetInfo> entitySetInfos;
 
   public EdmServiceMetadataImplProv(final EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
@@ -115,5 +120,28 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
       }
     }
     return dataServiceVersion;
+  }
+
+  @Override
+  public List<EdmEntitySetInfo> getEntitySetInfos() throws ODataException {
+    if (entitySetInfos == null) {
+      entitySetInfos = new ArrayList<EdmEntitySetInfo>();
+
+      if (schemas == null) {
+        schemas = edmProvider.getSchemas();
+      }
+
+      for (Schema schema : schemas) {
+        for (EntityContainer entityContainer : schema.getEntityContainers()) {
+          for (EntitySet entitySet : entityContainer.getEntitySets()) {
+            EdmEntitySetInfo entitySetInfo = new EdmEntitySetInfoImplProv(entitySet, entityContainer);
+            entitySetInfos.add(entitySetInfo);
+          }
+        }
+      }
+      
+    }
+
+    return entitySetInfos;
   }
 }
