@@ -11,7 +11,7 @@ The [Open Data Protocol (OData)](http://odata.org) is a Web protocol for queryin
 The OData Library (Java) is a library which enables developers to implement OData producers and OData consumers and adheres to the following principles:
 
 - Provide an OData 2.0 specification compliant OData Library (Java) 
-- Enhancements shall be possible in an compatible manner 
+- Enhancements shall be possible in a compatible manner 
 - Clear separation between Core and API 
 - Option to build extensions on top
 
