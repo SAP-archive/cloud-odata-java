@@ -180,12 +180,12 @@ public final class ODataJPAResponseBuilder {
 		return odataResponse;
 	}
 	
-	public static ODataResponse build(Object createdObject,
+	public static ODataResponse build(List<Object> createdObjectList,
 			PostUriInfo uriInfo, String contentType,
 			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
 			ODataNotFoundException {
 
-		if (createdObject == null)
+		if (createdObjectList == null || createdObjectList.size() == 0 || createdObjectList.get(0) == null)
 			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
 																				// to
 																				// throw
@@ -204,13 +204,13 @@ public final class ODataJPAResponseBuilder {
 
 			JPAResultParser jpaResultParser = JPAResultParser.create();
 			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
-					createdObject, edmEntityType);
+					createdObjectList.get(0), edmEntityType);
 
 			EntityProviderWriteProperties feedProperties = null;
 			try {
 				feedProperties = EntityProviderWriteProperties.serviceRoot(
 						oDataJPAContext.getODataContext().getPathInfo()
-								.getServiceRoot()).build();
+								.getServiceRoot()).expandSelectTree((ExpandSelectTreeNode) createdObjectList.get(1)).build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.INNER_EXCEPTION, e);
