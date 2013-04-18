@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +69,19 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
 
     assertXpathExists("/a:feed/a:link[@rel='self']", xmlString);
     assertXpathEvaluatesTo("Rooms", "/a:feed/a:link[@rel='self']/@href", xmlString);
+    assertXpathEvaluatesTo("Rooms", "/a:feed/a:link[@rel='self']/@title", xmlString);
+  }
+  
+  @Test
+  public void testCustomSelfLink() throws Exception {
+    String customLink = "Test";
+    AtomEntityProvider ser = createAtomEntityProvider();
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").selfLink(new URI(customLink)).build();
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
+    String xmlString = verifyResponse(response);
+
+    assertXpathExists("/a:feed/a:link[@rel='self']", xmlString);
+    assertXpathEvaluatesTo(customLink, "/a:feed/a:link[@rel='self']/@href", xmlString);
     assertXpathEvaluatesTo("Rooms", "/a:feed/a:link[@rel='self']/@title", xmlString);
   }
 

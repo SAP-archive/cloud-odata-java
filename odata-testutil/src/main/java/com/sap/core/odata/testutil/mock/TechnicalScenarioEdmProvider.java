@@ -150,9 +150,6 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
       else if (ET_STRING_FACETS.getName().equals(edmFQName.getName()))
       {
         final List<Property> properties = new ArrayList<Property>();
-        //TODO: What here?
-        //        properties.add(new SimpleProperty().setName("StringCollation").setType(EdmSimpleTypeKind.String)
-        //            .setFacets(new Facets().setCollation(collation)));
 
         properties.add(new SimpleProperty().setName("StringDefaultValue").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setDefaultValue("defaultValue")));

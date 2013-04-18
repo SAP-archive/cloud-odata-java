@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.ep.producer;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -163,7 +164,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_TITLE, navigationPropertyName);
       if (isFeed) {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_FEED.toString());
-        appendInlineFeed(writer, navigationPropertyName, eia, data);
+        appendInlineFeed(writer, navigationPropertyName, eia, data, self);
       } else {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_ENTRY.toString());
         appendInlineEntry(writer, navigationPropertyName, eia, data);
@@ -175,7 +176,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
+  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data, String self) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
         if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
@@ -188,7 +189,8 @@ public class AtomEntryEntityProducer {
           context.setEntryData(data);
           ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           context.setCurrentExpandSelectTreeNode(subNode);
-
+          context.setSelfLink(new URI(self));
+          
           ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
           WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
           List<Map<String, Object>> inlineData = result.getFeedData();

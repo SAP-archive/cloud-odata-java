@@ -886,7 +886,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         }
         WriteFeedCallbackResult result = new WriteFeedCallbackResult();
         result.setFeedData(values);
-        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
