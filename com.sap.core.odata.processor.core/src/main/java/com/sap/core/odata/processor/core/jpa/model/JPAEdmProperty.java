@@ -179,7 +179,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 					EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor
 							.convertToEdmSimpleType(currentAttribute
-									.getJavaType());
+									.getJavaType(),currentAttribute);
 
 					currentSimpleProperty.setType(simpleTypeKind);
 					currentSimpleProperty
@@ -286,7 +286,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						.getJavaMember()).getAnnotation(Column.class);
 				if (column != null) {
 					EdmSimpleTypeKind attrEmdType = JPATypeConvertor
-							.convertToEdmSimpleType(jpaAttribute.getJavaType());
+							.convertToEdmSimpleType(jpaAttribute.getJavaType(),jpaAttribute);
 					if (column.nullable()) {
 						facets.setNullable(true);
 					}

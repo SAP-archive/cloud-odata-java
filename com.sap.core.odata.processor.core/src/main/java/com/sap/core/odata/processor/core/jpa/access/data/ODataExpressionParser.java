@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa.access.data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -20,6 +22,7 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
+import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -37,7 +40,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
 public class ODataExpressionParser {
 	
 	public static final String EMPTY = "";	//$NON-NLS-1$
-	
+		
 	/**
 	 * This method returns the parsed where condition corresponding to the filter input in the user query.
 	 * 
@@ -120,7 +123,27 @@ public class ODataExpressionParser {
 		    final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
 		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, literalType.getDefaultType()), EdmLiteralKind.DEFAULT, null);
 		    return evaluateComparingExpression(value, literalType);
-
+		    
+	    case METHOD:
+	    	final MethodExpression methodExpression = (MethodExpression) whereExpression;
+	    	String first = parseToJPAWhereExpression(methodExpression.getParameters().get(0),tableAlias);
+	    	final String second = methodExpression.getParameterCount() > 1 ?
+	        		parseToJPAWhereExpression(methodExpression.getParameters().get(1),tableAlias) : null;
+	        String third = methodExpression.getParameterCount() > 2 ?
+	        		parseToJPAWhereExpression(methodExpression.getParameters().get(2),tableAlias) : null;
+	        		
+	        switch (methodExpression.getMethod()) {
+	        	case SUBSTRING:
+	        		third = third != null ? ", " + third : "";
+	        		return String.format("SUBSTRING(%s, %s + 1 %s)", first,second,third);
+	        	case SUBSTRINGOF:
+	        		first = first.substring(1,first.length()-1);
+	        		return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END)", second, first);
+	        	case TOLOWER:
+	                return String.format("LOWER(%s)", first);
+	        	default:
+			    	  throw new ODataNotImplementedException();
+	        }
 	    
 	    default:
 	    	throw new ODataNotImplementedException();
@@ -233,8 +256,10 @@ public class ODataExpressionParser {
 	 * @param value
 	 * @param edmSimpleType
 	 * @return the evaluated expression
+	 * @throws ODataJPARuntimeException 
 	 */
-	private static String evaluateComparingExpression(String value, EdmSimpleType edmSimpleType){
+	private static String evaluateComparingExpression(String value, EdmSimpleType edmSimpleType) throws ODataJPARuntimeException {
+		
 		if (edmSimpleType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance())
 		{
@@ -242,17 +267,41 @@ public class ODataExpressionParser {
 		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
 		{
-			String dateValue = value.substring(0, value.indexOf('T'));
-			String timeValue = value.substring(value.indexOf('T')+1, value.length());
-			String SPACE = " ";
-			String OFFSET = ".000";
-			 
-			value = "{ts \'"+dateValue+SPACE+timeValue+OFFSET+"\'}";
-			//$NON-NLS-1$ 	//$NON-NLS-2$
+				try {
+				Calendar datetime = (Calendar) edmSimpleType.valueOfString(value, EdmLiteralKind.DEFAULT, null, edmSimpleType.getDefaultType());
+				
+				String year = String.format("%04d", datetime.get(Calendar.YEAR));						
+				String month = String.format("%02d", datetime.get(Calendar.MONTH)+1);
+				String day = String.format("%02d", datetime.get(Calendar.DAY_OF_MONTH));
+				String hour = String.format("%02d", datetime.get(Calendar.HOUR_OF_DAY));
+				String min = String.format("%02d", datetime.get(Calendar.MINUTE));
+				String sec = String.format("%02d", datetime.get(Calendar.SECOND));
+				
+				value = JPQLStatement.DELIMITER.LEFT_BRACE+JPQLStatement.KEYWORD.TIMESTAMP+JPQLStatement.DELIMITER.SPACE+"\'"+year+JPQLStatement.DELIMITER.HYPHEN+month+JPQLStatement.DELIMITER.HYPHEN+day+JPQLStatement.DELIMITER.SPACE+hour+JPQLStatement.DELIMITER.COLON+min+JPQLStatement.DELIMITER.COLON+sec+JPQLStatement.KEYWORD.OFFSET+"\'"+JPQLStatement.DELIMITER.RIGHT_BRACE;
+				
+				} catch (EdmSimpleTypeException e) {
+					throw ODataJPARuntimeException.throwException(
+							ODataJPARuntimeException.GENERAL.addContent(e
+									.getMessage()), e);
+				}			
+				
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
-			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-2$
+				try {
+				Calendar time = (Calendar) edmSimpleType.valueOfString(value, EdmLiteralKind.DEFAULT, null, edmSimpleType.getDefaultType());
+								
+				String hourValue = String.format("%02d", time.get(Calendar.HOUR_OF_DAY));
+				String minValue = String.format("%02d", time.get(Calendar.MINUTE));
+				String secValue = String.format("%02d", time.get(Calendar.SECOND));
+				
+				value = "\'"+hourValue+JPQLStatement.DELIMITER.COLON+minValue+JPQLStatement.DELIMITER.COLON+secValue+"\'";	
+				} catch (EdmSimpleTypeException e) {
+					throw ODataJPARuntimeException.throwException(
+							ODataJPARuntimeException.GENERAL.addContent(e
+									.getMessage()), e);
+				}						
+			
 		}else if(edmSimpleType == EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance()){
-			value = value+'L';	//$NON-NLS-1$
+			value = value+JPQLStatement.DELIMITER.LONG;	//$NON-NLS-1$
 		}
 		return value;
 	}

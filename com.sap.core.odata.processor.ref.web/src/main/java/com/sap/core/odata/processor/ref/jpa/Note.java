@@ -13,22 +13,25 @@ public class Note {
 	public Note() {
 	}	
 	
-	public Note(String createdBy, Date creationDate, String text) {
-		
+	public Note(Date creationTime, Date creationDate, String createdBy,
+			String text) {
 		super();
-		this.createdBy = createdBy;
+		this.creationTime = creationTime;
 		this.creationDate = creationDate;
+		this.createdBy = createdBy;
 		this.text = text;
 	}
 
 	@Id
-	private String createdBy;
+	@Temporal(TemporalType.TIME)
+	private Date creationTime;
 	
 	@Id
 	@Temporal(TemporalType.DATE)
 	private Date creationDate;
-
-
+	
+	@Id
+	private String createdBy;
 
 	@Column
 	private String text;
@@ -38,14 +41,14 @@ public class Note {
 	
 	@JoinColumn(name = "SO_ID",referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
-	private SalesOrderHeader salesOrderHeader;
+	private SalesOrderHeader salesOrderHeader;	
 
-	public String getCreatedBy() {
-		return createdBy;
+	public Date getCreationTime() {
+		return creationTime;
 	}
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
 	}
 
 	public Date getCreationDate() {
@@ -59,6 +62,14 @@ public class Note {
 		Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
 		this.creationDate = newDate;
 	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}	
 
 	public String getText() {
 		return text;
@@ -81,5 +92,5 @@ public class Note {
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
 		//this.salesOrderHeader.getNotes().add(this);
-	}
+	}	
 }

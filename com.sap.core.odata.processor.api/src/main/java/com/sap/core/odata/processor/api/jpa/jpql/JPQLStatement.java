@@ -116,6 +116,8 @@ public class JPQLStatement {
 		public static final String JOIN = "JOIN";
 		public static final String ORDERBY = "ORDER BY";
 		public static final String COUNT = "COUNT";
+		public static final String OFFSET = ".000";
+		public static final String TIMESTAMP = "ts";
 
 	}
 
@@ -125,6 +127,11 @@ public class JPQLStatement {
 		public static final char PERIOD = '.';
 		public static final char PARENTHESIS_LEFT = '(';
 		public static final char PARENTHESIS_RIGHT = ')';
+		public static final char COLON = ':';
+		public static final char HYPHEN = '-';
+		public static final char LEFT_BRACE = '{';
+		public static final char RIGHT_BRACE = '}';
+		public static final char LONG = 'L';
 	}
 
 }

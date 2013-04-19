@@ -5,6 +5,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.metamodel.Attribute;
+
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -31,7 +35,7 @@ public class JPATypeConvertor {
 	 * 
 	 * @see EdmSimpleTypeKind
 	 */
-	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException{
+	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType,Attribute<?, ?> currentAttribute) throws ODataJPAModelException{
 		if (jpaType.equals(String.class)){
 			return EdmSimpleTypeKind.String;
 		}
@@ -65,15 +69,23 @@ public class JPATypeConvertor {
 		else if (jpaType.equals(Boolean.class) ||  jpaType.equals(boolean.class)){
 			return EdmSimpleTypeKind.Boolean;
 		}
-		else if (jpaType.equals(Date.class)){
-			return EdmSimpleTypeKind.DateTime;
-		}
-		else if (jpaType.equals(Calendar.class)){
-			return EdmSimpleTypeKind.DateTime;
-		}
+		else if ((jpaType.equals(Date.class)) || (jpaType.equals(Calendar.class))) {
+			try {
+				if((currentAttribute!=null) && (currentAttribute.getDeclaringType().getJavaType().getDeclaredField(currentAttribute.getName()).getAnnotation(Temporal.class).value()==TemporalType.TIME))
+					return EdmSimpleTypeKind.Time;
+				else 
+					return EdmSimpleTypeKind.DateTime;
+			} catch (NoSuchFieldException e) {
+				throw ODataJPAModelException
+				.throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
+			} catch (SecurityException e) {
+				throw ODataJPAModelException
+				.throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
+			}
+		}		
 		else if (jpaType.equals(UUID.class)){
 			return EdmSimpleTypeKind.Guid;
 		}
 		throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()),null);
-	}
+	}	
 }

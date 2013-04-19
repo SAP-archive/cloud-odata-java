@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -26,9 +24,8 @@ public class JPATypeConvertorTest {
 	private EdmSimpleTypeKind edmSimpleKindTypeBigDecimal;
 	private EdmSimpleTypeKind edmSimpleKindTypeByte;
 	private EdmSimpleTypeKind edmSimpleKindTypeBoolean;
-	private EdmSimpleTypeKind edmSimpleKindTypeDate;
 	private EdmSimpleTypeKind edmSimpleKindTypeUUID;
-
+	
 	@Test
 	public void testConvertToEdmSimpleType() {
 		String str = "entity";
@@ -41,34 +38,33 @@ public class JPATypeConvertorTest {
 		BigDecimal bigDecimalObj = new BigDecimal(0);
 		Byte byteObj = new Byte((byte) 0);
 		Boolean booleanObj = Boolean.TRUE;
-		Date dateObj = Calendar.getInstance().getTime();
 		UUID uUID = new UUID(0, 0);
 
 		try {
 			edmSimpleKindTypeString = JPATypeConvertor
-					.convertToEdmSimpleType(str.getClass());
+					.convertToEdmSimpleType(str.getClass(),null);
 			edmSimpleKindTypeByteArr = JPATypeConvertor
-					.convertToEdmSimpleType(byteArr.getClass());
+					.convertToEdmSimpleType(byteArr.getClass(),null);
 			edmSimpleKindTypeLong = JPATypeConvertor
-					.convertToEdmSimpleType(longObj.getClass());
+					.convertToEdmSimpleType(longObj.getClass(),null);
 			edmSimpleKindTypeShort = JPATypeConvertor
-					.convertToEdmSimpleType(shortObj.getClass());
+					.convertToEdmSimpleType(shortObj.getClass(),null);
 			edmSimpleKindTypeInteger = JPATypeConvertor
-					.convertToEdmSimpleType(integerObj.getClass());
+					.convertToEdmSimpleType(integerObj.getClass(),null);
 			edmSimpleKindTypeDouble = JPATypeConvertor
-					.convertToEdmSimpleType(doubleObj.getClass());
+					.convertToEdmSimpleType(doubleObj.getClass(),null);
 			edmSimpleKindTypeFloat = JPATypeConvertor
-					.convertToEdmSimpleType(floatObj.getClass());
+					.convertToEdmSimpleType(floatObj.getClass(),null);
 			edmSimpleKindTypeBigDecimal = JPATypeConvertor
-					.convertToEdmSimpleType(bigDecimalObj.getClass());
+					.convertToEdmSimpleType(bigDecimalObj.getClass(),null);
 			edmSimpleKindTypeByte = JPATypeConvertor
-					.convertToEdmSimpleType(byteObj.getClass());
+					.convertToEdmSimpleType(byteObj.getClass(),null);
 			edmSimpleKindTypeBoolean = JPATypeConvertor
-					.convertToEdmSimpleType(booleanObj.getClass());
-			edmSimpleKindTypeDate = JPATypeConvertor
-					.convertToEdmSimpleType(dateObj.getClass());
+					.convertToEdmSimpleType(booleanObj.getClass(),null);
+			/*edmSimpleKindTypeDate = JPATypeConvertor
+					.convertToEdmSimpleType(dateObj.getClass(),null);*/
 			edmSimpleKindTypeUUID = JPATypeConvertor
-					.convertToEdmSimpleType(uUID.getClass());
+					.convertToEdmSimpleType(uUID.getClass(),null);
 		} catch (ODataJPAModelException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
@@ -84,7 +80,7 @@ public class JPATypeConvertorTest {
 		assertEquals(EdmSimpleTypeKind.Decimal, edmSimpleKindTypeBigDecimal);
 		assertEquals(EdmSimpleTypeKind.Byte, edmSimpleKindTypeByte);
 		assertEquals(EdmSimpleTypeKind.Boolean, edmSimpleKindTypeBoolean);
-		assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeDate);
+		//assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeDate);
 		assertEquals(EdmSimpleTypeKind.Guid, edmSimpleKindTypeUUID);
 	}
 

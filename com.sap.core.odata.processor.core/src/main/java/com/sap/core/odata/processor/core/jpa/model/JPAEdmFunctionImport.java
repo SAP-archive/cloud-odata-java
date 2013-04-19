@@ -172,7 +172,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 							functionImportParameter.setName(annotation.name());
 
 						functionImportParameter.setType(JPATypeConvertor
-								.convertToEdmSimpleType(parameterType));
+								.convertToEdmSimpleType(parameterType,null));
 						functionImportParameter.setMode(annotation.mode()
 								.toString());
 
@@ -262,7 +262,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 				case SCALAR:
 
 					EdmSimpleTypeKind edmSimpleTypeKind = JPATypeConvertor
-							.convertToEdmSimpleType(methodReturnType);
+							.convertToEdmSimpleType(methodReturnType,null);
 					functionReturnType.setTypeName(edmSimpleTypeKind
 							.getFullQualifiedName());
 

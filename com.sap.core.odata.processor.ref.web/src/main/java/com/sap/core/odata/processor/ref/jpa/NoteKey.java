@@ -8,18 +8,20 @@ public class NoteKey implements Serializable {
 		
 	public NoteKey() {
 		//No arg constructor
-	}
-	
-	public NoteKey(String createdBy, Date creationDate) {
+	}	
+
+	public NoteKey(Date creationTime, Date creationDate, String createdBy) {
 		super();
-		this.createdBy = createdBy;
+		this.creationTime = creationTime;
 		this.creationDate = creationDate;
+		this.createdBy = createdBy;
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	private String createdBy;
+	private Date creationTime;
 	private Date creationDate;
+	private String createdBy;
 	
 	@Override
 	public int hashCode() {
@@ -29,6 +31,8 @@ public class NoteKey implements Serializable {
 				+ ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result
 				+ ((creationDate == null) ? 0 : creationDate.hashCode());
+		result = prime * result
+				+ ((creationTime == null) ? 0 : creationTime.hashCode());
 		return result;
 	}
 
@@ -51,17 +55,22 @@ public class NoteKey implements Serializable {
 				return false;
 		} else if (!creationDate.equals(other.creationDate))
 			return false;
+		if (creationTime == null) {
+			if (other.creationTime != null)
+				return false;
+		} else if (!creationTime.equals(other.creationTime))
+			return false;
 		return true;
+	}		
+	
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
 	}
 	
-	public String getCreatedBy() {
-		return createdBy;
-	}	
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getCreationDate() {
 		long dbTime = creationDate.getTime();
 		Date originalDate = new Date(dbTime + TimeZone.getDefault().getOffset(dbTime));
@@ -73,5 +82,13 @@ public class NoteKey implements Serializable {
 		Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
 		this.creationDate = newDate;
 	}	
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 }
 
