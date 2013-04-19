@@ -62,19 +62,15 @@ public class XmlEntryConsumer {
     try {
       initialize(readProperties);
 
-      while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName()))) {
-        reader.next();
-        while (reader.hasNext() && !reader.hasName()) {
-          reader.next();
-        }
-
+      while (reader.hasNext() && !isEntryEndTag(reader)) {
+        reader.nextTag();
         if (reader.isStartElement()) {
           handleStartedTag(reader, eia, readProperties);
         }
       }
 
       if (!readProperties.getMergeSemantic()) {
-        validate(eia, readEntryResult);
+        validateMandatoryPropertiesAvailable(eia, readEntryResult);
       }
 
       return readEntryResult;
@@ -83,6 +79,12 @@ public class XmlEntryConsumer {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private boolean isEntryEndTag(final XMLStreamReader reader) {
+    return reader.isEndElement() 
+    && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) 
+    && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
   }
 
   /**
@@ -103,17 +105,23 @@ public class XmlEntryConsumer {
     foundPrefix2NamespaceUri.putAll(readProperties.getValidatedPrefixNamespaceUris());
   }
 
-  private void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
+  /**
+   * Validates that all mandatory properties are found and set at the {@link #readEntryResult} entity.
+   * If a mandatory property is missing an {@link EntityProviderException} is thrown.
+   * 
+   * @param eia entity info which contains the information which properties are mandatory
+   * @param entry entry for which the mandatory properties are validated
+   * @throws EntityProviderException if a mandatory property is missing
+   */
+  private void validateMandatoryPropertiesAvailable(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
     Collection<EntityPropertyInfo> propertyInfos = new ArrayList<EntityPropertyInfo>(eia.getPropertyInfos());
     propertyInfos.removeAll(eia.getKeyPropertyInfos());
     Map<String, Object> data = entry.getProperties();
 
     for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
       boolean mandatory = entityPropertyInfo.isMandatory();
-      if (mandatory) {
-        if (!data.containsKey(entityPropertyInfo.getName())) {
-          throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
-        }
+      if (mandatory && !data.containsKey(entityPropertyInfo.getName())) {
+        throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
       }
     }
   }
@@ -135,6 +143,8 @@ public class XmlEntryConsumer {
       readProperties(reader, eia);
     } else if (!readProperties.getMergeSemantic()) {
       readCustomElement(reader, currentHandledStartTagName, eia);
+    } else {
+      skipStartedTag(reader);
     }
   }
 
@@ -142,6 +152,7 @@ public class XmlEntryConsumer {
     EntityPropertyInfo targetPathInfo = eia.getTargetPathInfo(tagName);
     NamespaceContext nsctx = reader.getNamespaceContext();
 
+    boolean skipTag = true;
     if (!Edm.NAMESPACE_ATOM_2005.equals(reader.getName().getNamespaceURI())) {
 
       if (targetPathInfo != null) {
@@ -153,6 +164,7 @@ public class XmlEntryConsumer {
           String xmlNamespaceUri = reader.getNamespaceURI(customPrefix);
 
           if (customNamespaceURI.equals(xmlNamespaceUri) && customPrefix.equals(xmlPrefix)) {
+            skipTag = false;
             reader.require(XMLStreamConstants.START_ELEMENT, customNamespaceURI, tagName);
             reader.next();
             reader.require(XMLStreamConstants.CHARACTERS, null, null);
@@ -166,15 +178,36 @@ public class XmlEntryConsumer {
             final Object value = type.valueOfString(text, EdmLiteralKind.DEFAULT, propertyInfo.getFacets(),
                 typeMapping == null ? type.getDefaultType() : typeMapping);
             properties.put(tagName, value);
-          }
+          } 
         }
       } else {
         throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(tagName));
       }
-
+    }
+    
+    if(skipTag) {
+      skipStartedTag(reader);
     }
   }
 
+  /**
+   * Skip the tag to which the {@link XMLStreamReader} currently points.
+   * Therefore it is read until an end element tag with current local name is found.
+   * 
+   * @param reader
+   * @throws XMLStreamException
+   */
+  private void skipStartedTag(XMLStreamReader reader) throws XMLStreamException {
+    final String name = reader.getLocalName();
+    boolean read = reader.hasNext();
+    while(read) {
+      reader.next();
+      if(reader.hasName()) {
+        read = !(reader.isEndElement() && name.equals(reader.getLocalName()));
+      }
+    }
+  }
+  
   private void readEntry(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_ENTRY);
 
