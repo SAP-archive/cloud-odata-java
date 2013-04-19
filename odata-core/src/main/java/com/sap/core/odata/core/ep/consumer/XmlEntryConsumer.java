@@ -221,7 +221,8 @@ public class XmlEntryConsumer {
     final String type = reader.getAttributeValue(null, FormatXml.ATOM_TYPE);
     final String etag = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG);
 
-    reader.next();
+    // read to next tag to check if <link> contains any further tags
+    reader.nextTag();
     
     if (reader.isEndElement()) {
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
@@ -244,12 +245,13 @@ public class XmlEntryConsumer {
   }
 
   /**
+   * Inline content was found and {@link XMLStreamReader} already points to <m:inline> tag.
    * 
    * @param reader
    * @param eia
    * @param readProperties
-   * @param atomLinkType
-   * @param atomLinkRel
+   * @param atomLinkType the atom <code>type</code> attribute value of the <code>link</code> tag
+   * @param atomLinkRel the atom <code>rel</code> attribute value of the <code>link</code> tag
    * @throws XMLStreamException
    * @throws EntityProviderException
    * @throws EdmException
@@ -298,7 +300,8 @@ public class XmlEntryConsumer {
    * @param isFeed
    * @param inlineEntries
    */
-  private void updateReadProperties(final EntityProviderReadProperties readProperties, String navigationPropertyName, EdmNavigationProperty navigationProperty, boolean isFeed, List<ODataEntry> inlineEntries) {
+  private void updateReadProperties(final EntityProviderReadProperties readProperties, final String navigationPropertyName, 
+      final EdmNavigationProperty navigationProperty, final boolean isFeed, final List<ODataEntry> inlineEntries) {
     Object entry = extractODataEntity(isFeed, inlineEntries);
     OnReadInlineContent callback = readProperties.getCallback();
     if (callback == null) {
@@ -348,7 +351,7 @@ public class XmlEntryConsumer {
    * @param entry
    */
   private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty, 
-      final OnReadInlineContent callback, boolean isFeed, Object entry) {
+      final OnReadInlineContent callback, final boolean isFeed, final Object entry) {
     
     if (isFeed) {
       @SuppressWarnings("unchecked")
@@ -368,7 +371,7 @@ public class XmlEntryConsumer {
    * @param navigationProperty
    * @return
    */
-  private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, EdmNavigationProperty navigationProperty) {
+  private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
     final OnReadInlineContent callback = readProperties.getCallback();
     
     EntityProviderReadProperties currentReadProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
@@ -380,6 +383,12 @@ public class XmlEntryConsumer {
   }
 
   /**
+   * <p>
+   * Inline content was found and {@link XMLStreamReader} already points to <code><m:inline> tag</code>.
+   * <br/>
+   * <b>ATTENTION</b>: If {@link XMLStreamReader} does not point to the <code><m:inline> tag</code> an exception is thrown.
+   * </p>
+   * <p>
    * Check whether it is an inline <code>Feed</code> or <code>Entry</code> and validate that...
    * <ul>
    * <li>...{@link FormatXml#M_INLINE} tag is correctly set.</li>
@@ -390,10 +399,12 @@ public class XmlEntryConsumer {
    * For the case that one of above validations fail an {@link EntityProviderException} is thrown.
    * If validation was successful <code>true</code> is returned for <code>Feed</code> and <code>false</code> for <code>Entry</code>
    * multiplicity.
+   * </p>
    * 
-   * @param reader xml content
-   * @param edmEntitySet 
-   * @param linkAttributes attributes of parent <code>link</code> tag
+   * @param reader xml content reader which already points to <code><m:inline> tag</code>
+   * @param eia all necessary information about the entity 
+   * @param type the atom type attribute value of the <code>link</code> tag
+   * @param navigationPropertyName the navigation property name of the entity
    * @return <code>true</code> for <code>Feed</code> and <code>false</code> for <code>Entry</code>
    * @throws EntityProviderException is thrown if at least one validation fails.
    * @throws EdmException if edm access fails
@@ -401,7 +412,6 @@ public class XmlEntryConsumer {
   private boolean isInlineFeedValidated(final XMLStreamReader reader, final EntityInfoAggregator eia, final String type, String navigationPropertyName) throws EntityProviderException, EdmException {
     boolean isFeed = false;
     try {
-      reader.nextTag();
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
       //
       ContentType cType = ContentType.parse(type);

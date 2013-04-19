@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -45,6 +47,11 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * @author SAP AG
  */
 public class XmlEntityConsumerTest extends AbstractConsumerTest {
+
+  private static final Logger LOG = Logger.getLogger(XmlEntityConsumerTest.class.getName());
+  static {
+    LOG.setLevel(Level.OFF);
+  }
 
   public static final String EMPLOYEE_1_XML =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -597,11 +604,45 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
   }
 
+  /**
+   * Read an inline Room at an Employee
+   * 
+   * @throws Exception
+   */
   @Test
   public void readWithInlineContentEmployeeRoomEntry() throws Exception {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream reqContent = createContentAsStream(EMPLOYEE_1_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    Map<String, Object> roomProperties = room.getProperties();
+    assertEquals(4, roomProperties.size());
+    assertEquals("1", roomProperties.get("Id"));
+    assertEquals("Room 1", roomProperties.get("Name"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Seats"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Version"));
+  }
+
+  /**
+   * Read an inline Room at an Employee with special formated XML (see issue: https://jtrack/browse/ODATAFORSAP-92)
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentEmployeeRoomEntrySpecialXml() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_ROOM_XML, true);
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
@@ -631,6 +672,30 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream reqContent = createContentAsStream(EMPLOYEE_1_NULL_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    assertNull(room);
+  }
+
+  /**
+   * Read of employee with inlined but <code>NULL</code> room navigation property (which has {@link EdmMultiplicity#ONE}.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentEmployeeNullRoomEntrySpecialXmlFormat() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_NULL_ROOM_XML, true);
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
@@ -1862,6 +1927,23 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
-    return new ByteArrayInputStream(xml.getBytes("UTF-8"));
+    return createContentAsStream(xml, false);
+  }
+
+  /**
+   * 
+   * @param xml
+   * @param replaceWhitespaces if <code>true</code> all XML not necessary whitespaces between tags are
+   * @return
+   * @throws UnsupportedEncodingException
+   */
+  private InputStream createContentAsStream(final String xml, boolean replaceWhitespaces) throws UnsupportedEncodingException {
+    String contentForStream = xml;
+    if(replaceWhitespaces) {
+      contentForStream = xml.replaceAll(">\\s.<", "><");
+    }
+
+    LOG.info("\n\n" + contentForStream + "\n\n");
+    return new ByteArrayInputStream(contentForStream.getBytes("UTF-8"));
   }
 }
