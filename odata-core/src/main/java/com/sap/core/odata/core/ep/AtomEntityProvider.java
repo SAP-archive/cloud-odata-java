@@ -249,7 +249,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
       //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
-      atomFeedProvider.append(writer, eia, data);
+      atomFeedProvider.append(writer, eia, data, false);
 
       writer.flush();
       outStream.flush();

@@ -194,13 +194,12 @@ public class AtomEntryEntityProducer {
           ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
           WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
           List<Map<String, Object>> inlineData = result.getFeedData();
-          if (inlineData != null) {
-            EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
-            EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
-            AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
-            EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-            inlineFeedProducer.append(writer, inlineEia, inlineData);
-          }
+
+          EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
+          EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
+          AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
+          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+          inlineFeedProducer.append(writer, inlineEia, inlineData, true);
 
           writer.writeEndElement();
         }
