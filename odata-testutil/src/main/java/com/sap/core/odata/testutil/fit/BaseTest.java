@@ -68,8 +68,6 @@ public abstract class BaseTest {
    * <br /> 
    * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
    * {@link #after()}).
-   * 
-   * @param classes
    */
   protected void disableLogging() {
     try {

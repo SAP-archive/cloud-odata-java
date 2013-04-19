@@ -139,7 +139,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
           }
         }
       }
-      
+
     }
 
     return entitySetInfos;

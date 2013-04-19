@@ -29,15 +29,15 @@ public class JsonServiceDocumentProducer {
       jsonStreamWriter.beginArray();
 
       boolean first = true;
-      for(EdmEntitySetInfo info : serviceMetadata.getEntitySetInfos()){
+      for (EdmEntitySetInfo info : serviceMetadata.getEntitySetInfos()) {
         if (first) {
           first = false;
         } else {
           jsonStreamWriter.separator();
         }
-        jsonStreamWriter.stringValue(info.getEntitySetUri().toASCIIString());      
+        jsonStreamWriter.stringValue(info.getEntitySetUri().toASCIIString());
       }
-       
+
       jsonStreamWriter.endArray();
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();

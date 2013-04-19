@@ -50,8 +50,8 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   public Map<String, ExpandSelectTreeNode> getLinks() {
     return Collections.unmodifiableMap(links);
   }
-  
-  public void putLinkNode(String name, ExpandSelectTreeNode node) {
+
+  public void putLinkNode(final String name, final ExpandSelectTreeNode node) {
     links.put(name, node);
   }
 

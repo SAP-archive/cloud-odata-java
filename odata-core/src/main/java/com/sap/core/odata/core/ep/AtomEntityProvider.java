@@ -145,7 +145,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
           .build();
-      
+
       return response;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

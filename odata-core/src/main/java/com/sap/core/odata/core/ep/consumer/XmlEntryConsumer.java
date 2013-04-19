@@ -223,7 +223,7 @@ public class XmlEntryConsumer {
 
     // read to next tag to check if <link> contains any further tags
     reader.nextTag();
-    
+
     if (reader.isEndElement()) {
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
@@ -256,9 +256,9 @@ public class XmlEntryConsumer {
    * @throws EntityProviderException
    * @throws EdmException
    */
-  private void readInlineContent(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties, 
+  private void readInlineContent(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties,
       final String atomLinkType, final String atomLinkRel)
-          throws XMLStreamException, EntityProviderException, EdmException {
+      throws XMLStreamException, EntityProviderException, EdmException {
 
     //
     String navigationPropertyName = atomLinkRel.substring(Edm.NAMESPACE_REL_2007_08.length());
@@ -300,7 +300,7 @@ public class XmlEntryConsumer {
    * @param isFeed
    * @param inlineEntries
    */
-  private void updateReadProperties(final EntityProviderReadProperties readProperties, final String navigationPropertyName, 
+  private void updateReadProperties(final EntityProviderReadProperties readProperties, final String navigationPropertyName,
       final EdmNavigationProperty navigationProperty, final boolean isFeed, final List<ODataEntry> inlineEntries) {
     Object entry = extractODataEntity(isFeed, inlineEntries);
     OnReadInlineContent callback = readProperties.getCallback();
@@ -318,7 +318,7 @@ public class XmlEntryConsumer {
    * @param navigationPropertyName
    * @param inlineEntries
    */
-  private void updateExpandSelectTree(String navigationPropertyName, List<ODataEntry> inlineEntries) {
+  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) {
     expandSelectTree.setExpanded();
     ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
     expandSelectTree.putLinkNode(navigationPropertyName, subNode);
@@ -332,7 +332,7 @@ public class XmlEntryConsumer {
    * @param inlineEntries
    * @return
    */
-  private Object extractODataEntity(boolean isFeed, List<ODataEntry> inlineEntries) {
+  private Object extractODataEntity(final boolean isFeed, final List<ODataEntry> inlineEntries) {
     if (isFeed) {
       return inlineEntries;
     } else if (!inlineEntries.isEmpty()) {
@@ -350,9 +350,9 @@ public class XmlEntryConsumer {
    * @param isFeed
    * @param entry
    */
-  private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty, 
+  private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty,
       final OnReadInlineContent callback, final boolean isFeed, final Object entry) {
-    
+
     if (isFeed) {
       @SuppressWarnings("unchecked")
       ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (List<ODataEntry>) entry);
@@ -373,7 +373,7 @@ public class XmlEntryConsumer {
    */
   private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
     final OnReadInlineContent callback = readProperties.getCallback();
-    
+
     EntityProviderReadProperties currentReadProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
     if (callback == null) {
       return currentReadProperties;
@@ -409,7 +409,7 @@ public class XmlEntryConsumer {
    * @throws EntityProviderException is thrown if at least one validation fails.
    * @throws EdmException if edm access fails
    */
-  private boolean isInlineFeedValidated(final XMLStreamReader reader, final EntityInfoAggregator eia, final String type, String navigationPropertyName) throws EntityProviderException, EdmException {
+  private boolean isInlineFeedValidated(final XMLStreamReader reader, final EntityInfoAggregator eia, final String type, final String navigationPropertyName) throws EntityProviderException, EdmException {
     boolean isFeed = false;
     try {
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);

@@ -77,7 +77,7 @@ public class EntityTypeMapping {
    * If it is not complex an empty {@link EntityTypeMapping} is returned.
    * 
    * @param name
-   * @return
+   * @return the mapping for this entity type
    */
   public EntityTypeMapping getEntityTypeMapping(final String name) {
     if (isComplex()) {

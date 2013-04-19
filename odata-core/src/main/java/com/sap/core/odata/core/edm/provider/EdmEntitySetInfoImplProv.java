@@ -15,7 +15,7 @@ public class EdmEntitySetInfoImplProv implements EdmEntitySetInfo {
   private final String entityContainerName;
   private final boolean isDefaultEntityContainer;
 
-  public EdmEntitySetInfoImplProv(EntitySet entitySet, EntityContainerInfo entityContainerInfo) throws EdmException {
+  public EdmEntitySetInfoImplProv(final EntitySet entitySet, final EntityContainerInfo entityContainerInfo) throws EdmException {
     entityContainerName = entityContainerInfo.getName();
     isDefaultEntityContainer = entityContainerInfo.isDefaultEntityContainer();
 

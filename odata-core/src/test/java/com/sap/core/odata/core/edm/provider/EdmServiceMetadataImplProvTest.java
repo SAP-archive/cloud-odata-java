@@ -168,7 +168,7 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     assertEquals(infos.get(1).getEntitySetUri().toASCIIString(), entitySetUriString2);
     assertFalse(infos.get(1).isDefaultEntityContainer());
   }
-  
+
   @Test
   public void oneEntitySetsOneContainerTwoSchemadForInfo() throws Exception {
     List<EntitySet> entitySets = new ArrayList<EntitySet>();
@@ -182,7 +182,7 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     List<Schema> schemas = new ArrayList<Schema>();
     schemas.add(new Schema().setEntityContainers(entityContainers));
     schemas.add(new Schema().setEntityContainers(entityContainers));
-    
+
     EdmProvider edmProvider = mock(EdmProvider.class);
     when(edmProvider.getSchemas()).thenReturn(schemas);
 

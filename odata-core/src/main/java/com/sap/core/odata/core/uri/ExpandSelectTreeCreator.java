@@ -78,11 +78,10 @@ public class ExpandSelectTreeCreator {
     }
   }
 
-  
   @SuppressWarnings("unchecked")
   private void consolidateTrueNode(final ExpandSelectTreeNodeImpl node) {
     Map<String, ExpandSelectTreeNode> links = accessField(node, "links", Map.class);
-    
+
     Set<Entry<String, ExpandSelectTreeNode>> iterator = links.entrySet();
     for (Entry<String, ExpandSelectTreeNode> entry : iterator) {
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
@@ -97,8 +96,7 @@ public class ExpandSelectTreeCreator {
     }
   }
 
-  
-  private <T> T accessField(Object node, String string, Class<T> clazz) {
+  private <T> T accessField(final Object node, final String string, final Class<T> clazz) {
     try {
       Field f = node.getClass().getDeclaredField(string);
       f.setAccessible(true);

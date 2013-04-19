@@ -71,7 +71,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     assertXpathEvaluatesTo("Rooms", "/a:feed/a:link[@rel='self']/@href", xmlString);
     assertXpathEvaluatesTo("Rooms", "/a:feed/a:link[@rel='self']/@title", xmlString);
   }
-  
+
   @Test
   public void testCustomSelfLink() throws Exception {
     String customLink = "Test";

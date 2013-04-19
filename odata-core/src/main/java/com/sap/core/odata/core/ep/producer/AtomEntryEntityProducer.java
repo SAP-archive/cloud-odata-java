@@ -176,7 +176,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data, String self) throws EntityProviderException {
+  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data, final String self) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
         if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
@@ -190,7 +190,7 @@ public class AtomEntryEntityProducer {
           ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           context.setCurrentExpandSelectTreeNode(subNode);
           context.setSelfLink(new URI(self));
-          
+
           ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
           WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
           List<Map<String, Object>> inlineData = result.getFeedData();

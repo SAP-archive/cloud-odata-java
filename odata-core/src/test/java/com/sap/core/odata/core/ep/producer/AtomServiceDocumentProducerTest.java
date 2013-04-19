@@ -39,7 +39,6 @@ public class AtomServiceDocumentProducerTest extends AbstractXmlProducerTestHelp
   private Edm edm;
   private List<Schema> schemas;
 
-
   public AtomServiceDocumentProducerTest(final StreamWriterImplType type) {
     super(type);
   }
@@ -93,9 +92,9 @@ public class AtomServiceDocumentProducerTest extends AbstractXmlProducerTestHelp
 
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     entityContainers.add(new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets));
-       
+
     schemas.add(new Schema().setEntityContainers(entityContainers));
-    
+
     ODataResponse response = new AtomEntityProvider().writeServiceDocument(edm, "http://localhost");
     String xmlString = verifyResponse(response);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
@@ -111,20 +110,20 @@ public class AtomServiceDocumentProducerTest extends AbstractXmlProducerTestHelp
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     entityContainers.add(new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets));
     entityContainers.add(new EntityContainer().setDefaultEntityContainer(false).setName("Container2").setEntitySets(entitySets));
-    
+
     schemas.add(new Schema().setEntityContainers(entityContainers));
-    
+
     ODataResponse response = new AtomEntityProvider().writeServiceDocument(edm, "http://localhost");
     String xmlString = verifyResponse(response);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
-    
+
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Container2.Employees']/atom:title", xmlString);
   }
-  
+
   @Test
   public void writeServiceDocumentWithOneEnitySetTwoContainersTwoSchemas() throws Exception {
     List<EntitySet> entitySets = new ArrayList<EntitySet>();
@@ -138,29 +137,28 @@ public class AtomServiceDocumentProducerTest extends AbstractXmlProducerTestHelp
     entityContainers2.add(new EntityContainer().setDefaultEntityContainer(false).setName("Container3").setEntitySets(entitySets));
     entityContainers2.add(new EntityContainer().setDefaultEntityContainer(false).setName("Container4").setEntitySets(entitySets));
 
-    
     schemas.add(new Schema().setEntityContainers(entityContainers));
     schemas.add(new Schema().setEntityContainers(entityContainers2));
-    
+
     ODataResponse response = new AtomEntityProvider().writeServiceDocument(edm, "http://localhost");
     String xmlString = verifyResponse(response);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
-    
+
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Container2.Employees']/atom:title", xmlString);
-    
+
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Container3.Employees']/atom:title", xmlString);
-    
+
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']", xmlString);
     assertXpathExists("/a:service/a:workspace/a:collection[@href='Employees']/atom:title", xmlString);
     assertXpathEvaluatesTo("Employees", "/a:service/a:workspace/a:collection[@href='Container4.Employees']/atom:title", xmlString);
   }
-  
+
   private String verifyResponse(final ODataResponse response) throws IOException {
     assertNotNull(response);
     assertNotNull(response.getEntity());

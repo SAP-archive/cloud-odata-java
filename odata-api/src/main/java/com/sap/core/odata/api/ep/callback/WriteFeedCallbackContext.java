@@ -10,12 +10,12 @@ import java.net.URI;
 public class WriteFeedCallbackContext extends WriteCallbackContext {
 
   private URI selfLink;
-    
+
   /**
    * Sets the self Link for this feed.
    * @param selfLink
    */
-  public void setSelfLink(URI selfLink) {
+  public void setSelfLink(final URI selfLink) {
     this.selfLink = selfLink;
   }
 

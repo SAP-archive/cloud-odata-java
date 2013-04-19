@@ -1937,9 +1937,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * @return
    * @throws UnsupportedEncodingException
    */
-  private InputStream createContentAsStream(final String xml, boolean replaceWhitespaces) throws UnsupportedEncodingException {
+  private InputStream createContentAsStream(final String xml, final boolean replaceWhitespaces) throws UnsupportedEncodingException {
     String contentForStream = xml;
-    if(replaceWhitespaces) {
+    if (replaceWhitespaces) {
       contentForStream = xml.replaceAll(">\\s.<", "><");
     }
 
