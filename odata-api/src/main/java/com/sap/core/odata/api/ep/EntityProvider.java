@@ -252,15 +252,16 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-    
+
     /**
-     * Read (de-serialize) data from metadata (as {@link InputStream}) 
+     * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
      * 
      * @param inputStream the given input stream
-     * @return edm as {@link Edm}
+     * @param validate has to be true if metadata should be validated 
+     * @return Edm as {@link Edm}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    Edm readMetadata(InputStream inputStream) throws EntityProviderException, XMLStreamException;
+    Edm readMetadata(InputStream inputStream, boolean validate) throws EntityProviderException, XMLStreamException;
 
     /**
      * Read (de-serialize) binary data from <code>content</code> (as {@link InputStream}) and provide it as <code>byte[]</code>.
@@ -575,14 +576,16 @@ public final class EntityProvider {
   public static byte[] readBinary(final InputStream content) throws EntityProviderException {
     return createEntityProvider().readBinary(content);
   }
+
   /**
-   * Read (de-serialize) data from metadata (as {@link InputStream}) 
+   * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
    * 
    * @param inputStream the given input stream
-   * @return edm as {@link Edm}
+   * @param validate has to be true if metadata should be validated 
+   * @return Edm as {@link Edm}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Edm readMetadata(final InputStream inputStream) throws EntityProviderException, XMLStreamException{
-    return createEntityProvider().readMetadata(inputStream);
+  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException, XMLStreamException {
+    return createEntityProvider().readMetadata(inputStream, validate);
   }
 }

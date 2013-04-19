@@ -115,7 +115,7 @@ public class EdmxProviderTest {
     EdmProvider testProvider = new EdmTestProvider();
     ODataResponse response = EntityProvider.writeMetadata(testProvider.getSchemas(), null);
     InputStream in = (InputStream) response.getEntity();
-    return EntityProvider.readMetadata(in);
+    return EntityProvider.readMetadata(in, true);
 
   }
 

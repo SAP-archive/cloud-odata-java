@@ -213,7 +213,7 @@ public class EdmParserTest {
       assertEquals(NAMESPACE, schema.getNamespace());
       assertEquals(1, schema.getEntityTypes().size());
       assertEquals("Employee", schema.getEntityTypes().get(0).getName());
-     	assertEquals(Boolean.TRUE, schema.getEntityTypes().get(0).isHasStream());
+      assertEquals(Boolean.TRUE, schema.getEntityTypes().get(0).isHasStream());
       for (PropertyRef propertyRef : schema.getEntityTypes().get(0)
           .getKey().getKeys()) {
         assertEquals("EmployeeId", propertyRef.getName());
