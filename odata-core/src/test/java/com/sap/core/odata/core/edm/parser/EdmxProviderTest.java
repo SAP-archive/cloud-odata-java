@@ -111,7 +111,7 @@ public class EdmxProviderTest {
     assertEquals(testContainer.isDefaultEntityContainer(), container.isDefaultEntityContainer());
   }
 
-  private Edm createEdm() throws EntityProviderException, ODataException, XMLStreamException {
+  private Edm createEdm() throws EntityProviderException, ODataException {
     EdmProvider testProvider = new EdmTestProvider();
     ODataResponse response = EntityProvider.writeMetadata(testProvider.getSchemas(), null);
     InputStream in = (InputStream) response.getEntity();

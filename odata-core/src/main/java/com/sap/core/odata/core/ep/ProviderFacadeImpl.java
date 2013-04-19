@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamException;
-
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -145,7 +143,7 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException, XMLStreamException {
+  public Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
     EdmProvider provider = new EdmxProvider(inputStream, validate);
     return new EdmImplProv(provider);
   }

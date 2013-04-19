@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamException;
-
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -261,7 +259,7 @@ public final class EntityProvider {
      * @return Edm as {@link Edm}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    Edm readMetadata(InputStream inputStream, boolean validate) throws EntityProviderException, XMLStreamException;
+    Edm readMetadata(InputStream inputStream, boolean validate) throws EntityProviderException;
 
     /**
      * Read (de-serialize) binary data from <code>content</code> (as {@link InputStream}) and provide it as <code>byte[]</code>.
@@ -585,7 +583,7 @@ public final class EntityProvider {
    * @return Edm as {@link Edm}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException, XMLStreamException {
+  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
     return createEntityProvider().readMetadata(inputStream, validate);
   }
 }

@@ -25,7 +25,7 @@ import com.sap.core.odata.api.exception.ODataException;
 public class EdmxProvider extends EdmProvider {
   private DataServices dataServices;
 
-  public EdmxProvider(final InputStream in, final boolean validate) throws XMLStreamException, EntityProviderException {
+  public EdmxProvider(final InputStream in, final boolean validate) throws EntityProviderException {
     EdmParser parser = new EdmParser();
     XMLStreamReader streamReader = createStreamReader(in);
     dataServices = parser.readMetadata(streamReader, validate);
@@ -140,13 +140,17 @@ public class EdmxProvider extends EdmProvider {
     return dataServices.getSchemas();
   }
 
-  private XMLStreamReader createStreamReader(final InputStream in)
-      throws XMLStreamException {
+  private XMLStreamReader createStreamReader(final InputStream in) throws EntityProviderException {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-    XMLStreamReader streamReader = factory
-        .createXMLStreamReader(in);
+
+    XMLStreamReader streamReader;
+    try {
+      streamReader = factory.createXMLStreamReader(in);
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
 
     return streamReader;
   }
