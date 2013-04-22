@@ -56,18 +56,18 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.testutil</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
