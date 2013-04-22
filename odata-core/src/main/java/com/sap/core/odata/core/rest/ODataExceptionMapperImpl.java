@@ -4,12 +4,15 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -102,7 +105,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForApplicationException(final ODataApplicationException toHandleException) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getCode());
@@ -116,7 +119,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
 
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getErrorCode());
@@ -137,7 +140,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
 
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(responseStatusCode);
     context.setErrorCode(toHandleException.getErrorCode());
@@ -148,7 +151,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForWebApplicationException(final WebApplicationException toHandleException) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
     context.setErrorCode(null);
@@ -159,13 +162,28 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForException(final Exception exception) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
     context.setErrorCode(null);
     context.setMessage(exception.getMessage());
     context.setLocale(DEFAULT_RESPONSE_LOCALE);
     context.setException(exception);
+    return context;
+  }
+
+  private ODataErrorContext createDefaultErrorContext() {
+    ODataErrorContext context = new ODataErrorContext();
+    if(uriInfo != null) {
+      context.setRequestUri(uriInfo.getRequestUri());
+    }
+    if(httpHeaders != null && httpHeaders.getRequestHeaders() != null) {
+      MultivaluedMap<String, String> requestHeaders = httpHeaders.getRequestHeaders();
+      Set<Entry<String, List<String>>> entries = requestHeaders.entrySet();
+      for (Entry<String, List<String>> entry : entries) {
+        context.putRequestHeader(entry.getKey(), entry.getValue());
+      }
+    }
     return context;
   }
 

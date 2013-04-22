@@ -1,6 +1,11 @@
 package com.sap.core.odata.api.processor;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
@@ -12,7 +17,13 @@ public class ODataErrorContext {
   private String message;
   private Locale locale;
   private Exception exception;
+  private Map<String, List<String>> requestHeaders;
+  private URI requestUri;
 
+  public ODataErrorContext() {
+    requestHeaders = new HashMap<String, List<String>>();
+  }
+  
   public Exception getException() {
     return exception;
   }
@@ -61,4 +72,23 @@ public class ODataErrorContext {
     this.locale = locale;
   }
 
+  public void putRequestHeader(String key, List<String> value) {
+    requestHeaders.put(key, value);
+  }
+
+  public Map<String, List<String>> getRequestHeaders() {
+    return Collections.unmodifiableMap(requestHeaders);
+  }
+
+  public List<String> getRequestHeader(String name) {
+    return requestHeaders.get(name);
+  }
+
+  public void setRequestUri(URI requestUri) {
+    this.requestUri = requestUri;
+  }
+  
+  public URI getRequestUri() {
+    return requestUri;
+  }
 }

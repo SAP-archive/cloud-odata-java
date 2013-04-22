@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,6 +19,7 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -45,6 +48,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 public class ODataExceptionMapperImplTest extends BaseTest {
 
   ODataExceptionMapperImpl exceptionMapper;
+  URI uri;
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -54,18 +58,43 @@ public class ODataExceptionMapperImplTest extends BaseTest {
   }
 
   @Before
-  public void before() {
+  public void before() throws URISyntaxException {
     exceptionMapper = new ODataExceptionMapperImpl();
     exceptionMapper.httpHeaders = mock(HttpHeaders.class);
     exceptionMapper.uriInfo = mock(UriInfo.class);
     exceptionMapper.servletConfig = mock(ServletConfig.class);
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(map);
+    uri = new URI("http://localhost:8080/ODataService.svc/Entity");
+    when(exceptionMapper.uriInfo.getRequestUri()).thenReturn(uri);
 
     disableLogging();
 
   }
 
+  @Test
+  public void testExtendedODataErrorContext() throws Exception {
+    MultivaluedMap<String, String> value = new MultivaluedHashMap<String, String>();
+    value.putSingle("Accept", "AcceptValue");
+    value.put("AcceptMulti", Arrays.asList("AcceptValue_1", "AcceptValue_2"));
+    when(exceptionMapper.httpHeaders.getRequestHeaders()).thenReturn(value);
+    when(exceptionMapper.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL)).thenReturn(ODataServiceFactoryImpl.class.getName());
+    Response response = exceptionMapper.toResponse(new Exception());
+
+    // verify
+    assertNotNull(response);
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    String errorMessage = (String) response.getEntity();
+    assertEquals("bla", errorMessage);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("text/html", contentTypeHeader);
+    //
+    assertEquals(uri.toASCIIString(), response.getHeaderString("RequestUri"));
+    assertEquals("[AcceptValue]", response.getHeaderString("Accept"));
+    assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
+  }
+
+  
   @Test
   public void testODataNotFoundException() throws Exception {
     // prepare
