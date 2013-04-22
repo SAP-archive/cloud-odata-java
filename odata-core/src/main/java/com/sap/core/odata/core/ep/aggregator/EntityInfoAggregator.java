@@ -35,7 +35,7 @@ import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 public class EntityInfoAggregator {
 
   private static final Set<String> SYN_TARGET_PATHS = new HashSet<String>(Arrays.asList(
-      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
+      EdmTargetPath.SYNDICATION_AUTHORNAME,
       EdmTargetPath.SYNDICATION_AUTHOREMAIL,
       EdmTargetPath.SYNDICATION_AUTHORURI,
       EdmTargetPath.SYNDICATION_PUBLISHED,

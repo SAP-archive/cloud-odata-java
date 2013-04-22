@@ -24,7 +24,7 @@ public class XmlPropertyEntityProducer {
 
   /**
    * Append {@link Object} <code>value</code> based on {@link EntityPropertyInfo} to {@link XMLStreamWriter}
-   * in an already existing XML structure.
+   * in an already existing XML structure inside the d namespace.
    * 
    * @param writer
    * @param name  Name of the outer XML tag
@@ -34,11 +34,7 @@ public class XmlPropertyEntityProducer {
    */
   public void append(final XMLStreamWriter writer, final String name, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     try {
-      if (hasCustomNamespace(propertyInfo)) {
-        writeStartElementWithCustomNamespace(writer, propertyInfo, name);
-      } else {
-        writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
-      }
+      writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
 
       if (propertyInfo.isComplex()) {
         appendProperty(writer, (EntityComplexPropertyInfo) propertyInfo, value);
@@ -47,6 +43,20 @@ public class XmlPropertyEntityProducer {
       }
 
       writer.writeEndElement();
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+  }
+
+  public void appendCustomProperty(final XMLStreamWriter writer, final String name, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
+    try {
+      if (!propertyInfo.isComplex()) {
+        writeStartElementWithCustomNamespace(writer, propertyInfo, name);
+        appendProperty(writer, propertyInfo, value);
+        writer.writeEndElement();
+      }
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
@@ -168,26 +178,16 @@ public class XmlPropertyEntityProducer {
    * @param prop
    * @param name
    * @throws XMLStreamException
+   * @throws EntityProviderException
    */
-  private void writeStartElementWithCustomNamespace(final XMLStreamWriter writer, final EntityPropertyInfo prop, final String name) throws XMLStreamException {
+  private void writeStartElementWithCustomNamespace(final XMLStreamWriter writer, final EntityPropertyInfo prop, final String name) throws XMLStreamException, EntityProviderException {
     EdmCustomizableFeedMappings mapping = prop.getCustomMapping();
     String nsPrefix = mapping.getFcNsPrefix();
     String nsUri = mapping.getFcNsUri();
+    if (nsUri == null || nsPrefix == null) {
+      throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(name));
+    }
     writer.writeStartElement(nsPrefix, name, nsUri);
     writer.writeNamespace(nsPrefix, nsUri);
   }
-
-  /**
-   * 
-   * @param prop
-   * @return true if property has a custom namespace
-   */
-  private boolean hasCustomNamespace(final EntityPropertyInfo prop) {
-    if (prop.getCustomMapping() != null) {
-      EdmCustomizableFeedMappings mapping = prop.getCustomMapping();
-      return !(mapping.getFcNsPrefix() == null || mapping.getFcNsUri() == null);
-    }
-    return false;
-  }
-
 }

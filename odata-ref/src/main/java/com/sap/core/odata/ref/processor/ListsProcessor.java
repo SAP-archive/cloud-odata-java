@@ -1044,18 +1044,30 @@ public class ListsProcessor extends ODataSingleProcessor {
   private <T> void createInlinedEntities(final T data, final EdmEntitySet entitySet, final ODataEntry entryValues) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
-      @SuppressWarnings("unchecked")
-      final List<ODataEntry> relatedValueList = (List<ODataEntry>) entryValues.getProperties().get(navigationPropertyName);
-      if (relatedValueList != null) {
+
+      final Object relatedValue =  entryValues.getProperties().get(navigationPropertyName);
+      if (relatedValue != null) {
         final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
         final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-        for (final ODataEntry relatedValues : relatedValueList) {
+        if(relatedValue instanceof List<?>){
+          @SuppressWarnings("unchecked")
+          List<ODataEntry> relatedValueList = (List<ODataEntry>) relatedValue;
+          for (final ODataEntry relatedValues : relatedValueList) {
+            Object relatedData = dataSource.newDataObject(relatedEntitySet);
+            setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+            dataSource.createData(relatedEntitySet, relatedData);
+            dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
+            createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
+          }       
+        }else if(relatedValue instanceof ODataEntry){
+          ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
           Object relatedData = dataSource.newDataObject(relatedEntitySet);
-          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValueEntry.getProperties(), true);
           dataSource.createData(relatedEntitySet, relatedData);
           dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
-          createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
+          createInlinedEntities(relatedData, relatedEntitySet, relatedValueEntry);
         }
+
       }
     }
   }

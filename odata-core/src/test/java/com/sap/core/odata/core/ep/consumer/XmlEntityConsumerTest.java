@@ -387,6 +387,41 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Walldorf", emp2City.get("CityName"));
   }
 
+  @Test
+  public void readInlineBuildingEntry() throws Exception{
+ // prepare
+    
+    String content = readFile("expandedBuilding.xml");
+    assertNotNull(content);
+    
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(content);
+    
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false).build();
+
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Room 1", properties.get("Name"));
+    assertEquals((short) 1, properties.get("Seats"));
+    assertEquals((short) 1, properties.get("Version"));
+    //
+    ExpandSelectTreeNode expandTree = entry.getExpandSelectTree();
+    assertNotNull(expandTree);
+    
+    ODataEntry inlineBuilding = (ODataEntry) properties.get("nr_Building");  
+    Map<String, Object> inlineBuildingProps = inlineBuilding.getProperties();
+    assertEquals("1", inlineBuildingProps.get("Id"));
+    assertEquals("Building 1", inlineBuildingProps.get("Name"));
+    assertNull(inlineBuildingProps.get("Image"));
+    assertNull(inlineBuildingProps.get("nb_Rooms"));
+  }
+  
   /**
    * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
    * 
