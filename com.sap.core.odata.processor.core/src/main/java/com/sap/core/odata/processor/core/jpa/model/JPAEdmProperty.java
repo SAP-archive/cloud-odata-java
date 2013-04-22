@@ -203,8 +203,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 					if (complexType == null) {
 						JPAEdmComplexTypeView complexTypeViewLocal = new JPAEdmComplexType(
-								schemaView);
-
+								schemaView, currentAttribute);
 						complexTypeViewLocal.getBuilder().build();
 						complexType = complexTypeViewLocal.getEdmComplexType();
 						complexTypeView.addJPAEdmCompleTypeView(complexTypeViewLocal);
@@ -224,8 +223,14 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 					}
 					else{
 						currentComplexProperty = new ComplexProperty();
-						JPAEdmNameBuilder
-								.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,JPAEdmProperty.this);
+						if (isBuildModeComplexType)
+							JPAEdmNameBuilder
+									.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
+											complexTypeView.getJPAEmbeddableType().getJavaType().getSimpleName());
+						else
+							JPAEdmNameBuilder
+									.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
+											JPAEdmProperty.this);
 						currentComplexProperty.setType(new FullQualifiedName(
 								schemaView.getEdmSchema().getNamespace(),
 								complexType.getName()));

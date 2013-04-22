@@ -276,6 +276,26 @@ public class JPAEdmNameBuilder {
 		complexProperty.setName(propertyName);
 
 	}
+	public static void build(JPAEdmComplexPropertyView complexView,String parentComplexTypeName)
+	{
+		ComplexProperty complexProperty = complexView.getEdmComplexProperty();
+		JPAEdmMappingModelAccess mappingModelAccess = complexView.getJPAEdmMappingModelAccess();
+		String jpaAttributeName = ((JPAEdmPropertyView)complexView).getJPAAttribute().getName();
+		String propertyName = null;
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			propertyName = mappingModelAccess.mapJPAEmbeddableTypeAttribute(
+					parentComplexTypeName, jpaAttributeName);
+		if(propertyName == null)
+			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
+					+ jpaAttributeName.substring(1);
+		JPAEdmMapping mapping = new JPAEdmMappingImpl();
+		((Mapping) mapping).setInternalName(jpaAttributeName);
+		//mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
+		complexProperty.setMapping((Mapping) mapping);
+		complexProperty.setName(propertyName);
+
+	}
 
 	/*
 	 * ************************************************************************

@@ -2,8 +2,11 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
@@ -29,10 +32,27 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	private EmbeddableType<?> currentEmbeddableType = null;
 	private HashMap<String, ComplexType> searchMap = null;
 	private List<ComplexType> consistentComplextTypes = null;
-
+	private boolean directBuild;
+	private EmbeddableType<?> nestedComplexType = null;
+	
 	public JPAEdmComplexType(JPAEdmSchemaView view) {
 		super(view);
 		this.schemaView = view;
+		directBuild = true;
+	}
+
+	public JPAEdmComplexType(JPAEdmSchemaView view, Attribute<?, ?> complexAttribute) {
+		super(view);
+		this.schemaView = view;
+		for(EmbeddableType<?> jpaEmbeddable:schemaView.getJPAMetaModel().getEmbeddables())
+		{
+			if(jpaEmbeddable.getJavaType().getName().equals(complexAttribute.getJavaType().getName()))
+			{
+				nestedComplexType = jpaEmbeddable;
+				break;
+			}
+		}
+		directBuild = false;
 	}
 
 	@Override
@@ -42,7 +62,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 		
 		return builder;
 	}
-
+	
 	@Override
 	public ComplexType getEdmComplexType() {
 		return currentComplexType;
@@ -153,15 +173,20 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 		 */
 		@Override
 		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
-
+			Set<EmbeddableType<?>> embeddables = new HashSet<EmbeddableType<?>>();
+			
 			if (consistentComplextTypes == null)
 				consistentComplextTypes = new ArrayList<ComplexType>();
 
 			if (searchMap == null)
 				searchMap = new HashMap<String, ComplexType>();
-
-			for (EmbeddableType<?> embeddableType : schemaView
-					.getJPAMetaModel().getEmbeddables()) {
+			
+			if(directBuild)
+				embeddables = schemaView.getJPAMetaModel().getEmbeddables();
+			else
+				embeddables.add(nestedComplexType);
+			
+			for (EmbeddableType<?> embeddableType : embeddables) {
 				
 				currentEmbeddableType = embeddableType;
 				String searchKey = embeddableType.getJavaType().getName();
