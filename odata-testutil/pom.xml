@@ -34,7 +34,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
