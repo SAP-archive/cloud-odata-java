@@ -154,8 +154,6 @@ public class EdmParser {
           associationSets.add(readAssociationSet(reader));
         } else if (EdmParserConstants.EDM_FUNCTION_IMPORT.equals(currentHandledStartTagName)) {
           functionImports.add(readFunctionImport(reader));
-        } else if (EdmParserConstants.EDM_USING.equals(currentHandledStartTagName)) {
-
         } else {
           annotationElements.add(readAnnotationElement(reader));
         }
