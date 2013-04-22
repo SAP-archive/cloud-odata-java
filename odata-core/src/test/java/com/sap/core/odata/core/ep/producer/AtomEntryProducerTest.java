@@ -5,17 +5,22 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -28,8 +33,10 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.AbstractProviderTest;
@@ -45,6 +52,202 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
   public AtomEntryProducerTest(final StreamWriterImplType type) {
     super(type);
+  }
+
+  @Test
+  public void noneSyndicationKeepInContentFalseMustNotShowInProperties() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.FALSE);
+    when(employeeCustomPropertyMapping.getFcNsPrefix()).thenReturn("customPre");
+    when(employeeCustomPropertyMapping.getFcNsUri()).thenReturn("http://customUri.com");
+    EdmTyped employeeEntryDateProperty = employeesSet.getEntityType().getProperty("EmployeeName");
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("customPre", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    ODataResponse response = ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    String xmlString = verifyResponse(response);
+
+    assertXpathExists("/a:entry/customPre:EmployeeName", xmlString);
+    assertXpathNotExists("/a:entry/m:properties/d:EmployeeName", xmlString);
+  }
+
+  @Test
+  public void noneSyndicationKeepInContentTrueMustShowInProperties() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.TRUE);
+    when(employeeCustomPropertyMapping.getFcNsPrefix()).thenReturn("customPre");
+    when(employeeCustomPropertyMapping.getFcNsUri()).thenReturn("http://customUri.com");
+    EdmTyped employeeEntryDateProperty = employeesSet.getEntityType().getProperty("EmployeeName");
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("customPre", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    ODataResponse response = ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    String xmlString = verifyResponse(response);
+
+    assertXpathExists("/a:entry/customPre:EmployeeName", xmlString);
+    assertXpathExists("/a:entry/m:properties/d:EmployeeName", xmlString);
+  }
+
+  @Test
+  public void noneSyndicationWithNullPrefix() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.TRUE);
+    when(employeeCustomPropertyMapping.getFcNsUri()).thenReturn("http://customUri.com");
+    EdmTyped employeeEntryDateProperty = employeesSet.getEntityType().getProperty("EmployeeName");
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("customPre", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    boolean thrown = false;
+    try {
+      ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    } catch (EntityProviderException e) {
+      verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
+      thrown = true;
+    }
+    if(!thrown){
+      fail("Exception should have been thrown");      
+    }
+  }
+  
+  @Test
+  public void noneSyndicationWithNullUri() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.TRUE);
+    when(employeeCustomPropertyMapping.getFcNsPrefix()).thenReturn("customPre");
+    EdmTyped employeeEntryDateProperty = employeesSet.getEntityType().getProperty("EmployeeName");
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("customPre", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    boolean thrown = false;
+    try {
+      ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    } catch (EntityProviderException e) {
+      verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
+      thrown = true;
+    }
+    if(!thrown){
+      fail("Exception should have been thrown");      
+    }
+  }
+
+  @Test
+  public void noneSyndicationWithNullUriAndNullPrefix() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.TRUE);
+    EdmTyped employeeEntryDateProperty = employeesSet.getEntityType().getProperty("EmployeeName");
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("f", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    boolean thrown = false;
+    try {
+      ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    } catch (EntityProviderException e) {
+      verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
+      thrown = true;
+    }
+    if(!thrown){
+      fail("Exception should have been thrown");      
+    }
+  }
+  
+  @Test
+  public void syndicationWithComplexProperty() throws Exception {
+    //prepare Mock
+    EdmEntitySet employeesSet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmCustomizableFeedMappings employeeCustomPropertyMapping = mock(EdmCustomizableFeedMappings.class);
+    when(employeeCustomPropertyMapping.isFcKeepInContent()).thenReturn(Boolean.TRUE);
+    when(employeeCustomPropertyMapping.getFcNsPrefix()).thenReturn("customPre");
+    when(employeeCustomPropertyMapping.getFcNsUri()).thenReturn("http://customUri.com");
+    EdmTyped employeeLocationProperty = employeesSet.getEntityType().getProperty("Location");
+    when(((EdmProperty) employeeLocationProperty).getCustomizableFeedMappings()).thenReturn(employeeCustomPropertyMapping);
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
+    prefixMap.put("customPre", "http://customUri.com");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    AtomEntityProvider ser = createAtomEntityProvider();
+    ODataResponse response = ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
+    String xmlString = verifyResponse(response);
+    
+    assertXpathNotExists("/a:entry/customPre:Location", xmlString);
+    assertXpathExists("/a:entry/m:properties/d:Location", xmlString);
+  }
+
+  private void verifyRootCause(Class<?> class1, String key, ODataMessageException e) {
+
+    Throwable thrownException = e;
+    Throwable lastFoundException = null;
+    if (e.getClass().equals(class1)) {
+      lastFoundException = e;
+    }
+
+    while (thrownException.getCause() != null) {
+      thrownException = thrownException.getCause();
+      if (thrownException.getClass().equals(class1)) {
+        lastFoundException = thrownException;
+      }
+    }
+
+    if (lastFoundException != null) {
+      ODataMessageException msgException = (ODataMessageException) lastFoundException;
+      assertEquals(key, msgException.getMessageReference().getKey());
+    } else {
+      fail("Exception of class: " + class1.getCanonicalName() + " in stacktrace not found.");
+    }
   }
 
   @Test
@@ -385,7 +588,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/custom:CustomProperty", xmlString);
     assertXpathNotExists("/a:entry/custom:CustomProperty/text()", xmlString);
     assertXpathEvaluatesTo("true", "/a:entry/custom:CustomProperty/@m:null", xmlString);
-    assertXpathExists("/a:entry/m:properties/custom:CustomProperty", xmlString);
+    assertXpathExists("/a:entry/m:properties/d:CustomProperty", xmlString);
     verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
   }
 
