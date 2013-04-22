@@ -651,6 +651,194 @@ public class EdmParserTest {
   }
 
   @Test(expected = EntityProviderException.class)
+  public void testMissingRelationship() throws Exception {
+    final String xmlWithInvalidAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<NavigationProperty Name=\"ne_Manager\" />"
+        + "</EntityType>"
+        + "<EntityType Name=\"Manager\" BaseType=\"RefScenario.Employee\" m:HasStream=\"true\">"
+        + "</EntityType>"
+        + "<Association Name=\"ManagerEmployees\">"
+        + "<End Type=\"RefScenario.Employee\" Multiplicity=\"*\" Role=\"r_Employees\"/>"
+        + "<End Type=\"RefScenario.Manager\" Multiplicity=\"1\" Role=\"r_Manager\"/>"
+        + "</Association></Schema></edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xmlWithInvalidAssociation);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("Relationship", e.getMessageReference().getContent().get(0));
+      assertEquals("NavigationProperty", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testMissingEntityType() throws Exception {
+    final String xmlWithInvalidAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<NavigationProperty Name=\"ne_Manager\" Relationship=\"RefScenario.ManagerEmployees\" FromRole=\"r_Employees\" ToRole=\"r_Manager\" />"
+        + "</EntityType>"
+        + "<EntityType Name=\"Manager\" BaseType=\"RefScenario.Employee\" m:HasStream=\"true\">"
+        + "</EntityType>"
+        + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
+        + "<EntitySet Name=\"Employees\" />"
+        + "</EntityContainer>"
+        + "<Association Name=\"ManagerEmployees\">"
+        + "<End Type=\"RefScenario.Employee\" Multiplicity=\"*\" Role=\"r_Employees\"/>"
+        + "<End Type=\"RefScenario.Manager\" Multiplicity=\"1\" Role=\"r_Manager\"/>"
+        + "</Association></Schema></edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xmlWithInvalidAssociation);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("EntityType", e.getMessageReference().getContent().get(0));
+      assertEquals("EntitySet", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testMissingType() throws Exception {
+    final String xmlWithInvalidAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Nullable=\"false\"/>"
+        + "<NavigationProperty Name=\"ne_Manager\" Relationship=\"RefScenario.ManagerEmployees\" FromRole=\"r_Employees\" ToRole=\"r_Manager\" />"
+        + "</EntityType>"
+        + "<EntityType Name=\"Manager\" BaseType=\"RefScenario.Employee\" m:HasStream=\"true\">"
+        + "</EntityType>"
+        + "<Association Name=\"ManagerEmployees\">"
+        + "<End Type=\"RefScenario.Employee\" Multiplicity=\"*\" Role=\"r_Employees\"/>"
+        + "<End Type=\"RefScenario.Manager\" Multiplicity=\"1\" Role=\"r_Manager\"/>"
+        + "</Association></Schema></edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xmlWithInvalidAssociation);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("Type", e.getMessageReference().getContent().get(0));
+      assertEquals("Property", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testMissingTypeAtAssociation() throws Exception {
+    final String xmlWithInvalidAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<NavigationProperty Name=\"ne_Manager\" Relationship=\"RefScenario.ManagerEmployees\" FromRole=\"r_Employees\" ToRole=\"r_Manager\" />"
+        + "</EntityType>"
+        + "<EntityType Name=\"Manager\" BaseType=\"RefScenario.Employee\" m:HasStream=\"true\">"
+        + "</EntityType>"
+        + "<Association Name=\"ManagerEmployees\">"
+        + "<End Multiplicity=\"*\" Role=\"r_Employees\"/>"
+        + "<End Type=\"RefScenario.Manager\" Multiplicity=\"1\" Role=\"r_Manager\"/>"
+        + "</Association></Schema></edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xmlWithInvalidAssociation);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("Type", e.getMessageReference().getContent().get(0));
+      assertEquals("End", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testMissingTypeAtFunctionImport() throws Exception {
+    final String xml = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06
+        + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\""
+        + Edm.NAMESPACE_M_2007_08 + "\">" + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\" m:HasStream=\"true\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<Property Name=\"" + propertyNames[1] + "\" Type=\"Edm.String\" m:FC_TargetPath=\"SyndicationTitle\"/>"
+        + "</EntityType>"
+        + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
+        + "<EntitySet Name=\"Employees\" EntityType=\"RefScenario.Employee\"/>"
+        + "<FunctionImport Name=\"EmployeeSearch\" ReturnType=\"Collection(RefScenario.Employee)\" EntitySet=\"Employees\" m:HttpMethod=\"GET\">"
+        + "<Parameter Name=\"q\" Nullable=\"true\" />"
+        + "</FunctionImport>"
+        + "</EntityContainer></Schema></edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xml);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("Type", e.getMessageReference().getContent().get(0));
+      assertEquals("Parameter", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testMissingAssociation() throws Exception {
+    final String xmlWithAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<NavigationProperty Name=\"ne_Manager\" Relationship=\"RefScenario.ManagerEmployees\" FromRole=\"r_Employees\" ToRole=\"r_Manager\" />"
+        + "</EntityType>"
+        + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
+        + "<EntitySet Name=\"Employees\" EntityType=\"RefScenario.Employee\"/>"
+        + "<AssociationSet Name=\"" + ASSOCIATION 
+//        + "\" Association=\"RefScenario." + ASSOCIATION 
+        + "\">"
+        + "<End EntitySet=\"Employees\" Role=\"r_Employees\"/>"
+        + "</AssociationSet>"
+        + "</EntityContainer>"
+        + "</Schema>"
+        + "</edmx:DataServices></edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xmlWithAssociation);
+    try {
+      parser.readMetadata(reader, true);
+    } catch (EntityProviderException e) {
+      assertEquals(EntityProviderException.MISSING_ATTRIBUTE.getKey(), e.getMessageReference().getKey());
+      assertEquals(2, e.getMessageReference().getContent().size());
+      assertEquals("Association", e.getMessageReference().getContent().get(0));
+      assertEquals("AssociationSet", e.getMessageReference().getContent().get(1));
+      throw e;
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
   public void testInvalidAssociation() throws XMLStreamException,
       EntityProviderException {
     final String xmlWithInvalidAssociationSet = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""

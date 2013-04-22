@@ -215,7 +215,8 @@ public class EdmParser {
     functionParameter.setName(reader.getAttributeValue(null, EdmParserConstants.EDM_NAME));
     String type = reader.getAttributeValue(null, EdmParserConstants.EDM_TYPE);
     if (type == null) {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing attribute \"Type\"");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_TYPE).addContent(EdmParserConstants.EDM_FUNCTION_PARAMETER));
     }
     functionParameter.setType(EdmSimpleTypeKind.valueOf(extractFQName(type).getName()));
     functionParameter.setFacets(readFacets(reader));
@@ -242,7 +243,8 @@ public class EdmParser {
     if (association != null) {
       associationSet.setAssociation(extractFQName(association));
     } else {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing attribute \"Association\"");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_ASSOCIATION).addContent(EdmParserConstants.EDM_ASSOCIATION_SET));
     }
     associationSet.setAnnotationAttributes(readAnnotationAttribute(reader));
     while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_EDM_2008_09.equals(reader.getNamespaceURI()) && EdmParserConstants.EDM_ASSOCIATION_SET.equals(reader.getLocalName()))) {
@@ -261,7 +263,7 @@ public class EdmParser {
       }
     }
     if (ends.size() != 2) {
-      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT, "Count of AssociationSet ends should be 2");
+      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Count of AssociationSet ends should be 2"));
     } else {
       associationSet.setEnd1(ends.get(0)).setEnd2(ends.get(1));
     }
@@ -279,7 +281,8 @@ public class EdmParser {
       FullQualifiedName fqName = extractFQName(entityType);
       entitySet.setEntityType(fqName);
     } else {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing attribute \"EntityType\"");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_ENTITY_TYPE).addContent(EdmParserConstants.EDM_ENTITY_SET));
     }
     entitySet.setAnnotationAttributes(readAnnotationAttribute(reader));
     while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_EDM_2008_09.equals(reader.getNamespaceURI()) && EdmParserConstants.EDM_ENTITY_SET.equals(reader.getLocalName()))) {
@@ -316,7 +319,7 @@ public class EdmParser {
       }
     }
     if (associationEnds.size() < 2 && associationEnds.size() > 2) {
-      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT, "Count of association ends should be 2");
+      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Count of association ends should be 2"));
     }
 
     association.setEnd1(associationEnds.get(0)).setEnd2(associationEnds.get(1)).setAnnotationElements(annotationElements);
@@ -495,7 +498,8 @@ public class EdmParser {
       navProperty.setRelationship(fqName);
 
     } else {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing attribute \"Relationship\"");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_NAVIGATION_RELATIONSHIP).addContent(EdmParserConstants.EDM_NAVIGATION_PROPERTY));
     }
 
     navProperty.setFromRole(reader.getAttributeValue(null, EdmParserConstants.EDM_NAVIGATION_FROM_ROLE));
@@ -519,7 +523,8 @@ public class EdmParser {
     List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
     String type = reader.getAttributeValue(null, EdmParserConstants.EDM_TYPE);
     if (type == null) {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing attribute \"Type\"");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_TYPE).addContent(EdmParserConstants.EDM_PROPERTY));
     }
     FullQualifiedName fqName = extractFQName(type);
 
@@ -622,7 +627,8 @@ public class EdmParser {
     associationEnd.setMultiplicity(EdmMultiplicity.fromLiteral(reader.getAttributeValue(null, EdmParserConstants.EDM_ASSOCIATION_MULTIPLICITY)));
     String type = reader.getAttributeValue(null, EdmParserConstants.EDM_TYPE);
     if (type == null) {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE, "Missing type for Association");
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE
+          .addContent(EdmParserConstants.EDM_TYPE).addContent(EdmParserConstants.EDM_ASSOCIATION_END));
     }
     associationEnd.setType(extractFQName(type));
     associationEnd.setAnnotationAttributes(readAnnotationAttribute(reader));
@@ -721,7 +727,7 @@ public class EdmParser {
       throws EntityProviderException {
     String[] names = name.split("\\.");
     if (names.length != 2) {
-      throw new EntityProviderException(EntityProviderException.COMMON, "Invalid type");
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid type"));
     } else {
       return new FullQualifiedName(names[0], names[1]);
     }
@@ -732,7 +738,7 @@ public class EdmParser {
     String namespace = aliasNamespaceMap.get(aliasName.getNamespace());
     FullQualifiedName fqName = new FullQualifiedName(namespace, aliasName.getName());
     if (!entityTypesMap.containsKey(fqName)) {
-      throw new EntityProviderException(EntityProviderException.COMMON, "Invalid Type");
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Type"));
     }
     return fqName;
   }
@@ -751,10 +757,10 @@ public class EdmParser {
             baseEntityType = entityTypesMap.get(baseTypeFQName);
           }
           if (baseEntityType.getKey() == null) {
-            throw new EntityProviderException(EntityProviderException.COMMON, "Missing key for EntityType " + baseEntityType.getName());
+            throw new EntityProviderException(EntityProviderException.COMMON.addContent("Missing key for EntityType " + baseEntityType.getName()));
           }
         } else if (entityType.getKey() == null) {
-          throw new EntityProviderException(EntityProviderException.COMMON, "Missing key for EntityType " + entityType.getName());
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Missing key for EntityType " + entityType.getName()));
         }
       }
     }
@@ -766,7 +772,7 @@ public class EdmParser {
         Association assoc = associationsMap.get(navProperty.getRelationship());
         if (!(assoc.getEnd1().getRole().equals(navProperty.getFromRole()) ^ assoc.getEnd1().getRole().equals(navProperty.getToRole())
         && (assoc.getEnd2().getRole().equals(navProperty.getFromRole()) ^ assoc.getEnd2().getRole().equals(navProperty.getToRole())))) {
-          throw new EntityProviderException(EntityProviderException.COMMON, "Invalid end of association");
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid end of association"));
         }
         if (!entityTypesMap.containsKey(assoc.getEnd1().getType())) {
           validateEntityTypeWithAlias(assoc.getEnd1().getType());
@@ -775,7 +781,7 @@ public class EdmParser {
           validateEntityTypeWithAlias(assoc.getEnd2().getType());
         }
       } else {
-        throw new EntityProviderException(EntityProviderException.COMMON, "Invalid Relationship");
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Relationship"));
       }
     }
 
@@ -799,10 +805,10 @@ public class EdmParser {
             }
           }
           if (!(end1 && end2)) {
-            throw new EntityProviderException(EntityProviderException.COMMON, "Invalid AssociationSet");
+            throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid AssociationSet"));
           }
         } else {
-          throw new EntityProviderException(EntityProviderException.COMMON, "Invalid AssociationSet");
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid AssociationSet"));
         }
       }
     }
@@ -811,7 +817,7 @@ public class EdmParser {
 
   private void validateAssociationEnd(final AssociationSetEnd end, final Association association) throws EntityProviderException {
     if (!(association.getEnd1().getRole().equals(end.getRole()) ^ association.getEnd2().getRole().equals(end.getRole()))) {
-      throw new EntityProviderException(EntityProviderException.COMMON, "Invalid Association");
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Association"));
     }
   }
 
