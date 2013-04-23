@@ -83,8 +83,8 @@ public class XmlEntryConsumer {
 
   private boolean isEntryEndTag(final XMLStreamReader reader) {
     return reader.isEndElement() 
-    && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) 
-    && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
+              && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) 
+              && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
   }
 
   /**
@@ -199,11 +199,15 @@ public class XmlEntryConsumer {
    */
   private void skipStartedTag(XMLStreamReader reader) throws XMLStreamException {
     final String name = reader.getLocalName();
-    boolean read = reader.hasNext();
-    while(read) {
+    int read = 1;
+    while(read > 0 && reader.hasNext()) {
       reader.next();
-      if(reader.hasName()) {
-        read = !(reader.isEndElement() && name.equals(reader.getLocalName()));
+      if(reader.hasName() && name.equals(reader.getLocalName())) {
+        if(reader.isEndElement()) {
+          read--;
+        } else if (reader.isStartElement()) {
+          read++;
+        }
       }
     }
   }

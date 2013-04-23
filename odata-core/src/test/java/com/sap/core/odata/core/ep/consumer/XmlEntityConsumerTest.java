@@ -1961,6 +1961,27 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
   }
 
+  
+  @Test
+  public void testReadSkipTag() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML
+        .replace("<title type=\"text\">Walter Winter</title>", 
+            "<title type=\"text\"><title>Walter Winter</title></title>"));
+//        .replace("<id>http://localhost:19000/Employees('1')</id>", 
+//            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify
+    String id = result.getMetadata().getId();
+    assertEquals("http://localhost:19000/Employees('1')", id);
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+  }
+  
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
     return createContentAsStream(xml, false);
   }
