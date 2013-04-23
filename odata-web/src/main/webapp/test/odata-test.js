@@ -48,10 +48,94 @@ odataTest("Update Property of '2'", 2, request, function (response, data) {
   equal(response.statusCode, 204, "StatusCode: 204");  
   equal(response.statusText, "No Content", "StatusText: No Content");  
 }); 
+module("GET");
 
-module("Employees");    
+/* Test 3.1 ComplexProperty*/
+request = {
+  method: 'GET',
+  resourcePath: "/Employees('2')/Location/City/CityName",
+  recognizeDates: true     
+};      
+odataTest("ComplexProperty of Employees('2')", 2, request, function (response, data) {
+  equal(response.headers["DataServiceVersion"], "1.0", "DataServiceVersion: 1.0");
+  equal(data.CityName,"Walldorf","Country:"+ data.CityName);
+});
 
-/* Test 3.1 */
+  /* Test 3.2 NavigationProperty*/
+request = {
+  method: 'GET',
+  resourcePath: "/Employees('1')/ne_Team/nt_Employees",
+  recognizeDates: true     
+};      
+odataTest("NavigationProperty of Employees('1')", 3, request, function (response, data) {
+  var team=data.results;
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data.results.length,3,"Count of teammember: "+data.results.length);
+  ok(team[0].TeamId==team[1].TeamId==team[2].TeamId, "Team:"+team[0].EmployeeName+", "+team[1].EmployeeName+", "+team[2].EmployeeName);
+
+});
+
+/* Test 3.3 NavigationProperty*/
+request = {
+  method: 'GET',
+  resourcePath: "/Employees('1')/ne_Team/nt_Employees/$count",
+  recognizeDates: true     
+};      
+odataTest("Navigate to teammember of Employees('1')", 2, request, function (response, data) {
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data,3,"Count of teammember: "+data);
+});
+
+/* Test 3.4 FunctionImport*/
+request = {
+  method: 'GET',
+  resourcePath: "/EmployeeSearch?q='Walter Winter','1'",
+  recognizeDates: true     
+};      
+odataTest("FunctionImport EmployeeSearch with q='Walter Winter', id=1", 2, request, function (response, data) {
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data.results.length,0);
+});
+
+/* Test 3.5 FunctionImport*/
+request = {
+  method: 'GET',
+  resourcePath: "EmployeeSearch?q='Jo'&$orderby=Age asc&$select=EmployeeId",
+  recognizeDates: true     
+};      
+odataTest("FunctionImport with system query options", 2, request, function (response, data) {
+  if(data.results.length>1){
+  var employee1 = data.results[0];
+  var employee2 = data.results[1];
+    equal(employee1.EmployeeId, 5, "John Field");
+    equal(employee2.EmployeeId, 3, "Jonathan Smith");
+  }
+});
+
+/* Test 3.6 FunctionImport*/
+request = {
+  method: 'GET',
+  resourcePath: "/AllUsedRoomIds/$count",
+  recognizeDates: true     
+};      
+odataTest("FunctionImport with count", 1, request, function (response, data) {
+ equal(response.statusCode, 400, "StatusCode: 400");
+});
+
+/* Test 3.7 Count*/
+request = {
+  method: 'GET',
+  resourcePath: "Employees/$count?$filter=startswith(EmployeeName,'Wal')",
+  recognizeDates: true     
+};      
+odataTest("$count", 2, request, function (response, data) {
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data, 1, "Count: 1");
+ 
+}); 
+module("System Query Options");  
+
+/* Test 4.1 */
 request = "Employees?$inlinecount=allpages";
 odataTest("Read Entities", 4, request , function (response, data) {
   equal(response.statusCode, 200, "StatusCode: 200");
@@ -60,9 +144,72 @@ odataTest("Read Entities", 4, request , function (response, data) {
   equal(data.__count, 6, "Inlinecount");
 });
 
+/* Test 4.2 Inlinecount and filter*/
+request = "Employees?$inlinecount=allpages&$filter=EmployeeId gt '3'";
+odataTest("Read Entities(inlinecount after $filter have been applied)", 4, request , function (response, data) {
+  equal(response.statusCode, 200, "StatusCode: 200");
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data.results.length, 3, "Number of entries: "+data.results.length);
+  equal(data.__count, 3, "Inlinecount");
+});
+
+/* Test 4.3 Select */
+request = {
+  method: 'GET',
+  resourcePath: "Employees/?$select=EmployeeId,Location", 
+  recognizeDates: true     
+};      
+odataTest("Select", 4, request, function (response, data) {
+  var employee1 = data.results[0];
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(employee1.EmployeeId, "1", "EmployeeId");
+  equal(employee1.Location.City.CityName, "Heidelberg", "Location")
+  equal(employee1.EmployeeName,undefined, "EmployeeName is undefined");
+}); 
+
+/* Test 4.4 Expand */
+request = {
+  method: 'GET',
+  resourcePath: "Employees('2')/?$expand=ne_Manager", 
+  recognizeDates: true     
+};      
+odataTest("Expand manager of Employees('2')", 2, request, function (response, data) {
+  
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data.ne_Manager.EmployeeName, 'Walter Winter', "ManagerName: Walter Winter");
+}); 
+
+
+/* Test 4.5 Expand and select */
+request = {
+  method: 'GET',
+  resourcePath: "Employees('5')/?$expand=ne_Team/nt_Employees/ne_Room/nr_Building&$select=ne_Team/nt_Employees/EmployeeName,ne_Team/nt_Employees/ne_Room/nr_Building/Name",
+  recognizeDates: true     
+};      
+odataTest("Complex expand with select", 3, request, function (response, data) {
+  var team = data.ne_Team.nt_Employees.results;
+  var building = team[0].ne_Room.nr_Building;
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(team.length, 2, "Count of teammember: 2");
+  equal(building.Name, 'Building 2', team[0].EmployeeName+" is located in "+building.Name);
+});
+
+ /* Test 4.6 Filter and OrderBy*/
+request = {
+  method: 'GET',
+  resourcePath: "Employees/?$filter=startswith(EmployeeName,'Jo') or (TeamId gt '2')&$orderby=Age",
+  recognizeDates: true     
+};      
+odataTest("Filter and orderby", 3, request, function (response, data) {
+  equal(response.headers["DataServiceVersion"], "2.0", "DataServiceVersion: 2.0");
+  equal(data.results.length, 3, "Count : 3");
+  ok(data.results[0].Age<data.results[1].Age, "correct order");
+});
+
+
 module("batch");    
 
-/* Test 4.1 */
+/* Test 5.1 */
 request = {
   method: 'POST',
   resourcePath: "$batch",
@@ -79,7 +226,7 @@ odataTest("batch", 4, request , function (response, data) {
   equal(data.__batchResponses[1].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
 });
 
-/* Test 4.1 */
+/* Test 5.2 */
 request2 = {
   method: 'POST',
   resourcePath: "$batch",
@@ -101,4 +248,19 @@ odataTest("batch with post", 5, request2 , function (response, data) {
   //SK why is data.__batchResponses[1].__changeResponses[0].message = "no handler for data" ?? and 
   //       data.__batchResponses[1].__changeResponses[0].statusCode is not defined
   equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall MODIFIED", "Second EmployeeName: Frederic Fall MODIFIED");
+});
+
+/* Test 6.1 Deep Insert */
+
+module ("Bad Requests")
+/* Test 7.1 */
+request = "Employees?$orderby=Age desc 50"; 
+odataTest(request, 1, request , function (response, data) {
+  equal(response.statusCode, 400, "StatusCode: 400");
+});
+
+/* Test 7.2 Filter*/
+request = "Employees?$filter=ne_Manager/Age gt 40"
+odataTest(request, 1, request , function (response, data) {
+  equal(response.statusCode, 400, "StatusCode: 400");
 });
