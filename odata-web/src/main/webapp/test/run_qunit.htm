@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"  />
+  <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+  <title>OData QUNIT Test Suite</title>
+  <link rel="stylesheet" href="../styles/qunit.css" />
+</head>
+<body>  
+
+  <script>
+    var parameters = location.search.substring(1).split("&");
+    var temp = parameters[0].split("=");
+    service_root = unescape(temp[1]);   
+    //Load and execute QUNIT test framework and tests
+    document.write("<div id=\"qunit\"></div>");
+    document.write("<script src=\"../scripts/datajs-1.0.3.js\"><\/script>");
+    document.write("<script src=\"../scripts/qunit.js\"><\/script>");  
+    document.write("<script id=\"path1\" src=\"../scripts/qunit-odata.js\" data-service-root=\"" + service_root + "\"><\/script>");
+    document.write("<script src=\"odata-test.js\"><\/script>");  
+  </script> 
+  
+</body>
+</html>

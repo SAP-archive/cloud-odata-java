@@ -153,7 +153,7 @@
     
     config.serviceRoot = serviceRoot;
     
-    if (!serviceRootParts[1]) {
+    /* if (!serviceRootParts[1])*/ { 
       
       QUnit.config.autostart = false;
     
@@ -180,7 +180,7 @@
         
       }, OData.metadataHandler);       
         
-    } 
+    }  
     
   });
 

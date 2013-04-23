@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+  <title>OData Batch Example</title>
+
+  <style type="text/css">
+    #s1 { width:500px; height:50px; }
+    #s2 { width:500px; height:50px; }
+    #s3 { width:500px; height:50px; }
+  </style>  
+  
+</head>
+<body>
+  <div id="s1"></div>
+  <div id="s2"></div>
+  <div id="s3"></div>
+  <script src="../scripts/datajs-1.0.3.js"></script>
+  <script src="../scripts/jquery-1.7.2.min.js"></script>
+  <script>
+    var token;
+    
+    /* 1. get the x-csrf-token */
+    /* OData.read({ requestUri: "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/", */
+    	
+    OData.read(
+    		{ requestUri: "http://ldcigmd.wdf.sap.corp:50055/sap/bc/ztg_cors2/",
+    	      headers: { "X-CSRF-TOKEN": "Fetch" } 
+    		},
+            function (data, response) // success handler
+            {
+              token = response.headers["x-csrf-token"];        
+              $('div#s1').html("X-CSRF-TOKEN: " + token);
+		      /* 2. $batch */
+		      OData.request(
+		        {
+		           /* requestUri: "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/$batch", */
+		           requestUri: "http://ldcigmd.wdf.sap.corp:50055/sap/bc/ztg_cors2/$batch", 
+		           method: "POST",
+		           headers: { "X-CSRF-TOKEN": token },
+		           data: 
+		           { __batchRequests: [
+		                                { requestUri: "Employees('1')", method: "GET" }, 
+		                                { requestUri: "Rooms('1')", method: "GET" }
+		                              ]
+		           }
+		         },
+		         function (data, response) // success handler batch
+		         {
+		            $('div#s2').html("Employee Age: " + response.data.__batchResponses[0].data.Age);
+		            $('div#s3').html("Room Id: " + response.data.__batchResponses[1].data.Id);
+		         }, 
+		         undefined,             // fail handler batch 
+		         OData.batchHandler);   // fix(?)
+        
+          }, 
+          function (err) // fail handler
+          {
+            alert("Error occurred " + err.message);
+          }
+    );    
+  </script>
+</body>
+</html>
