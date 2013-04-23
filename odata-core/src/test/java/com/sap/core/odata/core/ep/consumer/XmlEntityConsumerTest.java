@@ -388,15 +388,15 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
-  public void readInlineBuildingEntry() throws Exception{
- // prepare
-    
+  public void readInlineBuildingEntry() throws Exception {
+    // prepare
+
     String content = readFile("expandedBuilding.xml");
     assertNotNull(content);
-    
+
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(content);
-    
+
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
@@ -413,15 +413,15 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     //
     ExpandSelectTreeNode expandTree = entry.getExpandSelectTree();
     assertNotNull(expandTree);
-    
-    ODataEntry inlineBuilding = (ODataEntry) properties.get("nr_Building");  
+
+    ODataEntry inlineBuilding = (ODataEntry) properties.get("nr_Building");
     Map<String, Object> inlineBuildingProps = inlineBuilding.getProperties();
     assertEquals("1", inlineBuildingProps.get("Id"));
     assertEquals("Building 1", inlineBuildingProps.get("Name"));
     assertNull(inlineBuildingProps.get("Image"));
     assertNull(inlineBuildingProps.get("nb_Rooms"));
   }
-  
+
   /**
    * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
    * 
@@ -1961,16 +1961,15 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
   }
 
-  
   @Test
   public void testReadSkipTag() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML
-        .replace("<title type=\"text\">Walter Winter</title>", 
+        .replace("<title type=\"text\">Walter Winter</title>",
             "<title type=\"text\"><title>Walter Winter</title></title>"));
-//        .replace("<id>http://localhost:19000/Employees('1')</id>", 
-//            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
+    //        .replace("<id>http://localhost:19000/Employees('1')</id>", 
+    //            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
@@ -1981,7 +1980,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     Map<String, Object> properties = result.getProperties();
     assertEquals(9, properties.size());
   }
-  
+
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
     return createContentAsStream(xml, false);
   }

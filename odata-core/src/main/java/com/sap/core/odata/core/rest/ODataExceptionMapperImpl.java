@@ -174,10 +174,10 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ODataErrorContext createDefaultErrorContext() {
     ODataErrorContext context = new ODataErrorContext();
-    if(uriInfo != null) {
+    if (uriInfo != null) {
       context.setRequestUri(uriInfo.getRequestUri());
     }
-    if(httpHeaders != null && httpHeaders.getRequestHeaders() != null) {
+    if (httpHeaders != null && httpHeaders.getRequestHeaders() != null) {
       MultivaluedMap<String, String> requestHeaders = httpHeaders.getRequestHeaders();
       Set<Entry<String, List<String>>> entries = requestHeaders.entrySet();
       for (Entry<String, List<String>> entry : entries) {

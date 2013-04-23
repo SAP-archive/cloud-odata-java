@@ -168,7 +168,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline", xmlString);
-    
+
     assertXpathExists(buildingXPathString + "/m:inline/a:feed", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:id", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:title", xmlString);

@@ -94,7 +94,6 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
   }
 
-  
   @Test
   public void testODataNotFoundException() throws Exception {
     // prepare

@@ -82,9 +82,9 @@ public class XmlEntryConsumer {
   }
 
   private boolean isEntryEndTag(final XMLStreamReader reader) {
-    return reader.isEndElement() 
-              && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) 
-              && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
+    return reader.isEndElement()
+        && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI())
+        && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
   }
 
   /**
@@ -178,14 +178,14 @@ public class XmlEntryConsumer {
             final Object value = type.valueOfString(text, EdmLiteralKind.DEFAULT, propertyInfo.getFacets(),
                 typeMapping == null ? type.getDefaultType() : typeMapping);
             properties.put(tagName, value);
-          } 
+          }
         }
       } else {
         throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(tagName));
       }
     }
-    
-    if(skipTag) {
+
+    if (skipTag) {
       skipStartedTag(reader);
     }
   }
@@ -197,13 +197,13 @@ public class XmlEntryConsumer {
    * @param reader
    * @throws XMLStreamException
    */
-  private void skipStartedTag(XMLStreamReader reader) throws XMLStreamException {
+  private void skipStartedTag(final XMLStreamReader reader) throws XMLStreamException {
     final String name = reader.getLocalName();
     int read = 1;
-    while(read > 0 && reader.hasNext()) {
+    while (read > 0 && reader.hasNext()) {
       reader.next();
-      if(reader.hasName() && name.equals(reader.getLocalName())) {
-        if(reader.isEndElement()) {
+      if (reader.hasName() && name.equals(reader.getLocalName())) {
+        if (reader.isEndElement()) {
           read--;
         } else if (reader.isStartElement()) {
           read++;
@@ -211,7 +211,7 @@ public class XmlEntryConsumer {
       }
     }
   }
-  
+
   private void readEntry(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_ENTRY);
 

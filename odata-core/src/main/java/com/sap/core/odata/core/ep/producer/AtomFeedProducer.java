@@ -32,14 +32,14 @@ public class AtomFeedProducer {
     this.properties = properties;
   }
 
-  public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data, boolean isInline) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data, final boolean isInline) throws EntityProviderException {
     try {
       writer.writeStartElement("feed");
 
-      if(!isInline){
-      writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
-      writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
-      writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
+      if (!isInline) {
+        writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
+        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
+        writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
       }
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
 

@@ -43,9 +43,9 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
           result.setFeedData(dataProvider.getEmployeesData());
           result.setInlineProperties(inlineProperties);
         }
-      }else if("Buildings".equals(context.getSourceEntitySet().getName())){
+      } else if ("Buildings".equals(context.getSourceEntitySet().getName())) {
         EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();
-        List<Map<String,Object>> emptyData = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> emptyData = new ArrayList<Map<String, Object>>();
         result.setFeedData(emptyData);
         result.setInlineProperties(inlineProperties);
       }

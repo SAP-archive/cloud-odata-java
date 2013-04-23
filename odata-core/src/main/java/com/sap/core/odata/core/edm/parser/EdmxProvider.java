@@ -25,10 +25,11 @@ import com.sap.core.odata.api.exception.ODataException;
 public class EdmxProvider extends EdmProvider {
   private DataServices dataServices;
 
-  public EdmxProvider(final InputStream in, final boolean validate) throws EntityProviderException {
+  public EdmxProvider parse(final InputStream in, final boolean validate) throws EntityProviderException {
     EdmParser parser = new EdmParser();
     XMLStreamReader streamReader = createStreamReader(in);
     dataServices = parser.readMetadata(streamReader, validate);
+    return this;
   }
 
   @Override

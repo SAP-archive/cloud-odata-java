@@ -134,11 +134,11 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
       verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
       thrown = true;
     }
-    if(!thrown){
-      fail("Exception should have been thrown");      
+    if (!thrown) {
+      fail("Exception should have been thrown");
     }
   }
-  
+
   @Test
   public void noneSyndicationWithNullUri() throws Exception {
     //prepare Mock
@@ -165,8 +165,8 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
       verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
       thrown = true;
     }
-    if(!thrown){
-      fail("Exception should have been thrown");      
+    if (!thrown) {
+      fail("Exception should have been thrown");
     }
   }
 
@@ -195,11 +195,11 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
       verifyRootCause(EntityProviderException.class, EntityProviderException.INVALID_NAMESPACE.getKey(), e);
       thrown = true;
     }
-    if(!thrown){
-      fail("Exception should have been thrown");      
+    if (!thrown) {
+      fail("Exception should have been thrown");
     }
   }
-  
+
   @Test
   public void syndicationWithComplexProperty() throws Exception {
     //prepare Mock
@@ -222,12 +222,12 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     AtomEntityProvider ser = createAtomEntityProvider();
     ODataResponse response = ser.writeEntry(employeesSet, employeeData, DEFAULT_PROPERTIES);
     String xmlString = verifyResponse(response);
-    
+
     assertXpathNotExists("/a:entry/customPre:Location", xmlString);
     assertXpathExists("/a:entry/m:properties/d:Location", xmlString);
   }
 
-  private void verifyRootCause(Class<?> class1, String key, ODataMessageException e) {
+  private void verifyRootCause(final Class<?> class1, final String key, final ODataMessageException e) {
 
     Throwable thrownException = e;
     Throwable lastFoundException = null;

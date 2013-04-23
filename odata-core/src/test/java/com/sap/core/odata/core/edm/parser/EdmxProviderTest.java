@@ -30,8 +30,8 @@ public class EdmxProviderTest {
   @Test
   public void testEntityType() throws EntityProviderException, ODataException, XMLStreamException {
     Edm edm = createEdm();
-    assertNotNull(edm);
 
+    assertNotNull(edm);
     FullQualifiedName fqNameEmployee = new FullQualifiedName("RefScenario", "Employee");
     EdmProvider testProvider = new EdmTestProvider();
     EdmImplProv edmImpl = (EdmImplProv) edm;

@@ -144,7 +144,7 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
 
   @Override
   public Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
-    EdmProvider provider = new EdmxProvider(inputStream, validate);
+    EdmProvider provider = new EdmxProvider().parse(inputStream, validate);
     return new EdmImplProv(provider);
   }
 

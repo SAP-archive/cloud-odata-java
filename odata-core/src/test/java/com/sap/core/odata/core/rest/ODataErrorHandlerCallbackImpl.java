@@ -17,18 +17,18 @@ public class ODataErrorHandlerCallbackImpl implements ODataErrorCallback {
   public ODataResponse handleError(final ODataErrorContext context) {
     ODataResponseBuilder responseBuilder = ODataResponse.entity("bla").status(HttpStatusCodes.BAD_REQUEST).contentHeader("text/html");
 
-    if(context.getRequestUri() != null) {
+    if (context.getRequestUri() != null) {
       responseBuilder.header("RequestUri", context.getRequestUri().toASCIIString());
     }
-    
+
     Map<String, List<String>> requestHeaders = context.getRequestHeaders();
-    if(requestHeaders != null && requestHeaders.entrySet() != null) {
+    if (requestHeaders != null && requestHeaders.entrySet() != null) {
       Set<Entry<String, List<String>>> entries = requestHeaders.entrySet();
       for (Entry<String, List<String>> entry : entries) {
         responseBuilder.header(entry.getKey(), entry.getValue().toString());
       }
     }
-    
+
     return responseBuilder.build();
   }
 
