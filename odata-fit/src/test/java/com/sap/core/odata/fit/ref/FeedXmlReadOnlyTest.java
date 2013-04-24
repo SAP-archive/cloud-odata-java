@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
  * Tests employing the reference scenario reading entity sets in XML format.
@@ -200,5 +201,7 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
     badRequest("Employees?$filter=endswith(Location,'y')");
     badRequest("Buildings?$filter=Image%20eq%20X%27notonlyhexdigits%27");
+
+    callUri("Employees?$filter=ne_Manager/Age%20gt%2042", HttpStatusCodes.NOT_IMPLEMENTED);
   }
 }
