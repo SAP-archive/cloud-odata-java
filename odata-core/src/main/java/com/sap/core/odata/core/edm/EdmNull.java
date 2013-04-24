@@ -5,7 +5,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the simple type Null
+ * Implementation of the simple type Null.
  * @author SAP AG
  */
 public class EdmNull extends AbstractSimpleType {
@@ -32,12 +32,12 @@ public class EdmNull extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     return null;
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     return null;
   }
 

@@ -34,16 +34,7 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     // In JSON, we allow also the XML literal form, so there is on purpose
     // no exception if the JSON pattern does not match.
     if (literalKind == EdmLiteralKind.JSON) {
@@ -54,13 +45,12 @@ public class EdmDateTime extends AbstractSimpleType {
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
-        if (returnType.isAssignableFrom(Long.class)) {
+        if (returnType.isAssignableFrom(Long.class))
           return returnType.cast(millis);
-        } else if (returnType.isAssignableFrom(Date.class)) {
+        else if (returnType.isAssignableFrom(Date.class))
           return returnType.cast(new Date(millis));
-        } else if (!returnType.isAssignableFrom(Calendar.class)) {
+        else if (!returnType.isAssignableFrom(Calendar.class))
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-        }
 
         Calendar dateTimeValue = Calendar.getInstance();
         dateTimeValue.clear();
@@ -71,25 +61,22 @@ public class EdmDateTime extends AbstractSimpleType {
     }
 
     Calendar calendarValue;
-    if (literalKind == EdmLiteralKind.URI) {
-      if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'")) {
+    if (literalKind == EdmLiteralKind.URI)
+      if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
         calendarValue = parseLiteral(value.substring(9, value.length() - 1), facets);
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
-    } else {
+    else
       calendarValue = parseLiteral(value, facets);
-    }
 
-    if (returnType.isAssignableFrom(Calendar.class)) {
+    if (returnType.isAssignableFrom(Calendar.class))
       return returnType.cast(calendarValue);
-    } else if (returnType.isAssignableFrom(Long.class)) {
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(calendarValue.getTimeInMillis());
-    } else if (returnType.isAssignableFrom(Date.class)) {
+    else if (returnType.isAssignableFrom(Date.class))
       return returnType.cast(calendarValue.getTime());
-    } else {
+    else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    }
   }
 
   private Calendar parseLiteral(final String value, final EdmFacets facets) throws EdmSimpleTypeException {
@@ -144,30 +131,24 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     Calendar dateTimeValue = Calendar.getInstance();
     dateTimeValue.clear();
-    if (value instanceof Date) {
+    if (value instanceof Date)
       dateTimeValue.setTime((Date) value);
-    } else if (value instanceof Calendar) {
+    else if (value instanceof Calendar)
       dateTimeValue.setTime(((Calendar) value).getTime());
-    } else if (value instanceof Long) {
+    else if (value instanceof Long)
       dateTimeValue.setTimeInMillis((Long) value);
-    } else {
+    else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
-    }
 
-    if (literalKind == EdmLiteralKind.JSON) {
+    // Although JSON escaping is (and should be) done while serializing
+    // the response, we use the backslash-escaped forward slash here
+    // because it is not required to escape it in JSON and so we won't
+    // get it.
+    if (literalKind == EdmLiteralKind.JSON)
       return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
-    }
 
     final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();
@@ -175,29 +156,20 @@ public class EdmDateTime extends AbstractSimpleType {
     dateFormat.applyPattern(pattern);
     String result = dateFormat.format(dateTimeValue.getTime());
 
-    if (facets == null || facets.getPrecision() == null) {
-      while (result.endsWith("0")) {
+    if (facets == null || facets.getPrecision() == null)
+      while (result.endsWith("0"))
         result = result.substring(0, result.length() - 1);
-      }
-    } else if (facets.getPrecision() <= 3) {
-      if (result.endsWith("000".substring(0, 3 - facets.getPrecision()))) {
+    else if (facets.getPrecision() <= 3)
+      if (result.endsWith("000".substring(0, 3 - facets.getPrecision())))
         result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-    } else {
-      for (int i = 4; i <= facets.getPrecision(); i++) {
+    else
+      for (int i = 4; i <= facets.getPrecision(); i++)
         result += "0";
-      }
-    }
 
-    if (result.endsWith(".")) {
+    if (result.endsWith("."))
       result = result.substring(0, result.length() - 1);
-    }
-
-    if (literalKind == EdmLiteralKind.URI) {
-      result = toUriLiteral(result);
-    }
 
     return result;
   }
