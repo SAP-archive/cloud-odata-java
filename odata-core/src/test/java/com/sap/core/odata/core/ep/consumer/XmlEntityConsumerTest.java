@@ -1445,6 +1445,45 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(1, associationUris.size());
     assertEquals("Employees('1')/ne_Team", associationUris.get(0));
   }
+  
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadFeed() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = readFile("feed_employees.xml");
+    InputStream contentAsStream = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    List<ODataEntry> results = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify feed result
+    assertEquals(6, results.size());
+    // verify first employee
+    ODataEntry firstEmployee = results.get(0);
+    Map<String, Object> properties = firstEmployee.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
+  }
+  
 
   @SuppressWarnings("unchecked")
   @Test
