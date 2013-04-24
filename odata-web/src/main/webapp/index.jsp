@@ -435,9 +435,6 @@ ul.tree li.last {
 </style>
 </head>
 <body>
-	<div align="right">
-		<img align="top" src="pic/SAPLogo.png" />
-	</div>
 	<h1>SAP OData Library</h1>
 	<hr />
 	<h2>Reference Scenario</h2>
@@ -475,16 +472,7 @@ ul.tree li.last {
 				</ul>
 			</td>
 			<td valign="top">
-				<h3>Csrf Protected Service</h3>
-				<ul>
-					<li><a href="CsrfReferenceScenario.svc/" target="_blank">service
-							document</a></li>
-				</ul>
-				<h3>QUnit Test Suite</h3>
-				<ul>
-					<li><a href="test/index.htm" target="_blank">quint test
-							suite</a></li>
-				</ul>
+				&nbsp;
 			</td>
 			<td valign="bottom">
 				<div class="code">
