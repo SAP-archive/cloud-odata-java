@@ -215,7 +215,7 @@ request = {
   resourcePath: "$batch",
   data: { __batchRequests: [
     { requestUri: "Employees('1')/EmployeeName", method: "GET" },
-    { requestUri: "http://localhost/sap/bc/odata/Employees('2')/EmployeeName", method: "GET" }
+    { requestUri: "Employees('2')/EmployeeName", method: "GET" }
   ]}  
 };  
 
@@ -227,40 +227,26 @@ odataTest("batch", 4, request , function (response, data) {
 });
 
 /* Test 5.2 */
+
 request2 = {
-  method: 'POST',
-  resourcePath: "$batch",
-  data: { __batchRequests:  [ { requestUri: "http://localhost/sap/bc/odata/Employees('2')/EmployeeName", method: "GET" } ,
-                              {__changeRequests: [ 
-                                    { requestUri: "Employees('2')/EmployeeName", method: "PUT", data: {EmployeeName: "Frederic Fall MODIFIED"}, headers: { "Content-Length" : "100000"} }        
-                                                 ] 
-                              },
-                              { requestUri: "http://localhost/sap/bc/odata/Employees('2')/EmployeeName", method: "GET" } ,
-                            ] 
-        } 
+method: 'POST',
+resourcePath: "$batch",
+data: { __batchRequests:  [ { requestUri: "Employees('2')/EmployeeName", method: "GET" } ,
+                            {__changeRequests: [ 
+                                  { requestUri: "Employees('2')/EmployeeName", method: "PUT", data: {EmployeeName: "Frederic Fall MODIFIED"}, headers: { "Content-Length" : "100000"} }        
+                                               ] 
+                            },
+                            { requestUri: "Employees('2')/EmployeeName", method: "GET" } ,
+                          ] 
+      } 
 };  
 
 odataTest("batch with post", 5, request2 , function (response, data) {
-  equal(response.statusCode, 202, "StatusCode: 202");
-  equal(data.__batchResponses.length, 3, "Number of Responses: 3");
-  equal(data.__batchResponses[0].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
-  equal(data.__batchResponses[1].__changeResponses.length,1,"Expected 1 __changeResponse");
-  //SK why is data.__batchResponses[1].__changeResponses[0].message = "no handler for data" ?? and 
-  //       data.__batchResponses[1].__changeResponses[0].statusCode is not defined
-  equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall MODIFIED", "Second EmployeeName: Frederic Fall MODIFIED");
-});
-
-/* Test 6.1 Deep Insert */
-
-module ("Bad Requests")
-/* Test 7.1 */
-request = "Employees?$orderby=Age desc 50"; 
-odataTest(request, 1, request , function (response, data) {
-  equal(response.statusCode, 400, "StatusCode: 400");
-});
-
-/* Test 7.2 Filter*/
-request = "Employees?$filter=ne_Manager/Age gt 40"
-odataTest(request, 1, request , function (response, data) {
-  equal(response.statusCode, 400, "StatusCode: 400");
+equal(response.statusCode, 202, "StatusCode: 202");
+equal(data.__batchResponses.length, 3, "Number of Responses: 3");
+equal(data.__batchResponses[0].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
+equal(data.__batchResponses[1].__changeResponses.length,1,"Expected 1 __changeResponse");
+//SK why is data.__batchResponses[1].__changeResponses[0].message = "no handler for data" ?? and 
+//       data.__batchResponses[1].__changeResponses[0].statusCode is not defined
+equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall MODIFIED", "Second EmployeeName: Frederic Fall MODIFIED");
 });

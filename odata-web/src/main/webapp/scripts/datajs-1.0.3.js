@@ -1029,7 +1029,9 @@
             if (!enableJsonpCallback || isLocalUrl(url)) {
 
                 xhr = createXmlHttpRequest();
-                xhr.withCredentials=true;
+                if ("withCredentials" in xhr) {
+                  xhr.withCredentials=true;
+                }
                 xhr.onreadystatechange = function () {
                     if (done || xhr === null || xhr.readyState !== 4) {
                         return;
