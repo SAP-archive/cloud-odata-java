@@ -23,6 +23,8 @@ import com.sap.core.odata.api.processor.ODataResponse;
  */
 public interface ContentTypeBasedEntityProvider {
 
+  List<ODataEntry> readFeed(EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
+
   ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
   Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;

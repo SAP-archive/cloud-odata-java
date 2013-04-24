@@ -186,6 +186,19 @@ public final class EntityProvider {
     ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
+     * Read (de-serialize) a data feed from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
+     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
+     * 
+     * @param contentType format of content in the given input stream.
+     * @param entitySet entity data model for entity set to be read
+     * @param content feed data in form of an {@link InputStream} which contains the data in specified format
+     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+     * @return read entries as {@link List} of {@link ODataEntry}
+     * @throws EntityProviderException if reading of data (de-serialization) fails
+     */
+    List<ODataEntry> readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
+
+    /**
      * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
      * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
      * 
@@ -473,6 +486,21 @@ public final class EntityProvider {
    */
   public static ODataResponse writeFunctionImport(final String contentType, final EdmFunctionImport functionImport, final Object data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFunctionImport(contentType, functionImport, data, properties);
+  }
+
+  /**
+   * Read (de-serialize) a data feed from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
+   * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
+   * 
+   * @param contentType format of content in the given input stream.
+   * @param entitySet entity data model for entity set to be read
+   * @param content feed data in form of an {@link InputStream} which contains the data in specified format
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @return read entries as {@link List} of {@link ODataEntry}
+   * @throws EntityProviderException if reading of data (de-serialization) fails
+   */
+  public static List<ODataEntry> readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return createEntityProvider().readFeed(contentType, entitySet, content, properties);
   }
 
   /**
