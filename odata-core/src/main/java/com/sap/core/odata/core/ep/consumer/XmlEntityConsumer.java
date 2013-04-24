@@ -35,6 +35,31 @@ public class XmlEntityConsumer {
     super();
   }
 
+  public List<ODataEntry> readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    XMLStreamReader reader = null;
+
+    try {
+      reader = createStaxReader(content);
+
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      XmlFeedConsumer xfc = new XmlFeedConsumer();
+      return xfc.readFeed(reader, eia, properties);
+    } catch (EntityProviderException e) {
+      throw e;
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+  }
+
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
