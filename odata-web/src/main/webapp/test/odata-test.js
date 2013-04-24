@@ -54,7 +54,8 @@ module("GET");
 request = {
   method: 'GET',
   resourcePath: "/Employees('2')/Location/City/CityName",
-  recognizeDates: true     
+  recognizeDates: true,
+  headers: {Accept: "application/json", MaxDataServiceVersion:"2.0"},
 };      
 odataTest("ComplexProperty of Employees('2')", 2, request, function (response, data) {
   equal(response.headers["DataServiceVersion"], "1.0", "DataServiceVersion: 1.0");
