@@ -140,13 +140,12 @@ public class JsonPropertyConsumer {
         reader.endObject();
       } else {
         EntityPropertyInfo childPropertyInfo = complexPropertyInfo.getPropertyInfo(childName);
-        if (childPropertyInfo.isComplex()) {
-          Object childData = readComplexProperty(reader, (EntityComplexPropertyInfo) childPropertyInfo, mapping.get(childName));
-          data.put(childName, childData);
-        } else {
-          Object childData = readSimpleProperty(reader, childPropertyInfo, mapping.get(childName));
-          data.put(childName, childData);
+
+        Object childData = readProperty(reader, childPropertyInfo, mapping.get(childName));
+        if(data.containsKey(childName)){
+          throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(childName));
         }
+        data.put(childName, childData);
       }
     }
     reader.endObject();

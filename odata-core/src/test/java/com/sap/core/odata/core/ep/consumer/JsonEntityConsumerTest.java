@@ -6,6 +6,7 @@ package com.sap.core.odata.core.ep.consumer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,6 +130,7 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
     //The file contains the name property two times
     try {
       prepareAndExecute(INVALIDENTRYTEAMDOUBLENAMEPROPERTY);
+      fail("Exception has to be thrown");
     } catch (EntityProviderException e) {
       assertEquals(EntityProviderException.DOUBLE_PROPERTY.getKey(), e.getMessageReference().getKey());
     }

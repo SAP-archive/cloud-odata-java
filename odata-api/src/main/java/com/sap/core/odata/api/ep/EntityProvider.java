@@ -495,7 +495,7 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity set to be read
    * @param content feed data in form of an {@link InputStream} which contains the data in specified format
-   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
    * @return read entries as {@link List} of {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
@@ -510,7 +510,7 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity set to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
@@ -526,7 +526,7 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param edmProperty entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */

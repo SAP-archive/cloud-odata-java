@@ -53,11 +53,6 @@ public class XmlEntryConsumer {
   private EntityTypeMapping typeMappings;
   private String currentHandledStartTagName;
 
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
-    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
-    return readEntry(reader, eia, properties);
-  }
-
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {
     try {
       initialize(readProperties);

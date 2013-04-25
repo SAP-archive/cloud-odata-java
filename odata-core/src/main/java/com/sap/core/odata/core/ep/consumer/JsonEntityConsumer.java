@@ -25,11 +25,12 @@ public class JsonEntityConsumer {
     JsonReader reader = null;
 
     try {
-      JsonEntryConsumer jec = new JsonEntryConsumer();
-      reader = createJsonReader(content);
-
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      ODataEntry result = jec.readEntry(reader, eia, properties);
+      reader = createJsonReader(content);
+      
+      JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, properties);
+      ODataEntry result = jec.readEntryStandalone();
+      
       return result;
     } catch (UnsupportedEncodingException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
