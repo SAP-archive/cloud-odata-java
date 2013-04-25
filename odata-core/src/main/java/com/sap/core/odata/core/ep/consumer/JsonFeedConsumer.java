@@ -35,27 +35,7 @@ public class JsonFeedConsumer {
       String nextName = reader.nextName();
       if (FormatJson.D.equals(nextName)) {
         reader.beginObject();
-        while (reader.hasNext()) {
-          nextName = reader.nextName();
-          if (FormatJson.RESULTS.equals(nextName)) {
-            reader.beginArray();
-            while (reader.hasNext()) {
-              JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, readProperties);
-              ODataEntry entry = jec.readEntry();
-              entries.add(entry);
-            }
-            reader.endArray();
-          } else if (FormatJson.COUNT.equals(nextName)) {
-            int inlineCount = reader.nextInt();
-            feedMetadata.setInlineCount(inlineCount);
-          } else if (FormatJson.NEXT.equals(nextName)) {
-            String nextLink = reader.nextString();
-            feedMetadata.setNextLink(nextLink);
-          }else{
-            //TODO: CA Messagetext
-            throw new EntityProviderException(EntityProviderException.COMMON);
-          }
-        }
+        readFeedContent();
         reader.endObject();
       } else {
         //TODO: CA Messagetext
@@ -68,6 +48,43 @@ public class JsonFeedConsumer {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+    return new ODataFeedImpl(entries, feedMetadata);
+  }
+
+  private void readFeedContent() throws IOException, EdmException, EntityProviderException {
+    String nextName;
+    while (reader.hasNext()) {
+      nextName = reader.nextName();
+      handleName(nextName);
+    }
+  }
+
+  private void handleName(String nextName) throws IOException, EdmException, EntityProviderException {
+    if (FormatJson.RESULTS.equals(nextName)) {
+      reader.beginArray();
+      while (reader.hasNext()) {
+        JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, readProperties);
+        ODataEntry entry = jec.readEntry();
+        entries.add(entry);
+      }
+      reader.endArray();
+    } else if (FormatJson.COUNT.equals(nextName)) {
+      int inlineCount = reader.nextInt();
+      feedMetadata.setInlineCount(inlineCount);
+    } else if (FormatJson.NEXT.equals(nextName)) {
+      String nextLink = reader.nextString();
+      feedMetadata.setNextLink(nextLink);
+    } else {
+      //TODO: CA Messagetext
+      throw new EntityProviderException(EntityProviderException.COMMON);
+    }
+  }
+
+  public ODataFeed readInlineFeed(String name) throws EdmException, EntityProviderException, IOException {
+    //consume the already started content
+    handleName(name);
+    //consume the rest of the entry content
+    readFeedContent();
     return new ODataFeedImpl(entries, feedMetadata);
   }
 

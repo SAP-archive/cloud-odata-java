@@ -8,11 +8,13 @@ import com.google.gson.stream.JsonReader;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
+import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
@@ -20,6 +22,7 @@ import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
+import com.sap.core.odata.core.ep.entry.ODataFeed;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.ep.util.JsonUtils;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
@@ -67,16 +70,15 @@ public class JsonEntryConsumer {
   private void readEntryContent() throws IOException, EdmException, EntityProviderException {
     while (reader.hasNext()) {
       String name = reader.nextName();
-      handleNamedValue(name);
+      handleName(name);
     }
   }
 
-  private void handleNamedValue(String name) throws IOException, EdmException, EntityProviderException {
+  private void handleName(String name) throws IOException, EdmException, EntityProviderException {
     if (FormatJson.METADATA.equals(name)) {
       readMetadata();
       validateMetadata();
     } else {
-
       EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
       if (propertyInfo != null) {
         JsonPropertyConsumer jpc = new JsonPropertyConsumer();
@@ -172,21 +174,34 @@ public class JsonEntryConsumer {
       } else {
         inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
       }
-      JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
-      ODataEntry entry = inlineConsumer.readInlineEntry(name);
-      if (callback == null) {
-        properties.put(navigationPropertyName, entry);
-      } else {
-        ReadEntryResult result = new ReadEntryResult(inlineReadProperties, navigationProperty, entry);
-        callback.handleReadEntry(result);
+      
+      if(navigationProperty.getMultiplicity() == EdmMultiplicity.ONE){
+        JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
+        ODataEntry entry = inlineConsumer.readInlineEntry(name);
+        if (callback == null) {
+          properties.put(navigationPropertyName, entry);
+        } else {
+          ReadEntryResult result = new ReadEntryResult(inlineReadProperties, navigationProperty, entry);
+          callback.handleReadEntry(result);
+        }        
+      }else{
+        JsonFeedConsumer inlineConsumer = new JsonFeedConsumer(reader, inlineEia, inlineReadProperties);
+        ODataFeed feed = inlineConsumer.readInlineFeed(name);
+        if (callback == null) {
+          properties.put(navigationPropertyName, feed);
+        } else {
+          ReadFeedResult result = new ReadJsonFeedResult(inlineReadProperties, navigationProperty, feed);
+          callback.handleReadFeed(result);
+        }
       }
+      
     }
     reader.endObject();
   }
 
   private ODataEntryImpl readInlineEntry(String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
-    handleNamedValue(name);
+    handleName(name);
     //consume the rest of the entry content
     readEntryContent();
     return new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);

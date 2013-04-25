@@ -20,7 +20,7 @@ import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
-public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
+public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
   private static final String EMPLOYEE_WITH_INLINE_TEAM = "JsonEmployeeWithInlineTeam";
   private static final String INLINE_ROOM_WITH_INLINE_BUILDING = "JsonInlineRoomWithInlineBuilding";
