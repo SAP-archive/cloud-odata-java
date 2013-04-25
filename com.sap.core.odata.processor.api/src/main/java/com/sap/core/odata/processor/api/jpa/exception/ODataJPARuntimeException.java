@@ -31,12 +31,12 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "ERROR_ODATA_FILTER_CONDITION");
 	public static final MessageReference ERROR_JPQL_QUERY_CREATE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_QUERY_CREATE");
-	public static final MessageReference ERROR_JPQL_CREATE_CREATE = createMessageReference(
-			ODataJPARuntimeException.class, "ERROR_JPQL_CREATE_CREATE");
-	public static final MessageReference ERROR_JPQL_UPDATE_CREATE = createMessageReference(
-			ODataJPARuntimeException.class, "ERROR_JPQL_UPDATE_CREATE");
-	public static final MessageReference ERROR_JPQL_DELETE_CREATE = createMessageReference(
-			ODataJPARuntimeException.class, "ERROR_JPQL_DELETE_CREATE");
+	public static final MessageReference ERROR_JPQL_CREATE_REQUEST = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_CREATE_REQUEST");
+	public static final MessageReference ERROR_JPQL_UPDATE_REQUEST = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_UPDATE_REQUEST");
+	public static final MessageReference ERROR_JPQL_DELETE_REQUEST = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_DELETE_REQUEST");
 	public static final MessageReference ERROR_JPQL_KEY_VALUE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_KEY_VALUE");
 	public static final MessageReference ERROR_JPQL_PARAM_VALUE = createMessageReference(

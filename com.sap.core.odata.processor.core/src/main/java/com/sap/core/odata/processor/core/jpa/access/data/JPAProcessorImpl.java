@@ -250,15 +250,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
-			if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
-			}else if(e.getMessage().contains("Integrity constraint violation")){//$NON-NLS-1$
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.ERROR_JPQL_INTEGRITY_CONSTRAINT, e);
-			}else 
 			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.ERROR_JPQL_CREATE_CREATE, e);
+					ODataJPARuntimeException.ERROR_JPQL_CREATE_REQUEST, e);
 		}
 		if (em.contains(createObjectList.get(0))) {
 			return createObjectList;
@@ -297,15 +290,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
-			if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
-			}else if(e.getMessage().contains("Integrity constraint violation")){//$NON-NLS-1$
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.ERROR_JPQL_INTEGRITY_CONSTRAINT, e);
-			}else 
 			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.ERROR_JPQL_UPDATE_CREATE, e);
+					ODataJPARuntimeException.ERROR_JPQL_UPDATE_REQUEST, e);
 		}
 		return updateObject;
 	}
@@ -339,14 +325,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 				em.getTransaction().commit();
 			} catch (Exception e) {
 				em.getTransaction().rollback();
-				if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
-					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
-				}else if(e.getMessage().contains("Integrity constraint violation")){//$NON-NLS-1$
-					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.ERROR_JPQL_INTEGRITY_CONSTRAINT, e);
-				}else throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.ERROR_JPQL_DELETE_CREATE, e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_DELETE_REQUEST, e);
 			}
 		}
 		return selectedObject;
