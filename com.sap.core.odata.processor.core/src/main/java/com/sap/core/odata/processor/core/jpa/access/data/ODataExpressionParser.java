@@ -17,12 +17,14 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
+import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
+import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -40,6 +42,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
 public class ODataExpressionParser {
 	
 	public static final String EMPTY = "";	//$NON-NLS-1$
+	public static Integer methodFlag = 0;
 		
 	/**
 	 * This method returns the parsed where condition corresponding to the filter input in the user query.
@@ -49,6 +52,7 @@ public class ODataExpressionParser {
 	 * @return Parsed where condition String
 	 * @throws ODataException
 	 */
+	
 	public static String parseToJPAWhereExpression(final CommonExpression whereExpression, String tableAlias) throws ODataException {
 	    switch (whereExpression.getKind()) {
 	    case UNARY:
@@ -71,6 +75,9 @@ public class ODataExpressionParser {
 	    	return parseToJPAWhereExpression(((FilterExpression)whereExpression).getExpression(), tableAlias);
 	    case BINARY:
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
+	      if((binaryExpression.getLeftOperand().getKind()==ExpressionKind.METHOD)&&((binaryExpression.getOperator()==BinaryOperator.EQ)||(binaryExpression.getOperator()==BinaryOperator.NE))&&(((MethodExpression)binaryExpression.getLeftOperand()).getMethod()==MethodOperator.SUBSTRINGOF)) {
+	    	  methodFlag = 1;
+	      }
 	      final String left = parseToJPAWhereExpression(binaryExpression.getLeftOperand(), tableAlias);
 	      final String right = parseToJPAWhereExpression(binaryExpression.getRightOperand(), tableAlias);
 	      
@@ -138,7 +145,13 @@ public class ODataExpressionParser {
 	        		return String.format("SUBSTRING(%s, %s + 1 %s)", first,second,third);
 	        	case SUBSTRINGOF:
 	        		first = first.substring(1,first.length()-1);
-	        		return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END)", second, first);
+	        		if(methodFlag==1) {
+	        			methodFlag = 0;
+	        			return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END)", second, first);
+	        		}
+	        		else {
+	        			return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END) = true", second, first);
+	        		}
 	        	case TOLOWER:
 	                return String.format("LOWER(%s)", first);
 	        	default:
