@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.ep.consumer;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +14,19 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.core.ep.entry.ODataFeed;
 import com.sap.core.odata.testutil.fit.BaseTest;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 public abstract class AbstractConsumerTest extends BaseTest {
+  
+  protected static final EntityProviderReadProperties DEFAULT_PROPERTIES = EntityProviderReadProperties.init().mergeSemantic(false).build();
 
   protected XMLStreamReader createReaderForTest(final String input) throws XMLStreamException {
     return createReaderForTest(input, false);
@@ -97,6 +109,34 @@ public abstract class AbstractConsumerTest extends BaseTest {
     }
 
     return new ByteArrayInputStream(contentForStream.getBytes("UTF-8"));
+  }
+
+  protected ODataEntry prepareAndExecuteEntry(final String fileName, final String entitySetName, EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+    //prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet(entitySetName);
+    String content =  readFile(fileName);
+    assertNotNull(content);
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, readProperties);
+    assertNotNull(result);
+    return result;
+  }
+  
+  protected ODataFeed prepareAndExecuteFeed(final String fileName, final String entitySetName, EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+    //prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet(entitySetName);
+    String content =  readFile(fileName);
+    assertNotNull(content);
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    ODataFeed result = xec.readFeed(entitySet, contentBody, readProperties);
+    assertNotNull(result);
+    return result;
   }
 
 }

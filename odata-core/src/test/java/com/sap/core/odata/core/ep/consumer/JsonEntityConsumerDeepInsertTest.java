@@ -5,39 +5,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.testutil.mock.MockFacade;
 
 public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
 
-  private static final int EMPLOYEE_WITH_INLINE_TEAM = 0;
-  private static final int INLINE_ROOM_WITH_INLINE_BUILDING = 1;
-  private static final EntityProviderReadProperties DEFAULT_PROPERTIES = EntityProviderReadProperties.init().mergeSemantic(false).build();
-
+  private static final String EMPLOYEE_WITH_INLINE_TEAM = "JsonEmployeeWithInlineTeam";
+  private static final String INLINE_ROOM_WITH_INLINE_BUILDING = "JsonInlineRoomWithInlineBuilding";
+ 
   @Test
   public void innerEntryNoMediaResourceWithoutCallback() throws Exception {
-    ODataEntry outerEntry = prepareAndExecute(EMPLOYEE_WITH_INLINE_TEAM, DEFAULT_PROPERTIES);
+    ODataEntry outerEntry = prepareAndExecuteEntry(EMPLOYEE_WITH_INLINE_TEAM, "Employees", DEFAULT_PROPERTIES);
 
     ODataEntry innerTeam = (ODataEntry) outerEntry.getProperties().get("ne_Team");
 
@@ -58,7 +48,7 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
   public void innerEntryNoMediaResourceWithCallback() throws Exception {
     EntryCallback callback = new EntryCallback();
     EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(callback).build();
-    ODataEntry outerEntry = prepareAndExecute(EMPLOYEE_WITH_INLINE_TEAM, readProperties);
+    ODataEntry outerEntry = prepareAndExecuteEntry(EMPLOYEE_WITH_INLINE_TEAM, "Employees", readProperties);
 
     assertThat(outerEntry.getProperties().get("ne_Team"), nullValue());
 
@@ -77,7 +67,7 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
 
   @Test
   public void inlineRoomWithInlineBuilding() throws Exception {
-    ODataEntry outerEntry = prepareAndExecute(INLINE_ROOM_WITH_INLINE_BUILDING, DEFAULT_PROPERTIES);
+    ODataEntry outerEntry = prepareAndExecuteEntry(INLINE_ROOM_WITH_INLINE_BUILDING, "Employees", DEFAULT_PROPERTIES);
 
     ODataEntry innerRoom = (ODataEntry) outerEntry.getProperties().get("ne_Room");
     assertNotNull(innerRoom);
@@ -117,7 +107,7 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
   public void inlineRoomWithInlineBuildingWithRoomCallback() throws Exception {
     EntryCallback callback = new EntryCallback();
     EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(callback).build();
-    ODataEntry outerEntry = prepareAndExecute(INLINE_ROOM_WITH_INLINE_BUILDING, readProperties);
+    ODataEntry outerEntry = prepareAndExecuteEntry(INLINE_ROOM_WITH_INLINE_BUILDING, "Employees", readProperties);
 
     ODataEntry innerRoom = (ODataEntry) outerEntry.getProperties().get("ne_Room");
     assertNull(innerRoom);
@@ -160,7 +150,7 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
     EntryCallback buildingCallback = new EntryCallback();
     EntryCallback roomCallback = new EntryCallback(buildingCallback);
     EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(roomCallback).build();
-    ODataEntry outerEntry = prepareAndExecute(INLINE_ROOM_WITH_INLINE_BUILDING, readProperties);
+    ODataEntry outerEntry = prepareAndExecuteEntry(INLINE_ROOM_WITH_INLINE_BUILDING, "Employees", readProperties);
 
     ODataEntry innerRoom = (ODataEntry) outerEntry.getProperties().get("ne_Room");
     assertNull(innerRoom);
@@ -230,32 +220,5 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
     public EntityProviderReadProperties receiveReadProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navString) {
       return EntityProviderReadProperties.init().mergeSemantic(false).callback(innerCallback).build();
     }
-  }
-
-  private ODataEntry prepareAndExecute(final int entryIdentificator, EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
-    EdmEntitySet entitySet = null;
-    String content = null;
-    switch (entryIdentificator) {
-    case EMPLOYEE_WITH_INLINE_TEAM:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-      content = readFile("JsonEmployeeWithInlineTeam");
-      break;
-    case INLINE_ROOM_WITH_INLINE_BUILDING:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-      content = readFile("JsonInlineRoomWithInlineBuilding");
-      break;
-
-    default:
-      fail("Invalid entryIdentificator: " + entryIdentificator);
-    }
-
-    assertNotNull(content);
-    InputStream contentBody = createContentAsStream(content);
-
-    // execute
-    JsonEntityConsumer xec = new JsonEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, readProperties);
-    assertNotNull(result);
-    return result;
   }
 }

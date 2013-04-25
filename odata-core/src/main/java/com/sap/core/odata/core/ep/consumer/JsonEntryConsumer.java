@@ -46,9 +46,7 @@ public class JsonEntryConsumer {
   public ODataEntry readEntryStandalone() throws EntityProviderException {
     try {
       openJsonObjects = JsonUtils.startJson(reader);
-
       readEntryContent();
-
       JsonUtils.endJson(reader, openJsonObjects);
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -58,9 +56,15 @@ public class JsonEntryConsumer {
 
     return new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
   }
+  
+  public ODataEntry readEntry() throws IOException, EdmException, EntityProviderException{
+    reader.beginObject();
+    readEntryContent();
+    reader.endObject();
+    return new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
+  }
 
   private void readEntryContent() throws IOException, EdmException, EntityProviderException {
-
     while (reader.hasNext()) {
       String name = reader.nextName();
       handleNamedValue(name);
@@ -169,7 +173,7 @@ public class JsonEntryConsumer {
         inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
       }
       JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
-      ODataEntry entry = inlineConsumer.readStartedEntry(name);
+      ODataEntry entry = inlineConsumer.readInlineEntry(name);
       if (callback == null) {
         properties.put(navigationPropertyName, entry);
       } else {
@@ -180,8 +184,10 @@ public class JsonEntryConsumer {
     reader.endObject();
   }
 
-  private ODataEntryImpl readStartedEntry(String name) throws EdmException, EntityProviderException, IOException {
+  private ODataEntryImpl readInlineEntry(String name) throws EdmException, EntityProviderException, IOException {
+    //consume the already started content
     handleNamedValue(name);
+    //consume the rest of the entry content
     readEntryContent();
     return new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
   }

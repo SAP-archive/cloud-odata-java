@@ -8,9 +8,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -18,25 +15,20 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG
  */
-public class JsonEntityConsumerTest extends AbstractConsumerTest {
+public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
   //EntitySetConstants
-  private static final int SIMPLEENTRYBUILDING = 0;
-  private static final int SIMPLEENTRYEMPLOYEE = 1;
-  private static final int SIMPLEENTRYTEAM = 2;
-  private static final int INVALIDENTRYTEAMDOUBLENAMEPROPERTY = 3;
+  private static final String SIMPLEENTRYBUILDING = "JsonBuilding";
+  private static final String SIMPLEENTRYEMPLOYEE = "JsonEmployee";
+  private static final String SIMPLEENTRYTEAM = "JsonTeam";
+  private static final String INVALIDENTRYTEAMDOUBLENAMEPROPERTY = "JsonInvalidTeamDoubleNameProperty";
 
   //Negative Test jsonStart
   public static final String negativeJsonStart_1 = "{ \"abc\": {";
@@ -46,7 +38,7 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
   @SuppressWarnings("unchecked")
   @Test
   public void readSimpleEmployeeEntry() throws Exception {
-    ODataEntry result = prepareAndExecute(SIMPLEENTRYEMPLOYEE);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYEMPLOYEE, "Employees", DEFAULT_PROPERTIES);
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -91,7 +83,7 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
 
   @Test
   public void readSimpleTeamEntry() throws Exception {
-    ODataEntry result = prepareAndExecute(SIMPLEENTRYTEAM);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYTEAM, "Teams", DEFAULT_PROPERTIES);
 
     Map<String, Object> properties = result.getProperties();
     assertNotNull(properties);
@@ -109,7 +101,7 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
 
   @Test
   public void readSimpleBuildingEntry() throws Exception {
-    ODataEntry result = prepareAndExecute(SIMPLEENTRYBUILDING);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYBUILDING, "Buildings", DEFAULT_PROPERTIES);
     //verify
     Map<String, Object> properties = result.getProperties();
     assertNotNull(properties);
@@ -129,46 +121,13 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
   public void readWithDoublePropertyOnTeam() throws Exception {
     //The file contains the name property two times
     try {
-      prepareAndExecute(INVALIDENTRYTEAMDOUBLENAMEPROPERTY);
+      prepareAndExecuteEntry(INVALIDENTRYTEAMDOUBLENAMEPROPERTY, "Teams", DEFAULT_PROPERTIES);
       fail("Exception has to be thrown");
     } catch (EntityProviderException e) {
       assertEquals(EntityProviderException.DOUBLE_PROPERTY.getKey(), e.getMessageReference().getKey());
     }
   }
 
-  private ODataEntry prepareAndExecute(final int entryIdentificator) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
-    EdmEntitySet entitySet = null;
-    String content = null;
-    switch (entryIdentificator) {
-    case SIMPLEENTRYBUILDING:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Buildings");
-      content = readFile("JsonBuilding");
-      break;
-    case SIMPLEENTRYTEAM:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-      content = readFile("JsonTeam");
-      break;
-    case SIMPLEENTRYEMPLOYEE:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-      content = readFile("JsonEmployee");
-      break;
-    case INVALIDENTRYTEAMDOUBLENAMEPROPERTY:
-      entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-      content = readFile("JsonInvalidTeamDoubleNameProperty");
-      break;
-    default:
-      break;
-    }
-
-    assertNotNull(content);
-    InputStream contentBody = createContentAsStream(content);
-
-    // execute
-    JsonEntityConsumer xec = new JsonEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
-    assertNotNull(result);
-    return result;
-  }
 
   private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {
     assertNull(mediaMetadata.getContentType());
