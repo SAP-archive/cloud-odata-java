@@ -14,14 +14,14 @@ var request = {
 
 odataTest("read metadata document", 9, request, function(response, data) {
 		equal(response.statusCode, 200, "StatusCode: 200");
-		expectedHeaders(response.headers, { "Content-Length" : "7470" }, "Check if there is any change in metadata");
-		strictEqual((new RegExp('<FunctionImport Name="getAddress" ReturnType="SalesOrderProcessing.AddressInfo">')).test(response.body), true,"Check function import 'getAddress'");
-		strictEqual((new RegExp('<FunctionImport Name="FindAllSalesOrders" ReturnType="Collection\\(SalesOrderProcessing.SalesOrder\\)" EntitySet="SalesOrders">')).test(response.body), true,"Check function import 'FindAllSalesOrders'");
-		strictEqual((new RegExp('<Parameter Name="DeliveryStatusCode" Type="Edm.String" Mode="IN" Nullable="false" MaxLength="2"\\/>')).test(response.body), true,"Check the param in function import 'FindAllSalesOrders'");
-		strictEqual((new RegExp('<FunctionImport Name="CheckATP" ReturnType="Edm.Boolean">')).test(response.body), true,"Check the function import 'CheckATP'");
-		strictEqual((new RegExp('<Parameter Name="SoID" Type="Edm.Int64" Mode="IN" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
-		strictEqual((new RegExp('<Parameter Name="LiId" Type="Edm.Int64" Mode="IN" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
-		strictEqual((new RegExp('<FunctionImport Name="calculateNetAmount" ReturnType="SalesOrderProcessing.SalesOrder" EntitySet="SalesOrders">')).test(response.body), true,"Check the function import 'calculateNetAmount'");		
+		expectedHeaders(response.headers, { "Content-Length" : "7700" }, "Check if there is any change in metadata");
+		strictEqual((new RegExp('<FunctionImport Name="getAddress" ReturnType="SalesOrderProcessing.AddressInfo" m:HttpMethod="GET">')).test(response.body), true,"Check function import 'getAddress'");
+		strictEqual((new RegExp('<FunctionImport Name="FindAllSalesOrders" ReturnType="Collection\\(SalesOrderProcessing.SalesOrder\\)" EntitySet="SalesOrders" m:HttpMethod="GET">')).test(response.body), true,"Check function import 'FindAllSalesOrders'");
+		strictEqual((new RegExp('<Parameter Name="DeliveryStatusCode" Type="Edm.String" Mode="In" Nullable="false" MaxLength="2"\\/>')).test(response.body), true,"Check the param in function import 'FindAllSalesOrders'");
+		strictEqual((new RegExp('<FunctionImport Name="CheckATP" ReturnType="Edm.Boolean" m:HttpMethod="GET">')).test(response.body), true,"Check the function import 'CheckATP'");
+		strictEqual((new RegExp('<Parameter Name="SoID" Type="Edm.Int64" Mode="In" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
+		strictEqual((new RegExp('<Parameter Name="LiId" Type="Edm.Int64" Mode="In" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
+		strictEqual((new RegExp('<FunctionImport Name="calculateNetAmount" ReturnType="SalesOrderProcessing.SalesOrder" EntitySet="SalesOrders" m:HttpMethod="GET">')).test(response.body), true,"Check the function import 'calculateNetAmount'");		
 });
 
 //---------------------------------------------------------------
@@ -281,6 +281,201 @@ odataTest("Function Import: Passing wrong parameter type", 2, request, function(
 	equal(response.statusCode, 400, "HTTP Status Code: 400 Bad Request");
 	equal((new RegExp("Format of ''abcd'' is not compatible with 'Edm.Int64'.").test(response.body)), true, "Wrong format error");
 });
+
+//-------------------------------------------------------------------------
+module("$expand");
+//-------------------------------------------------------------------------
+var request = {
+		resourcePath : "SalesOrders?&$expand=SalesOrderLineItemDetails&$orderby=DeliveryStatus%20desc"
+};
+
+odataTest("Simple $expand with $orderby", 8, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200 OK");
+	equal(response.statusText, "OK", "Response Text: OK")
+	equal(response.data.results.length, 11, "Number of Results (Sales Orders) returned:11");
+	equal(response.data.results[1].ID, 9, "Verifying Property Values of SO: ID=9");
+	equal(response.data.results[1].BuyerId, 9, "Verifying Property Values of SO: BuyerId=9");
+	equal(response.data.results[1].BuyerAddressInfo.City, "Test_City_9", "Verifying Complex type Values of SO: City");
+	equal(response.data.results[1].SalesOrderLineItemDetails.results.length, 1, "Checking number of SO Line Items for the above SO: 1");
+	equal(response.data.results[1].SalesOrderLineItemDetails.results[0].LiId, 3, "Checking expanded entity SO Line Item's property:LiId=3");	
+});
+
+var request = {
+		resourcePath : "SalesOrders?$expand=SalesOrderLineItemDetails/MaterialDetails/StoreDetails,NotesDetails/SalesOrderDetails&$inlinecount=allpages&$top=1&$filter=ID%20eq%205%20and%20BuyerId%20eq%205"
+};
+
+odataTest("$expand with $skip,$inlinecount,$filter, Multiple levels and multiple navigations", 17, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200 OK");
+	equal(response.statusText, "OK", "Response Text: OK")
+	equal(response.data.results.length, 1, "Number of Results (Sales Orders) returned:1");
+	equal(response.data.results[0].ID, 5, "Verifying Property Values of SO: ID=5");
+	equal(response.data.results[0].BuyerId, 5, "Verifying Property Values of SO: BuyerId=9");
+	equal(response.data.results[0].BuyerAddressInfo.City, "Test_City_5", "Verifying Complex type Values of SO: City");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results.length, 1, "Checking number of SO Line Items for the above SO: 1");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].LiId, 7, "Checking expanded entity SO Line Item's property:LiId=7");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].MaterialDetails.MaterialId, 115, "2nd level of expand:SO Line Item->Material. Verifying property values:Material ID = 115");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].MaterialDetails.Price, 115.1, "2nd level of expand:SO Line Item->Material. Verifying property values:Price = 115.1");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].MaterialDetails.StoreDetails.results.length, 2, "3rd level of expand:SO Line Item->Material->Stores. Number of Stores returned=2");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].MaterialDetails.StoreDetails.results[0].StoreId, 135, "3rd level of expand:SO Line Item->Material->Stores. Verifying property value of StoreId=135");
+	equal(response.data.results[0].SalesOrderLineItemDetails.results[0].MaterialDetails.StoreDetails.results[0].StoreAddress.City, "Test_City_5", "3rd level of expand:SO Line Item->Material->Stores. Verifying property value of StoreAddress.City=Test_City_5");
+	equal(response.data.results[0].NotesDetails.results.length, 1, "2nd navigation: NotesDetails. Number of Notes returned=1");
+	equal(response.data.results[0].NotesDetails.results[0].SoId, 5, "2nd navigation: NotesDetails. Value of property SoId=5");
+	equal(response.data.results[0].NotesDetails.results[0].SalesOrderDetails.ID, 5, "2nd navigation: NotesDetails->SalesOrderDetails. Value of property ID=5");
+	equal(response.data.results[0].NotesDetails.results[0].SalesOrderDetails.BuyerAddressInfo.City, "Test_City_5", "2nd navigation: NotesDetails->SalesOrderDetails. Value of property BuyerAddressInfo.City=Test_City_5");
+});
+
+var request = {
+		resourcePath : "SalesOrders(2L)/SalesOrderLineItemDetails?$expand=MaterialDetails/StoreDetails"
+};
+
+odataTest("$expand for a child entity", 9, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200 OK");
+	equal(response.data.results[0].SoId, 2, "Verifying SO Line Item property values: SoId=2");
+	equal(response.data.results[0].LiId, 10, "Verifying SO Line Item property values: LiId=10");
+	equal(response.data.results[0].MatId, 112, "Verifying SO Line Item property values: MatId=112");
+	equal(response.data.results[0].MaterialDetails.MaterialId, 112, "Verifying SO Line Item->Material property values: MaterialId=112");
+	equal(response.data.results[0].MaterialDetails.StoreDetails.results.length, 2, "Number of entries in SO Line Item->Material->Stores: 2");
+	equal(response.data.results[0].MaterialDetails.StoreDetails.results[0].StoreId, 132, "Verifying the property values of SO Line Item->Material->Stores: StoreId=132");
+	equal(response.data.results[0].MaterialDetails.StoreDetails.results[0].StoreName, "Test_Store_2", "Verifying the property values of SO Line Item->Material->Stores: StoreName=Test_Store_2");
+	equal(response.data.results[0].MaterialDetails.StoreDetails.results[0].StoreAddress.City, "Test_City_2", "Verifying the property values of SO Line Item->Material->Stores: StoreAddress.City=Test_City_2");
+});
+
+var request = {
+		resourcePath : "SalesOrders(2L)/SalesOrderLineItemDetails?$expand=MaterialDetail/StoreDetails"
+};
+
+odataTest("Wrong Navigation Property Name Sepcified", 3, request, function(response, data) {
+	equal(response.statusCode, 404, "HTTP Status Code: 404 Not Found");
+	equal(response.statusText, "Not Found", "HTTP Status Text: Not Found");
+	equal((new RegExp("Could not find property with name: 'MaterialDetail'.")).test(response.body), true, "Validating error message text");
+});
+
+//-------------------------------------------------------------------------
+module("substringof and substring operations");
+//-------------------------------------------------------------------------
+var request = {
+		resourcePath: "Materials?$filter=substringof('_Name_1',%20MaterialName)%20eq%20true"
+};
+
+odataTest("Simple substringof request", 5, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.results.length, 3, "Total number of entries returned: 3");
+	equal(response.data.results[0].MaterialId, 111, "Verifying values of one of the entries: MaterialId= 111");
+	equal(response.data.results[0].MeasurementUnit, "Dollar", "Verifying values of one of the entries: MeasurementUnit= Dollar");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substringof('_Name_1',%20MaterialName)"
+};
+
+odataTest("Substringof as unary expression", 5, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.results.length, 3, "Total number of entries returned: 3");
+	equal(response.data.results[0].MaterialId, 111, "Verifying values of one of the entries: MaterialId= 111");
+	equal(response.data.results[0].MeasurementUnit, "Dollar", "Verifying values of one of the entries: MeasurementUnit= Dollar");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substringof('_Name_1',%20MaterialName)%20eq%20true%20or%20substringof('Dollar',MeasurementUnit)%20eq%20true%20and%20MaterialId%20eq%20111&$inlinecount=allpages"
+};
+
+odataTest("Multiple substringof expressions with 'and' and 'or' operators", 5, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.results.length, 3, "Total number of entries returned: 3");
+	equal(response.data.results[0].MaterialId, 111, "Verifying values of one of the entries: MaterialId= 111");
+	equal(response.data.results[0].MeasurementUnit, "Dollar", "Verifying values of one of the entries: MeasurementUnit= Dollar");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substringof('_Name_1',%20MaterialName)%20or%20substringof('Dollar',MeasurementUnit)%20and%20MaterialId%20eq%20111&$inlinecount=allpages&$orderby=MaterialId"
+};
+
+odataTest("Multiple substringof expressions with 'and' and 'or' operators with implicit substringof expression and $orderby", 5, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.results.length, 3, "Total number of entries returned: 3");
+	equal(response.data.results[0].MaterialId, 111, "Verifying values of the first entry: MaterialId= 111");
+	equal(response.data.results[0].MeasurementUnit, "Dollar", "Verifying values of the first entry: MeasurementUnit= Dollar");
+	equal(response.data.results[1].MaterialId, 120, "Second material in the order: MaterialId= 120");
+	equal(response.data.results[2].MaterialId, 121, "Third material in the order: MaterialId= 121");
+});
+
+
+var request = {
+		resourcePath: "Materials?$filter=substringof('_Name_2',%20MaterialName)%20eq%20false%20and%20substringof('Dollar',MeasurementUnit)%20eq%20false&$inlinecount=allpages"
+};
+
+odataTest("substringof MaterialName!=_Name_2 and substringof MeasurementUnit!=Dollar", 6, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.__count, "2", "response of $inlinecount: 2");
+	equal(response.data.results.length, 2, "Total number of entries returned: 2");
+	equal(response.data.results[0].MaterialId, 113, "Verifying values of one of the entries: MaterialId= 113");
+	equal(response.data.results[0].MeasurementUnit, "Yen", "Verifying values of one of the entries: MeasurementUnit= Yen");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substring(MaterialName,5,17)%20eq%20'Material_Name_5'"
+};
+
+odataTest("Substring function", 5, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.results.length, 1, "Total number of entries returned: 1");
+	equal(response.data.results[0].MaterialId, 115, "Verifying values of one of the entries: MaterialId= 115");
+	equal(response.data.results[0].MeasurementUnit, "Dollar", "Verifying values of one of the entries: MeasurementUnit= Dollar");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substring(MaterialName,17,19)%20eq%20'e_2'%20and%20substringof('Dollar',MeasurementUnit)%20ne%20true&$inlinecount=allpages"
+};
+
+odataTest("Substring and Sunstringof functions", 6, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.__count, 1, "response of $inlinecount: 1");
+	equal(response.data.results.length, 1, "Total number of entries returned: 1");
+	equal(response.data.results[0].MaterialId, 112, "Verifying values of one of the entries: MaterialId= 112");
+	equal(response.data.results[0].MeasurementUnit, "Pound", "Verifying values of one of the entries: MeasurementUnit= Pound");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substring(tolower(MaterialName),14,3)%20eq%20'nam'%20and%20substringof('Dollar',MeasurementUnit)%20ne%20true&$inlinecount=allpages"
+};
+
+odataTest("Substring and Sunstringof functions", 6, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.__count, 3, "response of $inlinecount: 3");
+	equal(response.data.results.length, 3, "Total number of entries returned: 3");
+	equal(response.data.results[0].MaterialId, 112, "Verifying values of one of the entries: MaterialId= 112");
+	equal(response.data.results[0].MeasurementUnit, "Pound", "Verifying values of one of the entries: MeasurementUnit= Pound");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substring(MaterialName,5,3)%20eq%20'XXX'&$inlinecount=allpages"
+};
+
+odataTest("No Matches found", 3, request, function(response, data) {
+	equal(response.statusCode, 200, "HTTP Status Code: 200");
+	equal(response.statusText, "OK", "HTTP Status Text: OK");
+	equal(response.data.__count, 0, "response of $inlinecount: 0");
+});
+
+var request = {
+		resourcePath: "Materials?$filter=substring(WrongMaterialName,5,3)%20eq%20'Mat'&$inlinecount=allpages"
+};
+
+odataTest("Wrong Paramter Passed: Property Doesn't Exist", 3, request, function(response, data) {
+	equal(response.statusCode, 400, "HTTP Status Code: 400");
+	equal(response.statusText, "Bad Request", "HTTP Status Text: OK");
+	equal((new RegExp("Invalid filter expression: 'substring\\(WrongMaterialName,5,3\\) eq 'Mat''.")).test(response.body), true, "Checking the error message for wrong parameter");
+});
+
+
 ////-----------------------------------------------------------------------
 //module("CUD Scenarios")
 ////-----------------------------------------------------------------------
