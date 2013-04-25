@@ -817,8 +817,8 @@ public class EdmParserTest {
         + "</EntityType>"
         + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
         + "<EntitySet Name=\"Employees\" EntityType=\"RefScenario.Employee\"/>"
-        + "<AssociationSet Name=\"" + ASSOCIATION 
-//        + "\" Association=\"RefScenario." + ASSOCIATION 
+        + "<AssociationSet Name=\"" + ASSOCIATION
+        //        + "\" Association=\"RefScenario." + ASSOCIATION 
         + "\">"
         + "<End EntitySet=\"Employees\" Role=\"r_Employees\"/>"
         + "</AssociationSet>"

@@ -41,34 +41,39 @@ public class EdmInt32 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType.isAssignableFrom(Integer.class))
+    if (returnType.isAssignableFrom(Integer.class)) {
       return returnType.cast(valueInteger);
-    else if (returnType.isAssignableFrom(Byte.class))
-      if (valueInteger >= Byte.MIN_VALUE && valueInteger <= Byte.MAX_VALUE)
+    } else if (returnType.isAssignableFrom(Byte.class)) {
+      if (valueInteger >= Byte.MIN_VALUE && valueInteger <= Byte.MAX_VALUE) {
         return returnType.cast(valueInteger.byteValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Short.class))
-      if (valueInteger >= Short.MIN_VALUE && valueInteger <= Short.MAX_VALUE)
+      }
+    } else if (returnType.isAssignableFrom(Short.class)) {
+      if (valueInteger >= Short.MIN_VALUE && valueInteger <= Short.MAX_VALUE) {
         return returnType.cast(valueInteger.shortValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Long.class))
+      }
+    } else if (returnType.isAssignableFrom(Long.class)) {
       return returnType.cast(valueInteger.longValue());
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value instanceof Byte || value instanceof Short || value instanceof Integer)
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer) {
       return value.toString();
-    else if (value instanceof Long)
-      if ((Long) value >= Integer.MIN_VALUE && (Long) value <= Integer.MAX_VALUE)
+    } else if (value instanceof Long) {
+      if ((Long) value >= Integer.MIN_VALUE && (Long) value <= Integer.MAX_VALUE) {
         return value.toString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 }

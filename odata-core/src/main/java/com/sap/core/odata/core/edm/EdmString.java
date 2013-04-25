@@ -24,35 +24,42 @@ public class EdmString extends AbstractSimpleType {
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     String result;
-    if (literalKind == EdmLiteralKind.URI)
-      if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
+    if (literalKind == EdmLiteralKind.URI) {
+      if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'")) {
         result = (value.substring(1, value.length() - 1)).replace("''", "'");
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    else
+      }
+    } else {
       result = value;
-
-    if (facets != null) {
-      if (facets.isUnicode() != null && !facets.isUnicode() && !result.matches("\\p{ASCII}*"))
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length())
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
-    if (returnType.isAssignableFrom(String.class))
+    if (facets != null) {
+      if (facets.isUnicode() != null && !facets.isUnicode() && !result.matches("\\p{ASCII}*")) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
+      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
+    }
+
+    if (returnType.isAssignableFrom(String.class)) {
       return returnType.cast(result);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     final String result = value instanceof String ? (String) value : String.valueOf(value);
 
-    if (facets != null)
+    if (facets != null) {
       if (facets.isUnicode() != null && !facets.isUnicode() && !result.matches("\\p{ASCII}*")
-          || facets.getMaxLength() != null && facets.getMaxLength() < result.length())
+          || facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
+    }
 
     return result;
   }

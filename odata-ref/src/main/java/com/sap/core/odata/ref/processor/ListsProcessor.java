@@ -146,16 +146,18 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
-          && uriInfo.getTop() == null)
+          && uriInfo.getTop() == null) {
         sortInDefaultOrder(entitySet, data);
+      }
       final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
       // TODO: Percent-encode "next" link and add navigation path
       nextLink = (entityContainer.isDefaultEntityContainer() ? "" : entityContainer.getName() + Edm.DELIMITER)
           + entitySet.getName()
           + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
           + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT));
-      while (data.size() > SERVER_PAGING_SIZE)
+      while (data.size() > SERVER_PAGING_SIZE) {
         data.remove(SERVER_PAGING_SIZE);
+      }
     }
 
     final EdmEntityType entityType = entitySet.getEntityType();
@@ -231,8 +233,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
     for (final Object entryData : data) {
       Map<String, Object> entryValues = new HashMap<String, Object>();
-      for (final EdmProperty property : entitySet.getEntityType().getKeyProperties())
+      for (final EdmProperty property : entitySet.getEntityType().getKeyProperties()) {
         entryValues.put(property.getName(), getPropertyValue(entryData, property));
+      }
       values.add(entryValues);
     }
 
@@ -266,8 +269,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final ExpandSelectTreeNode expandSelectTreeNode = UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand());
     return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTreeNode, data, contentType)).build();
@@ -339,8 +343,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
@@ -365,8 +370,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getNavigationSegments());
 
     // if (!appliesFilter(data, uriInfo.getFilter()))
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
@@ -416,8 +422,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
     // if (!appliesFilter(targetData, uriInfo.getFilter()))
-    if (targetData == null)
+    if (targetData == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
@@ -467,8 +474,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final Object targetData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, keys);
 
-    if (!appliesFilter(targetData, uriInfo.getFilter()))
+    if (!appliesFilter(targetData, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     dataSource.deleteRelation(entitySet, sourceData, targetEntitySet, keys);
 
@@ -489,8 +497,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getNavigationSegments());
 
     // if (!appliesFilter(data, uriInfo.getFilter()))
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -524,8 +533,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getNavigationSegments());
 
     // if (!appliesFilter(data, uriInfo.getFilter()))
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -544,8 +554,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -568,8 +579,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -614,8 +626,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -657,8 +670,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final BinaryData binaryData = dataSource.readBinaryData(entitySet, data);
-    if (binaryData == null)
+    if (binaryData == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     final String mimeType = binaryData.getMimeType() == null ?
         HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
@@ -675,8 +689,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, new BinaryData(null, null));
 
@@ -692,8 +707,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readBinary");
@@ -718,8 +734,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
 
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataHttpException.COMMON);
+    }
 
     Object value;
     if (type.getKind() == EdmTypeKind.SIMPLE) {
@@ -758,8 +775,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
 
-    if (data == null)
+    if (data == null) {
       throw new ODataNotFoundException(ODataHttpException.COMMON);
+    }
 
     ODataResponse response;
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -910,8 +928,9 @@ public class ListsProcessor extends ODataSingleProcessor {
             break;
           }
         }
-        if (found)
+        if (found) {
           return entryData;
+        }
       }
       return null;
     }
@@ -997,15 +1016,16 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    if (uri == null)
+    if (uri == null) {
       return null;
-    else if (uri.getTargetEntitySet() == null
+    } else if (uri.getTargetEntitySet() == null
         || uri.getTargetEntitySet() != targetEntitySet
         || !uri.getNavigationSegments().isEmpty()
-        || uri.getKeyPredicates().isEmpty())
+        || uri.getKeyPredicates().isEmpty()) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY);
-    else
+    } else {
       return mapKey(uri.getKeyPredicates());
+    }
   }
 
   private <T> void linkEntity(final EdmEntitySet entitySet, final T data, final EntryMetadata entryMetadata) throws ODataException {
@@ -1015,8 +1035,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
       for (final String uriString : entryMetadata.getAssociationUris(navigationPropertyName)) {
         final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
-        if (key != null)
+        if (key != null) {
           dataSource.writeRelation(entitySet, data, targetEntitySet, key);
+        }
       }
     }
   }
@@ -1025,7 +1046,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
 
-      final Object relatedValue =  entryValues.getProperties().get(navigationPropertyName);
+      final Object relatedValue = entryValues.getProperties().get(navigationPropertyName);
       if (relatedValue != null) {
         final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
         final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
@@ -1038,7 +1059,7 @@ public class ListsProcessor extends ODataSingleProcessor {
             dataSource.createData(relatedEntitySet, relatedData);
             dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
             createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
-          }       
+          }
         } else if (relatedValue instanceof ODataEntry) {
           final ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
           Object relatedData = dataSource.newDataObject(relatedEntitySet);
@@ -1056,34 +1077,45 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
 
-    if (filter != null)
+    if (filter != null) {
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
-      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();)
-        if (!appliesFilter(iterator.next(), filter))
+      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
+        if (!appliesFilter(iterator.next(), filter)) {
           iterator.remove();
+        }
+      }
+    }
 
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
-    if (orderBy != null)
+    if (orderBy != null) {
       sort(data, orderBy);
-    else if (skipToken != null || skip != null || top != null)
+    } else if (skipToken != null || skip != null || top != null) {
       sortInDefaultOrder(entitySet, data);
+    }
 
-    if (skipToken != null)
-      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken))
+    if (skipToken != null) {
+      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken)) {
         data.remove(0);
+      }
+    }
 
-    if (skip != null)
-      if (skip >= data.size())
+    if (skip != null) {
+      if (skip >= data.size()) {
         data.clear();
-      else
-        for (int i = 0; i < skip; i++)
+      } else {
+        for (int i = 0; i < skip; i++) {
           data.remove(0);
+        }
+      }
+    }
 
-    if (top != null)
-      while (data.size() > top)
+    if (top != null) {
+      while (data.size() > top) {
         data.remove(top.intValue());
+      }
+    }
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -1128,11 +1160,13 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> boolean appliesFilter(final T data, final FilterExpression filter) throws ODataException {
-    if (data == null)
+    if (data == null) {
       return false;
+    }
 
-    if (filter == null)
+    if (filter == null) {
       return true;
+    }
 
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "appliesFilter");
@@ -1275,10 +1309,11 @@ public class ListsProcessor extends ODataSingleProcessor {
                 ((MemberExpression) currentExpression).getProperty() : currentExpression);
         final EdmTyped currentProperty = currentPropertyExpression.getEdmProperty();
         final EdmTypeKind kind = currentProperty.getType().getKind();
-        if (kind == EdmTypeKind.SIMPLE || kind == EdmTypeKind.COMPLEX)
+        if (kind == EdmTypeKind.SIMPLE || kind == EdmTypeKind.COMPLEX) {
           propertyPath.add(0, (EdmProperty) currentProperty);
-        else
+        } else {
           throw new ODataNotImplementedException();
+        }
         currentExpression = currentExpression.getKind() == ExpressionKind.MEMBER ? ((MemberExpression) currentExpression).getPath() : null;
       }
       return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
@@ -1440,10 +1475,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     Map<String, Object> typeMap = new HashMap<String, Object>();
     for (final String propertyName : type.getPropertyNames()) {
       final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
-      if (property.isSimple())
+      if (property.isSimple()) {
         typeMap.put(propertyName, getPropertyType(data, property));
-      else
+      } else {
         typeMap.put(propertyName, getStructuralTypeTypeMap(getPropertyValue(data, property), (EdmStructuralType) property.getType()));
+      }
     }
 
     context.stopRuntimeMeasurement(timingHandle);
@@ -1462,13 +1498,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       }
       if (property.isSimple()) {
         final Object value = valueMap.get(propertyName);
-        if (value != null || !merge)
+        if (value != null || !merge) {
           setPropertyValue(data, property, value);
+        }
       } else {
         @SuppressWarnings("unchecked")
         final Map<String, Object> values = (Map<String, Object>) valueMap.get(propertyName);
-        if (values != null || !merge)
+        if (values != null || !merge) {
           setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), values, merge);
+        }
       }
     }
 
@@ -1505,29 +1543,32 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     Class<?> type = data.getClass();
-    for (final String method : methodName.split("\\.", -1))
+    for (final String method : methodName.split("\\.", -1)) {
       try {
         type = type.getMethod(method).getReturnType();
-        if (type.isPrimitive())
-          if (type == boolean.class)
+        if (type.isPrimitive()) {
+          if (type == boolean.class) {
             type = Boolean.class;
-          else if (type == byte.class)
+          } else if (type == byte.class) {
             type = Byte.class;
-          else if (type == short.class)
+          } else if (type == short.class) {
             type = Short.class;
-          else if (type == int.class)
+          } else if (type == int.class) {
             type = Integer.class;
-          else if (type == long.class)
+          } else if (type == long.class) {
             type = Long.class;
-          else if (type == float.class)
+          } else if (type == float.class) {
             type = Float.class;
-          else if (type == double.class)
+          } else if (type == double.class) {
             type = Double.class;
+          }
+        }
       } catch (final SecurityException e) {
         throw new ODataNotFoundException(ODataHttpException.COMMON, e);
       } catch (final NoSuchMethodException e) {
         throw new ODataNotFoundException(ODataHttpException.COMMON, e);
       }
+    }
     return type;
   }
 
@@ -1538,22 +1579,25 @@ public class ListsProcessor extends ODataSingleProcessor {
         if (method.getName().equals(methodName)) {
           found = true;
           final Class<?> type = method.getParameterTypes()[0];
-          if (value == null)
-            if (type.equals(byte.class) || type.equals(short.class) || type.equals(int.class) || type.equals(long.class) || type.equals(char.class))
+          if (value == null) {
+            if (type.equals(byte.class) || type.equals(short.class) || type.equals(int.class) || type.equals(long.class) || type.equals(char.class)) {
               method.invoke(data, 0);
-            else if (type.equals(float.class) || type.equals(double.class))
+            } else if (type.equals(float.class) || type.equals(double.class)) {
               method.invoke(data, 0.0);
-            else if (type.equals(boolean.class))
+            } else if (type.equals(boolean.class)) {
               method.invoke(data, false);
-            else
+            } else {
               method.invoke(data, value);
-          else
+            }
+          } else {
             method.invoke(data, value);
+          }
           break;
         }
       }
-      if (!found)
+      if (!found) {
         throw new ODataNotFoundException(null);
+      }
     } catch (SecurityException e) {
       throw new ODataNotFoundException(null, e);
     } catch (IllegalArgumentException e) {

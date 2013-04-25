@@ -20,13 +20,13 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
 
   private static final int EMPLOYEE_WITH_INLINE_TEAM = 0;
-  
+
   @Test(expected = EntityProviderException.class)
-  public void test() throws Exception{
+  public void test() throws Exception {
     prepareAndExecute(EMPLOYEE_WITH_INLINE_TEAM);
   }
-  
-  private ODataEntry prepareAndExecute(int entryIdentificator) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+
+  private ODataEntry prepareAndExecute(final int entryIdentificator) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
     EdmEntitySet entitySet = null;
     String content = null;
     switch (entryIdentificator) {
@@ -35,7 +35,7 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
       content = readFile("JsonEmployeeWithInlineTeam");
       break;
     default:
-      fail("Invalid entryIdentificator: " +entryIdentificator);
+      fail("Invalid entryIdentificator: " + entryIdentificator);
     }
 
     assertNotNull(content);
@@ -46,5 +46,5 @@ public class JsonEntityConsumerDeepInsertTest extends AbstractConsumerTest {
     ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
     return result;
-  } 
+  }
 }

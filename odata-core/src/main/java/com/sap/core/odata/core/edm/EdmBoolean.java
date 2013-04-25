@@ -41,20 +41,23 @@ public class EdmBoolean extends AbstractSimpleType {
 
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (validateLiteral(value))
-      if (returnType.isAssignableFrom(Boolean.class))
+    if (validateLiteral(value)) {
+      if (returnType.isAssignableFrom(Boolean.class)) {
         return returnType.cast(Boolean.valueOf("true".equals(value) || "1".equals(value)));
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
   }
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value instanceof Boolean)
+    if (value instanceof Boolean) {
       return Boolean.toString((Boolean) value);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 }

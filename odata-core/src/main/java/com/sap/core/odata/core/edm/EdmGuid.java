@@ -38,24 +38,27 @@ public class EdmGuid extends AbstractSimpleType {
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     UUID result;
-    if (validateLiteral(value, literalKind))
+    if (validateLiteral(value, literalKind)) {
       result = UUID.fromString(
           literalKind == EdmLiteralKind.URI ? value.substring(5, value.length() - 1) : value);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
-    if (returnType.isAssignableFrom(UUID.class))
+    if (returnType.isAssignableFrom(UUID.class)) {
       return returnType.cast(result);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value instanceof UUID)
+    if (value instanceof UUID) {
       return ((UUID) value).toString();
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 
   @Override

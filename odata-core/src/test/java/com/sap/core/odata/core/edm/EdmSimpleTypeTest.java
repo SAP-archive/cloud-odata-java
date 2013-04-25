@@ -1331,8 +1331,9 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void validate() throws Exception {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
-      if (kind == EdmSimpleTypeKind.Null)
+      if (kind == EdmSimpleTypeKind.Null) {
         continue;
+      }
       final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertTrue(instance.validate(null, null, null));
       assertTrue(instance.validate(null, null, getNullableFacets(null)));

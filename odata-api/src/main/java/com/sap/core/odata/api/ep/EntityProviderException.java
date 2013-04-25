@@ -19,7 +19,7 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_ENTITYTYPE = createMessageReference(EntityProviderException.class, "INVALID_ENTITYTYPE");
   /** INVALIDMAPPING requires 2 content values ('invalid tag' and 'parent tag') */
   public static final MessageReference INVALID_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_CONTENT");
-  
+
   public static final MessageReference MISSING_PROPERTY = createMessageReference(EntityProviderException.class, "MISSING_PROPERTY");
   /** INVALID_PARENT_TAG requires 2 content values ('missing attribute name' and 'tag name') */
   public static final MessageReference MISSING_ATTRIBUTE = createMessageReference(EntityProviderException.class, "MISSING_ATTRIBUTE");

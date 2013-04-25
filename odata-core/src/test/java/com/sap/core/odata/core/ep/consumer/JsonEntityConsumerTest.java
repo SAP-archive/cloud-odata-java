@@ -128,13 +128,13 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
   public void readWithDoublePropertyOnTeam() throws Exception {
     //The file contains the name property two times
     try {
-      prepareAndExecute(INVALIDENTRYTEAMDOUBLENAMEPROPERTY);      
+      prepareAndExecute(INVALIDENTRYTEAMDOUBLENAMEPROPERTY);
     } catch (EntityProviderException e) {
       assertEquals(EntityProviderException.DOUBLE_PROPERTY.getKey(), e.getMessageReference().getKey());
-    }    
+    }
   }
 
-  private ODataEntry prepareAndExecute(int entryIdentificator) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+  private ODataEntry prepareAndExecute(final int entryIdentificator) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
     EdmEntitySet entitySet = null;
     String content = null;
     switch (entryIdentificator) {
@@ -166,9 +166,9 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
     ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
     return result;
-  }  
-  
-  private void checkMediaDataInitial(MediaMetadata mediaMetadata) {
+  }
+
+  private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {
     assertNull(mediaMetadata.getContentType());
     assertNull(mediaMetadata.getEditLink());
     assertNull(mediaMetadata.getEtag());

@@ -44,11 +44,13 @@ public class EdmDecimal extends AbstractSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null)
+    if (value == null) {
       return facets == null || facets.isNullable() == null || facets.isNullable();
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       return false;
+    }
 
     return validateLiteral(value, literalKind) && validatePrecisionAndScale(value, facets);
   }
@@ -60,8 +62,9 @@ public class EdmDecimal extends AbstractSimpleType {
   }
 
   private static final boolean validatePrecisionAndScale(final String value, final EdmFacets facets) {
-    if (facets == null || facets.getPrecision() == null && facets.getScale() == null)
+    if (facets == null || facets.getPrecision() == null && facets.getScale() == null) {
       return true;
+    }
 
     final Matcher matcher = PATTERN.matcher(value);
     matcher.matches();
@@ -73,43 +76,49 @@ public class EdmDecimal extends AbstractSimpleType {
 
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (!validateLiteral(value, literalKind))
+    if (!validateLiteral(value, literalKind)) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    if (!validatePrecisionAndScale(value, facets))
+    }
+    if (!validatePrecisionAndScale(value, facets)) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
     final BigDecimal valueBigDecimal = new BigDecimal(
         literalKind == EdmLiteralKind.URI ? value.substring(0, value.length() - 1) : value);
 
-    if (returnType.isAssignableFrom(BigDecimal.class))
+    if (returnType.isAssignableFrom(BigDecimal.class)) {
       return returnType.cast(valueBigDecimal);
-    else if (returnType.isAssignableFrom(Double.class))
-      if (BigDecimal.valueOf(valueBigDecimal.doubleValue()).compareTo(valueBigDecimal) == 0)
+    } else if (returnType.isAssignableFrom(Double.class)) {
+      if (BigDecimal.valueOf(valueBigDecimal.doubleValue()).compareTo(valueBigDecimal) == 0) {
         return returnType.cast(valueBigDecimal.doubleValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Float.class))
-      if (BigDecimal.valueOf(valueBigDecimal.floatValue()).compareTo(valueBigDecimal) == 0)
+      }
+    } else if (returnType.isAssignableFrom(Float.class)) {
+      if (BigDecimal.valueOf(valueBigDecimal.floatValue()).compareTo(valueBigDecimal) == 0) {
         return returnType.cast(valueBigDecimal.floatValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else
+      }
+    } else {
       try {
-        if (returnType.isAssignableFrom(BigInteger.class))
+        if (returnType.isAssignableFrom(BigInteger.class)) {
           return returnType.cast(valueBigDecimal.toBigIntegerExact());
-        else if (returnType.isAssignableFrom(Long.class))
+        } else if (returnType.isAssignableFrom(Long.class)) {
           return returnType.cast(valueBigDecimal.longValueExact());
-        else if (returnType.isAssignableFrom(Integer.class))
+        } else if (returnType.isAssignableFrom(Integer.class)) {
           return returnType.cast(valueBigDecimal.intValueExact());
-        else if (returnType.isAssignableFrom(Short.class))
+        } else if (returnType.isAssignableFrom(Short.class)) {
           return returnType.cast(valueBigDecimal.shortValueExact());
-        else if (returnType.isAssignableFrom(Byte.class))
+        } else if (returnType.isAssignableFrom(Byte.class)) {
           return returnType.cast(valueBigDecimal.byteValueExact());
-        else
+        } else {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+        }
       } catch (final ArithmeticException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
       }
+    }
   }
 
   @Override
@@ -118,33 +127,38 @@ public class EdmDecimal extends AbstractSimpleType {
     if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte || value instanceof BigInteger) {
       result = value.toString();
       final int digits = result.startsWith("-") ? result.length() - 1 : result.length();
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < digits)
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < digits) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
 
     } else if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
       BigDecimal bigDecimalValue;
       try {
-        if (value instanceof Double)
+        if (value instanceof Double) {
           bigDecimalValue = BigDecimal.valueOf((Double) value);
-        else if (value instanceof Float)
+        } else if (value instanceof Float) {
           bigDecimalValue = BigDecimal.valueOf((Float) value);
-        else
+        } else {
           bigDecimalValue = (BigDecimal) value;
+        }
       } catch (final NumberFormatException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value), e);
       }
 
       int digits = bigDecimalValue.precision();
-      if (bigDecimalValue.scale() < 0)
+      if (bigDecimalValue.scale() < 0) {
         digits -= bigDecimalValue.scale();
-      if (bigDecimalValue.scale() > bigDecimalValue.precision())
+      }
+      if (bigDecimalValue.scale() > bigDecimalValue.precision()) {
         digits = bigDecimalValue.scale();
+      }
       if (facets == null
           || (facets.getPrecision() == null || facets.getPrecision() >= digits)
-          && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale()))
+          && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale())) {
         result = bigDecimalValue.toPlainString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
 
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));

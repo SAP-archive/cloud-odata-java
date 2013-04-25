@@ -1443,7 +1443,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(1, associationUris.size());
     assertEquals("Employees('1')/ne_Team", associationUris.get(0));
   }
-  
+
   @SuppressWarnings("unchecked")
   @Test
   public void testReadFeed() throws Exception {
@@ -1481,7 +1481,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
   }
-  
 
   @SuppressWarnings("unchecked")
   @Test

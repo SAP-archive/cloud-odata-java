@@ -23,7 +23,7 @@ public class ODataErrorContext {
   public ODataErrorContext() {
     requestHeaders = new HashMap<String, List<String>>();
   }
-  
+
   public Exception getException() {
     return exception;
   }
@@ -72,7 +72,7 @@ public class ODataErrorContext {
     this.locale = locale;
   }
 
-  public void putRequestHeader(String key, List<String> value) {
+  public void putRequestHeader(final String key, final List<String> value) {
     requestHeaders.put(key, value);
   }
 
@@ -80,14 +80,14 @@ public class ODataErrorContext {
     return Collections.unmodifiableMap(requestHeaders);
   }
 
-  public List<String> getRequestHeader(String name) {
+  public List<String> getRequestHeader(final String name) {
     return requestHeaders.get(name);
   }
 
-  public void setRequestUri(URI requestUri) {
+  public void setRequestUri(final URI requestUri) {
     this.requestUri = requestUri;
   }
-  
+
   public URI getRequestUri() {
     return requestUri;
   }

@@ -27,7 +27,7 @@ public class JsonEntryConsumer {
   private MediaMetadataImpl mediaMetadata;
   private EntryMetadataImpl entryMetadata;
   private ExpandSelectTreeNodeImpl expandSelectTree;
-  private Map<String,Object> typeMappings;
+  private Map<String, Object> typeMappings;
   private int openJsonObjects;
 
   public ODataEntry readEntry(final JsonReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
@@ -70,7 +70,7 @@ public class JsonEntryConsumer {
     openJsonObjects = 0;
   }
 
-  private void readEntryContent(JsonReader reader, EntityInfoAggregator eia) throws IOException, EdmException, EntityProviderException {
+  private void readEntryContent(final JsonReader reader, final EntityInfoAggregator eia) throws IOException, EdmException, EntityProviderException {
 
     while (reader.hasNext()) {
       String name = reader.nextName();
@@ -79,7 +79,7 @@ public class JsonEntryConsumer {
         readMetadata(reader, eia);
         validateMetadata(eia);
       } else {
- 
+
         EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
         if (propertyInfo != null) {
           JsonPropertyConsumer jpc = new JsonPropertyConsumer();
@@ -97,7 +97,7 @@ public class JsonEntryConsumer {
     }
   }
 
-  private void readMetadata(JsonReader reader, EntityInfoAggregator eia) throws IOException, EdmException, EntityProviderException {
+  private void readMetadata(final JsonReader reader, final EntityInfoAggregator eia) throws IOException, EdmException, EntityProviderException {
     String name = null;
     reader.beginObject();
     while (reader.hasNext()) {
@@ -131,7 +131,7 @@ public class JsonEntryConsumer {
     reader.endObject();
   }
 
-  private void validateMetadata(EntityInfoAggregator eia) throws EdmException, EntityProviderException {
+  private void validateMetadata(final EntityInfoAggregator eia) throws EdmException, EntityProviderException {
     if (eia.getEntityType().hasStream()) {
       if (mediaMetadata.getSourceLink() == null) {
         throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(FormatJson.MEDIA_SRC).addContent(FormatJson.METADATA));
@@ -141,14 +141,14 @@ public class JsonEntryConsumer {
       }
       //TODO Mime Type Mapping
     } else {
-     if(mediaMetadata.getContentType() != null || mediaMetadata.getEditLink() != null 
-         || mediaMetadata.getEtag() != null || mediaMetadata.getSourceLink() != null){
-       throw new EntityProviderException(EntityProviderException.MEDIA_DATA_NOT_INITIAL);
-     }
+      if (mediaMetadata.getContentType() != null || mediaMetadata.getEditLink() != null
+          || mediaMetadata.getEtag() != null || mediaMetadata.getSourceLink() != null) {
+        throw new EntityProviderException(EntityProviderException.MEDIA_DATA_NOT_INITIAL);
+      }
     }
   }
 
-  private void readNavigationProperty(JsonReader reader, NavigationPropertyInfo navigationPropertyInfo) throws IOException, EntityProviderException {
+  private void readNavigationProperty(final JsonReader reader, final NavigationPropertyInfo navigationPropertyInfo) throws IOException, EntityProviderException {
     reader.beginObject();
 
     String name = reader.nextName();

@@ -29,11 +29,13 @@ public class EdmBinary extends AbstractSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null)
+    if (value == null) {
       return facets == null || facets.isNullable() == null || facets.isNullable();
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       return false;
+    }
 
     return validateLiteral(value, literalKind) && validateMaxLength(value, literalKind, facets);
   }
@@ -52,27 +54,31 @@ public class EdmBinary extends AbstractSimpleType {
 
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (!validateLiteral(value, literalKind))
+    if (!validateLiteral(value, literalKind)) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    if (!validateMaxLength(value, literalKind, facets))
+    }
+    if (!validateMaxLength(value, literalKind, facets)) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
     byte[] result;
-    if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == EdmLiteralKind.URI) {
       try {
         result = Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
       } catch (final DecoderException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
       }
-    else
+    } else {
       result = Base64.decodeBase64(value);
+    }
 
     if (returnType.isAssignableFrom(byte[].class)) {
       return returnType.cast(result);
     } else if (returnType.isAssignableFrom(Byte[].class)) {
       Byte[] byteArray = new Byte[result.length];
-      for (int i = 0; i < result.length; i++)
+      for (int i = 0; i < result.length; i++) {
         byteArray[i] = result[i];
+      }
       return returnType.cast(byteArray);
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
@@ -94,8 +100,9 @@ public class EdmBinary extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength())
+    if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
     return Base64.encodeBase64String(byteArrayValue);
   }

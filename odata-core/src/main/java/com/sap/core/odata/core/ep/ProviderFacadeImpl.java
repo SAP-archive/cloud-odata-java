@@ -108,10 +108,10 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public List<ODataEntry> readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException {
+  public List<ODataEntry> readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     return create(contentType).readFeed(entitySet, content, properties);
   }
-  
+
   @Override
   public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content, properties);

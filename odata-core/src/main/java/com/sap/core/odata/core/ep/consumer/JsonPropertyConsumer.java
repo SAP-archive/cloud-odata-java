@@ -25,11 +25,11 @@ public class JsonPropertyConsumer {
 
   private int openJsonObjects;
 
-  public Map<String, Object> readPropertyStandalone(JsonReader reader, EdmProperty edmProperty) throws EntityProviderException {
+  public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty) throws EntityProviderException {
     return readPropertyStandalone(reader, edmProperty, null);
   }
 
-  public Map<String, Object> readPropertyStandalone(JsonReader reader, EdmProperty edmProperty, Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty, final Map<String, Object> typeMappings) throws EntityProviderException {
     try {
 
       openJsonObjects = JsonUtils.startJson(reader);
@@ -54,7 +54,7 @@ public class JsonPropertyConsumer {
     }
   }
 
-  public Object readProperty(JsonReader reader, EntityPropertyInfo entityPropertyInfo, Object typeMapping) throws EntityProviderException {
+  public Object readProperty(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
     try {
       Object value = null;
       if (entityPropertyInfo.isComplex()) {
@@ -70,13 +70,13 @@ public class JsonPropertyConsumer {
     }
   }
 
-  private Object readSimpleProperty(JsonReader reader, EntityPropertyInfo entityPropertyInfo, Object typeMapping) throws EdmException, EntityProviderException, IOException {
+  private Object readSimpleProperty(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EdmException, EntityProviderException, IOException {
     final EdmSimpleType type = (EdmSimpleType) entityPropertyInfo.getType();
     Object value = null;
     final JsonToken tokenType = reader.peek();
-    if (tokenType == JsonToken.NULL)
+    if (tokenType == JsonToken.NULL) {
       reader.nextNull();
-    else
+    } else {
       switch (EdmSimpleTypeKind.valueOf(type.getName())) {
       case Boolean:
         if (tokenType == JsonToken.BOOLEAN) {
@@ -98,12 +98,14 @@ public class JsonPropertyConsumer {
         }
         break;
       default:
-        if (tokenType == JsonToken.STRING)
+        if (tokenType == JsonToken.STRING) {
           value = reader.nextString();
-        else
+        } else {
           throw new EntityProviderException(EntityProviderException.COMMON);
+        }
         break;
       }
+    }
 
     final Class<?> typeMappingClass = typeMapping == null ? type.getDefaultType() : (Class<?>) typeMapping;
 
@@ -111,7 +113,7 @@ public class JsonPropertyConsumer {
   }
 
   @SuppressWarnings("unchecked")
-  private Object readComplexProperty(JsonReader reader, EntityComplexPropertyInfo complexPropertyInfo, Object typeMapping) throws EdmException, EntityProviderException, IOException {
+  private Object readComplexProperty(final JsonReader reader, final EntityComplexPropertyInfo complexPropertyInfo, final Object typeMapping) throws EdmException, EntityProviderException, IOException {
     reader.beginObject();
     Map<String, Object> data = new HashMap<String, Object>();
 

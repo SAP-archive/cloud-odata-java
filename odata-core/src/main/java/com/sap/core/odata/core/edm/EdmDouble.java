@@ -61,76 +61,87 @@ public class EdmDouble extends AbstractSimpleType {
       // Now only "normal" numbers remain.
       final Matcher matcher = PATTERN.matcher(value);
       if (!matcher.matches()
-          || (literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
+          || (literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null)) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
 
-      if (literalKind == EdmLiteralKind.URI)
+      if (literalKind == EdmLiteralKind.URI) {
         valueString = value.substring(0, value.length() - 1);
+      }
 
       // The number format is checked above, so we don't have to catch NumberFormatException.
       result = Double.valueOf(valueString);
       // "Real" infinite values have been treated already above, so we can throw an exception
       // if the conversion to a float results in an infinite value.
-      if (result.isInfinite())
+      if (result.isInfinite()) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
     }
 
-    if (returnType.isAssignableFrom(Double.class))
+    if (returnType.isAssignableFrom(Double.class)) {
       return returnType.cast(result);
-    else if (returnType.isAssignableFrom(Float.class))
-      if (result.floatValue() == result)
+    } else if (returnType.isAssignableFrom(Float.class)) {
+      if (result.floatValue() == result) {
         return returnType.cast(result.floatValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (result.isInfinite() || result.isNaN())
+      }
+    } else if (result.isInfinite() || result.isNaN()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else
+    } else {
       try {
         final BigDecimal valueBigDecimal = new BigDecimal(valueString);
-        if (returnType.isAssignableFrom(BigDecimal.class))
+        if (returnType.isAssignableFrom(BigDecimal.class)) {
           return returnType.cast(valueBigDecimal);
-        else if (returnType.isAssignableFrom(Long.class))
+        } else if (returnType.isAssignableFrom(Long.class)) {
           return returnType.cast(valueBigDecimal.longValueExact());
-        else if (returnType.isAssignableFrom(Integer.class))
+        } else if (returnType.isAssignableFrom(Integer.class)) {
           return returnType.cast(valueBigDecimal.intValueExact());
-        else if (returnType.isAssignableFrom(Short.class))
+        } else if (returnType.isAssignableFrom(Short.class)) {
           return returnType.cast(valueBigDecimal.shortValueExact());
-        else if (returnType.isAssignableFrom(Byte.class))
+        } else if (returnType.isAssignableFrom(Byte.class)) {
           return returnType.cast(valueBigDecimal.byteValueExact());
-        else
+        } else {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+        }
 
       } catch (final ArithmeticException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
       }
+    }
   }
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value instanceof Long)
-      if (Math.abs((Long) value) < Math.pow(10, MAX_PRECISION))
+    if (value instanceof Long) {
+      if (Math.abs((Long) value) < Math.pow(10, MAX_PRECISION)) {
         return value.toString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else if (value instanceof Integer || value instanceof Short || value instanceof Byte)
+      }
+    } else if (value instanceof Integer || value instanceof Short || value instanceof Byte) {
       return value.toString();
-    else if (value instanceof Double)
-      if (((Double) value).isInfinite())
+    } else if (value instanceof Double) {
+      if (((Double) value).isInfinite()) {
         return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
-      else
+      } else {
         return value.toString();
-    else if (value instanceof Float)
-      if (((Float) value).isInfinite())
+      }
+    } else if (value instanceof Float) {
+      if (((Float) value).isInfinite()) {
         return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
-      else
+      } else {
         return value.toString();
-    else if (value instanceof BigDecimal)
-      if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE)
+      }
+    } else if (value instanceof BigDecimal) {
+      if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE) {
         return ((BigDecimal) value).toString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 
   @Override

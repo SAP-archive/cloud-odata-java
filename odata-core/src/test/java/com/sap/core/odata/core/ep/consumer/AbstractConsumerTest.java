@@ -78,11 +78,11 @@ public abstract class AbstractConsumerTest extends BaseTest {
     }
     return typeMappings;
   }
-  
+
   protected InputStream createContentAsStream(final String content) throws UnsupportedEncodingException {
     return new ByteArrayInputStream(content.getBytes("UTF-8"));
   }
-  
+
   /**
    * 
    * @param content

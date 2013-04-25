@@ -29,7 +29,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class JsonPropertyConsumerTest extends BaseTest{
+public class JsonPropertyConsumerTest extends BaseTest {
 
   @Test
   public void allNumberSimplePropertyKinds() throws Exception {
@@ -93,7 +93,7 @@ public class JsonPropertyConsumerTest extends BaseTest{
     reader = prepareReader(simplePropertyJson);
     when(edmProperty.getType()).thenReturn(EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance());
     resultMap = execute(edmProperty, reader);
-    assertEquals(Double.valueOf("123456789"), resultMap.get("Name"));    
+    assertEquals(Double.valueOf("123456789"), resultMap.get("Name"));
     //Int64
     simplePropertyJson = "{\"d\":{\"Name\":\"123456789\"}}";
     reader = prepareReader(simplePropertyJson);
@@ -117,9 +117,9 @@ public class JsonPropertyConsumerTest extends BaseTest{
     reader = prepareReader(simplePropertyJson);
     when(edmProperty.getType()).thenReturn(EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance());
     resultMap = execute(edmProperty, reader);
-    assertEquals(UUID.fromString("aabbccdd-aabb-ccdd-eeff-aabbccddeeff"), resultMap.get("Name")); 
+    assertEquals(UUID.fromString("aabbccdd-aabb-ccdd-eeff-aabbccddeeff"), resultMap.get("Name"));
     //Binary
-    byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC};
+    byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC };
     simplePropertyJson = "{\"d\":{\"Name\":\"qrvM\"}}";
     reader = prepareReader(simplePropertyJson);
     when(edmProperty.getType()).thenReturn(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
@@ -138,7 +138,7 @@ public class JsonPropertyConsumerTest extends BaseTest{
     dateTime.set(Calendar.HOUR_OF_DAY, 23);
     dateTime.set(Calendar.MINUTE, 32);
     dateTime.set(Calendar.SECOND, 3);
-    assertEquals(dateTime, resultMap.get("Name")); 
+    assertEquals(dateTime, resultMap.get("Name"));
   }
 
   @Test
@@ -359,13 +359,13 @@ public class JsonPropertyConsumerTest extends BaseTest{
     assertEquals("69124", innerResult.get("PostalCode"));
   }
 
-  private JsonReader prepareReader(String json) throws UnsupportedEncodingException {
+  private JsonReader prepareReader(final String json) throws UnsupportedEncodingException {
     InputStream jsonStream = createContentAsStream(json);
     JsonReader reader = new JsonReader(new InputStreamReader(jsonStream));
     return reader;
   }
 
-  private Map<String, Object> execute(EdmProperty edmProperty, JsonReader reader) throws EntityProviderException {
+  private Map<String, Object> execute(final EdmProperty edmProperty, final JsonReader reader) throws EntityProviderException {
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
     Map<String, Object> resultMap = jpc.readPropertyStandalone(reader, edmProperty, null);
     return resultMap;
