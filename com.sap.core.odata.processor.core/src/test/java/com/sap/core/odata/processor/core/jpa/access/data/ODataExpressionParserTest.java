@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -26,6 +27,8 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
+import com.sap.core.odata.api.uri.expression.MethodExpression;
+import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
@@ -45,6 +48,12 @@ public class ODataExpressionParserTest {
 	private static final String EXPECTED_STR_9 = "gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId";
 	private static final String EXPECTED_STR_10 = "gwt1.SalesOrder";
 	private static final String EXPECTED_STR_11 = "NOT(gwt1.deliveryStatus)";
+	private static final String EXPECTED_STR_12 = "(CASE WHEN gwt1.currencyCode LIKE '%Ru%' THEN TRUE ELSE FALSE END) = true";
+	private static final String EXPECTED_STR_13 = "SUBSTRING(gwt1.currencyCode, 1 + 1 , 2) = 'NR'";
+	private static final String EXPECTED_STR_14 = "LOWER(gwt1.currencyCode) = 'inr rupees'";
+	private static final String EXPECTED_STR_15 = "(CASE WHEN LOWER(gwt1.currencyCode) LIKE '%nr rupees%' THEN TRUE ELSE FALSE END) = true";
+	private static final String EXPECTED_STR_16 = "(CASE WHEN gwt1.currencyCode LIKE '%INR%' THEN TRUE ELSE FALSE END) = true";
+	private static final String EXPECTED_STR_17 = "(CASE WHEN LOWER(gwt1.currencyCode) LIKE '%nr rupees%' THEN TRUE ELSE FALSE END) = true";
 	
 	private static final String ADDRESS = "Address";
 	private static final String CITY = "city";
@@ -183,6 +192,113 @@ public class ODataExpressionParserTest {
 		} catch (ODataException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
+	}
+	
+	@Test
+	public void testParseMethodExpression() {
+		try {
+			assertEquals(EXPECTED_STR_12,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(
+									getBinaryExpression(
+											getMethodExpressionMockedObj(MethodOperator.SUBSTRINGOF,"'Ru'","currencyCode",null,2),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj("true")),
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_13,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(
+									getBinaryExpression(
+											getMethodExpressionMockedObj(MethodOperator.SUBSTRING,"currencyCode","1","2",3),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj("'NR'")),
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_14,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(
+									getBinaryExpression(
+											getMethodExpressionMockedObj(MethodOperator.TOLOWER,"currencyCode",null,null,1),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj("'inr rupees'")),
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_15,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(
+									getBinaryExpression(
+											getMultipleMethodExpressionMockedObj(MethodOperator.SUBSTRINGOF,"'nr rupees'",MethodOperator.TOLOWER,"currencyCode",2,1),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj("true")),
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_16,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(getFilterExpressionForFunctionsMockedObj(MethodOperator.SUBSTRINGOF,"'INR'",null,"currencyCode",2,null)
+									/*getBinaryExpression(
+											getMemberExpressionMockedObj(ADDRESS,
+													CITY),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj(SAMPLE_DATA_CITY_3))*/,
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_17,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(getFilterExpressionForFunctionsMockedObj(MethodOperator.SUBSTRINGOF,"'nr rupees'",MethodOperator.TOLOWER,"currencyCode",2,1)
+									/*getBinaryExpression(
+											getMemberExpressionMockedObj(ADDRESS,
+													CITY),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj(SAMPLE_DATA_CITY_3))*/,
+									TABLE_ALIAS));
+			
+		} catch (ODataException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	
+	private CommonExpression getMethodExpressionMockedObj(MethodOperator methodOperator,String firstName,String secondName,String thirdName,Integer parameterCount) {
+		
+		List<CommonExpression> parameters = new ArrayList<CommonExpression>();
+		
+		if(methodOperator == MethodOperator.SUBSTRINGOF) {
+			parameters.add(getLiteralExpressionMockedObj(firstName));
+			parameters.add(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY, secondName));
+		}
+		
+		else if(methodOperator == MethodOperator.SUBSTRING) {
+			parameters.add(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY, firstName));
+			parameters.add(getLiteralExpressionMockedObj(secondName));
+			parameters.add(getLiteralExpressionMockedObj(thirdName));
+		}
+		else if(methodOperator == MethodOperator.TOLOWER) {
+			parameters.add(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY, firstName));
+		}
+		
+		MethodExpression methodExpression = EasyMock.createMock(MethodExpression.class);
+		
+		EasyMock.expect(methodExpression.getKind()).andStubReturn(ExpressionKind.METHOD);
+		EasyMock.expect(methodExpression.getMethod()).andStubReturn(methodOperator);
+		EasyMock.expect(methodExpression.getParameterCount()).andStubReturn(parameterCount);
+		EasyMock.expect(methodExpression.getParameters()).andStubReturn(parameters);
+		EasyMock.replay(methodExpression);
+		
+		return methodExpression;		
+	}
+	
+private CommonExpression getMultipleMethodExpressionMockedObj(MethodOperator methodOperator1,String firstName,MethodOperator methodOperator2,String secondName,Integer parameterCount1,Integer parameterCount2) {
+		
+		//complex query
+		List<CommonExpression> parameters = new ArrayList<CommonExpression>();
+		
+		parameters.add(getLiteralExpressionMockedObj(firstName));
+		parameters.add(getMethodExpressionMockedObj(methodOperator2, secondName, null, null, 1));
+		
+		MethodExpression methodExpression = EasyMock.createMock(MethodExpression.class);
+		
+		EasyMock.expect(methodExpression.getKind()).andStubReturn(ExpressionKind.METHOD);
+		EasyMock.expect(methodExpression.getMethod()).andStubReturn(methodOperator1);
+		EasyMock.expect(methodExpression.getParameterCount()).andStubReturn(parameterCount1);
+		EasyMock.expect(methodExpression.getParameters()).andStubReturn(parameters);
+		EasyMock.replay(methodExpression);
+		
+		return methodExpression;		
 	}
 	
 	private CommonExpression getMultipleMemberExpressionMockedObj(String string1,String string2, String string3) {
@@ -345,6 +461,28 @@ public class ODataExpressionParserTest {
 				.andStubReturn(
 						getPropertyExpressionMockedObj(leftOperandExpKind,
 								propertyName));
+
+		EasyMock.replay(filterExpression);
+		return filterExpression;
+	}
+	
+	private FilterExpression getFilterExpressionForFunctionsMockedObj(
+			MethodOperator methodOperator1,String firstName,MethodOperator methodOperator2,String secondName,Integer parameterCount1,Integer parameterCount2) {
+		//default value handling of SUBSTRINGOF
+		FilterExpression filterExpression = EasyMock
+				.createMock(FilterExpression.class);
+		EasyMock.expect(filterExpression.getKind())
+				.andStubReturn(ExpressionKind.FILTER);
+		if((methodOperator2!=null)&&(parameterCount2!=null)) {
+			EasyMock.expect(filterExpression.getExpression())
+			.andStubReturn(
+					getMultipleMethodExpressionMockedObj(methodOperator1,firstName,methodOperator2,secondName,parameterCount1,parameterCount2));			
+		}
+		else {
+		EasyMock.expect(filterExpression.getExpression())
+				.andStubReturn(
+						getMethodExpressionMockedObj(methodOperator1,firstName,secondName,null,parameterCount1));
+		}
 
 		EasyMock.replay(filterExpression);
 		return filterExpression;
