@@ -58,16 +58,27 @@ public class JsonPropertyEntityProducer {
     } else {
       final EdmSimpleType type = (EdmSimpleType) propertyInfo.getType();
       final String valueAsString = type.valueToString(value, EdmLiteralKind.JSON, propertyInfo.getFacets());
-      if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()) {
+      switch (EdmSimpleTypeKind.valueOf(type.getName())) {
+      case String:
         jsonStreamWriter.stringValue(valueAsString);
-      } else if (type == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()
-          || type == EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance()
-          || type == EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance()
-          || type == EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance()
-          || type == EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance()) {
+        break;
+      case Boolean:
+      case Byte:
+      case SByte:
+      case Int16:
+      case Int32:
         jsonStreamWriter.unquotedValue(valueAsString);
-      } else {
+        break;
+      case DateTime:
+      case DateTimeOffset:
+        // Although JSON escaping is (and should be) done in the JSON
+        // serializer, we backslash-escape the forward slash here explicitly
+        // because it is not required to escape it in JSON but in OData.
+        jsonStreamWriter.stringValueRaw(valueAsString == null ? null : valueAsString.replace("/", "\\/"));
+        break;
+      default:
         jsonStreamWriter.stringValueRaw(valueAsString);
+        break;
       }
     }
   }

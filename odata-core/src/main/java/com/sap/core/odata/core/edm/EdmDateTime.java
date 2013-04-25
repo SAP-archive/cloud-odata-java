@@ -21,7 +21,7 @@ public class EdmDateTime extends AbstractSimpleType {
   private static final Pattern PATTERN = Pattern.compile(
       "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
-  private static final Pattern JSON_PATTERN = Pattern.compile("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/");
+  private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
 
   public static EdmDateTime getInstance() {
@@ -38,11 +38,12 @@ public class EdmDateTime extends AbstractSimpleType {
     // In JSON, we allow also the XML literal form, so there is on purpose
     // no exception if the JSON pattern does not match.
     if (literalKind == EdmLiteralKind.JSON) {
-      if (JSON_PATTERN.matcher(value).matches()) {
+      final Matcher matcher = JSON_PATTERN.matcher(value);
+      if (matcher.matches()) {
         long millis;
         try {
-          millis = Long.parseLong(value.substring(7, value.length() - 3));
-        } catch (NumberFormatException e) {
+          millis = Long.parseLong(matcher.group(1));
+        } catch (final NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
         if (returnType.isAssignableFrom(Long.class))
@@ -85,9 +86,8 @@ public class EdmDateTime extends AbstractSimpleType {
     dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
 
     final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches()) {
+    if (!matcher.matches())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
 
     dateTimeValue.set(
         Short.parseShort(matcher.group(1)),
@@ -95,24 +95,19 @@ public class EdmDateTime extends AbstractSimpleType {
         Byte.parseByte(matcher.group(3)),
         Byte.parseByte(matcher.group(4)),
         Byte.parseByte(matcher.group(5)));
-    if (matcher.group(6) != null) {
+    if (matcher.group(6) != null)
       dateTimeValue.set(Calendar.SECOND, Byte.parseByte(matcher.group(6)));
-    }
 
     if (matcher.group(7) != null) {
       String milliSeconds = matcher.group(7).substring(1);
-      while (milliSeconds.endsWith("0")) {
+      while (milliSeconds.endsWith("0"))
         milliSeconds = milliSeconds.substring(0, milliSeconds.length() - 1);
-      }
-      if (milliSeconds.length() > 3) {
+      if (milliSeconds.length() > 3)
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length()) {
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-      while (milliSeconds.length() < 3) {
+      while (milliSeconds.length() < 3)
         milliSeconds += "0";
-      }
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
 
@@ -123,7 +118,7 @@ public class EdmDateTime extends AbstractSimpleType {
     dateTimeValue.setLenient(false);
     try {
       dateTimeValue.getTimeInMillis();
-    } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
     dateTimeValue.setLenient(true);
@@ -143,12 +138,8 @@ public class EdmDateTime extends AbstractSimpleType {
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
 
-    // Although JSON escaping is (and should be) done while serializing
-    // the response, we use the backslash-escaped forward slash here
-    // because it is not required to escape it in JSON and so we won't
-    // get it.
     if (literalKind == EdmLiteralKind.JSON)
-      return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
+      return "/Date(" + dateTimeValue.getTimeInMillis() + ")/";
 
     final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();

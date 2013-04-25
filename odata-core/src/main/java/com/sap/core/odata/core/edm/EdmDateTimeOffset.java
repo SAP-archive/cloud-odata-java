@@ -21,9 +21,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?"
           + "(Z|([-+]\\p{Digit}{1,2}:\\p{Digit}{2}))?");
   private static final Pattern JSON_PATTERN = Pattern.compile(
-      "\\\\/Date\\((-?\\p{Digit}+)"
-          + "(?:(\\+|-)(\\p{Digit}{1,4}))?"
-          + "\\)\\\\/");
+      "/Date\\((-?\\p{Digit}+)(?:(\\+|-)(\\p{Digit}{1,4}))?\\)/");
   private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
 
   public static EdmDateTimeOffset getInstance() {
@@ -128,10 +126,10 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
     final int offsetInMinutes = offset / 60 / 1000;
 
     if (literalKind == EdmLiteralKind.JSON) {
-      return "\\/Date("
+      return "/Date("
           + Long.toString(dateTimeValue.getTimeInMillis())
           + (offset == 0 ? "" : String.format("%+05d", offsetInMinutes))
-          + ")\\/";
+          + ")/";
 
     } else {
       final String localTimeString = EdmDateTime.getInstance().valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);

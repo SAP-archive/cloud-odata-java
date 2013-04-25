@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -18,7 +19,6 @@ import com.sap.core.odata.core.ep.util.FormatJson;
 
 /**
  * @author SAP AG
- *
  */
 public class JsonPropertyConsumer {
 
@@ -27,22 +27,22 @@ public class JsonPropertyConsumer {
   public Map<String, Object> readPropertyStandalone(JsonReader reader, EdmProperty edmProperty) throws EntityProviderException {
     return readPropertyStandalone(reader, edmProperty, null);
   }
-  
+
   public Map<String, Object> readPropertyStandalone(JsonReader reader, EdmProperty edmProperty, Map<String, Object> typeMappings) throws EntityProviderException {
     try {
       openJsonObjects = FormatJson.startJson(reader);
-      
+
       EntityPropertyInfo entityPropertyInfo = EntityInfoAggregator.create(edmProperty);
-      
+
       String propertyName = reader.nextName();
-      
+
       Object mapping = null;
       if (typeMappings != null) {
         mapping = typeMappings.get(propertyName);
       }
       Object propertyValue = readProperty(reader, entityPropertyInfo, mapping);
       FormatJson.endJson(reader, openJsonObjects);
-      
+
       Map<String, Object> result = new HashMap<String, Object>();
       result.put(propertyName, propertyValue);
       return result;
@@ -50,7 +50,7 @@ public class JsonPropertyConsumer {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }
-  
+
   public Object readProperty(JsonReader reader, EntityPropertyInfo entityPropertyInfo, Object typeMapping) throws EntityProviderException {
     try {
       Object value = null;
@@ -66,45 +66,45 @@ public class JsonPropertyConsumer {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }
-  
+
   private Object readSimpleProperty(JsonReader reader, EntityPropertyInfo entityPropertyInfo, Object typeMapping) throws EdmException, EntityProviderException, IOException {
-    EdmSimpleType type = (EdmSimpleType) entityPropertyInfo.getType();
+    final EdmSimpleType type = (EdmSimpleType) entityPropertyInfo.getType();
     Object value = null;
-    EdmSimpleTypeKind typeKind = null;
-    switch (reader.peek()) {
-    case STRING:
-      typeKind = EdmSimpleTypeKind.valueOf(type.getName());
-      value = reader.nextString();
-      //TODO: Delete hack
-      if (typeKind == EdmSimpleTypeKind.DateTime || typeKind == EdmSimpleTypeKind.DateTimeOffset) {
-        String s = (String) value;
-        value = "\\" + s.substring(0, s.length() - 1) + "\\/";
-      }
-      break;
-    case NUMBER:
-        //In OData all types that are represented by a number have to fit in an integer. 
-        value = reader.nextInt();
-        value = value.toString();
-      break;
-    case BOOLEAN:
-      value = reader.nextBoolean();
-      value = value.toString();
-      break;
-    case NULL:
+    final JsonToken tokenType = reader.peek();
+    if (tokenType == JsonToken.NULL)
       reader.nextNull();
-      value = null;
-      break;
-    default:
-      throw new EntityProviderException(EntityProviderException.COMMON);
-    }
+    else
+      switch (EdmSimpleTypeKind.valueOf(type.getName())) {
+      case Boolean:
+        if (tokenType == JsonToken.BOOLEAN) {
+          value = reader.nextBoolean();
+          value = value.toString();
+        } else {
+          throw new EntityProviderException(EntityProviderException.COMMON);
+        }
+        break;
+      case Byte:
+      case SByte:
+      case Int16:
+      case Int32:
+        if (tokenType == JsonToken.NUMBER) {
+          value = reader.nextInt();
+          value = value.toString();
+        } else {
+          throw new EntityProviderException(EntityProviderException.COMMON);
+        }
+        break;
+      default:
+        if (tokenType == JsonToken.STRING)
+          value = reader.nextString();
+        else
+          throw new EntityProviderException(EntityProviderException.COMMON);
+        break;
+      }
 
-    Class<?> typeMappingClass = type.getDefaultType();
-    if (typeMapping != null) {
-      typeMappingClass = (Class<?>) typeMapping;
-    }
+    final Class<?> typeMappingClass = typeMapping == null ? type.getDefaultType() : (Class<?>) typeMapping;
 
-    Object finalValue = type.valueOfString((String) value, EdmLiteralKind.JSON, entityPropertyInfo.getFacets(), typeMappingClass);
-    return finalValue;
+    return type.valueOfString((String) value, EdmLiteralKind.JSON, entityPropertyInfo.getFacets(), typeMappingClass);
   }
 
   @SuppressWarnings("unchecked")
