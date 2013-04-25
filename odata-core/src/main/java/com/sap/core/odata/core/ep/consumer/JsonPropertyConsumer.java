@@ -75,26 +75,16 @@ public class JsonPropertyConsumer {
     case STRING:
       typeKind = EdmSimpleTypeKind.valueOf(type.getName());
       value = reader.nextString();
-      if (typeKind == EdmSimpleTypeKind.DateTime) {
+      //TODO: Delete hack
+      if (typeKind == EdmSimpleTypeKind.DateTime || typeKind == EdmSimpleTypeKind.DateTimeOffset) {
         String s = (String) value;
         value = "\\" + s.substring(0, s.length() - 1) + "\\/";
       }
       break;
     case NUMBER:
-      typeKind = EdmSimpleTypeKind.valueOf(type.getName());
-      if (typeKind == EdmSimpleTypeKind.Double) {
-        value = reader.nextLong();
-        value = value.toString();
-      } else if (typeKind == EdmSimpleTypeKind.Double) {
-        value = reader.nextDouble();
-        value = value.toString();
-      } else if (typeKind == EdmSimpleTypeKind.Byte || typeKind == EdmSimpleTypeKind.SByte || typeKind == EdmSimpleTypeKind.Int16 ||
-          typeKind == EdmSimpleTypeKind.Int32 || typeKind == EdmSimpleTypeKind.Int64) {
+        //In OData all types that are represented by a number have to fit in an integer. 
         value = reader.nextInt();
         value = value.toString();
-      } else {
-        throw new EntityProviderException(EntityProviderException.COMMON);
-      }
       break;
     case BOOLEAN:
       value = reader.nextBoolean();
