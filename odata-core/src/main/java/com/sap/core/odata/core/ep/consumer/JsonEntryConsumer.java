@@ -17,6 +17,7 @@ import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
+import com.sap.core.odata.core.ep.util.JsonUtils;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
 public class JsonEntryConsumer {
@@ -38,11 +39,11 @@ public class JsonEntryConsumer {
     initialize(readProperties);
 
     try {
-      openJsonObjects = FormatJson.startJson(reader);
+      openJsonObjects = JsonUtils.startJson(reader);
 
       readEntryContent(reader, eia);
 
-      FormatJson.endJson(reader, openJsonObjects);
+      JsonUtils.endJson(reader, openJsonObjects);
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {

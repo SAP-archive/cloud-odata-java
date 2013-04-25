@@ -5,9 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -2018,26 +2016,5 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("http://localhost:19000/Employees('1')", id);
     Map<String, Object> properties = result.getProperties();
     assertEquals(9, properties.size());
-  }
-
-  private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
-    return createContentAsStream(xml, false);
-  }
-
-  /**
-   * 
-   * @param xml
-   * @param replaceWhitespaces if <code>true</code> all XML not necessary whitespaces between tags are
-   * @return
-   * @throws UnsupportedEncodingException
-   */
-  private InputStream createContentAsStream(final String xml, final boolean replaceWhitespaces) throws UnsupportedEncodingException {
-    String contentForStream = xml;
-    if (replaceWhitespaces) {
-      contentForStream = xml.replaceAll(">\\s.<", "><");
-    }
-
-    LOG.info("\n\n" + contentForStream + "\n\n");
-    return new ByteArrayInputStream(contentForStream.getBytes("UTF-8"));
   }
 }

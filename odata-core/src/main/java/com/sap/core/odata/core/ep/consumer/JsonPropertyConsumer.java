@@ -16,6 +16,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatJson;
+import com.sap.core.odata.core.ep.util.JsonUtils;
 
 /**
  * @author SAP AG
@@ -30,7 +31,8 @@ public class JsonPropertyConsumer {
 
   public Map<String, Object> readPropertyStandalone(JsonReader reader, EdmProperty edmProperty, Map<String, Object> typeMappings) throws EntityProviderException {
     try {
-      openJsonObjects = FormatJson.startJson(reader);
+
+      openJsonObjects = JsonUtils.startJson(reader);
 
       EntityPropertyInfo entityPropertyInfo = EntityInfoAggregator.create(edmProperty);
 
@@ -41,7 +43,8 @@ public class JsonPropertyConsumer {
         mapping = typeMappings.get(propertyName);
       }
       Object propertyValue = readProperty(reader, entityPropertyInfo, mapping);
-      FormatJson.endJson(reader, openJsonObjects);
+
+      JsonUtils.endJson(reader, openJsonObjects);
 
       Map<String, Object> result = new HashMap<String, Object>();
       result.put(propertyName, propertyValue);

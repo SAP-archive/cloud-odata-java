@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -174,9 +173,5 @@ public class JsonEntityConsumerTest extends AbstractConsumerTest {
     assertNull(mediaMetadata.getEditLink());
     assertNull(mediaMetadata.getEtag());
     assertNull(mediaMetadata.getSourceLink());
-  }
-
-  private InputStream createContentAsStream(final String json) throws UnsupportedEncodingException {
-    return new ByteArrayInputStream(json.getBytes("UTF-8"));
   }
 }

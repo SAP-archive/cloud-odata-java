@@ -1,8 +1,10 @@
 package com.sap.core.odata.core.ep.consumer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +77,26 @@ public abstract class AbstractConsumerTest extends BaseTest {
       typeMappings.put(key, mappingClass);
     }
     return typeMappings;
+  }
+  
+  protected InputStream createContentAsStream(final String content) throws UnsupportedEncodingException {
+    return new ByteArrayInputStream(content.getBytes("UTF-8"));
+  }
+  
+  /**
+   * 
+   * @param content
+   * @param replaceWhitespaces if <code>true</code> all XML not necessary whitespaces between tags are
+   * @return
+   * @throws UnsupportedEncodingException
+   */
+  protected InputStream createContentAsStream(final String content, final boolean replaceWhitespaces) throws UnsupportedEncodingException {
+    String contentForStream = content;
+    if (replaceWhitespaces) {
+      contentForStream = content.replaceAll(">\\s.<", "><");
+    }
+
+    return new ByteArrayInputStream(contentForStream.getBytes("UTF-8"));
   }
 
 }
