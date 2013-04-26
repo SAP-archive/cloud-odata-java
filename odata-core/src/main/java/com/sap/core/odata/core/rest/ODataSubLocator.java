@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -346,12 +347,18 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
-    if (contentType == null) {
+    if (contentType == null || contentType.isWildcard()) {
       return false;
     }
 
     final ContentType requested = ensureODataSpecificAdjustments(contentType);
-    return requested.hasMatch(allowedContentTypes);
+    // hasMatch is not appropriate because it allows '*' as type or subtype.
+    // TODO: Implement own content-type check for requests.
+    // For now, we check for '*'s explicitly.
+    if ("*".equals(contentType.getType()) || "*".equals(contentType.getSubtype()))
+      return false;
+    else
+      return requested.hasMatch(allowedContentTypes);
   }
 
   private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final ContentType contentType) throws EdmException {
@@ -516,15 +523,24 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private ContentType extractRequestContentType(final InitParameter param) throws ODataBadRequestException {
+  private ContentType extractRequestContentType(final InitParameter param) throws ODataUnsupportedMediaTypeException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     if (requestMediaType == null) {
       return null;
+    } else if (requestMediaType == MediaType.WILDCARD_TYPE
+        || requestMediaType == MediaType.TEXT_PLAIN_TYPE
+        || requestMediaType == MediaType.APPLICATION_XML_TYPE) {
+      // The JAX-RS implementation of media-type parsing decided to
+      // return one of the known constants for the special case of
+      // an invalid content type that has no subtype;
+      // at least CXF 2.7 is known to do that.
+      // The "==" comparison above is optimized for this case.
+      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(param.getHttpHeaders().getRequestHeader(HttpHeaders.CONTENT_TYPE).get(0)));
     } else {
       try {
         return ContentType.create(requestMediaType.toString());
       } catch (IllegalArgumentException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Content-Type").addContent(requestMediaType.toString()), e);
+        throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestMediaType.toString()), e);
       }
     }
   }

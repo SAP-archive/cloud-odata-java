@@ -445,17 +445,6 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
-  private void invalidRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
-    try {
-      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
-      fail("Expected ODataException not thrown");
-    } catch (ODataBadRequestException e) {
-      assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
-    }
-  }
-  
   private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
@@ -466,7 +455,6 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       fail("Unexpected Exception thrown");
     }
   }
-
 
   private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, ODataException {
     try {
@@ -667,7 +655,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void invalidRequestContentType() throws Exception {
-    invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
+    unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
   
   @Test
