@@ -271,22 +271,28 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8,
         HttpContentType.APPLICATION_ATOM_XML_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
     Mockito.when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
     Mockito.when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
     Mockito.when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
     Mockito.when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
     Mockito.when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
     Mockito.when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(Arrays.asList(
@@ -300,6 +306,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8,
         HttpContentType.APPLICATION_ATOM_XML_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
     Mockito.when(service.getSupportedContentTypes(MetadataProcessor.class)).thenReturn(Arrays.asList(
@@ -308,6 +315,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     Mockito.when(service.getSupportedContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_ATOM_SVC_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
   }
 
@@ -447,6 +455,18 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       fail("Unexpected Exception thrown");
     }
   }
+  
+  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+    try {
+      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+      fail("Expected ODataException not thrown");
+    } catch (ODataUnsupportedMediaTypeException e) {
+      assertNotNull(e);
+    } catch (Exception e) {
+      fail("Unexpected Exception thrown");
+    }
+  }
+
 
   private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, ODataException {
     try {
@@ -635,12 +655,21 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
   }
+  
+  @Test
+  public void unsupportedRequestContentTypeNoneMediaResource() throws Exception {
+    EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
+    when(entityType.hasStream()).thenReturn(false);
+
+    unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "sadlfk");
+    unsupportedRequestContentType(ODataHttpMethod.PUT, UriType.URI1, false, "sadlfk");
+  }
 
   @Test
   public void invalidRequestContentType() throws Exception {
     invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
-
+  
   @Test
   public void invalidRequestDollarFormatSyntax() throws Exception {
     invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "xml");
