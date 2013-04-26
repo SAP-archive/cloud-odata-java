@@ -21,6 +21,7 @@ public interface HttpContentType {
 
   String APPLICATION_JSON = "application/json";
   String APPLICATION_JSON_UTF8 = APPLICATION_JSON + "; charset=utf-8";
+  String APPLICATION_JSON_UTF8_VERBOSE = APPLICATION_JSON_UTF8 + ";odata=verbose";
 
   String TEXT_PLAIN = "text/plain";
   String TEXT_PLAIN_UTF8 = TEXT_PLAIN + "; charset=utf-8";

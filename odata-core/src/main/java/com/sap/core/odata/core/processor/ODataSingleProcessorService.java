@@ -193,6 +193,7 @@ public class ODataSingleProcessorService implements ODataService {
       result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
       result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
       result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8_VERBOSE);
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == FunctionImportProcessor.class
         || processorFeature == EntityLinkProcessor.class
@@ -201,6 +202,7 @@ public class ODataSingleProcessorService implements ODataService {
         || processorFeature == EntityComplexPropertyProcessor.class) {
       result.add(HttpContentType.APPLICATION_XML_UTF8);
       result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8_VERBOSE);
     } else if (processorFeature == EntityMediaProcessor.class
         || processorFeature == EntitySimplePropertyValueProcessor.class
         || processorFeature == FunctionImportValueProcessor.class) {
@@ -209,12 +211,14 @@ public class ODataSingleProcessorService implements ODataService {
       result.add(HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8);
       result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
       result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8_VERBOSE);
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == MetadataProcessor.class) {
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == ServiceDocumentProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_SVC_UTF8);
       result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8_VERBOSE);
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else {
       throw new ODataNotImplementedException();

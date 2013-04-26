@@ -129,6 +129,14 @@ public class ODataSubLocatorTest extends BaseTest {
   }
 
   @Test
+  public void contentNegotiationWithODataVerbose() throws Exception {
+    negotiateContentType(
+        contentTypes("text/plain; q=0.5", "application/json;odata=verbose;q=0.2", "*/*"),
+        contentTypes("application/json; charset=utf-8", "sup/222"),
+        "application/json; charset=utf-8");
+  }
+
+  @Test
   public void contentNegotiationDefaultCharset() throws Exception {
     negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
   }

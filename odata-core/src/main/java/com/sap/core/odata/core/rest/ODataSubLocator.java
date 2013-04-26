@@ -350,12 +350,12 @@ public final class ODataSubLocator implements ODataLocator {
       return false;
     }
 
-    final ContentType requested = ensureCharsetIsSet(contentType);
+    final ContentType requested = ensureODataSpecificAdjustments(contentType);
     return requested.hasMatch(allowedContentTypes);
   }
 
   private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final ContentType contentType) throws EdmException {
-    final ContentType requested = ensureCharsetIsSet(contentType);
+    final ContentType requested = ensureODataSpecificAdjustments(contentType);
     final String mimeType = property.getMimeType();
     if (mimeType != null) {
       return requested.equals(ContentType.create(mimeType));
@@ -381,7 +381,7 @@ public final class ODataSubLocator implements ODataLocator {
   private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
     validateFormatQuery(uriInfo);
     ContentType formatContentType = mapFormat(uriInfo);
-    formatContentType = ensureCharsetIsSet(formatContentType);
+    formatContentType = ensureODataSpecificAdjustments(formatContentType);
 
     final Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
@@ -407,11 +407,14 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private ContentType ensureCharsetIsSet(final ContentType contentType) {
+  private ContentType ensureODataSpecificAdjustments(final ContentType contentType) {
     if (isContentTypeODataTextRelated(contentType)) {
-      if (!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
-        return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
+      Map<String, String> parameters = new HashMap<String, String>(contentType.getParameters());
+      if (!parameters.containsKey(ContentType.PARAMETER_CHARSET)) {
+        parameters.put(ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
       }
+      parameters.remove(ContentType.PARAMETER_ODATA);
+      return ContentType.create(contentType.getType(), contentType.getSubtype(), parameters);
     }
     return contentType;
   }
@@ -461,7 +464,7 @@ public final class ODataSubLocator implements ODataLocator {
       }
     } else {
       for (ContentType contentType : acceptedContentTypes) {
-        contentType = ensureCharsetIsSet(contentType);
+        contentType = ensureODataSpecificAdjustments(contentType);
         final ContentType match = contentType.match(supportedContentTypes);
         if (match != null) {
           return match;
