@@ -29,7 +29,7 @@ public class ReadFeedResult extends ReadResult {
    */
   public ReadFeedResult(final EntityProviderReadProperties properties, final EdmNavigationProperty navigationProperty, final ODataFeed entry) {
     super(properties, navigationProperty);
-    this.feed = entry;
+    feed = entry;
   }
 
   @Override

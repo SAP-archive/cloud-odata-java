@@ -12,7 +12,6 @@ public interface FeedMetadata {
    */
   public Integer getInlineCount();
 
-
   /**
    * @return nextLink may be null if no next link is set
    */

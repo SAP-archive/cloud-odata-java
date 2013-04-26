@@ -14,13 +14,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -46,7 +42,6 @@ import com.sap.core.odata.core.exception.MessageService.Message;
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
   @Context
@@ -87,16 +82,12 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       } else {
         oDataResponse = convertContextToODataResponse(errorContext);
       }
-      if (isInternalServerError(oDataResponse)) {
-        LOG.error("Internal Server Error: ", toHandleException);
-      }
 
       //Convert ODataResponse to JAXRS Response
       return Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
 
     } catch (Exception e) {
       //Exception mapper has to be robust thus we log the exception and just give back a generic error
-      LOG.error(exception.getMessage(), exception);
       ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
           .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
@@ -189,10 +180,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
     return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
-  }
-
-  private boolean isInternalServerError(final ODataResponse response) {
-    return response.getStatus().getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
 
   private Exception extractException(final Exception exception) {
