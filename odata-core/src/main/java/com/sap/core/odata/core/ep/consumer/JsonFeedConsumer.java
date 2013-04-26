@@ -9,9 +9,10 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
-import com.sap.core.odata.core.ep.entry.ODataFeed;
-import com.sap.core.odata.core.ep.entry.ODataFeedImpl;
+import com.sap.core.odata.core.ep.feed.FeedMetadataImpl;
+import com.sap.core.odata.core.ep.feed.ODataFeedImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
 
 public class JsonFeedConsumer {

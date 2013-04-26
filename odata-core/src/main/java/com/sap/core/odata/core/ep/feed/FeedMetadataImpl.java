@@ -1,6 +1,6 @@
-package com.sap.core.odata.core.ep.consumer;
+package com.sap.core.odata.core.ep.feed;
 
-import com.sap.core.odata.core.ep.entry.FeedMetadata;
+import com.sap.core.odata.api.ep.feed.FeedMetadata;
 
 public class FeedMetadataImpl implements FeedMetadata {
 

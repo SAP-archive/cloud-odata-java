@@ -1,5 +1,6 @@
-package com.sap.core.odata.core.ep.entry;
+package com.sap.core.odata.api.ep.feed;
 
+//TODO: Javadoc
 public interface FeedMetadata {
 
   public int getInlineCount();

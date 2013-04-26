@@ -1,10 +1,9 @@
 package com.sap.core.odata.api.ep.callback;
 
-import java.util.List;
-
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 
 /**
  * A {@link ReadFeedResult} represents an inlined navigation property which points to a feed (in the form of a list of
@@ -18,7 +17,7 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
  */
 public class ReadFeedResult extends ReadResult {
 
-  private final List<ODataEntry> entry;
+  private final ODataFeed feed;
 
   /**
    * Constructor.
@@ -28,14 +27,14 @@ public class ReadFeedResult extends ReadResult {
    * @param navigationProperty emd navigation property information of found inline navigation property
    * @param entry read entities as list of {@link ODataEntry}
    */
-  public ReadFeedResult(final EntityProviderReadProperties properties, final EdmNavigationProperty navigationProperty, final List<ODataEntry> entry) {
+  public ReadFeedResult(final EntityProviderReadProperties properties, final EdmNavigationProperty navigationProperty, final ODataFeed entry) {
     super(properties, navigationProperty);
-    this.entry = entry;
+    this.feed = entry;
   }
 
   @Override
-  public List<ODataEntry> getResult() {
-    return entry;
+  public ODataFeed getResult() {
+    return feed;
   }
 
   @Override
@@ -45,6 +44,6 @@ public class ReadFeedResult extends ReadResult {
 
   @Override
   public String toString() {
-    return super.toString() + "\n\t" + entry.toString();
+    return super.toString() + "\n\t" + feed.toString();
   }
 }

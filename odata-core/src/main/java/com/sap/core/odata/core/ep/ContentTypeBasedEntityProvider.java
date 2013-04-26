@@ -14,6 +14,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 /**
@@ -23,7 +24,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
  */
 public interface ContentTypeBasedEntityProvider {
 
-  List<ODataEntry> readFeed(EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
+  ODataFeed readFeed(EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
   ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 

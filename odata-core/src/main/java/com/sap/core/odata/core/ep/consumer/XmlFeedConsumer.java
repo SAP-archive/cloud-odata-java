@@ -13,7 +13,10 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.feed.FeedMetadataImpl;
+import com.sap.core.odata.core.ep.feed.ODataFeedImpl;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
@@ -34,7 +37,7 @@ public class XmlFeedConsumer {
    * @return
    * @throws EntityProviderException
    */
-  public List<ODataEntry> readFeed(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {
+  public ODataFeed readFeed(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {
     try {
       // read xml tag
       reader.require(XMLStreamConstants.START_DOCUMENT, null, null);
@@ -56,7 +59,8 @@ public class XmlFeedConsumer {
         results.add(entry);
         readTillNextStartTag(reader);
       }
-      return results;
+      //TODO: fill ODataFeedImpl with count and nextLink
+      return new ODataFeedImpl(results, new FeedMetadataImpl());
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }

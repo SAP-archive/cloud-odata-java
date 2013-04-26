@@ -13,8 +13,8 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
-import com.sap.core.odata.core.ep.entry.ODataFeed;
 
 public class JsonEntityConsumer {
 

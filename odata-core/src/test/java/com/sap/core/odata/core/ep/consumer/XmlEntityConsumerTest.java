@@ -36,6 +36,7 @@ import com.sap.core.odata.api.ep.callback.ReadResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -229,7 +230,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName.contains("Employees")) {
-          employees = ((ReadFeedResult) context).getResult();
+          employees = ((ReadFeedResult) context).getResult().getEntries();
         } else {
           throw new RuntimeException("Invalid title");
         }
@@ -287,8 +288,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ODataEntry> asFeed(final String name) {
-      return (List<ODataEntry>) getObject(name);
+    public ODataFeed asFeed(final String name) {
+      return (ODataFeed) getObject(name);
     }
 
     @Override
@@ -369,7 +370,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     assertNull(properties.get("nt_Employees"));
     //
-    final List<ODataEntry> employees = defaultCallback.asFeed("nt_Employees");
+    ODataFeed employeesFeed = defaultCallback.asFeed("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = employees.get(1);
@@ -452,7 +454,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNotNull(expandTree);
     // TODO: do more testing here
     //
-    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
@@ -493,7 +496,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     //
-    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = employees.get(1);
@@ -591,11 +595,12 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     // teams has no inlined content set
-    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
-    assertNull(employees);
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    assertNull(employeesFeed);
 
     // get inlined employees feed from callback
-    employees = callbackHandler.asFeed("nt_Employees");
+    employeesFeed = callbackHandler.asFeed("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
@@ -1454,7 +1459,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    List<ODataEntry> results = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    List<ODataEntry> results = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build()).getEntries();
 
     // verify feed result
     assertEquals(6, results.size());

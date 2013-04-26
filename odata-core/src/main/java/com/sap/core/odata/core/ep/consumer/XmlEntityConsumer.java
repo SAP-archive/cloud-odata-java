@@ -18,6 +18,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties.EntityProviderReadPropertiesBuilder;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
@@ -35,7 +36,7 @@ public class XmlEntityConsumer {
     super();
   }
 
-  public List<ODataEntry> readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+  public ODataFeed readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {

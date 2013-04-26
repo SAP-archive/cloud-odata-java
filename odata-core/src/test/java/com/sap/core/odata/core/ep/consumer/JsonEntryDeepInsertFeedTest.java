@@ -15,8 +15,8 @@ import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
-import com.sap.core.odata.core.ep.entry.FeedMetadata;
-import com.sap.core.odata.core.ep.entry.ODataFeed;
+import com.sap.core.odata.api.ep.feed.FeedMetadata;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {

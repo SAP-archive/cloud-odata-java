@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
@@ -193,10 +194,10 @@ public final class EntityProvider {
      * @param entitySet entity data model for entity set to be read
      * @param content feed data in form of an {@link InputStream} which contains the data in specified format
      * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
-     * @return read entries as {@link List} of {@link ODataEntry}
+     * @return an {@link ODataFeed} object
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    List<ODataEntry> readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
+    ODataFeed readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
     /**
      * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
@@ -496,10 +497,10 @@ public final class EntityProvider {
    * @param entitySet entity data model for entity set to be read
    * @param content feed data in form of an {@link InputStream} which contains the data in specified format
    * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
-   * @return read entries as {@link List} of {@link ODataEntry}
+   * @return an {@link ODataFeed} object
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static List<ODataEntry> readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+  public static ODataFeed readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     return createEntityProvider().readFeed(contentType, entitySet, content, properties);
   }
 

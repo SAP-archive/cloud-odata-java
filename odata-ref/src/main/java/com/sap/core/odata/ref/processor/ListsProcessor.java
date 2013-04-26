@@ -48,6 +48,7 @@ import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -1050,9 +1051,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (relatedValue != null) {
         final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
         final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-        if (relatedValue instanceof List<?>) {
-          @SuppressWarnings("unchecked")
-          final List<ODataEntry> relatedValueList = (List<ODataEntry>) relatedValue;
+        if (relatedValue instanceof ODataFeed) {
+          ODataFeed feed = (ODataFeed) relatedValue;
+          final List<ODataEntry> relatedValueList = feed.getEntries();
           for (final ODataEntry relatedValues : relatedValueList) {
             Object relatedData = dataSource.newDataObject(relatedEntitySet);
             setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
@@ -1067,6 +1068,8 @@ public class ListsProcessor extends ODataSingleProcessor {
           dataSource.createData(relatedEntitySet, relatedData);
           dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
           createInlinedEntities(relatedData, relatedEntitySet, relatedValueEntry);
+        } else {
+          throw new ODataException("Unexpected class for a related value: " + relatedValue.getClass().getSimpleName());
         }
 
       }

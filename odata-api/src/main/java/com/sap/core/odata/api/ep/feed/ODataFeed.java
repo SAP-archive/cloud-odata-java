@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep.entry;
+package com.sap.core.odata.api.ep.feed;
 
 import java.util.List;
 

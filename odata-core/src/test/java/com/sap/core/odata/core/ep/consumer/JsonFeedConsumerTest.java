@@ -14,8 +14,8 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
-import com.sap.core.odata.core.ep.entry.FeedMetadata;
-import com.sap.core.odata.core.ep.entry.ODataFeed;
+import com.sap.core.odata.api.ep.feed.FeedMetadata;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 public class JsonFeedConsumerTest extends AbstractConsumerTest {

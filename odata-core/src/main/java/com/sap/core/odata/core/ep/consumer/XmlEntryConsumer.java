@@ -24,6 +24,7 @@ import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -32,6 +33,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
 import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
+import com.sap.core.odata.core.ep.feed.FeedMetadataImpl;
+import com.sap.core.odata.core.ep.feed.ODataFeedImpl;
 import com.sap.core.odata.core.ep.util.FormatXml;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
@@ -366,7 +369,8 @@ public class XmlEntryConsumer {
    */
   private Object extractODataEntity(final boolean isFeed, final List<ODataEntry> inlineEntries) {
     if (isFeed) {
-      return inlineEntries;
+      //TODO: fill metadata correctly
+      return new ODataFeedImpl(inlineEntries, new FeedMetadataImpl());
     } else if (!inlineEntries.isEmpty()) {
       return inlineEntries.get(0);
     }
@@ -383,14 +387,13 @@ public class XmlEntryConsumer {
    * @param entry
    */
   private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty,
-      final OnReadInlineContent callback, final boolean isFeed, final Object entry) {
+      final OnReadInlineContent callback, final boolean isFeed, final Object content) {
 
     if (isFeed) {
-      @SuppressWarnings("unchecked")
-      ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (List<ODataEntry>) entry);
+      ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (ODataFeed) content);
       callback.handleReadFeed(callbackInfo);
     } else {
-      ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) entry);
+      ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) content);
       callback.handleReadEntry(callbackInfo);
     }
   }
