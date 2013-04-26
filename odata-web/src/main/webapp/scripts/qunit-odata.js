@@ -133,7 +133,9 @@
   
   var scriptTags = window.document.getElementsByTagName('script'),
       scriptTag = scriptTags[ scriptTags.length - 1 ];
-
+      
+      scriptTag = window.document.getElementById('path1');      
+     
   QUnit.begin(function () {
     
     var serviceRootParts = null, 

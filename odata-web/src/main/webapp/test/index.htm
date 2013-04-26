@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8"  />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <!-- meta http-equiv="X-UA-Compatible" content="IE=9" /-->
     <title>OData QUNIT Test Suite</title>
     <link rel="stylesheet" href="../styles/qunit.css" />  
     
     <script>
       function validateInput() //valiation function will be call, if button is selected.
       {
-        var url = document.formxml.url.value;
+        //var url = document.formxml.url.value; Works with Chrome but not with IE 10    	
+    	//var url = document.getElementByName('url').value Works with Chrome but not with IE 10
+       	//var url = document.formxml.elements["url"].value; Works with Chrome but not with IE 10
        	
-    	//var xxx = document.getElementById('url').value
-       	//var url = document.formxml.elements["url"].value;
+       	var url = document.getElementById('url').value;
+       	
         if (url == null || url == "")   
         {
           alert("Please enter an OData Service URL");
@@ -45,7 +48,7 @@
 	    <td>ABAP</td>
 		<td>
 		  <form name="formxml" action="./run_qunit.htm" method="GET" onsubmit="return validateInput()">
-	        <input type="text" name="url" value="http://ldcigmd.wdf.sap.corp:50055/sap/bc/ztg_cors2/" size="100" maxlength="100"  />	  
+	        <input id="url" type="text" name="url" value="http://ldcigmd.wdf.sap.corp:50055/sap/bc/ztg_cors2/" size="100" maxlength="100"  />	  
 	        <input type="submit" value="Run">	   
 	     </form>		
 		</td>

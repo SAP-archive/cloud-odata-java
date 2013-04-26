@@ -879,11 +879,11 @@
         return iframe;
     };
 
-    var createXmlHttpRequest = function () {
+    var createXmlHttpRequest = function (options) {
         /// <summary>Creates a XmlHttpRequest object.</summary>
         /// <returns type="XmlHttpRequest">XmlHttpRequest object.</returns>
-        if (window.XMLHttpRequest) {
-            return new window.XMLHttpRequest();
+    	if (window.XMLHttpRequest) {
+            return new window.XMLHttpRequest(options);
         }
         var exception;
         if (window.ActiveXObject) {
@@ -1028,10 +1028,7 @@
             var formatQueryString = defined(request.formatQueryString, this.formatQueryString);
             if (!enableJsonpCallback || isLocalUrl(url)) {
 
-                xhr = createXmlHttpRequest();
-                if ("withCredentials" in xhr) {
-                  xhr.withCredentials=true;
-                }
+                xhr = createXmlHttpRequest({anon: true});                
                 xhr.onreadystatechange = function () {
                     if (done || xhr === null || xhr.readyState !== 4) {
                         return;
