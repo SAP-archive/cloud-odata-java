@@ -287,7 +287,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       return (ODataEntry) getObject(name);
     }
 
-    @SuppressWarnings("unchecked")
     public ODataFeed asFeed(final String name) {
       return (ODataFeed) getObject(name);
     }
@@ -303,7 +302,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void readWithInlineContentAndCallback() throws Exception {
     // prepare
@@ -338,7 +336,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
@@ -458,7 +458,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
-    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
@@ -474,7 +474,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void readWithDoubleInlineContent() throws Exception {
     // prepare
@@ -505,7 +504,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));

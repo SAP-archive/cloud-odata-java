@@ -246,7 +246,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     Map<String, Object> mappings = new HashMap<String, Object>();
     mappings.put("Location", locationMappings);
 
-    Map<String, Object> result = (Map<String, Object>) jpc.readPropertyStandalone(reader, edmProperty, mappings);
+    Map<String, Object> result = jpc.readPropertyStandalone(reader, edmProperty, mappings);
 
     assertEquals(1, result.size());
     Map<String, Object> locationResult = (Map<String, Object>) result.get("Location");
@@ -347,7 +347,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees").getEntityType().getProperty("Location");
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-    Map<String, Object> result = (Map<String, Object>) jpc.readPropertyStandalone(reader, edmProperty, null);
+    Map<String, Object> result = jpc.readPropertyStandalone(reader, edmProperty, null);
 
     assertEquals(1, result.size());
     Map<String, Object> locationResult = (Map<String, Object>) result.get("Location");

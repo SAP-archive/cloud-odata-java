@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -51,6 +52,16 @@ public class JsonPropertyProducerTest extends BaseTest {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Building").getProperty("Image");
     final ODataResponse response = new JsonEntityProvider().writeProperty(property, new byte[] { 42, -42 });
     assertEquals("{\"d\":{\"Image\":\"KtY=\"}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
+  public void serializeBinaryWithContentType() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario2", "Photo").getProperty("Image");
+    Map<String, Object> content = new HashMap<String, Object>();
+    content.put("getImageType", "image/jpeg");
+    content.put("Image", new byte[] { 1, 2, 3 });
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, content);
+    assertEquals("{\"d\":{\"Image\":\"AQID\"}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
   }
 
   @Test

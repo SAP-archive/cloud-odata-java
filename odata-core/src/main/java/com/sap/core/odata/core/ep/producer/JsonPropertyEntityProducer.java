@@ -43,21 +43,25 @@ public class JsonPropertyEntityProducer {
     }
   }
 
-  protected static void appendPropertyValue(final JsonStreamWriter jsonStreamWriter, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException {
+  protected static void appendPropertyValue(final JsonStreamWriter jsonStreamWriter, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException, EntityProviderException {
     if (propertyInfo.isComplex()) {
-      jsonStreamWriter.beginObject();
-      appendPropertyMetadata(jsonStreamWriter, propertyInfo.getType());
-      for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {
-        jsonStreamWriter.separator();
-        final String name = childPropertyInfo.getName();
-        jsonStreamWriter.name(name);
-        appendPropertyValue(jsonStreamWriter, childPropertyInfo,
-            value instanceof Map ? ((Map<?, ?>) value).get(name) : value);
+      if (value == null || value instanceof Map<?, ?>)  {
+        jsonStreamWriter.beginObject();
+        appendPropertyMetadata(jsonStreamWriter, propertyInfo.getType());
+        for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {
+          jsonStreamWriter.separator();
+          final String name = childPropertyInfo.getName();
+          jsonStreamWriter.name(name);
+          appendPropertyValue(jsonStreamWriter, childPropertyInfo, value == null ? null : ((Map<?, ?>) value).get(name));
+        }
+        jsonStreamWriter.endObject();
+      } else {
+        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("A complex property must have a Map as data"));
       }
-      jsonStreamWriter.endObject();
     } else {
       final EdmSimpleType type = (EdmSimpleType) propertyInfo.getType();
-      final String valueAsString = type.valueToString(value, EdmLiteralKind.JSON, propertyInfo.getFacets());
+      final Object contentValue = value instanceof Map ? ((Map<?, ?>) value).get(propertyInfo.getName()) : value;
+      final String valueAsString = type.valueToString(contentValue, EdmLiteralKind.JSON, propertyInfo.getFacets());
       switch (EdmSimpleTypeKind.valueOf(type.getName())) {
       case String:
         jsonStreamWriter.stringValue(valueAsString);

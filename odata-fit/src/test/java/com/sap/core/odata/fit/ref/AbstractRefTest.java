@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -25,6 +26,7 @@ import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
+import com.sap.core.odata.ref.model.Photo;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
@@ -57,6 +59,8 @@ public class AbstractRefTest extends AbstractFitTest {
   protected static final String CITY_2_NAME = "Walldorf";
 
   protected static final String BUILDING_3_NAME = "Building 3";
+
+  protected static final String PHOTO_DEFAULT_IMAGE = Base64.encodeBase64String(new Photo(0, null, null).getImage());
 
   @Override
   protected ODataSingleProcessorService createService() {
