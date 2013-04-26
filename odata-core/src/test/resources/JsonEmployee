@@ -1,12 +1,12 @@
 {
 	"d" : {
 		"__metadata" : {
-			"id" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')",
-			"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')",
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
 			"type" : "RefScenario.Employee",
 			"content_type" : "image/jpeg",
 			"media_src" : "Employees('1')/$value",
-			"edit_media" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/$value"
+			"edit_media" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/$value"
 		},
 		"EmployeeId" : "1",
 		"EmployeeName" : "Walter Winter",
@@ -31,17 +31,17 @@
 		"ImageUrl" : "Employees('1')/$value",
 		"ne_Manager" : {
 			"__deferred" : {
-				"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Manager"
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Manager"
 			}
 		},
 		"ne_Team" : {
 			"__deferred" : {
-				"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Team"
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Team"
 			}
 		},
 		"ne_Room" : {
 			"__deferred" : {
-				"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Room"
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Room"
 			}
 		}
 	}

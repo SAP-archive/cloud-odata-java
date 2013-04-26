@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.entry.FeedMetadata;
@@ -84,6 +85,17 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNotNull(feedMetadata);
     assertEquals(0, feedMetadata.getInlineCount());
     assertEquals("", feedMetadata.getNextLink());
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void resultsNotPresent() throws Exception {
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    String content = "{\"d\":{}}";
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    xec.readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
   }
 
   @Test

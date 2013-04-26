@@ -1,8 +1,8 @@
 {
 	"d" : {
 		"__metadata" : {
-			"id" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')",
-			"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')",
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
 			"type" : "RefScenario.Team"
 		},
 		"Id" : "1",
@@ -10,7 +10,7 @@
 		"isScrumTeam" : false,
 		"nt_Employees" : {
 			"__deferred" : {
-				"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')/nt_Employees"
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees"
 			}
 		}
 	}

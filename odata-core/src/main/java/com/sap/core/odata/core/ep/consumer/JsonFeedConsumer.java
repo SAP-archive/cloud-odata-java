@@ -21,6 +21,7 @@ public class JsonFeedConsumer {
   private EntityProviderReadProperties readProperties;
   private List<ODataEntry> entries = new ArrayList<ODataEntry>();
   private FeedMetadataImpl feedMetadata = new FeedMetadataImpl();
+  private boolean resultsArrayPresent = false;
 
   public JsonFeedConsumer(JsonReader reader, EntityInfoAggregator eia, EntityProviderReadProperties readProperties) {
     this.reader = reader;
@@ -57,6 +58,11 @@ public class JsonFeedConsumer {
       nextName = reader.nextName();
       handleName(nextName);
     }
+    
+    if(!resultsArrayPresent){
+      //TODO: Messagetext
+      throw new EntityProviderException(EntityProviderException.COMMON);
+    }
   }
 
   private void handleName(String nextName) throws IOException, EdmException, EntityProviderException {
@@ -68,6 +74,7 @@ public class JsonFeedConsumer {
         entries.add(entry);
       }
       reader.endArray();
+      resultsArrayPresent  = true;
     } else if (FormatJson.COUNT.equals(nextName)) {
       int inlineCount = reader.nextInt();
       feedMetadata.setInlineCount(inlineCount);

@@ -64,19 +64,19 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
     List<String> associationUris = result.getMetadata().getAssociationUris("ne_Manager");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Manager", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Manager", associationUris.get(0));
 
     associationUris = result.getMetadata().getAssociationUris("ne_Team");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Team", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Team", associationUris.get(0));
 
     associationUris = result.getMetadata().getAssociationUris("ne_Room");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/ne_Room", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Room", associationUris.get(0));
 
     MediaMetadata mediaMetadata = result.getMediaMetadata();
     assertEquals("image/jpeg", mediaMetadata.getContentType());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')/$value", mediaMetadata.getEditLink());
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Employees('1')/$value", mediaMetadata.getEditLink());
     assertEquals("Employees('1')/$value", mediaMetadata.getSourceLink());
     assertNull(mediaMetadata.getEtag());
   }
@@ -94,7 +94,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
     List<String> associationUris = result.getMetadata().getAssociationUris("nt_Employees");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
 
     checkMediaDataInitial(result.getMediaMetadata());
   }
@@ -112,7 +112,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
     List<String> associationUris = result.getMetadata().getAssociationUris("nb_Rooms");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Buildings('1')/nb_Rooms", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Buildings('1')/nb_Rooms", associationUris.get(0));
 
     checkMediaDataInitial(result.getMediaMetadata());
   }

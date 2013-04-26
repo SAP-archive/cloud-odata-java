@@ -1,8 +1,8 @@
 {
 	"d" : {
 		"__metadata" : {
-			"id" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Buildings('1')",
-			"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Buildings('1')",
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
 			"type" : "RefScenario.Building"
 		},
 		"Id" : "1",
@@ -10,7 +10,7 @@
 		"Image" : null,
 		"nb_Rooms" : {
 			"__deferred" : {
-				"uri" : "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Buildings('1')/nb_Rooms"
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')/nb_Rooms"
 			}
 		}
 	}

@@ -41,7 +41,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
     List<String> associationUris = innerTeam.getMetadata().getAssociationUris("nt_Employees");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
   }
 
   @Test
@@ -62,7 +62,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
     List<String> associationUris = innerTeam.getMetadata().getAssociationUris("nt_Employees");
     assertEquals(1, associationUris.size());
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
   }
 
   @Test
