@@ -1,0 +1,15 @@
+{
+		"__metadata" : {
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
+			"type" : "RefScenario.Building"
+		},
+		"Id" : "1",
+		"Name" : "Building 1",
+		"Image" : null,
+		"nb_Rooms" : {
+			"__deferred" : {
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')/nb_Rooms"
+			}
+		}
+}

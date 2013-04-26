@@ -30,7 +30,7 @@ public class JsonEntityConsumer {
       reader = createJsonReader(content);
       
       JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, properties);
-      ODataEntry result = jec.readEntryStandalone();
+      ODataEntry result = jec.readSingleEntry();
       
       return result;
     } catch (UnsupportedEncodingException e) {

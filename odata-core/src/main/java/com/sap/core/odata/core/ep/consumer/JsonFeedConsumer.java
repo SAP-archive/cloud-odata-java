@@ -40,8 +40,8 @@ public class JsonFeedConsumer {
         readFeedContent();
         reader.endObject();
       } else {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        handleName(nextName);
+        readFeedContent();
       }
 
       reader.endObject();
@@ -71,7 +71,7 @@ public class JsonFeedConsumer {
       reader.beginArray();
       while (reader.hasNext()) {
         JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, readProperties);
-        ODataEntry entry = jec.readEntry();
+        ODataEntry entry = jec.readFeedEntry();
         entries.add(entry);
       }
       reader.endArray();
