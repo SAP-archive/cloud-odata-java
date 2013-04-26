@@ -4,15 +4,15 @@ import com.sap.core.odata.api.ep.feed.FeedMetadata;
 
 public class FeedMetadataImpl implements FeedMetadata {
 
-  private int inlineCount = 0;
-  private String nextLink = "";
+  private Integer inlineCount = null;
+  private String nextLink = null;
   
   public void setInlineCount(int inlineCount){
     this.inlineCount = inlineCount;
   }
   
   @Override
-  public int getInlineCount() {
+  public Integer getInlineCount() {
     return inlineCount;
   }
 

@@ -66,7 +66,7 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
     assertEquals(1, rooms.size());
 
     FeedMetadata roomsMetadata = innerRoomFeed.getFeedMetadata();
-    assertEquals(1, roomsMetadata.getInlineCount());
+    assertEquals(Integer.valueOf(1), roomsMetadata.getInlineCount());
     assertEquals("nextLink", roomsMetadata.getNextLink());
 
   }
@@ -128,7 +128,7 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
     assertEquals(1, rooms.size());
 
     FeedMetadata roomsMetadata = innerRoomFeed.getFeedMetadata();
-    assertEquals(1, roomsMetadata.getInlineCount());
+    assertEquals(Integer.valueOf(1), roomsMetadata.getInlineCount());
     assertEquals("nextLink", roomsMetadata.getNextLink());
 
   }

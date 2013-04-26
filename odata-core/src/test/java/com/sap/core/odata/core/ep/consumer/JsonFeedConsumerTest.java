@@ -61,8 +61,8 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     //Check FeedMetadata
     FeedMetadata feedMetadata = feed.getFeedMetadata();
     assertNotNull(feedMetadata);
-    assertEquals(0, feedMetadata.getInlineCount());
-    assertEquals("", feedMetadata.getNextLink());
+    assertNull(feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
   }
 
   @Test
@@ -83,8 +83,8 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
 
     FeedMetadata feedMetadata = feed.getFeedMetadata();
     assertNotNull(feedMetadata);
-    assertEquals(0, feedMetadata.getInlineCount());
-    assertEquals("", feedMetadata.getNextLink());
+    assertNull(feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
   }
 
   @Test(expected = EntityProviderException.class)
@@ -109,7 +109,8 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     //Check FeedMetadata
     FeedMetadata feedMetadata = feed.getFeedMetadata();
     assertNotNull(feedMetadata);
-    assertEquals(3, feedMetadata.getInlineCount());
+    assertEquals(Integer.valueOf(3), feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
   }
 
   @Test
@@ -130,7 +131,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
 
     FeedMetadata feedMetadata = feed.getFeedMetadata();
     assertNotNull(feedMetadata);
-    assertEquals(3, feedMetadata.getInlineCount());
+    assertEquals(Integer.valueOf(3), feedMetadata.getInlineCount());
     assertEquals("Rooms?$skiptoken=98&$inlinecount=allpages", feedMetadata.getNextLink());
   }
 

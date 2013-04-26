@@ -1,11 +1,21 @@
 package com.sap.core.odata.api.ep.feed;
 
-//TODO: Javadoc
+/**
+ * {@link FeedMetadata} objects contain metadata information about one feed.
+ * @author SAP AG
+ *
+ */
 public interface FeedMetadata {
 
-  public int getInlineCount();
+  /**
+   * @return inlineCount may be null if no inlineCount is set.
+   */
+  public Integer getInlineCount();
 
-  //TODO: CA check if this has to be uri
+
+  /**
+   * @return nextLink may be null if no next link is set
+   */
   public String getNextLink();
 
 }

@@ -34,7 +34,7 @@ public class XmlFeedConsumer {
    * @param reader
    * @param eia
    * @param readProperties
-   * @return
+   * @return {@link ODataFeed} object
    * @throws EntityProviderException
    */
   public ODataFeed readFeed(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {

@@ -2,9 +2,11 @@ package com.sap.core.odata.core.ep.consumer;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +30,12 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
   @Test
   public void innerEntryNoMediaResourceWithoutCallback() throws Exception {
     ODataEntry outerEntry = prepareAndExecuteEntry(EMPLOYEE_WITH_INLINE_TEAM, "Employees", DEFAULT_PROPERTIES);
+    assertTrue(outerEntry.containsInlineEntry());
 
-    ODataEntry innerTeam = (ODataEntry) outerEntry.getProperties().get("ne_Team");
-
+    ODataEntry innerTeam = (ODataEntry) outerEntry.getProperties().get("ne_Team");    
     assertNotNull(innerTeam);
+    assertFalse(innerTeam.containsInlineEntry());
+    
     Map<String, Object> innerTeamProperties = innerTeam.getProperties();
 
     assertEquals("1", innerTeamProperties.get("Id"));
@@ -66,11 +70,13 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
   }
 
   @Test
-  public void inlineRoomWithInlineBuilding() throws Exception {
+  public void inlineRoomWithInlineBuildingNoCallback() throws Exception {
     ODataEntry outerEntry = prepareAndExecuteEntry(INLINE_ROOM_WITH_INLINE_BUILDING, "Employees", DEFAULT_PROPERTIES);
-
+    assertTrue(outerEntry.containsInlineEntry());
+    
     ODataEntry innerRoom = (ODataEntry) outerEntry.getProperties().get("ne_Room");
     assertNotNull(innerRoom);
+    assertTrue(innerRoom.containsInlineEntry());
 
     Map<String, Object> innerRoomProperties = innerRoom.getProperties();
 
@@ -90,6 +96,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
     ODataEntry innerBuilding = (ODataEntry) innerRoomProperties.get("nr_Building");
     assertNotNull(innerBuilding);
+    assertFalse(innerBuilding.containsInlineEntry());
 
     Map<String, Object> innerBuildingProperties = innerBuilding.getProperties();
     assertEquals(3, innerBuildingProperties.size());
