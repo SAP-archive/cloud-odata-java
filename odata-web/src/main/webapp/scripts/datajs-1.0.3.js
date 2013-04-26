@@ -1028,7 +1028,20 @@
             var formatQueryString = defined(request.formatQueryString, this.formatQueryString);
             if (!enableJsonpCallback || isLocalUrl(url)) {
 
-                xhr = createXmlHttpRequest({anon: true});                
+                xhr = createXmlHttpRequest({anon: false});  
+                //xhr = createXmlHttpRequest();
+                
+                var browser = navigator.appName;
+                //var b_version = navigator.appVersion;
+                //var version = parseFloat(b_version);
+                if ( browser != "Microsoft Internet Explorer") {
+                  if ("withCredentials" in xhr) {
+                    xhr.withCredentials = true;                	
+                  }
+                }         
+                
+               
+                
                 xhr.onreadystatechange = function () {
                     if (done || xhr === null || xhr.readyState !== 4) {
                         return;
