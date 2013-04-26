@@ -34,6 +34,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.consumer.JsonEntityConsumer;
 import com.sap.core.odata.core.ep.producer.JsonCollectionEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
@@ -337,12 +338,14 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataFeed readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    JsonEntityConsumer jec = new JsonEntityConsumer();
+    return jec.readFeed(entitySet, content, properties);
   }
 
   @Override
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    JsonEntityConsumer jec = new JsonEntityConsumer();
+    return jec.readEntry(entitySet, content, properties);
   }
 
   @Override
