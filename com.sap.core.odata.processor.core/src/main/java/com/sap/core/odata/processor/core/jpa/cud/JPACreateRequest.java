@@ -99,8 +99,8 @@ public class JPACreateRequest extends JPAWriteRequest{
 					.addContent(e1.getMessage()), e1);
 		}		
 		try {
-			Map<String, Object> propertValueMap = entryValues.getProperties();
-			parse2JPAEntityValueMap(jpaEntity, entityType, propertValueMap,currentEntityName);
+			Map<String, Object> propertyValueMap = entryValues.getProperties();
+			parse2JPAEntityValueMap(jpaEntity, entityType, propertyValueMap,currentEntityName);
 		} catch (ODataJPARuntimeException e) {
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
@@ -281,6 +281,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 	    }
 	      if (relatedValueList != null) {
 	        final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
+	        
 	        for (final ODataEntry relatedValues : relatedValueList) {
 	        	
 	        	String entityName = null;
@@ -411,7 +412,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 		    	    try {
 						setters.put(
 								entityName,
-								jpaEntity.getClass().getMethod(name,propertyClass));
+								jpaEntity.getClass().getDeclaredMethod(name,propertyClass));
 					} catch (NoSuchMethodException e) {
 						throw ODataJPARuntimeException
 						.throwException(ODataJPARuntimeException.GENERAL
