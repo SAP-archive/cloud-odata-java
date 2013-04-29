@@ -181,6 +181,13 @@ public class JPACreateRequestTest {
 		}
 	}
 	
+	@Test
+	public void testPopulateEmbeddableKey()
+	{
+		
+	}
+	
+	
 	private ODataEntryImpl createODataEntry() {
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		HashMap<String, Object> data1 = new HashMap<String, Object>();
