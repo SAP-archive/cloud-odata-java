@@ -194,7 +194,7 @@ public class JsonEntryConsumer {
           properties.put(navigationPropertyName, feed);
           entryResult.setContainsInlineEntry(true);
         } else {
-          ReadFeedResult result = new ReadJsonFeedResult(inlineReadProperties, navigationProperty, feed);
+          ReadFeedResult result = new ReadFeedResult(inlineReadProperties, navigationProperty, feed);
           callback.handleReadFeed(result);
         }
       }
