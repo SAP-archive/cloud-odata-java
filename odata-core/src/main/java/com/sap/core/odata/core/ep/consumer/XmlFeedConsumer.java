@@ -51,19 +51,57 @@ public class XmlFeedConsumer {
       EntityProviderReadProperties entryReadProperties =
           EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
 
-      // read entries
-      XmlEntryConsumer xec = new XmlEntryConsumer();
-      List<ODataEntry> results = new ArrayList<ODataEntry>();
-      while (reader.hasNext() && !isFeedEndTag(reader)) {
-        ODataEntry entry = xec.readEntry(reader, eia, entryReadProperties);
-        results.add(entry);
-        readTillNextStartTag(reader);
-      }
-      //TODO: fill ODataFeedImpl with count and nextLink
-      return new ODataFeedImpl(results, new FeedMetadataImpl());
+      // read feed data (metadata and entries)
+      return readFeedData(reader, eia, entryReadProperties);
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+  
+
+  /**
+   * Read all feed specific data (like <code>inline count</code> and <code>next link</code>) as well as all feed entries (<code>entry</code>).
+   * 
+   * @param reader
+   * @param eia
+   * @param entryReadProperties
+   * @return
+   * @throws XMLStreamException
+   * @throws EntityProviderException
+   */
+  private ODataFeed readFeedData(final XMLStreamReader reader, final EntityInfoAggregator eia, EntityProviderReadProperties entryReadProperties) throws XMLStreamException, EntityProviderException {
+    FeedMetadataImpl metadata = new FeedMetadataImpl();
+    XmlEntryConsumer xec = new XmlEntryConsumer();
+    List<ODataEntry> results = new ArrayList<ODataEntry>();
+
+    while (reader.hasNext() && !isFeedEndTag(reader)) {
+      if(FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
+        ODataEntry entry = xec.readEntry(reader, eia, entryReadProperties);
+        results.add(entry);
+      } else if(FormatXml.M_COUNT.equals(reader.getLocalName())) {
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
+        
+        reader.next();
+        if(reader.hasText()) {
+          String inlineCount = reader.getText();
+          metadata.setInlineCount(Integer.valueOf(inlineCount));
+        } 
+      } else if(FormatXml.ATOM_LINK.equals(reader.getLocalName())) {
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
+
+        final String rel = reader.getAttributeValue(null, FormatXml.ATOM_REL);
+        if(FormatXml.ATOM_NEXT_LINK.equals(rel)) {
+          final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
+          metadata.setNextLink(uri);
+        }
+        
+        reader.next();
+      } else {
+        reader.next();
+      }
+      readTillNextStartTag(reader);
+    }
+    return new ODataFeedImpl(results, metadata);
   }
 
   private void readTillNextStartTag(final XMLStreamReader reader) throws XMLStreamException {

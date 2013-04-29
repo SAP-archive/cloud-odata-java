@@ -63,4 +63,5 @@ public class FormatXml {
   public static final String ATOM_CONTENT = "content";
   public static final String ATOM_NULL = "null";
   public static final String ATOM_VALUE_TRUE = "true";
+  public static final String ATOM_NEXT_LINK = "next";
 }

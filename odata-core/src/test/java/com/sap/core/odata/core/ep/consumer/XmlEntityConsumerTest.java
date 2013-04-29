@@ -36,6 +36,7 @@ import com.sap.core.odata.api.ep.callback.ReadResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.FeedMetadata;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
@@ -1460,12 +1461,65 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    List<ODataEntry> results = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build()).getEntries();
+    ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    
+    // verify feed result
+    // metadata
+    FeedMetadata metadata = feedResult.getFeedMetadata();
+    assertNull(metadata.getInlineCount());
+    assertNull(metadata.getNextLink());
+    // entries
+    List<ODataEntry> entries = feedResult.getEntries();
+    assertEquals(6, entries.size());
+    // verify first employee
+    ODataEntry firstEmployee = entries.get(0);
+    Map<String, Object> properties = firstEmployee.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
+  }
+
+  
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadFeedWithInlineCountAndNextLink() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = readFile("feed_employees_full.xml");
+    InputStream contentAsStream = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    
+    
 
     // verify feed result
-    assertEquals(6, results.size());
+    // metadata
+    FeedMetadata metadata = feedResult.getFeedMetadata();
+    assertEquals(Integer.valueOf(6), metadata.getInlineCount());
+    assertEquals("http://thisisanextlink", metadata.getNextLink());
+    // entries
+    List<ODataEntry> entries = feedResult.getEntries();
+    assertEquals(6, entries.size());
     // verify first employee
-    ODataEntry firstEmployee = results.get(0);
+    ODataEntry firstEmployee = entries.get(0);
     Map<String, Object> properties = firstEmployee.getProperties();
     assertEquals(9, properties.size());
 
