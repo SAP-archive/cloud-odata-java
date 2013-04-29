@@ -64,6 +64,51 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getInlineCount());
     assertNull(feedMetadata.getNextLink());
   }
+  
+  @Test
+  public void teamsFeedWithoutD() throws Exception {
+    ODataFeed feed = prepareAndExecuteFeed("JsonTeamsWithoutD", "Teams", DEFAULT_PROPERTIES);
+
+    List<ODataEntry> entries = feed.getEntries();
+    assertNotNull(entries);
+    assertEquals(2, entries.size());
+
+    //Team1
+    ODataEntry entry = entries.get(0);
+    Map<String, Object> properties = entry.getProperties();
+    assertNotNull(properties);
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    assertNull(properties.get("nt_Employees"));
+
+    List<String> associationUris = entry.getMetadata().getAssociationUris("nt_Employees");
+    assertEquals(1, associationUris.size());
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
+
+    checkMediaDataInitial(entry.getMediaMetadata());
+
+    //Team2
+    entry = entries.get(1);
+    properties = entry.getProperties();
+    assertNotNull(properties);
+    assertEquals("2", properties.get("Id"));
+    assertEquals("Team 2", properties.get("Name"));
+    assertEquals(Boolean.TRUE, properties.get("isScrumTeam"));
+    assertNull(properties.get("nt_Employees"));
+
+    associationUris = entry.getMetadata().getAssociationUris("nt_Employees");
+    assertEquals(1, associationUris.size());
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('2')/nt_Employees", associationUris.get(0));
+
+    checkMediaDataInitial(entry.getMediaMetadata());
+
+    //Check FeedMetadata
+    FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+    assertNull(feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
+  }
 
   @Test
   public void emptyFeed() throws Exception {
@@ -101,6 +146,21 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
   @Test
   public void teamsFeedWithCount() throws Exception {
     ODataFeed feed = prepareAndExecuteFeed("JsonTeamsWithCount", "Teams", DEFAULT_PROPERTIES);
+
+    List<ODataEntry> entries = feed.getEntries();
+    assertNotNull(entries);
+    assertEquals(2, entries.size());
+
+    //Check FeedMetadata
+    FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+    assertEquals(Integer.valueOf(3), feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
+  }
+  
+  @Test
+  public void teamsFeedWithCountWithoutD() throws Exception {
+    ODataFeed feed = prepareAndExecuteFeed("JsonTeamsWithCountWithoutD", "Teams", DEFAULT_PROPERTIES);
 
     List<ODataEntry> entries = feed.getEntries();
     assertNotNull(entries);

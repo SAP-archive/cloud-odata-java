@@ -24,7 +24,6 @@ import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
-import com.sap.core.odata.core.ep.util.JsonUtils;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
 public class JsonEntryConsumer {
@@ -38,7 +37,6 @@ public class JsonEntryConsumer {
   private final JsonReader reader;
   private final EntityProviderReadProperties readProperties;
   private final ODataEntryImpl entryResult;
-  private int openJsonObjects = 0;
 
   public JsonEntryConsumer(final JsonReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) {
     typeMappings = readProperties.getTypeMappings();
@@ -48,11 +46,19 @@ public class JsonEntryConsumer {
     entryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
   }
 
-  public ODataEntry readEntryStandalone() throws EntityProviderException {
+  public ODataEntry readSingleEntry() throws EntityProviderException {
     try {
-      openJsonObjects = JsonUtils.startJson(reader);
-      readEntryContent();
-      JsonUtils.endJson(reader, openJsonObjects);
+      reader.beginObject();
+      String nextName = reader.nextName();
+      if (FormatJson.D.equals(nextName)) {
+        reader.beginObject();
+        readEntryContent();
+        reader.endObject();
+      } else {
+        handleName(nextName);
+        readEntryContent();
+      }
+      reader.endObject();
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
@@ -61,8 +67,8 @@ public class JsonEntryConsumer {
 
     return entryResult;
   }
-  
-  public ODataEntry readEntry() throws IOException, EdmException, EntityProviderException{
+
+  public ODataEntry readFeedEntry() throws EdmException, EntityProviderException, IOException {
     reader.beginObject();
     readEntryContent();
     reader.endObject();
@@ -74,6 +80,8 @@ public class JsonEntryConsumer {
       String name = reader.nextName();
       handleName(name);
     }
+    
+    //TODO: Ca validate created entry
   }
 
   private void handleName(String name) throws IOException, EdmException, EntityProviderException {
@@ -84,7 +92,7 @@ public class JsonEntryConsumer {
       EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
       if (propertyInfo != null) {
         JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-        Object propertyValue = jpc.readProperty(reader, propertyInfo, typeMappings.get(name));
+        Object propertyValue = jpc.readPropertyValue(reader, propertyInfo, typeMappings.get(name));
         if (properties.containsKey(name)) {
           throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(name));
         }
@@ -169,6 +177,9 @@ public class JsonEntryConsumer {
       EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
       EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet);
       EntityProviderReadProperties inlineReadProperties;
+      ExpandSelectTreeNodeImpl expandSelectTreeNodeImpl = new ExpandSelectTreeNodeImpl();
+      expandSelectTreeNodeImpl.setAllExplicitly();
+      expandSelectTree.putLinkNode(navigationPropertyName, expandSelectTreeNodeImpl);
       OnReadInlineContent callback = readProperties.getCallback();
       if (callback == null) {
         inlineReadProperties = EntityProviderReadProperties.init().mergeSemantic(readProperties.getMergeSemantic()).build();
@@ -176,8 +187,8 @@ public class JsonEntryConsumer {
       } else {
         inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
       }
-      
-      if(navigationProperty.getMultiplicity() == EdmMultiplicity.ONE){
+
+      if (navigationProperty.getMultiplicity() == EdmMultiplicity.ONE) {
         JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
         ODataEntry entry = inlineConsumer.readInlineEntry(name);
         if (callback == null) {
@@ -186,8 +197,8 @@ public class JsonEntryConsumer {
         } else {
           ReadEntryResult result = new ReadEntryResult(inlineReadProperties, navigationProperty, entry);
           callback.handleReadEntry(result);
-        }        
-      }else{
+        }
+      } else {
         JsonFeedConsumer inlineConsumer = new JsonFeedConsumer(reader, inlineEia, inlineReadProperties);
         ODataFeed feed = inlineConsumer.readInlineFeed(name);
         if (callback == null) {
@@ -198,7 +209,7 @@ public class JsonEntryConsumer {
           callback.handleReadFeed(result);
         }
       }
-      
+
     }
     reader.endObject();
   }
@@ -210,4 +221,5 @@ public class JsonEntryConsumer {
     readEntryContent();
     return entryResult;
   }
+
 }

@@ -151,13 +151,26 @@ public class JsonPropertyConsumerTest extends BaseTest {
     reader.nextName();
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-    Object value = jpc.readProperty(reader, entityPropertyInfo, null);
+    Object value = jpc.readPropertyValue(reader, entityPropertyInfo, null);
     assertEquals("Team 1", value);
   }
 
   @Test
   public void simplePropertyWithNullMappingStandalone() throws Exception {
     String simplePropertyJson = "{\"d\":{\"Age\":67}}";
+    JsonReader reader = prepareReader(simplePropertyJson);
+    final EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    Map<String, Object> typeMappings = null;
+    JsonPropertyConsumer jpc = new JsonPropertyConsumer();
+    Map<String, Object> resultMap = jpc.readPropertyStandalone(reader, edmProperty, typeMappings);
+
+    assertEquals(Integer.valueOf(67), resultMap.get("Age"));
+  }
+
+  @Test
+  public void simplePropertyWithNullMappingStandaloneWithoutD() throws Exception {
+    String simplePropertyJson = "{\"Age\":67}";
     JsonReader reader = prepareReader(simplePropertyJson);
     final EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
@@ -268,7 +281,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-    Map<String, Object> result = (Map<String, Object>) jpc.readProperty(reader, entityPropertyInfo, null);
+    Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
     assertEquals("Heidelberg", result.get("CityName"));
@@ -285,7 +298,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-    Map<String, Object> result = (Map<String, Object>) jpc.readProperty(reader, entityPropertyInfo, null);
+    Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
     assertEquals("Heidelberg", result.get("CityName"));
@@ -301,7 +314,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
-    Map<String, Object> result = (Map<String, Object>) jpc.readProperty(reader, entityPropertyInfo, null);
+    Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
     assertEquals("Germany", result.get("Country"));

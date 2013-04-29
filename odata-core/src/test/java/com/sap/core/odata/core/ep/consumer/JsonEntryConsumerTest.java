@@ -24,11 +24,11 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
  */
 public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
-  //EntitySetConstants
-  private static final String SIMPLEENTRYBUILDING = "JsonBuilding";
-  private static final String SIMPLEENTRYEMPLOYEE = "JsonEmployee";
-  private static final String SIMPLEENTRYTEAM = "JsonTeam";
-  private static final String INVALIDENTRYTEAMDOUBLENAMEPROPERTY = "JsonInvalidTeamDoubleNameProperty";
+  private static final String SIMPLE_ENTRY_BUILDING = "JsonBuilding";
+  private static final String SIMPLE_ENTRY_EMPLOYEE = "JsonEmployee";
+  private static final String SIMPLE_ENTRY_TEAM = "JsonTeam";
+  private static final String INVALID_ENTRY_TEAM_DOUBLE_NAME_PROPERTY = "JsonInvalidTeamDoubleNameProperty";
+  private static final String SIMPLE_ENTRY_BUILDING_WITHOUT_D = "JsonBuildingWithoutD";
 
   //Negative Test jsonStart
   public static final String negativeJsonStart_1 = "{ \"abc\": {";
@@ -38,7 +38,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   @SuppressWarnings("unchecked")
   @Test
   public void readSimpleEmployeeEntry() throws Exception {
-    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYEMPLOYEE, "Employees", DEFAULT_PROPERTIES);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLE_ENTRY_EMPLOYEE, "Employees", DEFAULT_PROPERTIES);
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -83,7 +83,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
   @Test
   public void readSimpleTeamEntry() throws Exception {
-    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYTEAM, "Teams", DEFAULT_PROPERTIES);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLE_ENTRY_TEAM, "Teams", DEFAULT_PROPERTIES);
 
     Map<String, Object> properties = result.getProperties();
     assertNotNull(properties);
@@ -101,7 +101,25 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
   @Test
   public void readSimpleBuildingEntry() throws Exception {
-    ODataEntry result = prepareAndExecuteEntry(SIMPLEENTRYBUILDING, "Buildings", DEFAULT_PROPERTIES);
+    ODataEntry result = prepareAndExecuteEntry(SIMPLE_ENTRY_BUILDING, "Buildings", DEFAULT_PROPERTIES);
+    //verify
+    Map<String, Object> properties = result.getProperties();
+    assertNotNull(properties);
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Building 1", properties.get("Name"));
+    assertEquals(null, properties.get("Image"));
+    assertNull(properties.get("nb_Rooms"));
+
+    List<String> associationUris = result.getMetadata().getAssociationUris("nb_Rooms");
+    assertEquals(1, associationUris.size());
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Buildings('1')/nb_Rooms", associationUris.get(0));
+
+    checkMediaDataInitial(result.getMediaMetadata());
+  }
+  
+  @Test
+  public void readSimpleBuildingEntryWithoutD() throws Exception {
+    ODataEntry result = prepareAndExecuteEntry(SIMPLE_ENTRY_BUILDING_WITHOUT_D, "Buildings", DEFAULT_PROPERTIES);
     //verify
     Map<String, Object> properties = result.getProperties();
     assertNotNull(properties);
@@ -121,7 +139,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   public void readWithDoublePropertyOnTeam() throws Exception {
     //The file contains the name property two times
     try {
-      prepareAndExecuteEntry(INVALIDENTRYTEAMDOUBLENAMEPROPERTY, "Teams", DEFAULT_PROPERTIES);
+      prepareAndExecuteEntry(INVALID_ENTRY_TEAM_DOUBLE_NAME_PROPERTY, "Teams", DEFAULT_PROPERTIES);
       fail("Exception has to be thrown");
     } catch (EntityProviderException e) {
       assertEquals(EntityProviderException.DOUBLE_PROPERTY.getKey(), e.getMessageReference().getKey());

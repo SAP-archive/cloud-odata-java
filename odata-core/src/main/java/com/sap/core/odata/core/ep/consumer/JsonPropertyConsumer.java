@@ -16,14 +16,11 @@ import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatJson;
-import com.sap.core.odata.core.ep.util.JsonUtils;
 
 /**
  * @author SAP AG
  */
 public class JsonPropertyConsumer {
-
-  private int openJsonObjects;
 
   public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty) throws EntityProviderException {
     return readPropertyStandalone(reader, edmProperty, null);
@@ -31,30 +28,36 @@ public class JsonPropertyConsumer {
 
   public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty, final Map<String, Object> typeMappings) throws EntityProviderException {
     try {
-
-      openJsonObjects = JsonUtils.startJson(reader);
-
       EntityPropertyInfo entityPropertyInfo = EntityInfoAggregator.create(edmProperty);
-
-      String propertyName = reader.nextName();
-
-      Object mapping = null;
-      if (typeMappings != null) {
-        mapping = typeMappings.get(propertyName);
-      }
-      Object propertyValue = readProperty(reader, entityPropertyInfo, mapping);
-
-      JsonUtils.endJson(reader, openJsonObjects);
-
       Map<String, Object> result = new HashMap<String, Object>();
-      result.put(propertyName, propertyValue);
+
+      reader.beginObject();
+      String nextName = reader.nextName();
+      if (FormatJson.D.equals(nextName)) {
+        reader.beginObject();
+        nextName = reader.nextName();
+        handleName(reader, typeMappings, entityPropertyInfo, result, nextName);
+        reader.endObject();
+      } else {
+        handleName(reader, typeMappings, entityPropertyInfo, result, nextName);
+      }
+
       return result;
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }
 
-  public Object readProperty(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
+  private void handleName(final JsonReader reader, final Map<String, Object> typeMappings, EntityPropertyInfo entityPropertyInfo, Map<String, Object> result, String nextName) throws EntityProviderException {
+    Object mapping = null;
+    if (typeMappings != null) {
+      mapping = typeMappings.get(nextName);
+    }
+    Object propertyValue = readPropertyValue(reader, entityPropertyInfo, mapping);
+    result.put(nextName, propertyValue);
+  }
+
+  public Object readPropertyValue(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
     try {
       Object value = null;
       if (entityPropertyInfo.isComplex()) {
@@ -108,7 +111,6 @@ public class JsonPropertyConsumer {
     }
 
     final Class<?> typeMappingClass = typeMapping == null ? type.getDefaultType() : (Class<?>) typeMapping;
-
     return type.valueOfString((String) value, EdmLiteralKind.JSON, entityPropertyInfo.getFacets(), typeMappingClass);
   }
 
@@ -141,8 +143,8 @@ public class JsonPropertyConsumer {
       } else {
         EntityPropertyInfo childPropertyInfo = complexPropertyInfo.getPropertyInfo(childName);
 
-        Object childData = readProperty(reader, childPropertyInfo, mapping.get(childName));
-        if(data.containsKey(childName)){
+        Object childData = readPropertyValue(reader, childPropertyInfo, mapping.get(childName));
+        if (data.containsKey(childName)) {
           throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(childName));
         }
         data.put(childName, childData);
