@@ -11,7 +11,7 @@ public class ODataFeedImpl implements ODataFeed {
   private final List<ODataEntry> entries;
   private final FeedMetadata feedMetadata;
 
-  public ODataFeedImpl(List<ODataEntry> entries, FeedMetadata feedMetadata) {
+  public ODataFeedImpl(final List<ODataEntry> entries, final FeedMetadata feedMetadata) {
     this.entries = entries;
     this.feedMetadata = feedMetadata;
 
@@ -26,7 +26,5 @@ public class ODataFeedImpl implements ODataFeed {
   public FeedMetadata getFeedMetadata() {
     return feedMetadata;
   }
-  
-  
 
 }

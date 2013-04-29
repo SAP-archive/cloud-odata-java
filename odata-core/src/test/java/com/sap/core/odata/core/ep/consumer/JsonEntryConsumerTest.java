@@ -116,7 +116,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
 
     checkMediaDataInitial(result.getMediaMetadata());
   }
-  
+
   @Test
   public void readSimpleBuildingEntryWithoutD() throws Exception {
     ODataEntry result = prepareAndExecuteEntry(SIMPLE_ENTRY_BUILDING_WITHOUT_D, "Buildings", DEFAULT_PROPERTIES);
@@ -145,7 +145,6 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
       assertEquals(EntityProviderException.DOUBLE_PROPERTY.getKey(), e.getMessageReference().getKey());
     }
   }
-
 
   private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {
     assertNull(mediaMetadata.getContentType());

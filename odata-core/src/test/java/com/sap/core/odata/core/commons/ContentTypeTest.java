@@ -572,7 +572,7 @@ public class ContentTypeTest extends BaseTest {
     //
     assertFalse(t1.equals(t2));
   }
-  
+
   @Test
   public void testCompatibleDiffParameterCountSet() {
     ContentType t1 = ContentType.create("aaa/bbb;a=b");

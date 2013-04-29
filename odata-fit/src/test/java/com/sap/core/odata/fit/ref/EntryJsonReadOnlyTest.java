@@ -52,7 +52,7 @@ public class EntryJsonReadOnlyTest extends AbstractRefTest {
         + "\"Id\":1,\"Name\":\"Photo 1\",\"Type\":\"image/png\","
         + "\"ImageUrl\":\"http://localhost/darth.jpg\","
         + "\"Image\":\"" + PHOTO_DEFAULT_IMAGE + "\",\"BinaryData\":null,"
-        +	"\"Содержание\":\"Образ\"}}",
+        + "\"Содержание\":\"Образ\"}}",
         getBody(response));
   }
 

@@ -953,9 +953,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
     final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, writeProperties);
-    
+
     context.stopRuntimeMeasurement(timingHandle);
-    if(contentType.contains(ODATA_VERBOSE) && !response.getContentHeader().contains(ODATA_VERBOSE)) {
+    if (contentType.contains(ODATA_VERBOSE) && !response.getContentHeader().contains(ODATA_VERBOSE)) {
       return ODataResponse.fromResponse(response).contentHeader(contentType).build();
     }
     return response;

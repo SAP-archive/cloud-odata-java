@@ -355,10 +355,11 @@ public final class ODataSubLocator implements ODataLocator {
     // hasMatch is not appropriate because it allows '*' as type or subtype.
     // TODO: Implement own content-type check for requests.
     // For now, we check for '*'s explicitly.
-    if ("*".equals(contentType.getType()) || "*".equals(contentType.getSubtype()))
+    if ("*".equals(contentType.getType()) || "*".equals(contentType.getSubtype())) {
       return false;
-    else
+    } else {
       return requested.hasMatch(allowedContentTypes);
+    }
   }
 
   private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final ContentType contentType) throws EdmException {

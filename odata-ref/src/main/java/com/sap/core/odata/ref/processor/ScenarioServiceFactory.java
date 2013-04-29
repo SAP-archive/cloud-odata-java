@@ -22,10 +22,10 @@ public class ScenarioServiceFactory extends ODataServiceFactory {
         new ScenarioEdmProvider(),
         new ListsProcessor(new ScenarioDataSource(dataContainer)));
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
-  public <T extends ODataCallback> T getCallback(Class<? extends ODataCallback> callbackInterface) {
+  public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
     if (callbackInterface.isAssignableFrom(ScenarioErrorCallback.class)) {
       return (T) new ScenarioErrorCallback();
     }

@@ -643,7 +643,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
   }
-  
+
   @Test
   public void unsupportedRequestContentTypeNoneMediaResource() throws Exception {
     EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
@@ -657,7 +657,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   public void invalidRequestContentType() throws Exception {
     unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
-  
+
   @Test
   public void invalidRequestDollarFormatSyntax() throws Exception {
     invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "xml");

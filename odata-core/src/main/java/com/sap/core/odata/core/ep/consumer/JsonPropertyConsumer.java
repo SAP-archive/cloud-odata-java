@@ -48,7 +48,7 @@ public class JsonPropertyConsumer {
     }
   }
 
-  private void handleName(final JsonReader reader, final Map<String, Object> typeMappings, EntityPropertyInfo entityPropertyInfo, Map<String, Object> result, String nextName) throws EntityProviderException {
+  private void handleName(final JsonReader reader, final Map<String, Object> typeMappings, final EntityPropertyInfo entityPropertyInfo, final Map<String, Object> result, final String nextName) throws EntityProviderException {
     Object mapping = null;
     if (typeMappings != null) {
       mapping = typeMappings.get(nextName);

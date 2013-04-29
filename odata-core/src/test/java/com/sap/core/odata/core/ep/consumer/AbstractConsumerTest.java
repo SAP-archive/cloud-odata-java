@@ -25,7 +25,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 public abstract class AbstractConsumerTest extends BaseTest {
-  
+
   protected static final EntityProviderReadProperties DEFAULT_PROPERTIES = EntityProviderReadProperties.init().mergeSemantic(false).build();
 
   protected XMLStreamReader createReaderForTest(final String input) throws XMLStreamException {
@@ -111,10 +111,10 @@ public abstract class AbstractConsumerTest extends BaseTest {
     return new ByteArrayInputStream(contentForStream.getBytes("UTF-8"));
   }
 
-  protected ODataEntry prepareAndExecuteEntry(final String fileName, final String entitySetName, EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+  protected ODataEntry prepareAndExecuteEntry(final String fileName, final String entitySetName, final EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
     //prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet(entitySetName);
-    String content =  readFile(fileName);
+    String content = readFile(fileName);
     assertNotNull(content);
     InputStream contentBody = createContentAsStream(content);
 
@@ -124,11 +124,11 @@ public abstract class AbstractConsumerTest extends BaseTest {
     assertNotNull(result);
     return result;
   }
-  
-  protected ODataFeed prepareAndExecuteFeed(final String fileName, final String entitySetName, EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
+
+  protected ODataFeed prepareAndExecuteFeed(final String fileName, final String entitySetName, final EntityProviderReadProperties readProperties) throws IOException, EdmException, ODataException, UnsupportedEncodingException, EntityProviderException {
     //prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet(entitySetName);
-    String content =  readFile(fileName);
+    String content = readFile(fileName);
     assertNotNull(content);
     InputStream contentBody = createContentAsStream(content);
 

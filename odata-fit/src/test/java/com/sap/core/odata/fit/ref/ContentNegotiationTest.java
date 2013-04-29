@@ -61,7 +61,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
         HttpStatusCodes.OK);
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
   }
-  
+
   @Test
   public void browserIssue95() throws Exception {
     final HttpResponse response = callUri("Employees",
@@ -69,7 +69,6 @@ public class ContentNegotiationTest extends AbstractRefTest {
         HttpStatusCodes.OK);
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
   }
-  
 
   @Test
   public void contentTypeServiceDocumentWoAcceptHeader() throws Exception {

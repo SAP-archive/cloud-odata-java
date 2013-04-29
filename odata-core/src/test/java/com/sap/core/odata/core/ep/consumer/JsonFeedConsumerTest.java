@@ -64,7 +64,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getInlineCount());
     assertNull(feedMetadata.getNextLink());
   }
-  
+
   @Test
   public void teamsFeedWithoutD() throws Exception {
     ODataFeed feed = prepareAndExecuteFeed("JsonTeamsWithoutD", "Teams", DEFAULT_PROPERTIES);
@@ -157,7 +157,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertEquals(Integer.valueOf(3), feedMetadata.getInlineCount());
     assertNull(feedMetadata.getNextLink());
   }
-  
+
   @Test
   public void teamsFeedWithCountWithoutD() throws Exception {
     ODataFeed feed = prepareAndExecuteFeed("JsonTeamsWithCountWithoutD", "Teams", DEFAULT_PROPERTIES);

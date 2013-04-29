@@ -293,9 +293,9 @@ public class ContentType {
   public boolean equals(final Object obj) {
     Boolean compatible = isEqualWithoutParameters(obj);
 
-    if(compatible == null) {
+    if (compatible == null) {
       ContentType other = (ContentType) obj;
-      
+
       // parameter checks
       if (parameters == null) {
         if (other.parameters != null) {
@@ -307,7 +307,7 @@ public class ContentType {
         while (entries.hasNext()) {
           Entry<String, String> e = entries.next();
           Entry<String, String> oe = otherEntries.next();
-          
+
           if (!areEqual(e.getKey(), oe.getKey())) {
             return false;
           }
@@ -335,14 +335,14 @@ public class ContentType {
    * 
    * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code>.
    */
-  public boolean isCompatible(ContentType obj) {
+  public boolean isCompatible(final ContentType obj) {
     Boolean compatible = isEqualWithoutParameters(obj);
-    if(compatible == null) {
+    if (compatible == null) {
       return true;
     }
     return compatible.booleanValue();
   }
-  
+
   /**
    * Check equal without parameters.
    * It is possible that no decision about <code>equal/none equal</code> can be determined a <code>NULL</code> is returned.
@@ -351,7 +351,7 @@ public class ContentType {
    * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code> 
    *          or <code>NULL</code> if no decision about <code>equal/none equal</code> could be determined.
    */
-  private Boolean isEqualWithoutParameters(Object obj) {
+  private Boolean isEqualWithoutParameters(final Object obj) {
     // basic checks
     if (this == obj) {
       return true;
@@ -391,7 +391,7 @@ public class ContentType {
     if (countWildcards() > 0 || other.countWildcards() > 0) {
       return true;
     }
-    
+
     return null;
   }
 

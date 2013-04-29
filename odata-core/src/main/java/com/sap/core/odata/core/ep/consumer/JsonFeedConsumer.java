@@ -24,7 +24,7 @@ public class JsonFeedConsumer {
   private FeedMetadataImpl feedMetadata = new FeedMetadataImpl();
   private boolean resultsArrayPresent = false;
 
-  public JsonFeedConsumer(JsonReader reader, EntityInfoAggregator eia, EntityProviderReadProperties readProperties) {
+  public JsonFeedConsumer(final JsonReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) {
     this.reader = reader;
     this.eia = eia;
     this.readProperties = readProperties;
@@ -59,14 +59,14 @@ public class JsonFeedConsumer {
       nextName = reader.nextName();
       handleName(nextName);
     }
-    
-    if(!resultsArrayPresent){
+
+    if (!resultsArrayPresent) {
       //TODO: Messagetext
       throw new EntityProviderException(EntityProviderException.COMMON);
     }
   }
 
-  private void handleName(String nextName) throws IOException, EdmException, EntityProviderException {
+  private void handleName(final String nextName) throws IOException, EdmException, EntityProviderException {
     if (FormatJson.RESULTS.equals(nextName)) {
       reader.beginArray();
       while (reader.hasNext()) {
@@ -75,7 +75,7 @@ public class JsonFeedConsumer {
         entries.add(entry);
       }
       reader.endArray();
-      resultsArrayPresent  = true;
+      resultsArrayPresent = true;
     } else if (FormatJson.COUNT.equals(nextName)) {
       int inlineCount = reader.nextInt();
       feedMetadata.setInlineCount(inlineCount);
@@ -88,7 +88,7 @@ public class JsonFeedConsumer {
     }
   }
 
-  public ODataFeed readInlineFeed(String name) throws EdmException, EntityProviderException, IOException {
+  public ODataFeed readInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
     handleName(name);
     //consume the rest of the entry content

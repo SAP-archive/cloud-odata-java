@@ -45,7 +45,7 @@ public class JsonPropertyEntityProducer {
 
   protected static void appendPropertyValue(final JsonStreamWriter jsonStreamWriter, final EntityPropertyInfo propertyInfo, final Object value) throws IOException, EdmException, EntityProviderException {
     if (propertyInfo.isComplex()) {
-      if (value == null || value instanceof Map<?, ?>)  {
+      if (value == null || value instanceof Map<?, ?>) {
         jsonStreamWriter.beginObject();
         appendPropertyMetadata(jsonStreamWriter, propertyInfo.getType());
         for (final EntityPropertyInfo childPropertyInfo : ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfos()) {

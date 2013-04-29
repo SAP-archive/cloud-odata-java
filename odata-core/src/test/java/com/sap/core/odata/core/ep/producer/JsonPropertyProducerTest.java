@@ -89,7 +89,7 @@ public class JsonPropertyProducerTest extends BaseTest {
     property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Building").getProperty("Image");
     response = new JsonEntityProvider().writeProperty(property, null);
     assertEquals("{\"d\":{\"Image\":null}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
-}
+  }
 
   @Test
   public void serializeDateTime() throws Exception {

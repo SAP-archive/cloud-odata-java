@@ -6,20 +6,20 @@ public class FeedMetadataImpl implements FeedMetadata {
 
   private Integer inlineCount = null;
   private String nextLink = null;
-  
-  public void setInlineCount(int inlineCount){
+
+  public void setInlineCount(final int inlineCount) {
     this.inlineCount = inlineCount;
   }
-  
+
   @Override
   public Integer getInlineCount() {
     return inlineCount;
   }
 
-  public void setNextLink(String nextLink) {
+  public void setNextLink(final String nextLink) {
     this.nextLink = nextLink;
   }
-  
+
   @Override
   public String getNextLink() {
     return nextLink;

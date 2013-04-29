@@ -57,7 +57,6 @@ public class XmlFeedConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-  
 
   /**
    * Read all feed specific data (like <code>inline count</code> and <code>next link</code>) as well as all feed entries (<code>entry</code>).
@@ -69,32 +68,32 @@ public class XmlFeedConsumer {
    * @throws XMLStreamException
    * @throws EntityProviderException
    */
-  private ODataFeed readFeedData(final XMLStreamReader reader, final EntityInfoAggregator eia, EntityProviderReadProperties entryReadProperties) throws XMLStreamException, EntityProviderException {
+  private ODataFeed readFeedData(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties entryReadProperties) throws XMLStreamException, EntityProviderException {
     FeedMetadataImpl metadata = new FeedMetadataImpl();
     XmlEntryConsumer xec = new XmlEntryConsumer();
     List<ODataEntry> results = new ArrayList<ODataEntry>();
 
     while (reader.hasNext() && !isFeedEndTag(reader)) {
-      if(FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
+      if (FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
         ODataEntry entry = xec.readEntry(reader, eia, entryReadProperties);
         results.add(entry);
-      } else if(FormatXml.M_COUNT.equals(reader.getLocalName())) {
+      } else if (FormatXml.M_COUNT.equals(reader.getLocalName())) {
         reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
-        
+
         reader.next();
-        if(reader.hasText()) {
+        if (reader.hasText()) {
           String inlineCount = reader.getText();
           metadata.setInlineCount(Integer.valueOf(inlineCount));
-        } 
-      } else if(FormatXml.ATOM_LINK.equals(reader.getLocalName())) {
+        }
+      } else if (FormatXml.ATOM_LINK.equals(reader.getLocalName())) {
         reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
         final String rel = reader.getAttributeValue(null, FormatXml.ATOM_REL);
-        if(FormatXml.ATOM_NEXT_LINK.equals(rel)) {
+        if (FormatXml.ATOM_NEXT_LINK.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setNextLink(uri);
         }
-        
+
         reader.next();
       } else {
         reader.next();

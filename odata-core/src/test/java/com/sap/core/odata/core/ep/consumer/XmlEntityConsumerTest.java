@@ -1462,7 +1462,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
-    
+
     // verify feed result
     // metadata
     FeedMetadata metadata = feedResult.getFeedMetadata();
@@ -1495,7 +1495,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
   }
 
-  
   @SuppressWarnings("unchecked")
   @Test
   public void testReadFeedWithInlineCountAndNextLink() throws Exception {
@@ -1507,8 +1506,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
-    
-    
 
     // verify feed result
     // metadata

@@ -80,11 +80,11 @@ public class JsonEntryConsumer {
       String name = reader.nextName();
       handleName(name);
     }
-    
+
     //TODO: Ca validate created entry
   }
 
-  private void handleName(String name) throws IOException, EdmException, EntityProviderException {
+  private void handleName(final String name) throws IOException, EdmException, EntityProviderException {
     if (FormatJson.METADATA.equals(name)) {
       readMetadata();
       validateMetadata();
@@ -214,7 +214,7 @@ public class JsonEntryConsumer {
     reader.endObject();
   }
 
-  private ODataEntry readInlineEntry(String name) throws EdmException, EntityProviderException, IOException {
+  private ODataEntry readInlineEntry(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
     handleName(name);
     //consume the rest of the entry content

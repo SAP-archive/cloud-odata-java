@@ -91,7 +91,7 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
 
     ODataFeed innerRoomFeed = (ODataFeed) outerEntry.getProperties().get("nb_Rooms");
     assertNull(innerRoomFeed);
-    
+
     innerRoomFeed = callback.getFeed();
 
     List<ODataEntry> rooms = innerRoomFeed.getEntries();
@@ -159,12 +159,12 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
 
     @Override
     public void handleReadEntry(final ReadEntryResult context) {
-      throw new ODataRuntimeException("No entry expected");      
+      throw new ODataRuntimeException("No entry expected");
     }
 
     @Override
     public void handleReadFeed(final ReadFeedResult context) {
-      feed =  context.getResult();
+      feed = context.getResult();
     }
 
     @Override

@@ -26,16 +26,16 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
   private static final String EMPLOYEE_WITH_INLINE_TEAM = "JsonEmployeeWithInlineTeam";
   private static final String INLINE_ROOM_WITH_INLINE_BUILDING = "JsonInlineRoomWithInlineBuilding";
- 
+
   @Test
   public void innerEntryNoMediaResourceWithoutCallback() throws Exception {
     ODataEntry outerEntry = prepareAndExecuteEntry(EMPLOYEE_WITH_INLINE_TEAM, "Employees", DEFAULT_PROPERTIES);
     assertTrue(outerEntry.containsInlineEntry());
 
-    ODataEntry innerTeam = (ODataEntry) outerEntry.getProperties().get("ne_Team");    
+    ODataEntry innerTeam = (ODataEntry) outerEntry.getProperties().get("ne_Team");
     assertNotNull(innerTeam);
     assertFalse(innerTeam.containsInlineEntry());
-    
+
     Map<String, Object> innerTeamProperties = innerTeam.getProperties();
 
     assertEquals("1", innerTeamProperties.get("Id"));
@@ -73,7 +73,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
   public void inlineRoomWithInlineBuildingNoCallback() throws Exception {
     ODataEntry outerEntry = prepareAndExecuteEntry(INLINE_ROOM_WITH_INLINE_BUILDING, "Employees", DEFAULT_PROPERTIES);
     assertTrue(outerEntry.containsInlineEntry());
-    
+
     ODataEntry innerRoom = (ODataEntry) outerEntry.getProperties().get("ne_Room");
     assertNotNull(innerRoom);
     assertTrue(innerRoom.containsInlineEntry());
@@ -182,7 +182,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
     ODataEntry innerBuilding = (ODataEntry) innerRoomProperties.get("nr_Building");
     assertNull(innerBuilding);
-    
+
     innerBuilding = buildingCallback.getEntry();
 
     Map<String, Object> innerBuildingProperties = innerBuilding.getProperties();
@@ -201,7 +201,7 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
     private ODataEntry entry;
     private EntryCallback innerCallback;
 
-    public EntryCallback(EntryCallback innerCallback) {
+    public EntryCallback(final EntryCallback innerCallback) {
       this.innerCallback = innerCallback;
     }
 

@@ -25,7 +25,7 @@ public class ScenarioErrorCallback implements ODataErrorCallback {
    * @see com.sap.core.odata.api.processor.ODataErrorCallback#handleError(com.sap.core.odata.api.processor.ODataErrorContext)
    */
   @Override
-  public ODataResponse handleError(ODataErrorContext context) throws ODataApplicationException {
+  public ODataResponse handleError(final ODataErrorContext context) throws ODataApplicationException {
     try {
       if (context.getHttpStatus() == HttpStatusCodes.INTERNAL_SERVER_ERROR) {
         LOG.error("Internal Server Error", context.getException());
