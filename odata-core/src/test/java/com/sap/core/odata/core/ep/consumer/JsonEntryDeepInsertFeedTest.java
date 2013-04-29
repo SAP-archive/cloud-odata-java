@@ -164,7 +164,7 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
 
     @Override
     public void handleReadFeed(final ReadFeedResult context) {
-      feed = ((ReadJsonFeedResult) context).getFeed();
+      feed =  context.getResult();
     }
 
     @Override
