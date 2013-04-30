@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.core.jpa.cud;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -186,7 +187,45 @@ public class JPACreateRequestTest {
 	@Test
 	public void testPopulateEmbeddableKey()
 	{
-		
+		JPACreateRequest createRequest = new JPACreateRequest();
+		Method method = getMethodForTesting("populateEmbeddableKey", createRequest);
+		if(method != null){
+			method.setAccessible(true);
+			SalesOrderLineItemKey embeddableKeyObject = new SalesOrderLineItemKey();
+			String key = "soId";
+			String setterName = "setSoId";
+			Map<String,Object> propertyValueMap = new HashMap<String, Object>();
+			propertyValueMap.put("soId", 23);
+			propertyValueMap.put("liId", 45);
+			Field field = null;
+			Map<String,Class<?>> jpaEmbeddableObjectKeyMap = new HashMap<String, Class<?>>();
+			jpaEmbeddableObjectKeyMap.put("soId", int.class);
+			jpaEmbeddableObjectKeyMap.put("liId", int.class);
+			Object[] actualParams = {embeddableKeyObject,key,setterName,propertyValueMap};
+			try {
+				for(Field f:createRequest.getClass().getSuperclass().getDeclaredFields()){
+					if(f.getName().equalsIgnoreCase("jpaEmbeddableKeyObjectMap")){
+						field = f;
+						break;
+					}
+				}
+				field.setAccessible(true);
+				field.set(createRequest, jpaEmbeddableObjectKeyMap);
+				method.invoke(createRequest, actualParams);
+			} catch (IllegalArgumentException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			} catch (IllegalAccessException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			} catch (InvocationTargetException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			} catch (SecurityException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			}
+		}
 	}
 	
 	
