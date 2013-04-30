@@ -685,4 +685,20 @@ public class ContentTypeTest extends BaseTest {
 
     assertTrue(match == null);
   }
+  
+  @Test
+  public void testIsWildcard() {
+    assertFalse(ContentType.create("aaa/bbb;x=y;a").isWildcard());
+    assertFalse(ContentType.create("aaa/*;x=y;a").isWildcard());
+    assertTrue(ContentType.create("*/*;x=y;a").isWildcard());
+    assertTrue(ContentType.create("*/*").isWildcard());
+  }
+
+  @Test
+  public void testHasWildcard() {
+    assertFalse(ContentType.create("aaa/bbb;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("aaa/*;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("*/*;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("*/*").hasWildcard());
+  }
 }

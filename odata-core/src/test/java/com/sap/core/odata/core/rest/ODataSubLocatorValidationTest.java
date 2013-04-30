@@ -421,6 +421,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       fail("Expected ODataBadRequestException not thrown");
     } catch (ODataBadRequestException e) {
       assertNotNull(e);
+    } catch (ODataMethodNotAllowedException e) {
+      // TODO
+      assertNotNull(e);
     } catch (Exception e) {
       fail("Unexpected Exception thrown");
     }
@@ -450,6 +453,17 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown");
     } catch (ODataUnsupportedMediaTypeException e) {
+      assertNotNull(e);
+    } catch (Exception e) {
+      fail("Unexpected Exception thrown");
+    }
+  }
+
+  private void notAllowedMethodRequest(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+    try {
+      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+      fail("Expected ODataException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
     } catch (Exception e) {
       fail("Unexpected Exception thrown");
@@ -650,12 +664,16 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     when(entityType.hasStream()).thenReturn(false);
 
     unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "sadlfk");
-    unsupportedRequestContentType(ODataHttpMethod.PUT, UriType.URI1, false, "sadlfk");
   }
 
   @Test
   public void invalidRequestContentType() throws Exception {
     unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
+  }
+
+  @Test
+  public void notAllowedMethodRequests() throws Exception {
+    notAllowedMethodRequest(ODataHttpMethod.PUT, UriType.URI1, false, "sadlfk");
   }
 
   @Test

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -16,7 +15,6 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.Dispatcher;
@@ -33,107 +31,12 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class ODataSubLocatorTest extends BaseTest {
 
-  private void negotiateContentType(final List<ContentType> contentTypes, final List<ContentType> supportedTypes, final String expected) throws ODataException {
-    final ContentType contentType = new ODataSubLocator().contentNegotiation(contentTypes, supportedTypes);
-    assertEquals(expected, contentType.toContentTypeString());
-  }
-
-  @Test
-  public void contentNegotiationEmptyRequest() throws Exception {
-    negotiateContentType(
-        contentTypes(),
-        contentTypes("sup/111", "sup/222"),
-        "sup/111");
-  }
-
-  @Test
-  public void contentNegotiationConcreteRequest() throws Exception {
-    negotiateContentType(
-        contentTypes("sup/222"),
-        contentTypes("sup/111", "sup/222"),
-        "sup/222");
-  }
-
-  @Test(expected = ODataNotAcceptableException.class)
-  public void contentNegotiationNotSupported() throws Exception {
-    negotiateContentType(contentTypes("image/gif"), contentTypes("sup/111", "sup/222"), null);
-  }
-
-  @Test
-  public void contentNegotiationSupportedWildcard() throws Exception {
-    negotiateContentType(
-        contentTypes("image/gif"),
-        contentTypes("sup/111", "sup/222", "*/*"),
-        "image/gif");
-  }
-
-  @Test
-  public void contentNegotiationSupportedSubWildcard() throws Exception {
-    negotiateContentType(
-        contentTypes("image/gif"),
-        contentTypes("sup/111", "sup/222", "image/*"),
-        "image/gif");
-  }
-
-  @Test
-  public void contentNegotiationRequestWildcard() throws Exception {
-    negotiateContentType(
-        contentTypes("*/*"),
-        contentTypes("sup/111", "sup/222"),
-        "sup/111");
-  }
-
-  @Test
-  public void contentNegotiationRequestSubWildcard() throws Exception {
-    negotiateContentType(
-        contentTypes("sup/*", "*/*"),
-        contentTypes("bla/111", "sup/222"),
-        "sup/222");
-  }
-
-  @Test
-  public void contentNegotiationRequestSubtypeWildcard() throws Exception {
-    negotiateContentType(
-        contentTypes("sup2/*"),
-        contentTypes("sup1/111", "sup2/222", "sup2/333"),
-        "sup2/222");
-  }
-
-  @Test
-  public void contentNegotiationRequestResponseWildcard() throws Exception {
-    negotiateContentType(contentTypes("*/*"), contentTypes("*/*"), "*/*");
-  }
-
-  @Test
-  public void contentNegotiationManyRequests() throws Exception {
-    negotiateContentType(
-        contentTypes("bla/111", "bla/blub", "sub2/222"),
-        contentTypes("sub1/666", "sub2/222", "sub3/333"),
-        "sub2/222");
-  }
-
-  @Test(expected = ODataNotAcceptableException.class)
-  public void contentNegotiationCharsetNotSupported() throws Exception {
-    negotiateContentType(
-        contentTypes("text/plain; charset=iso-8859-1"),
-        contentTypes("sup/111", "sup/222"),
-        "sup/222");
-  }
-
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
     ODataSubLocator locator = new ODataSubLocator();
     mockSubLocatorForContentNegotiation(locator, asFormat, requestType, supportedType);
 
     assertEquals(supportedType, locator.handleGet().getHeaderString(HttpHeaders.CONTENT_TYPE));
-  }
-
-  @Test
-  public void contentNegotiationWithODataVerbose() throws Exception {
-    negotiateContentType(
-        contentTypes("text/plain; q=0.5", "application/json;odata=verbose;q=0.2", "*/*"),
-        contentTypes("application/json; charset=utf-8", "sup/222"),
-        "application/json; charset=utf-8");
   }
 
   @Test
@@ -170,7 +73,7 @@ public class ODataSubLocatorTest extends BaseTest {
     }
 
     Mockito.when(parser.parse(Matchers.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Matchers.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
-    ODataService service = mockODataService(locator);
+    mockODataService(locator);
     ODataContextImpl context = mockODataContext(locator);
     Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
     Dispatcher dispatcher = mockDispatcher(locator);
@@ -180,8 +83,7 @@ public class ODataSubLocatorTest extends BaseTest {
         Matchers.any(UriInfoImpl.class),
         Matchers.any(InputStream.class),
         Matchers.anyString(),
-        Matchers.refEq(contentHeader))).thenReturn(odataResponse);
-    Mockito.when(service.getSupportedContentTypes(null)).thenReturn(Arrays.asList(supportedContentTypes));
+        Matchers.anyList())).thenReturn(odataResponse);
   }
 
   private Dispatcher mockDispatcher(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {

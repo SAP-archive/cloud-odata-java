@@ -525,6 +525,14 @@ public class ContentType {
 
   /**
    * 
+   * @return <code>true</code> if <code>type</code> or <code>subtype</code> of this instance is a "*".
+   */
+  public boolean hasWildcard() {
+    return (MEDIA_TYPE_WILDCARD.equals(type) || MEDIA_TYPE_WILDCARD.equals(subtype));
+  }
+
+  /**
+   * 
    * @return <code>true</code> if both <code>type</code> and <code>subtype</code> of this instance are a "*".
    */
   public boolean isWildcard() {
