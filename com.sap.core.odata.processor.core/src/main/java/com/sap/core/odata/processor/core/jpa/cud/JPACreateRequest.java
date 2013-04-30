@@ -265,6 +265,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 	}
 	
 	private <T> void createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
+		if(jpaEntity == null) return;
 		Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
 		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
 	    final EdmEntityType entityType = entitySet.getEntityType();
