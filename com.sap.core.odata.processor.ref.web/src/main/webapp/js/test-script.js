@@ -14,7 +14,7 @@ var request = {
 
 odataTest("read metadata document", 9, request, function(response, data) {
 		equal(response.statusCode, 200, "StatusCode: 200");
-		expectedHeaders(response.headers, { "Content-Length" : "7700" }, "Check if there is any change in metadata");
+		expectedHeaders(response.headers, { "Content-Length" : "7875" }, "Check if there is any change in metadata");
 		strictEqual((new RegExp('<FunctionImport Name="getAddress" ReturnType="SalesOrderProcessing.AddressInfo" m:HttpMethod="GET">')).test(response.body), true,"Check function import 'getAddress'");
 		strictEqual((new RegExp('<FunctionImport Name="FindAllSalesOrders" ReturnType="Collection\\(SalesOrderProcessing.SalesOrder\\)" EntitySet="SalesOrders" m:HttpMethod="GET">')).test(response.body), true,"Check function import 'FindAllSalesOrders'");
 		strictEqual((new RegExp('<Parameter Name="DeliveryStatusCode" Type="Edm.String" Mode="In" Nullable="false" MaxLength="2"\\/>')).test(response.body), true,"Check the param in function import 'FindAllSalesOrders'");
@@ -393,7 +393,7 @@ var request = {
 		resourcePath: "Materials?$filter=substringof('_Name_1',%20MaterialName)%20or%20substringof('Dollar',MeasurementUnit)%20and%20MaterialId%20eq%20111&$inlinecount=allpages&$orderby=MaterialId"
 };
 
-odataTest("Multiple substringof expressions with 'and' and 'or' operators with implicit substringof expression and $orderby", 5, request, function(response, data) {
+odataTest("Multiple substringof expressions with 'and' and 'or' operators with implicit substringof expression and $orderby", 7, request, function(response, data) {
 	equal(response.statusCode, 200, "HTTP Status Code: 200");
 	equal(response.statusText, "OK", "HTTP Status Text: OK");
 	equal(response.data.results.length, 3, "Total number of entries returned: 3");
