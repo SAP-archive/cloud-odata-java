@@ -264,7 +264,6 @@ public class JPACreateRequest extends JPAWriteRequest{
 			}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private <T> void createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
 		Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
 		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
@@ -272,13 +271,10 @@ public class JPACreateRequest extends JPAWriteRequest{
 	    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
 	    	final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
 	    	List<ODataEntry> relatedValueList = null;
-	    	if(navigationProperty.getMultiplicity() == EdmMultiplicity.ONE){
-	    		ODataEntry oDataEntry = (ODataEntry)entryValues.getProperties().get(navigationPropertyName);
-	    		relatedValueList = new ArrayList<ODataEntry>();
-	    		relatedValueList.add(oDataEntry);
-	    	}else{	      
-	      relatedValueList = (List<ODataEntry>) entryValues.getProperties().get(navigationPropertyName);
-	    }
+	    	if(entryValues.getProperties().get(navigationPropertyName) != null){
+    			relatedValueList = ((com.sap.core.odata.core.ep.feed.ODataFeedImpl)entryValues.getProperties().get(navigationPropertyName)).getEntries();
+    		}
+	    
 	      if (relatedValueList != null) {
 	        final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
 	        
@@ -349,8 +345,6 @@ public class JPACreateRequest extends JPAWriteRequest{
 					List<Object> propertyList = new ArrayList<Object>();
 					propertyList.add(propertyValue);
 					propertyValue = propertyList;
-				}else{
-					
 				}
 				method.invoke(jpaEntity,propertyValue);
 			} catch (IllegalAccessException e) {
