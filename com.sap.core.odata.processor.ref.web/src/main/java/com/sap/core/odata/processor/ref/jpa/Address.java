@@ -2,7 +2,6 @@ package com.sap.core.odata.processor.ref.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 
 @Embeddable
 public class Address {
@@ -32,17 +31,6 @@ public class Address {
 
 	@Column(name = "COUNTRY")
 	private String country;
-
-	@Embedded
-	private TelephoneNumber telephoneNumber;
-	
-	public TelephoneNumber getTelephoneNumber() {
-		return telephoneNumber;
-	}
-
-	public void setTelephoneNumber(TelephoneNumber telephoneNumber) {
-		this.telephoneNumber = telephoneNumber;
-	}
 
 	public short getHouseNumber() {
 		return houseNumber;
@@ -75,5 +63,4 @@ public class Address {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 }
