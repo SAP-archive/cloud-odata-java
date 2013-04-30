@@ -39,7 +39,9 @@ import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -65,6 +67,32 @@ public class JPAProcessorImplTest {
 	public void testProcessGetEntitySetCountUriInfo() {
 		try {
 			Assert.assertEquals(11, objJPAProcessorImpl.process(getEntitySetCountUriInfo()));
+		} catch (ODataJPAModelException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	
+	@Test
+	public void testProcessGetEntityCountUriInfo() {
+		try {
+			Assert.assertEquals(11, objJPAProcessorImpl.process(getEntityCountUriInfo()));
+		} catch (ODataJPAModelException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	
+	@Test
+	public void testProcessGetEntitySetUriInfo() {
+		try {
+			Assert.assertNotNull(objJPAProcessorImpl.process(getEntitySetUriInfo()));
 		} catch (ODataJPAModelException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -128,6 +156,27 @@ public class JPAProcessorImplTest {
 	
 	private GetEntitySetCountUriInfo getEntitySetCountUriInfo() {
 		return getLocalUriInfo();
+	}
+	
+	private GetEntityCountUriInfo getEntityCountUriInfo() {
+		return getLocalUriInfo();
+	}
+	
+	private GetEntitySetUriInfo getEntitySetUriInfo() {
+		
+		UriInfo objUriInfo = EasyMock.createMock(UriInfo.class);
+		EasyMock.expect(objUriInfo.getStartEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getTargetEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getSelect()).andStubReturn(null);
+		EasyMock.expect(objUriInfo.getOrderBy()).andStubReturn(getOrderByExpression());
+		EasyMock.expect(objUriInfo.getTop()).andStubReturn(getTop());
+		EasyMock.expect(objUriInfo.getSkip()).andStubReturn(getSkip());
+		EasyMock.expect(objUriInfo.getInlineCount()).andStubReturn(getInlineCount());
+		EasyMock.expect(objUriInfo.getFilter()).andStubReturn(getFilter());
+		//EasyMock.expect(objUriInfo.getFunctionImport()).andStubReturn(getFunctionImport());
+		EasyMock.expect(objUriInfo.getFunctionImport()).andStubReturn(null);
+		EasyMock.replay(objUriInfo);
+		return objUriInfo;
 	}
 	
 
