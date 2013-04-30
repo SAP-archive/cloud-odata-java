@@ -111,6 +111,9 @@ public class JsonEntryEntityProducer {
               context.setCurrentExpandSelectTreeNode(properties.getExpandSelectTree().getLinks().get(navigationPropertyName));
 
               ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
+              if(callback == null){
+                throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
+              }
               try {
                 if (isFeed) {
                   final WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult((WriteFeedCallbackContext) context);
@@ -132,14 +135,11 @@ public class JsonEntryEntityProducer {
               } catch (final ODataApplicationException e) {
                 throw new EntityProviderException(EntityProviderException.COMMON, e);
               }
-            } else {
-              throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
+            }else{
+              writeDeferredUri(navigationPropertyName);
             }
           } else {
-            jsonStreamWriter.beginObject();
-            jsonStreamWriter.name(FormatJson.DEFERRED);
-            JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
-            jsonStreamWriter.endObject();
+            writeDeferredUri(navigationPropertyName);
           }
         }
       }
@@ -155,6 +155,13 @@ public class JsonEntryEntityProducer {
     } catch (final EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private void writeDeferredUri(final String navigationPropertyName) throws IOException {
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.name(FormatJson.DEFERRED);
+    JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
+    jsonStreamWriter.endObject();
   }
 
   public String getETag() {

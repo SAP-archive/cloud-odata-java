@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -177,6 +178,29 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author/a:name", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:link[@href=\"Buildings('1')/nb_Rooms\"]", xmlString);
   }
+  
+  @Test(expected = EntityProviderException.class)
+  public void expandSelectedRoomsWithNullCallback() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Buildings('1')", "nb_Rooms", "nb_Rooms");
+
+    HashMap<String, ODataCallback> callbacksBuilding = new HashMap<String, ODataCallback>();
+    callbacksBuilding.put("nb_Rooms", null);
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksBuilding).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Buildings"), buildingData, properties);
+
+    String xmlString = verifyResponse(response);
+    assertXpathNotExists("/a:entry/m:properties", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline", xmlString);
+
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:id", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:title", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:updated", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author/a:name", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:link[@href=\"Buildings('1')/nb_Rooms\"]", xmlString);
+  }
 
   private HashMap<String, ODataCallback> createCallbacks(final String entitySetName) throws EdmException, ODataException {
     HashMap<String, ODataCallback> callbacksEmployee = new HashMap<String, ODataCallback>();
@@ -199,6 +223,17 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     verifyNavigationProperties(xmlString, F, T, F);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     assertXpathNotExists(roomXPathString + "/m:inline", xmlString);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void expandSelectedRoomWithNullCallback() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Employees('1')", "ne_Room", "ne_Room");
+    HashMap<String, ODataCallback> callbacksEmployee = new HashMap<String, ODataCallback>();
+    callbacksEmployee.put("ne_Room", null);
+
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksEmployee).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
   }
 
   private void verifyEmployees(final String path, final String xmlString) throws XpathException, IOException, SAXException {
