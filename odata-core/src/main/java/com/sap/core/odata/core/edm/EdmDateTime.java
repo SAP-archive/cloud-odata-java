@@ -36,7 +36,7 @@ public class EdmDateTime extends AbstractSimpleType {
   private static final Pattern PATTERN = Pattern.compile(
       "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
-  private static final Pattern JSON_PATTERN = Pattern.compile("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/");
+  private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
 
   public static EdmDateTime getInstance() {
@@ -49,24 +49,16 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     // In JSON, we allow also the XML literal form, so there is on purpose
     // no exception if the JSON pattern does not match.
     if (literalKind == EdmLiteralKind.JSON) {
-      if (JSON_PATTERN.matcher(value).matches()) {
+      final Matcher matcher = JSON_PATTERN.matcher(value);
+      if (matcher.matches()) {
         long millis;
         try {
-          millis = Long.parseLong(value.substring(7, value.length() - 3));
-        } catch (NumberFormatException e) {
+          millis = Long.parseLong(matcher.group(1));
+        } catch (final NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
         if (returnType.isAssignableFrom(Long.class)) {
@@ -151,7 +143,7 @@ public class EdmDateTime extends AbstractSimpleType {
     dateTimeValue.setLenient(false);
     try {
       dateTimeValue.getTimeInMillis();
-    } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
     dateTimeValue.setLenient(true);
@@ -159,15 +151,7 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     Calendar dateTimeValue = Calendar.getInstance();
     dateTimeValue.clear();
     if (value instanceof Date) {
@@ -181,7 +165,7 @@ public class EdmDateTime extends AbstractSimpleType {
     }
 
     if (literalKind == EdmLiteralKind.JSON) {
-      return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
+      return "/Date(" + dateTimeValue.getTimeInMillis() + ")/";
     }
 
     final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -208,10 +192,6 @@ public class EdmDateTime extends AbstractSimpleType {
 
     if (result.endsWith(".")) {
       result = result.substring(0, result.length() - 1);
-    }
-
-    if (literalKind == EdmLiteralKind.URI) {
-      result = toUriLiteral(result);
     }
 
     return result;

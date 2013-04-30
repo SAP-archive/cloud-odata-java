@@ -556,6 +556,50 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test
+  public void testCompatible() {
+    ContentType t1 = ContentType.create("aaa/bbb");
+    ContentType t2 = ContentType.create("aaa/bbb");
+
+    assertTrue(t1.isCompatible(t2));
+    assertTrue(t2.isCompatible(t1));
+    //
+    assertTrue(t1.equals(t2));
+  }
+
+  @Test
+  public void testCompatibleQ_ParametersSet() {
+    ContentType t1 = ContentType.create("aaa/bbb;q=0.9;x=y;a=b");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+
+    assertTrue(t1.isCompatible(t2));
+    assertTrue(t2.isCompatible(t1));
+    //
+    assertTrue(t1.equals(t2));
+  }
+
+  @Test
+  public void testCompatibleDiffParameterValuesSet() {
+    ContentType t1 = ContentType.create("aaa/bbb;x=z;a=c");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+
+    assertTrue(t1.isCompatible(t2));
+    assertTrue(t2.isCompatible(t1));
+    //
+    assertFalse(t1.equals(t2));
+  }
+
+  @Test
+  public void testCompatibleDiffParameterCountSet() {
+    ContentType t1 = ContentType.create("aaa/bbb;a=b");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+
+    assertTrue(t1.isCompatible(t2));
+    assertTrue(t2.isCompatible(t1));
+    //
+    assertFalse(t1.equals(t2));
+  }
+
+  @Test
   public void testMatchSimple() {
     ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
     ContentType m2 = ContentType.create("aaa/ccc");
@@ -620,5 +664,40 @@ public class ContentTypeTest extends BaseTest {
 
     boolean match = check.hasMatch(toMatchContentTypes);
     assertFalse(match);
+  }
+
+  @Test
+  public void testMatchCompatibleSimple() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("foo/me");
+
+    ContentType match = check.matchCompatible(toMatchContentTypes);
+
+    assertEquals(ContentType.create("foo/me"), match);
+    assertEquals("foo/me", match.toContentTypeString());
+  }
+
+  @Test
+  public void testMatchCompatibleNoMatch() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("for/me");
+
+    ContentType match = check.matchCompatible(toMatchContentTypes);
+
+    assertTrue(match == null);
   }
 }

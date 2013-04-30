@@ -24,15 +24,13 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties.EntityProviderReadPropertiesBuilder;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
@@ -42,7 +40,6 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class XmlEntityConsumer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(XmlEntityConsumer.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "utf-8";
 
@@ -50,8 +47,31 @@ public class XmlEntityConsumer {
     super();
   }
 
+  public ODataFeed readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    XMLStreamReader reader = null;
+
+    try {
+      reader = createStaxReader(content);
+
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      XmlFeedConsumer xfc = new XmlFeedConsumer();
+      return xfc.readFeed(reader, eia, properties);
+    } catch (EntityProviderException e) {
+      throw e;
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {}
+      }
+    }
+  }
+
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
+    EntityProviderException cachedException = null;
 
     try {
       XmlEntryConsumer xec = new XmlEntryConsumer();
@@ -61,16 +81,21 @@ public class XmlEntityConsumer {
       ODataEntry result = xec.readEntry(reader, eia, properties);
       return result;
     } catch (EntityProviderException e) {
-      throw e;
+      cachedException = e;
+      throw cachedException;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }
@@ -78,6 +103,7 @@ public class XmlEntityConsumer {
 
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
+    EntityProviderException cachedException = null;
 
     try {
       XmlPropertyConsumer xec = new XmlPropertyConsumer();
@@ -85,14 +111,18 @@ public class XmlEntityConsumer {
       Map<String, Object> result = xec.readProperty(reader, edmProperty, properties.getMergeSemantic(), properties.getTypeMappings());
       return result;
     } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }
@@ -121,20 +151,25 @@ public class XmlEntityConsumer {
 
   public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
+    EntityProviderException cachedException = null;
 
     try {
       XmlLinkConsumer xlc = new XmlLinkConsumer();
       reader = createStaxReader(content);
       return xlc.readLink(reader, entitySet);
     } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }
@@ -142,20 +177,25 @@ public class XmlEntityConsumer {
 
   public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
+    EntityProviderException cachedException = null;
 
     try {
       XmlLinkConsumer xlc = new XmlLinkConsumer();
       reader = createStaxReader(content);
       return xlc.readLinks(reader, entitySet);
     } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }

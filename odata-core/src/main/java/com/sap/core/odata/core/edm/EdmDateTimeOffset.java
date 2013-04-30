@@ -26,7 +26,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type DateTimeOffset
+ * Implementation of the EDM simple type DateTimeOffset.
  * @author SAP AG
  */
 public class EdmDateTimeOffset extends AbstractSimpleType {
@@ -36,9 +36,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?"
           + "(Z|([-+]\\p{Digit}{1,2}:\\p{Digit}{2}))?");
   private static final Pattern JSON_PATTERN = Pattern.compile(
-      "\\\\/Date\\((-?\\p{Digit}+)"
-          + "(?:(\\+|-)(\\p{Digit}{1,4}))?"
-          + "\\)\\\\/");
+      "/Date\\((-?\\p{Digit}+)(?:(\\+|-)(\\p{Digit}{1,4}))?\\)/");
   private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
 
   public static EdmDateTimeOffset getInstance() {
@@ -51,19 +49,10 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 16 && value.startsWith("datetimeoffset'") && value.endsWith("'")) {
-        return valueOfString(value.substring(15, value.length() - 1), EdmLiteralKind.DEFAULT, facets, returnType);
+        return internalValueOfString(value.substring(15, value.length() - 1), EdmLiteralKind.DEFAULT, facets, returnType);
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
@@ -79,7 +68,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
         long millis;
         try {
           millis = Long.parseLong(matcher.group(1));
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
         dateTimeValue.setTimeInMillis(millis);
@@ -136,15 +125,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     Calendar dateTimeValue;
     if (value instanceof Date) {
       dateTimeValue = Calendar.getInstance();
@@ -166,10 +147,10 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
     final int offsetInMinutes = offset / 60 / 1000;
 
     if (literalKind == EdmLiteralKind.JSON) {
-      return "\\/Date("
+      return "/Date("
           + Long.toString(dateTimeValue.getTimeInMillis())
           + (offset == 0 ? "" : String.format("%+05d", offsetInMinutes))
-          + ")\\/";
+          + ")/";
 
     } else {
       final String localTimeString = EdmDateTime.getInstance().valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);
@@ -177,11 +158,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
       final int offsetMinutes = Math.abs(offsetInMinutes % 60);
       final String offsetString = offset == 0 ? "Z" : String.format("%+03d:%02d", offsetHours, offsetMinutes);
 
-      if (literalKind == EdmLiteralKind.URI) {
-        return toUriLiteral(localTimeString + offsetString);
-      } else {
-        return localTimeString + offsetString;
-      }
+      return localTimeString + offsetString;
     }
   }
 

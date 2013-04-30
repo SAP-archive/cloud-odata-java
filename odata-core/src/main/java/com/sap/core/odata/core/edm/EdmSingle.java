@@ -26,7 +26,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type Single
+ * Implementation of the EDM simple type Single.
  * @author SAP AG
  */
 public class EdmSingle extends AbstractSimpleType {
@@ -61,16 +61,7 @@ public class EdmSingle extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     String valueString = value;
     Float result = null;
     // Handle special values first.
@@ -128,64 +119,50 @@ public class EdmSingle extends AbstractSimpleType {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
         }
 
-      } catch (ArithmeticException e) {
+      } catch (final ArithmeticException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
       }
     }
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
-    String result;
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value instanceof Long || value instanceof Integer) {
       if (Math.abs(((Number) value).longValue()) < Math.pow(10, MAX_PRECISION)) {
-        result = value.toString();
+        return value.toString();
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
       }
     } else if (value instanceof Short || value instanceof Byte) {
-      result = value.toString();
+      return value.toString();
     } else if (value instanceof Double) {
       if (((Double) value).isInfinite()) {
         return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
       } else if (Float.isInfinite(((Double) value).floatValue())) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
       } else {
-        result = Float.toString(((Double) value).floatValue());
+        return Float.toString(((Double) value).floatValue());
       }
     } else if (value instanceof Float) {
       if (((Float) value).isInfinite()) {
         return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
       } else {
-        result = value.toString();
+        return value.toString();
       }
     } else if (value instanceof BigDecimal) {
       if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE) {
-        result = ((BigDecimal) value).toString();
+        return ((BigDecimal) value).toString();
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
       }
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
-
-    if (literalKind == EdmLiteralKind.URI) {
-      result = toUriLiteral(result);
-    }
-
-    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) {
-    return literal + "F";
+    return literal.equals("-INF") || literal.equals("INF") || literal.equals("NaN") ?
+        literal : literal + "F";
   }
 }

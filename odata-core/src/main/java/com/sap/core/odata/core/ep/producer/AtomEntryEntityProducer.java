@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.sap.core.odata.core.ep.producer;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -121,17 +122,10 @@ public class AtomEntryEntityProducer {
     List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
     for (String tpName : noneSyndicationTargetPaths) {
       EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
-      if (!isKeepInContent(info)) {
-        XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
-        final String name = info.getName();
-        aps.append(writer, name, info, data.get(name));
-      }
+      final String name = info.getName();
+      XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
+      aps.appendCustomProperty(writer, name, info, data.get(name));
     }
-  }
-
-  private boolean isKeepInContent(final EntityPropertyInfo info) {
-    EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
-    return Boolean.TRUE.equals(customMapping.isFcKeepInContent());
   }
 
   protected static String createETag(final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
@@ -178,7 +172,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_TITLE, navigationPropertyName);
       if (isFeed) {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_FEED.toString());
-        appendInlineFeed(writer, navigationPropertyName, eia, data);
+        appendInlineFeed(writer, navigationPropertyName, eia, data, self);
       } else {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_ENTRY.toString());
         appendInlineEntry(writer, navigationPropertyName, eia, data);
@@ -190,7 +184,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
+  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data, final String self) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
         if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
@@ -203,17 +197,17 @@ public class AtomEntryEntityProducer {
           context.setEntryData(data);
           ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           context.setCurrentExpandSelectTreeNode(subNode);
+          context.setSelfLink(new URI(self));
 
           ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
           WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
           List<Map<String, Object>> inlineData = result.getFeedData();
-          if (inlineData != null) {
-            EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
-            EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
-            AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
-            EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-            inlineFeedProducer.append(writer, inlineEia, inlineData);
-          }
+
+          EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
+          EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
+          AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
+          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+          inlineFeedProducer.append(writer, inlineEia, inlineData, true);
 
           writer.writeEndElement();
         }

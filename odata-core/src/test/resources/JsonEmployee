@@ -1,0 +1,48 @@
+{
+	"d" : {
+		"__metadata" : {
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
+			"type" : "RefScenario.Employee",
+			"content_type" : "image/jpeg",
+			"media_src" : "Employees('1')/$value",
+			"edit_media" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/$value"
+		},
+		"EmployeeId" : "1",
+		"EmployeeName" : "Walter Winter",
+		"ManagerId" : "1",
+		"RoomId" : "1",
+		"TeamId" : "1",
+		"Location" : {
+			"__metadata" : {
+				"type" : "RefScenario.c_Location"
+			},
+			"City" : {
+				"__metadata" : {
+					"type" : "RefScenario.c_City"
+				},
+				"PostalCode" : "69124",
+				"CityName" : "Heidelberg"
+			},
+			"Country" : "Germany"
+		},
+		"Age" : 52,
+		"EntryDate" : "\/Date(915148800000)\/",
+		"ImageUrl" : "Employees('1')/$value",
+		"ne_Manager" : {
+			"__deferred" : {
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Manager"
+			}
+		},
+		"ne_Team" : {
+			"__deferred" : {
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Team"
+			}
+		},
+		"ne_Room" : {
+			"__deferred" : {
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Room"
+			}
+		}
+	}
+}

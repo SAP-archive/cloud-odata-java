@@ -38,6 +38,9 @@ public class PropertyJsonReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData?$format=json");
     assertEquals("{\"d\":{\"BinaryData\":null}}", getBody(response));
+
+    response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image?$format=json");
+    assertEquals("{\"d\":{\"Image\":\"" + PHOTO_DEFAULT_IMAGE + "\"}}", getBody(response));
   }
 
   @Test

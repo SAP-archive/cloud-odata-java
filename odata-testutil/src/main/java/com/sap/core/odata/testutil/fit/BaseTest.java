@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseTest {
 
-  private static final String CLASSNAME_ODATA_EXCEPTION_MAPPER = "com.sap.core.odata.core.rest.ODataExceptionMapperImpl";
-
   static {
     DOMConfigurator.configureAndWatch("/log4j.xml");
   }
@@ -78,20 +76,13 @@ public abstract class BaseTest {
   };
 
   /**
-   * Disable logging for class with classname {@value #CLASSNAME_ODATA_EXCEPTION_MAPPER}.
-   * If no class with this classname can be found an error log entry is written.
+   * Disable logging.
    * <br /> 
    * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
    * {@link #after()}).
-   * 
-   * @param classes
    */
   protected void disableLogging() {
-    try {
-      disableLogging(Class.forName(CLASSNAME_ODATA_EXCEPTION_MAPPER));
-    } catch (final ClassNotFoundException e) {
-      log.error("Expected class was not found for disabling of logging.");
-    }
+    disableLogging(FitErrorCallback.class);
   }
 
   /**

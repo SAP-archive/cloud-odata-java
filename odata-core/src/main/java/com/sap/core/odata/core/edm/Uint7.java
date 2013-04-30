@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the internal simple type "unsigned 7-bit integer"
+ * Implementation of the internal simple type "unsigned 7-bit integer".
  * @author SAP AG
  */
 public class Uint7 extends AbstractSimpleType {
@@ -49,12 +49,12 @@ public class Uint7 extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    return EdmSByte.getInstance().valueOfString(value, literalKind, facets, returnType);
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
+    return EdmSByte.getInstance().internalValueOfString(value, literalKind, facets, returnType);
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return EdmSByte.getInstance().valueToString(value, literalKind, facets);
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    return EdmSByte.getInstance().internalValueToString(value, literalKind, facets);
   }
 }

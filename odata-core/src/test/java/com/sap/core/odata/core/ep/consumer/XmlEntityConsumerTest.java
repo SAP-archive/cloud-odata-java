@@ -20,15 +20,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -51,6 +51,8 @@ import com.sap.core.odata.api.ep.callback.ReadResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.FeedMetadata;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -60,6 +62,11 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * @author SAP AG
  */
 public class XmlEntityConsumerTest extends AbstractConsumerTest {
+
+  private static final Logger LOG = Logger.getLogger(XmlEntityConsumerTest.class.getName());
+  static {
+    LOG.setLevel(Level.OFF);
+  }
 
   public static final String EMPLOYEE_1_XML =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -239,7 +246,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName.contains("Employees")) {
-          employees = ((ReadFeedResult) context).getResult();
+          employees = ((ReadFeedResult) context).getResult().getEntries();
         } else {
           throw new RuntimeException("Invalid title");
         }
@@ -296,9 +303,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       return (ODataEntry) getObject(name);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<ODataEntry> asFeed(final String name) {
-      return (List<ODataEntry>) getObject(name);
+    public ODataFeed asFeed(final String name) {
+      return (ODataFeed) getObject(name);
     }
 
     @Override
@@ -312,7 +318,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void readWithInlineContentAndCallback() throws Exception {
     // prepare
@@ -347,7 +352,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
@@ -379,7 +386,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     assertNull(properties.get("nt_Employees"));
     //
-    final List<ODataEntry> employees = defaultCallback.asFeed("nt_Employees");
+    ODataFeed employeesFeed = defaultCallback.asFeed("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = employees.get(1);
@@ -393,6 +401,41 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
+  }
+
+  @Test
+  public void readInlineBuildingEntry() throws Exception {
+    // prepare
+
+    String content = readFile("expandedBuilding.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false).build();
+
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Room 1", properties.get("Name"));
+    assertEquals((short) 1, properties.get("Seats"));
+    assertEquals((short) 1, properties.get("Version"));
+    //
+    ExpandSelectTreeNode expandTree = entry.getExpandSelectTree();
+    assertNotNull(expandTree);
+
+    ODataEntry inlineBuilding = (ODataEntry) properties.get("nr_Building");
+    Map<String, Object> inlineBuildingProps = inlineBuilding.getProperties();
+    assertEquals("1", inlineBuildingProps.get("Id"));
+    assertEquals("Building 1", inlineBuildingProps.get("Name"));
+    assertNull(inlineBuildingProps.get("Image"));
+    assertNull(inlineBuildingProps.get("nb_Rooms"));
   }
 
   /**
@@ -427,10 +470,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNotNull(expandTree);
     // TODO: do more testing here
     //
-    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
-    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
@@ -446,7 +490,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * 
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void readWithDoubleInlineContent() throws Exception {
     // prepare
@@ -468,7 +511,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     //
-    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     //
     ODataEntry employeeNo2 = employees.get(1);
@@ -476,7 +520,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
@@ -566,11 +612,12 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     // teams has no inlined content set
-    List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
-    assertNull(employees);
+    ODataFeed employeesFeed = (ODataFeed) properties.get("nt_Employees");
+    assertNull(employeesFeed);
 
     // get inlined employees feed from callback
-    employees = callbackHandler.asFeed("nt_Employees");
+    employeesFeed = callbackHandler.asFeed("nt_Employees");
+    List<ODataEntry> employees = employeesFeed.getEntries();
     assertEquals(3, employees.size());
     ODataEntry employeeNo2 = employees.get(1);
     Map<String, Object> employessNo2Props = employeeNo2.getProperties();
@@ -612,11 +659,45 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
   }
 
+  /**
+   * Read an inline Room at an Employee
+   * 
+   * @throws Exception
+   */
   @Test
   public void readWithInlineContentEmployeeRoomEntry() throws Exception {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream reqContent = createContentAsStream(EMPLOYEE_1_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    Map<String, Object> roomProperties = room.getProperties();
+    assertEquals(4, roomProperties.size());
+    assertEquals("1", roomProperties.get("Id"));
+    assertEquals("Room 1", roomProperties.get("Name"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Seats"));
+    assertEquals(Short.valueOf("1"), roomProperties.get("Version"));
+  }
+
+  /**
+   * Read an inline Room at an Employee with special formated XML (see issue: https://jtrack/browse/ODATAFORSAP-92)
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentEmployeeRoomEntrySpecialXml() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_ROOM_XML, true);
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
@@ -646,6 +727,30 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream reqContent = createContentAsStream(EMPLOYEE_1_NULL_ROOM_XML);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    ODataEntry room = (ODataEntry) properties.get("ne_Room");
+    assertNull(room);
+  }
+
+  /**
+   * Read of employee with inlined but <code>NULL</code> room navigation property (which has {@link EdmMultiplicity#ONE}.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void readWithInlineContentEmployeeNullRoomEntrySpecialXmlFormat() throws Exception {
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(EMPLOYEE_1_NULL_ROOM_XML, true);
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
@@ -1363,6 +1468,94 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
   @SuppressWarnings("unchecked")
   @Test
+  public void testReadFeed() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = readFile("feed_employees.xml");
+    InputStream contentAsStream = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify feed result
+    // metadata
+    FeedMetadata metadata = feedResult.getFeedMetadata();
+    assertNull(metadata.getInlineCount());
+    assertNull(metadata.getNextLink());
+    // entries
+    List<ODataEntry> entries = feedResult.getEntries();
+    assertEquals(6, entries.size());
+    // verify first employee
+    ODataEntry firstEmployee = entries.get(0);
+    Map<String, Object> properties = firstEmployee.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadFeedWithInlineCountAndNextLink() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = readFile("feed_employees_full.xml");
+    InputStream contentAsStream = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataFeed feedResult = xec.readFeed(entitySet, contentAsStream, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify feed result
+    // metadata
+    FeedMetadata metadata = feedResult.getFeedMetadata();
+    assertEquals(Integer.valueOf(6), metadata.getInlineCount());
+    assertEquals("http://thisisanextlink", metadata.getNextLink());
+    // entries
+    List<ODataEntry> entries = feedResult.getEntries();
+    assertEquals(6, entries.size());
+    // verify first employee
+    ODataEntry firstEmployee = entries.get(0);
+    Map<String, Object> properties = firstEmployee.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
   public void testReadEntry() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
@@ -1876,7 +2069,23 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
   }
 
-  private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
-    return new ByteArrayInputStream(xml.getBytes("UTF-8"));
+  @Test
+  public void testReadSkipTag() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML
+        .replace("<title type=\"text\">Walter Winter</title>",
+            "<title type=\"text\"><title>Walter Winter</title></title>"));
+    //        .replace("<id>http://localhost:19000/Employees('1')</id>", 
+    //            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify
+    String id = result.getMetadata().getId();
+    assertEquals("http://localhost:19000/Employees('1')", id);
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
   }
 }

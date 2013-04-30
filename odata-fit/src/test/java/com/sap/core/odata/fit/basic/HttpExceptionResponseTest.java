@@ -112,9 +112,6 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
       XMLUnit.setXpathNamespaceContext(ctx);
       assertXpathExists("/a:error/a:code", content);
-
-      //TODO: How to check for the right text here?
-      //assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
     }
 
   }

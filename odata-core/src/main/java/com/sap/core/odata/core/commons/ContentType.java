@@ -45,8 +45,10 @@ public class ContentType {
   private static final String PARAMETER_SEPARATOR = ";";
   private static final String TYPE_SUBTYPE_SEPARATOR = "/";
   private static final String MEDIA_TYPE_WILDCARD = "*";
+  private static final String VERBOSE = "verbose";
 
   public static final String PARAMETER_CHARSET = "charset";
+  public static final String PARAMETER_ODATA = "odata";
   public static final String PARAMETER_Q = "q";
   public static final String CHARSET_UTF_8 = "utf-8";
 
@@ -63,6 +65,7 @@ public class ContentType {
   public static final ContentType APPLICATION_ATOM_SVC = new ContentType("application", "atomsvc+xml", ODataFormat.ATOM);
   public static final ContentType APPLICATION_ATOM_SVC_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_SVC, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_JSON = new ContentType("application", "json", ODataFormat.JSON);
+  public static final ContentType APPLICATION_JSON_ODATA_VERBOSE = ContentType.create(APPLICATION_JSON, PARAMETER_ODATA, VERBOSE);
   public static final ContentType APPLICATION_JSON_CS_UTF_8 = ContentType.create(APPLICATION_JSON, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_OCTET_STREAM = new ContentType("application", "octet-stream");
   public static final ContentType TEXT_PLAIN = new ContentType("text", "plain");
@@ -303,6 +306,67 @@ public class ContentType {
    */
   @Override
   public boolean equals(final Object obj) {
+    Boolean compatible = isEqualWithoutParameters(obj);
+
+    if (compatible == null) {
+      ContentType other = (ContentType) obj;
+
+      // parameter checks
+      if (parameters == null) {
+        if (other.parameters != null) {
+          return false;
+        }
+      } else if (parameters.size() == other.parameters.size()) {
+        Iterator<Entry<String, String>> entries = parameters.entrySet().iterator();
+        Iterator<Entry<String, String>> otherEntries = other.parameters.entrySet().iterator();
+        while (entries.hasNext()) {
+          Entry<String, String> e = entries.next();
+          Entry<String, String> oe = otherEntries.next();
+
+          if (!areEqual(e.getKey(), oe.getKey())) {
+            return false;
+          }
+          if (!areEqual(e.getValue(), oe.getValue())) {
+            return false;
+          }
+        }
+      } else {
+        return false;
+      }
+      return true;
+    } else {
+      // all tests run
+      return compatible.booleanValue();
+    }
+  }
+
+  /**
+   * {@link ContentType}s are <b>compatible</b> 
+   * <ul>
+   * <li>if <code>type</code>, <code>subtype</code> have the same value.</li>
+   * <li>if <code>type</code> and/or <code>subtype</code> is set to "*"</li>
+   * </ul>
+   * The set <code>parameters</code> are <b>always</b> ignored (for compare with parameters see {@link #equals(Object)}).
+   * 
+   * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code>.
+   */
+  public boolean isCompatible(final ContentType obj) {
+    Boolean compatible = isEqualWithoutParameters(obj);
+    if (compatible == null) {
+      return true;
+    }
+    return compatible.booleanValue();
+  }
+
+  /**
+   * Check equal without parameters.
+   * It is possible that no decision about <code>equal/none equal</code> can be determined a <code>NULL</code> is returned.
+   * 
+   * @param obj to checked object
+   * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code> 
+   *          or <code>NULL</code> if no decision about <code>equal/none equal</code> could be determined.
+   */
+  private Boolean isEqualWithoutParameters(final Object obj) {
     // basic checks
     if (this == obj) {
       return true;
@@ -343,31 +407,7 @@ public class ContentType {
       return true;
     }
 
-    // parameter checks
-    if (parameters == null) {
-      if (other.parameters != null) {
-        return false;
-      }
-    } else if (parameters.size() == other.parameters.size()) {
-      Iterator<Entry<String, String>> entries = parameters.entrySet().iterator();
-      Iterator<Entry<String, String>> otherEntries = other.parameters.entrySet().iterator();
-      while (entries.hasNext()) {
-        Entry<String, String> e = entries.next();
-        Entry<String, String> oe = otherEntries.next();
-
-        if (!areEqual(e.getKey(), oe.getKey())) {
-          return false;
-        }
-        if (!areEqual(e.getValue(), oe.getValue())) {
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
-
-    // all tests passed
-    return true;
+    return null;
   }
 
   /**
@@ -427,6 +467,29 @@ public class ContentType {
   public ContentType match(final List<ContentType> toMatchContentTypes) {
     for (ContentType supportedContentType : toMatchContentTypes) {
       if (equals(supportedContentType)) {
+        if (compareWildcardCounts(supportedContentType) < 0) {
+          return this;
+        } else {
+          return supportedContentType;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find best match between this {@link ContentType} and the {@link ContentType} in the list ignoring all set parameters.
+   * If a match (this {@link ContentType} is equal to a {@link ContentType} in list) is found either this or the {@link ContentType}
+   * from the list is returned based on which {@link ContentType} has less "**" characters set 
+   * (checked with {@link #compareWildcardCounts(ContentType)}.
+   * If no match (none {@link ContentType} in list is equal to this {@link ContentType}) is found <code>NULL</code> is returned.
+   * 
+   * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
+   * @return best matched content type in list or <code>NULL</code> if none content type match to this content type instance
+   */
+  public ContentType matchCompatible(final List<ContentType> toMatchContentTypes) {
+    for (ContentType supportedContentType : toMatchContentTypes) {
+      if (isCompatible(supportedContentType)) {
         if (compareWildcardCounts(supportedContentType) < 0) {
           return this;
         } else {

@@ -56,6 +56,22 @@ public class EntryJsonReadOnlyTest extends AbstractRefTest {
   }
 
   @Test
+  public void entryFromNonDefaultContainer() throws Exception {
+    final HttpResponse response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')?$format=json");
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    assertEquals("{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Container2.Photos(Id=1,Type='image%2fpng')\","
+        + "\"uri\":\"" + getEndpoint() + "Container2.Photos(Id=1,Type='image%2fpng')\","
+        + "\"type\":\"RefScenario2.Photo\",\"etag\":\"W/\\\"1\\\"\",\"content_type\":\"image/png\","
+        + "\"media_src\":\"Container2.Photos(Id=1,Type='image%2fpng')/$value\","
+        + "\"edit_media\":\"" + getEndpoint() + "Container2.Photos(Id=1,Type='image%2fpng')/$value\"},"
+        + "\"Id\":1,\"Name\":\"Photo 1\",\"Type\":\"image/png\","
+        + "\"ImageUrl\":\"http://localhost/darth.jpg\","
+        + "\"Image\":\"" + PHOTO_DEFAULT_IMAGE + "\",\"BinaryData\":null,"
+        + "\"Содержание\":\"Образ\"}}",
+        getBody(response));
+  }
+
+  @Test
   public void entryWithInlineEntry() throws Exception {
     final HttpResponse response = callUri("Rooms('3')?$expand=nr_Building&$format=json");
     checkMediaType(response, HttpContentType.APPLICATION_JSON);

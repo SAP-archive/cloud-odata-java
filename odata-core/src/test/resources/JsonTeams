@@ -1,0 +1,34 @@
+{
+	"d" : {
+		"results" : [{
+				"__metadata" : {
+					"id" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+					"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+					"type" : "RefScenario.Team"
+				},
+				"Id" : "1",
+				"Name" : "Team 1",
+				"isScrumTeam" : false,
+				"nt_Employees" : {
+					"__deferred" : {
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees"
+					}
+				}
+			}, {
+				"__metadata" : {
+					"id" : "http://localhost:8080/ReferenceScenario.svc/Teams('2')",
+					"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('2')",
+					"type" : "RefScenario.Team"
+				},
+				"Id" : "2",
+				"Name" : "Team 2",
+				"isScrumTeam" : true,
+				"nt_Employees" : {
+					"__deferred" : {
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('2')/nt_Employees"
+					}
+				}
+			}
+		]
+	}
+}

@@ -16,12 +16,13 @@
 package com.sap.core.odata.api.edm;
 
 import java.io.InputStream;
+import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
  * @com.sap.core.odata.DoNotImplement
- * This interface gives access to the metadata of a service as well as the calculated Data Service Version.
+ * This interface gives access to the metadata of a service, the calculated Data Service Version and an info list of all entity sets inside this EntityDataModel.
  * @author SAP AG
  *
  */
@@ -38,4 +39,10 @@ public interface EdmServiceMetadata {
    * @throws ODataException
    */
   String getDataServiceVersion() throws ODataException;
+
+  /**
+   * @return a list of {@link EdmEntitySetInfo} objects of all entity sets in this data model
+   * @throws ODataException
+   */
+  List<EdmEntitySetInfo> getEntitySetInfos() throws ODataException;;
 }

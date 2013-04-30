@@ -17,9 +17,17 @@ package com.sap.core.odata.core.edm.provider;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
@@ -28,8 +36,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntitySetInfo;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntitySet;
+import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
@@ -53,6 +65,147 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     prefixMap.put("annoPrefix", "http://annoNamespace");
 
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+  }
+
+  @Test
+  public void getEntitySetInfosForEmptyEdmProvider() throws Exception {
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(Collections.emptyList(), infos);
+  }
+
+  @Test
+  public void getEntitySetInfosForEmptyEdmProviderSchemas() throws Exception {
+    List<Schema> schemas = new ArrayList<Schema>();
+
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    when(edmProvider.getSchemas()).thenReturn(schemas);
+
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(Collections.emptyList(), infos);
+  }
+
+  @Test
+  public void oneEntitySetOneContainerForInfo() throws Exception {
+    String entitySetUriString = new URI("Employees").toASCIIString();
+
+    List<EntitySet> entitySets = new ArrayList<EntitySet>();
+    EntitySet entitySet = new EntitySet().setName("Employees");
+    entitySets.add(entitySet);
+
+    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
+    EntityContainer container = new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets);
+    entityContainers.add(container);
+
+    List<Schema> schemas = new ArrayList<Schema>();
+    schemas.add(new Schema().setEntityContainers(entityContainers));
+
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    when(edmProvider.getSchemas()).thenReturn(schemas);
+
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(1, infos.size());
+
+    assertEquals(infos.get(0).getEntitySetName(), "Employees");
+    assertEquals(infos.get(0).getEntityContainerName(), "Container");
+    assertEquals(infos.get(0).getEntitySetUri().toASCIIString(), entitySetUriString);
+    assertTrue(infos.get(0).isDefaultEntityContainer());
+  }
+
+  @Test
+  public void twoEntitySetsOneContainerForInfo() throws Exception {
+    List<EntitySet> entitySets = new ArrayList<EntitySet>();
+    EntitySet entitySet = new EntitySet().setName("Employees");
+    entitySets.add(entitySet);
+    entitySets.add(entitySet);
+
+    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
+    EntityContainer container = new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets);
+    entityContainers.add(container);
+
+    List<Schema> schemas = new ArrayList<Schema>();
+    schemas.add(new Schema().setEntityContainers(entityContainers));
+
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    when(edmProvider.getSchemas()).thenReturn(schemas);
+
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(2, infos.size());
+  }
+
+  @Test
+  public void twoContainersWithOneEntitySetEachForInfo() throws Exception {
+    String entitySetUriString = new URI("Employees").toASCIIString();
+    String entitySetUriString2 = new URI("Container2.Employees").toASCIIString();
+
+    List<EntitySet> entitySets = new ArrayList<EntitySet>();
+    EntitySet entitySet = new EntitySet().setName("Employees");
+    entitySets.add(entitySet);
+
+    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
+    EntityContainer container = new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets);
+    entityContainers.add(container);
+
+    EntityContainer container2 = new EntityContainer().setDefaultEntityContainer(false).setName("Container2").setEntitySets(entitySets);
+    entityContainers.add(container2);
+
+    List<Schema> schemas = new ArrayList<Schema>();
+    schemas.add(new Schema().setEntityContainers(entityContainers));
+
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    when(edmProvider.getSchemas()).thenReturn(schemas);
+
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(2, infos.size());
+
+    assertEquals(infos.get(0).getEntitySetName(), "Employees");
+    assertEquals(infos.get(0).getEntityContainerName(), "Container");
+    assertEquals(infos.get(0).getEntitySetUri().toASCIIString(), entitySetUriString);
+    assertTrue(infos.get(0).isDefaultEntityContainer());
+
+    assertEquals(infos.get(1).getEntitySetName(), "Employees");
+    assertEquals(infos.get(1).getEntityContainerName(), "Container2");
+    assertEquals(infos.get(1).getEntitySetUri().toASCIIString(), entitySetUriString2);
+    assertFalse(infos.get(1).isDefaultEntityContainer());
+  }
+
+  @Test
+  public void oneEntitySetsOneContainerTwoSchemadForInfo() throws Exception {
+    List<EntitySet> entitySets = new ArrayList<EntitySet>();
+    EntitySet entitySet = new EntitySet().setName("Employees");
+    entitySets.add(entitySet);
+
+    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
+    EntityContainer container = new EntityContainer().setDefaultEntityContainer(true).setName("Container").setEntitySets(entitySets);
+    entityContainers.add(container);
+
+    List<Schema> schemas = new ArrayList<Schema>();
+    schemas.add(new Schema().setEntityContainers(entityContainers));
+    schemas.add(new Schema().setEntityContainers(entityContainers));
+
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    when(edmProvider.getSchemas()).thenReturn(schemas);
+
+    EdmServiceMetadata serviceMetadata = new EdmServiceMetadataImplProv(edmProvider);
+
+    List<EdmEntitySetInfo> infos = serviceMetadata.getEntitySetInfos();
+    assertNotNull(infos);
+    assertEquals(2, infos.size());
   }
 
   @Test

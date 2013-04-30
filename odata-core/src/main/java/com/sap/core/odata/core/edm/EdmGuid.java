@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type Guid
+ * Implementation of the EDM simple type Guid.
  * @author SAP AG
  */
 public class EdmGuid extends AbstractSimpleType {
@@ -41,32 +41,17 @@ public class EdmGuid extends AbstractSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null) {
-      return facets == null || facets.isNullable() == null || facets.isNullable();
-    } else {
-      return validateLiteral(value, literalKind);
-    }
+    return value == null ?
+        facets == null || facets.isNullable() == null || facets.isNullable() :
+        validateLiteral(value, literalKind);
   }
 
   private boolean validateLiteral(final String value, final EdmLiteralKind literalKind) {
-    if (literalKind == EdmLiteralKind.URI) {
-      return value.matches(toUriLiteral(PATTERN));
-    } else {
-      return value.matches(PATTERN);
-    }
+    return value.matches(literalKind == EdmLiteralKind.URI ? toUriLiteral(PATTERN) : PATTERN);
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     UUID result;
     if (validateLiteral(value, literalKind)) {
       result = UUID.fromString(
@@ -83,21 +68,9 @@ public class EdmGuid extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value instanceof UUID) {
-      if (literalKind == EdmLiteralKind.URI) {
-        return toUriLiteral(((UUID) value).toString());
-      } else {
-        return ((UUID) value).toString();
-      }
+      return ((UUID) value).toString();
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }

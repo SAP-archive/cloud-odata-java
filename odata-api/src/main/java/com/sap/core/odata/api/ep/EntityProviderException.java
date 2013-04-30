@@ -28,7 +28,15 @@ public class EntityProviderException extends ODataMessageException {
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference COMMON = createMessageReference(EntityProviderException.class, "COMMON");
+  /** INVALIDMAPPING requires 1 content value ('propertyName') */
+  public static final MessageReference INVALID_MAPPING = createMessageReference(EntityProviderException.class, "INVALID_MAPPING");
+  /** INVALIDMAPPING requires 2 content values ('supplied entity type' and 'content entity type') */
+  public static final MessageReference INVALID_ENTITYTYPE = createMessageReference(EntityProviderException.class, "INVALID_ENTITYTYPE");
+  /** INVALIDMAPPING requires 2 content values ('invalid tag' and 'parent tag') */
+  public static final MessageReference INVALID_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_CONTENT");
+
   public static final MessageReference MISSING_PROPERTY = createMessageReference(EntityProviderException.class, "MISSING_PROPERTY");
+  /** INVALID_PARENT_TAG requires 2 content values ('missing attribute name' and 'tag name') */
   public static final MessageReference MISSING_ATTRIBUTE = createMessageReference(EntityProviderException.class, "MISSING_ATTRIBUTE");
   public static final MessageReference UNSUPPORTED_PROPERTY_TYPE = createMessageReference(EntityProviderException.class, "UNSUPPORTED_PROPERTY_TYPE");
   public static final MessageReference INLINECOUNT_INVALID = createMessageReference(EntityProviderException.class, "INLINECOUNT_INVALID");
@@ -50,6 +58,8 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference NOT_SET_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "NOT_SET_CHARACTER_ENCODING");
   /** UNSUPPORTED_CHARACTER_ENCODING requires 1 content value ('found but unsupported character encoding') */
   public static final MessageReference UNSUPPORTED_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "UNSUPPORTED_CHARACTER_ENCODING");
+
+  public static final MessageReference MEDIA_DATA_NOT_INITIAL = createMessageReference(EntityProviderException.class, "MEDIA_DATA_NOT_INITIAL");
 
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);

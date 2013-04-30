@@ -74,7 +74,7 @@ public class EntityTypeMapping {
       } else if (value instanceof Class) {
         typeMapping = new EntityTypeMapping(entry.getKey(), (Class<?>) value);
       } else {
-        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got invalid mapping value."));
+        throw new EntityProviderException(EntityProviderException.INVALID_MAPPING.addContent(entry.getKey()));
       }
       typeMappings.add(typeMapping);
     }
@@ -92,7 +92,7 @@ public class EntityTypeMapping {
    * If it is not complex an empty {@link EntityTypeMapping} is returned.
    * 
    * @param name
-   * @return
+   * @return the mapping for this entity type
    */
   public EntityTypeMapping getEntityTypeMapping(final String name) {
     if (isComplex()) {
