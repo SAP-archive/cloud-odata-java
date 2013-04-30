@@ -19,13 +19,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
-import com.sap.core.odata.api.edm.provider.EntitySet;
-import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.api.edm.EdmEntitySetInfo;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 
@@ -36,7 +33,7 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 public class JsonServiceDocumentProducer {
 
   public static void writeServiceDocument(final Writer writer, final Edm edm) throws EntityProviderException {
-    final EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
+    final EdmServiceMetadata serviceMetadata = edm.getServiceMetadata();
 
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
     try {
@@ -47,23 +44,15 @@ public class JsonServiceDocumentProducer {
       jsonStreamWriter.beginArray();
 
       boolean first = true;
-      if (edmProvider.getSchemas() != null) {
-        for (final Schema schema : edmProvider.getSchemas()) {
-          if (schema.getEntityContainers() != null) {
-            for (final EntityContainer entityContainer : schema.getEntityContainers()) {
-              for (final EntitySet entitySet : entityContainer.getEntitySets()) {
-                if (first) {
-                  first = false;
-                } else {
-                  jsonStreamWriter.separator();
-                }
-                jsonStreamWriter.stringValue((entityContainer.isDefaultEntityContainer() ?
-                    "" : (entityContainer.getName() + Edm.DELIMITER)) + entitySet.getName());
-              }
-            }
-          }
+      for (EdmEntitySetInfo info : serviceMetadata.getEntitySetInfos()) {
+        if (first) {
+          first = false;
+        } else {
+          jsonStreamWriter.separator();
         }
+        jsonStreamWriter.stringValue(info.getEntitySetUri().toASCIIString());
       }
+
       jsonStreamWriter.endArray();
       jsonStreamWriter.endObject();
       jsonStreamWriter.endObject();

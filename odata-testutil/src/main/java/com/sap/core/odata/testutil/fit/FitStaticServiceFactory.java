@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
@@ -29,6 +30,16 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.testutil.server.TestServer;
 
 public class FitStaticServiceFactory extends ODataServiceFactory {
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
+    if (callbackInterface.isAssignableFrom(FitErrorCallback.class)) {
+      return (T) new FitErrorCallback();
+    }
+
+    return super.getCallback(callbackInterface);
+  }
 
   private static Map<String, ODataService> HOST_2_SERVICE = Collections.synchronizedMap(new HashMap<String, ODataService>());
 

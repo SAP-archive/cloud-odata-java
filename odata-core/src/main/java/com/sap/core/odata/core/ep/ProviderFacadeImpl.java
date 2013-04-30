@@ -25,15 +25,19 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.edm.parser.EdmxProvider;
+import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG
@@ -120,6 +124,11 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
+  public ODataFeed readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return create(contentType).readFeed(entitySet, content, properties);
+  }
+
+  @Override
   public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content, properties);
   }
@@ -152,6 +161,12 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   @Override
   public ODataResponse writeMetadata(final List<Schema> schemas, final Map<String, String> predefinedNamespaces) throws EntityProviderException {
     return create().writeMetadata(schemas, predefinedNamespaces);
+  }
+
+  @Override
+  public Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
+    EdmProvider provider = new EdmxProvider().parse(inputStream, validate);
+    return new EdmImplProv(provider);
   }
 
 }

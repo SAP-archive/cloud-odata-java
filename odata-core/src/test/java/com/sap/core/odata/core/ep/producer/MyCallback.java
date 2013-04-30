@@ -16,8 +16,10 @@
 package com.sap.core.odata.core.ep.producer;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.EdmException;
@@ -35,16 +37,10 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
 
   private AbstractProviderTest dataProvider;
   private URI baseUri;
-  private URI roomToEmployee;
 
   public MyCallback(final AbstractProviderTest dataProvider, final URI baseUri) {
     this.dataProvider = dataProvider;
     this.baseUri = baseUri;
-    try {
-      roomToEmployee = new URI("Rooms('1')/nr_Employees");
-    } catch (URISyntaxException e) {
-      throw new ODataRuntimeException(e);
-    }
   }
 
   @Override
@@ -57,11 +53,16 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
           for (String navPropName : context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType().getNavigationPropertyNames()) {
             callbacks.put(navPropName, this);
           }
-          EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(roomToEmployee).build();
+          EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();
 
           result.setFeedData(dataProvider.getEmployeesData());
           result.setInlineProperties(inlineProperties);
         }
+      } else if ("Buildings".equals(context.getSourceEntitySet().getName())) {
+        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(baseUri).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();
+        List<Map<String, Object>> emptyData = new ArrayList<Map<String, Object>>();
+        result.setFeedData(emptyData);
+        result.setInlineProperties(inlineProperties);
       }
     } catch (EdmException e) {
       throw new ODataRuntimeException("EdmException", e);

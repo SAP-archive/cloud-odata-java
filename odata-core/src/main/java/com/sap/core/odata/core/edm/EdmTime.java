@@ -28,7 +28,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * <p>Implementation of the EDM simple type Time</p>
+ * <p>Implementation of the EDM simple type Time.</p>
  * <p>Arguably, this type is intended to represent a time of day, not an instance in time.
  * The time value is interpreted and formatted as local time.</p>
  * <p>Formatting simply ignores the year, month, and day parts of time instances.
@@ -51,16 +51,7 @@ public class EdmTime extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     Calendar valueCalendar;
     if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 6 && value.startsWith("time'") && value.endsWith("'")) {
@@ -124,15 +115,7 @@ public class EdmTime extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     Calendar dateTimeValue;
     if (value instanceof Date) {
       dateTimeValue = Calendar.getInstance();
@@ -176,10 +159,6 @@ public class EdmTime extends AbstractSimpleType {
     }
 
     result += "S";
-
-    if (literalKind == EdmLiteralKind.URI) {
-      result = toUriLiteral(result);
-    }
 
     return result;
   }

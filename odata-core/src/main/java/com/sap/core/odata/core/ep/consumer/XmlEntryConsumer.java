@@ -39,6 +39,7 @@ import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -47,6 +48,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
 import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
+import com.sap.core.odata.core.ep.feed.FeedMetadataImpl;
+import com.sap.core.odata.core.ep.feed.ODataFeedImpl;
 import com.sap.core.odata.core.ep.util.FormatXml;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
@@ -64,31 +67,23 @@ public class XmlEntryConsumer {
   private Map<String, Object> properties;
   private MediaMetadataImpl mediaMetadata;
   private EntryMetadataImpl entryMetadata;
+  private ExpandSelectTreeNodeImpl expandSelectTree;
   private EntityTypeMapping typeMappings;
   private String currentHandledStartTagName;
-
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
-    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
-    return readEntry(reader, eia, properties);
-  }
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException {
     try {
       initialize(readProperties);
 
-      while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName()))) {
-        reader.next();
-        while (reader.hasNext() && !reader.hasName()) {
-          reader.next();
-        }
-
+      while (reader.hasNext() && !isEntryEndTag(reader)) {
+        reader.nextTag();
         if (reader.isStartElement()) {
           handleStartedTag(reader, eia, readProperties);
         }
       }
 
       if (!readProperties.getMergeSemantic()) {
-        validate(eia, readEntryResult);
+        validateMandatoryPropertiesAvailable(eia, readEntryResult);
       }
 
       return readEntryResult;
@@ -97,6 +92,12 @@ public class XmlEntryConsumer {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private boolean isEntryEndTag(final XMLStreamReader reader) {
+    return reader.isEndElement()
+        && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI())
+        && FormatXml.ATOM_ENTRY.equals(reader.getLocalName());
   }
 
   /**
@@ -109,24 +110,31 @@ public class XmlEntryConsumer {
     properties = new HashMap<String, Object>();
     mediaMetadata = new MediaMetadataImpl();
     entryMetadata = new EntryMetadataImpl();
+    expandSelectTree = new ExpandSelectTreeNodeImpl();
     foundPrefix2NamespaceUri = new HashMap<String, String>();
 
-    readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
+    readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
     typeMappings = EntityTypeMapping.create(readProperties.getTypeMappings());
     foundPrefix2NamespaceUri.putAll(readProperties.getValidatedPrefixNamespaceUris());
   }
 
-  private void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
+  /**
+   * Validates that all mandatory properties are found and set at the {@link #readEntryResult} entity.
+   * If a mandatory property is missing an {@link EntityProviderException} is thrown.
+   * 
+   * @param eia entity info which contains the information which properties are mandatory
+   * @param entry entry for which the mandatory properties are validated
+   * @throws EntityProviderException if a mandatory property is missing
+   */
+  private void validateMandatoryPropertiesAvailable(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
     Collection<EntityPropertyInfo> propertyInfos = new ArrayList<EntityPropertyInfo>(eia.getPropertyInfos());
     propertyInfos.removeAll(eia.getKeyPropertyInfos());
     Map<String, Object> data = entry.getProperties();
 
     for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
       boolean mandatory = entityPropertyInfo.isMandatory();
-      if (mandatory) {
-        if (!data.containsKey(entityPropertyInfo.getName())) {
-          throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
-        }
+      if (mandatory && !data.containsKey(entityPropertyInfo.getName())) {
+        throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
       }
     }
   }
@@ -148,6 +156,8 @@ public class XmlEntryConsumer {
       readProperties(reader, eia);
     } else if (!readProperties.getMergeSemantic()) {
       readCustomElement(reader, currentHandledStartTagName, eia);
+    } else {
+      skipStartedTag(reader);
     }
   }
 
@@ -155,6 +165,7 @@ public class XmlEntryConsumer {
     EntityPropertyInfo targetPathInfo = eia.getTargetPathInfo(tagName);
     NamespaceContext nsctx = reader.getNamespaceContext();
 
+    boolean skipTag = true;
     if (!Edm.NAMESPACE_ATOM_2005.equals(reader.getName().getNamespaceURI())) {
 
       if (targetPathInfo != null) {
@@ -166,6 +177,7 @@ public class XmlEntryConsumer {
           String xmlNamespaceUri = reader.getNamespaceURI(customPrefix);
 
           if (customNamespaceURI.equals(xmlNamespaceUri) && customPrefix.equals(xmlPrefix)) {
+            skipTag = false;
             reader.require(XMLStreamConstants.START_ELEMENT, customNamespaceURI, tagName);
             reader.next();
             reader.require(XMLStreamConstants.CHARACTERS, null, null);
@@ -184,7 +196,32 @@ public class XmlEntryConsumer {
       } else {
         throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(tagName));
       }
+    }
 
+    if (skipTag) {
+      skipStartedTag(reader);
+    }
+  }
+
+  /**
+   * Skip the tag to which the {@link XMLStreamReader} currently points.
+   * Therefore it is read until an end element tag with current local name is found.
+   * 
+   * @param reader
+   * @throws XMLStreamException
+   */
+  private void skipStartedTag(final XMLStreamReader reader) throws XMLStreamException {
+    final String name = reader.getLocalName();
+    int read = 1;
+    while (read > 0 && reader.hasNext()) {
+      reader.next();
+      if (reader.hasName() && name.equals(reader.getLocalName())) {
+        if (reader.isEndElement()) {
+          read--;
+        } else if (reader.isStartElement()) {
+          read++;
+        }
+      }
     }
   }
 
@@ -217,22 +254,32 @@ public class XmlEntryConsumer {
     }
   }
 
+  /**
+   * 
+   * @param reader
+   * @param eia
+   * @param readProperties
+   * @throws EntityProviderException
+   * @throws XMLStreamException
+   * @throws EdmException
+   */
   private void readLink(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) throws EntityProviderException, XMLStreamException, EdmException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
     final String rel = reader.getAttributeValue(null, FormatXml.ATOM_REL);
     final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
     final String type = reader.getAttributeValue(null, FormatXml.ATOM_TYPE);
-    final String title = reader.getAttributeValue(null, FormatXml.ATOM_TITLE);
     final String etag = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG);
 
-    reader.next();
+    // read to next tag to check if <link> contains any further tags
+    reader.nextTag();
+
     if (reader.isEndElement()) {
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
 
       if (rel == null || uri == null) {
         throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(
-            "'" + FormatXml.ATOM_HREF + "' and/or '" + FormatXml.ATOM_REL + "' at tag '" + FormatXml.ATOM_LINK + "'"));
+            FormatXml.ATOM_HREF + "' and/or '" + FormatXml.ATOM_REL).addContent(FormatXml.ATOM_LINK));
       } else if (rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
         final String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
         entryMetadata.putAssociationUri(navigationPropertyName, uri);
@@ -242,40 +289,38 @@ public class XmlEntryConsumer {
       }
     } else {
       if (rel != null && rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put(FormatXml.ATOM_REL, rel);
-        attributes.put(FormatXml.ATOM_HREF, uri);
-        attributes.put(FormatXml.ATOM_TYPE, type);
-        attributes.put(FormatXml.ATOM_TITLE, title);
-        attributes.put(FormatXml.M_ETAG, etag);
-        readInlineContent(reader, eia, readProperties, attributes);
+        readInlineContent(reader, eia, readProperties, type, rel);
       }
     }
   }
 
-  private void readInlineContent(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties, final Map<String, String> linkAttributes)
+  /**
+   * Inline content was found and {@link XMLStreamReader} already points to <m:inline> tag.
+   * 
+   * @param reader
+   * @param eia
+   * @param readProperties
+   * @param atomLinkType the atom <code>type</code> attribute value of the <code>link</code> tag
+   * @param atomLinkRel the atom <code>rel</code> attribute value of the <code>link</code> tag
+   * @throws XMLStreamException
+   * @throws EntityProviderException
+   * @throws EdmException
+   */
+  private void readInlineContent(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties,
+      final String atomLinkType, final String atomLinkRel)
       throws XMLStreamException, EntityProviderException, EdmException {
 
     //
-    String rel = linkAttributes.get(FormatXml.ATOM_REL);
-    String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
+    String navigationPropertyName = atomLinkRel.substring(Edm.NAMESPACE_REL_2007_08.length());
 
     EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
     EdmEntitySet entitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
     EntityInfoAggregator inlineEia = EntityInfoAggregator.create(entitySet);
-    OnReadInlineContent callback = readProperties.getCallback();
 
-    final EntityProviderReadProperties inlineProperties;
-    if (callback == null) {
-      inlineProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
-    } else {
-      inlineProperties = callback.receiveReadProperties(
-          EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build(),
-          navigationProperty);
-    }
+    final EntityProviderReadProperties inlineProperties = createInlineProperties(readProperties, navigationProperty);
 
     // validations
-    boolean isFeed = isInlineFeedValidated(reader, eia, linkAttributes);
+    boolean isFeed = isInlineFeedValidated(reader, eia, atomLinkType, navigationPropertyName);
 
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
 
@@ -286,39 +331,114 @@ public class XmlEntryConsumer {
         ODataEntry inlineEntry = xec.readEntry(reader, inlineEia, inlineProperties);
         inlineEntries.add(inlineEntry);
       }
-      // next
+      // next tag
       reader.next();
     }
 
-    ExpandSelectTreeNode expandSelectTree = readEntryResult.getExpandSelectTree();
-    ((ExpandSelectTreeNodeImpl) expandSelectTree).setExpanded();
-    ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
-    expandSelectTree.getLinks().put(navigationPropertyName, subNode);
-
-    Object entry = null;
-    if (isFeed) {
-      entry = inlineEntries;
-    } else if (!inlineEntries.isEmpty()) {
-      entry = inlineEntries.get(0);
-    }
-    if (callback == null) {
-      readEntryResult.setContainsInlineEntry(true);
-      properties.put(navigationPropertyName, entry);
-    } else {
-      if (isFeed) {
-        @SuppressWarnings("unchecked")
-        ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (List<ODataEntry>) entry);
-        callback.handleReadFeed(callbackInfo);
-      } else {
-        ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) entry);
-        callback.handleReadEntry(callbackInfo);
-      }
-    }
+    updateExpandSelectTree(navigationPropertyName, inlineEntries);
+    updateReadProperties(readProperties, navigationPropertyName, navigationProperty, isFeed, inlineEntries);
 
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }
 
   /**
+   * Updates the read properties ({@link #properties}) for this {@link ReadEntryResult} ({@link #readEntryResult}).
+   * 
+   * @param readProperties
+   * @param navigationPropertyName
+   * @param navigationProperty
+   * @param isFeed
+   * @param inlineEntries
+   */
+  private void updateReadProperties(final EntityProviderReadProperties readProperties, final String navigationPropertyName,
+      final EdmNavigationProperty navigationProperty, final boolean isFeed, final List<ODataEntry> inlineEntries) {
+    Object entry = extractODataEntity(isFeed, inlineEntries);
+    OnReadInlineContent callback = readProperties.getCallback();
+    if (callback == null) {
+      readEntryResult.setContainsInlineEntry(true);
+      properties.put(navigationPropertyName, entry);
+    } else {
+      doCallback(readProperties, navigationProperty, callback, isFeed, entry);
+    }
+  }
+
+  /**
+   * Updates the expand select tree ({@link #expandSelectTree}) for this {@link ReadEntryResult} ({@link #readEntryResult}).
+   * 
+   * @param navigationPropertyName
+   * @param inlineEntries
+   */
+  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) {
+    expandSelectTree.setExpanded();
+    ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
+    expandSelectTree.putLinkNode(navigationPropertyName, subNode);
+  }
+
+  /**
+   * Get a list of {@link ODataEntry}, an empty list, a single {@link ODataEntry} or <code>NULL</code> based on 
+   * <code>isFeed</code> value and <code>inlineEntries</code> content.
+   * 
+   * @param isFeed
+   * @param inlineEntries
+   * @return
+   */
+  private Object extractODataEntity(final boolean isFeed, final List<ODataEntry> inlineEntries) {
+    if (isFeed) {
+      //TODO: fill metadata correctly
+      return new ODataFeedImpl(inlineEntries, new FeedMetadataImpl());
+    } else if (!inlineEntries.isEmpty()) {
+      return inlineEntries.get(0);
+    }
+    return null;
+  }
+
+  /**
+   * Do the callback based on given parameters.
+   * 
+   * @param readProperties
+   * @param navigationProperty
+   * @param callback
+   * @param isFeed
+   * @param entry
+   */
+  private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty,
+      final OnReadInlineContent callback, final boolean isFeed, final Object content) {
+
+    if (isFeed) {
+      ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (ODataFeed) content);
+      callback.handleReadFeed(callbackInfo);
+    } else {
+      ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) content);
+      callback.handleReadEntry(callbackInfo);
+    }
+  }
+
+  /**
+   * Create {@link EntityProviderReadProperties} which can be used for reading of inline properties/entrys of navigation links within
+   * this current read entry.
+   * 
+   * @param readProperties
+   * @param navigationProperty
+   * @return
+   */
+  private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
+    final OnReadInlineContent callback = readProperties.getCallback();
+
+    EntityProviderReadProperties currentReadProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
+    if (callback == null) {
+      return currentReadProperties;
+    } else {
+      return callback.receiveReadProperties(currentReadProperties, navigationProperty);
+    }
+  }
+
+  /**
+   * <p>
+   * Inline content was found and {@link XMLStreamReader} already points to <code><m:inline> tag</code>.
+   * <br/>
+   * <b>ATTENTION</b>: If {@link XMLStreamReader} does not point to the <code><m:inline> tag</code> an exception is thrown.
+   * </p>
+   * <p>
    * Check whether it is an inline <code>Feed</code> or <code>Entry</code> and validate that...
    * <ul>
    * <li>...{@link FormatXml#M_INLINE} tag is correctly set.</li>
@@ -329,28 +449,26 @@ public class XmlEntryConsumer {
    * For the case that one of above validations fail an {@link EntityProviderException} is thrown.
    * If validation was successful <code>true</code> is returned for <code>Feed</code> and <code>false</code> for <code>Entry</code>
    * multiplicity.
+   * </p>
    * 
-   * @param reader xml content
-   * @param edmEntitySet 
-   * @param linkAttributes attributes of parent <code>link</code> tag
+   * @param reader xml content reader which already points to <code><m:inline> tag</code>
+   * @param eia all necessary information about the entity 
+   * @param type the atom type attribute value of the <code>link</code> tag
+   * @param navigationPropertyName the navigation property name of the entity
    * @return <code>true</code> for <code>Feed</code> and <code>false</code> for <code>Entry</code>
    * @throws EntityProviderException is thrown if at least one validation fails.
    * @throws EdmException if edm access fails
    */
-  private boolean isInlineFeedValidated(final XMLStreamReader reader, final EntityInfoAggregator eia, final Map<String, String> linkAttributes) throws EntityProviderException, EdmException {
+  private boolean isInlineFeedValidated(final XMLStreamReader reader, final EntityInfoAggregator eia, final String type, final String navigationPropertyName) throws EntityProviderException, EdmException {
     boolean isFeed = false;
     try {
-      reader.nextTag();
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
       //
-      String type = linkAttributes.get(FormatXml.ATOM_TYPE);
       ContentType cType = ContentType.parse(type);
       if (cType == null) {
         throw new EntityProviderException(EntityProviderException.INVALID_INLINE_CONTENT.addContent("xml data"));
       }
 
-      String rel = linkAttributes.get(FormatXml.ATOM_REL);
-      String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
       EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
       EdmMultiplicity navigationMultiplicity = navigationProperty.getMultiplicity();
 

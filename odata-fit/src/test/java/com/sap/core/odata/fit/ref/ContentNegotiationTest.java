@@ -78,6 +78,14 @@ public class ContentNegotiationTest extends AbstractRefTest {
   }
 
   @Test
+  public void browserIssue95() throws Exception {
+    final HttpResponse response = callUri("Employees",
+        HttpHeaders.ACCEPT, "application/atomsvc+xml;q=0.9, application/json;q=0.8, */*;q=0.1",
+        HttpStatusCodes.OK);
+    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+  }
+
+  @Test
   public void contentTypeServiceDocumentWoAcceptHeader() throws Exception {
     final HttpResponse response = callUri("");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);

@@ -26,7 +26,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type Binary
+ * Implementation of the EDM simple type Binary.
  * @author SAP AG
  */
 public class EdmBinary extends AbstractSimpleType {
@@ -56,34 +56,19 @@ public class EdmBinary extends AbstractSimpleType {
   }
 
   private static boolean validateLiteral(final String value, final EdmLiteralKind literalKind) {
-    if (literalKind == EdmLiteralKind.URI) {
-      return value.matches("(?:X|binary)'(?:\\p{XDigit}{2})*'");
-    } else {
-      return Base64.isBase64(value);
-    }
+    return literalKind == EdmLiteralKind.URI ?
+        value.matches("(?:X|binary)'(?:\\p{XDigit}{2})*'") : Base64.isBase64(value);
   }
 
   private static boolean validateMaxLength(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (facets == null || facets.getMaxLength() == null) {
-      return true;
-    } else if (literalKind == EdmLiteralKind.URI) {
-      return facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8);
-    } else {
-      return facets.getMaxLength() * 4 >= value.length() * 3;
-    }
+    return facets == null || facets.getMaxLength() == null ? true :
+        literalKind == EdmLiteralKind.URI ?
+            facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8) :
+            facets.getMaxLength() * 4 >= value.length() * 3;
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (!validateLiteral(value, literalKind)) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     }
@@ -95,7 +80,7 @@ public class EdmBinary extends AbstractSimpleType {
     if (literalKind == EdmLiteralKind.URI) {
       try {
         result = Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
-      } catch (DecoderException e) {
+      } catch (final DecoderException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
       }
     } else {
@@ -116,15 +101,7 @@ public class EdmBinary extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     byte[] byteArrayValue;
     if (value instanceof byte[]) {
       byteArrayValue = (byte[]) value;
@@ -142,15 +119,11 @@ public class EdmBinary extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
-    if (literalKind == EdmLiteralKind.URI) {
-      return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase(Locale.ROOT) + "'";
-    } else {
-      return Base64.encodeBase64String(byteArrayValue);
-    }
+    return Base64.encodeBase64String(byteArrayValue);
   }
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return valueToString(valueOfString(literal, EdmLiteralKind.DEFAULT, null, byte[].class), EdmLiteralKind.URI, null);
+    return "binary'" + Hex.encodeHexString(Base64.decodeBase64(literal)).toUpperCase(Locale.ROOT) + "'";
   }
 }

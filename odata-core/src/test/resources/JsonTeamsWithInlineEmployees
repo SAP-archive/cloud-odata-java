@@ -1,0 +1,151 @@
+{
+	"d" : {
+		"__metadata" : {
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+			"type" : "RefScenario.Team"
+		},
+		"Id" : "1",
+		"Name" : "Team 1",
+		"isScrumTeam" : false,
+		"nt_Employees" : {
+			"results" : [{
+					"__metadata" : {
+						"id" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')",
+						"type" : "RefScenario.Employee",
+						"content_type" : "image/jpeg",
+						"media_src" : "Employees('1')/$value",
+						"edit_media" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/$value"
+					},
+					"EmployeeId" : "1",
+					"EmployeeName" : "Walter Winter",
+					"ManagerId" : "1",
+					"RoomId" : "1",
+					"TeamId" : "1",
+					"Location" : {
+						"__metadata" : {
+							"type" : "RefScenario.c_Location"
+						},
+						"City" : {
+							"__metadata" : {
+								"type" : "RefScenario.c_City"
+							},
+							"PostalCode" : "69124",
+							"CityName" : "Heidelberg"
+						},
+						"Country" : "Germany"
+					},
+					"Age" : 52,
+					"EntryDate" : "\/Date(915148800000)\/",
+					"ImageUrl" : "Employees('1')/$value",
+					"ne_Manager" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Manager"
+						}
+					},
+					"ne_Team" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Team"
+						}
+					},
+					"ne_Room" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('1')/ne_Room"
+						}
+					}
+				}, {
+					"__metadata" : {
+						"id" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')",
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')",
+						"type" : "RefScenario.Employee",
+						"content_type" : "image/jpeg",
+						"media_src" : "Employees('2')/$value",
+						"edit_media" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')/$value"
+					},
+					"EmployeeId" : "2",
+					"EmployeeName" : "Frederic Fall",
+					"ManagerId" : "1",
+					"RoomId" : "2",
+					"TeamId" : "1",
+					"Location" : {
+						"__metadata" : {
+							"type" : "RefScenario.c_Location"
+						},
+						"City" : {
+							"__metadata" : {
+								"type" : "RefScenario.c_City"
+							},
+							"PostalCode" : "69190",
+							"CityName" : "Walldorf"
+						},
+						"Country" : "Germany"
+					},
+					"Age" : 32,
+					"EntryDate" : "\/Date(1057017600000)\/",
+					"ImageUrl" : "Employees('2')/$value",
+					"ne_Manager" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')/ne_Manager"
+						}
+					},
+					"ne_Team" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')/ne_Team"
+						}
+					},
+					"ne_Room" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('2')/ne_Room"
+						}
+					}
+				}, {
+					"__metadata" : {
+						"id" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')",
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')",
+						"type" : "RefScenario.Employee",
+						"content_type" : "image/jpeg",
+						"media_src" : "Employees('3')/$value",
+						"edit_media" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')/$value"
+					},
+					"EmployeeId" : "3",
+					"EmployeeName" : "Jonathan Smith",
+					"ManagerId" : "1",
+					"RoomId" : "2",
+					"TeamId" : "1",
+					"Location" : {
+						"__metadata" : {
+							"type" : "RefScenario.c_Location"
+						},
+						"City" : {
+							"__metadata" : {
+								"type" : "RefScenario.c_City"
+							},
+							"PostalCode" : "69190",
+							"CityName" : "Walldorf"
+						},
+						"Country" : "Germany"
+					},
+					"Age" : 56,
+					"EntryDate" : null,
+					"ImageUrl" : "Employees('3')/$value",
+					"ne_Manager" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')/ne_Manager"
+						}
+					},
+					"ne_Team" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')/ne_Team"
+						}
+					},
+					"ne_Room" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Employees('3')/ne_Room"
+						}
+					}
+				}
+			]
+		}
+	}
+}

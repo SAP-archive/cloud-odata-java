@@ -95,7 +95,6 @@ public class JsonStreamWriter {
 
   /**
    * Writes the JSON-escaped form of a Java String value according to RFC 4627.
-   * @param writer the writer the JSON-formatted String is written to
    * @param value the Java String
    * @throws IOException if an I/O error occurs
    */

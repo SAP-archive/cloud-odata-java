@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.sap.core.odata.ref.processor;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
@@ -35,5 +36,15 @@ public class ScenarioServiceFactory extends ODataServiceFactory {
     return createODataSingleProcessorService(
         new ScenarioEdmProvider(),
         new ListsProcessor(new ScenarioDataSource(dataContainer)));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
+    if (callbackInterface.isAssignableFrom(ScenarioErrorCallback.class)) {
+      return (T) new ScenarioErrorCallback();
+    }
+
+    return super.getCallback(callbackInterface);
   }
 }

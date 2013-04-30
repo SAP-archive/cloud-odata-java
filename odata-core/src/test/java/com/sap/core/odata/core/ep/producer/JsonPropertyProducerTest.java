@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,9 +43,9 @@ public class JsonPropertyProducerTest extends BaseTest {
 
   @Test
   public void serializeString() throws Exception {
-    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeId");
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
 
-    final ODataResponse response = new JsonEntityProvider().writeProperty(property, "1");
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, "\"Игорь\tНиколаевич\tЛарионов\"");
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
@@ -51,7 +53,7 @@ public class JsonPropertyProducerTest extends BaseTest {
 
     final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(json);
-    assertEquals("{\"d\":{\"EmployeeId\":\"1\"}}", json);
+    assertEquals("{\"d\":{\"EmployeeName\":\"\\\"Игорь\\tНиколаевич\\tЛарионов\\\"\"}}", json);
   }
 
   @Test
@@ -69,10 +71,48 @@ public class JsonPropertyProducerTest extends BaseTest {
   }
 
   @Test
+  public void serializeBinaryWithContentType() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario2", "Photo").getProperty("Image");
+    Map<String, Object> content = new HashMap<String, Object>();
+    content.put("getImageType", "image/jpeg");
+    content.put("Image", new byte[] { 1, 2, 3 });
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, content);
+    assertEquals("{\"d\":{\"Image\":\"AQID\"}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
+  public void serializeBoolean() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Team").getProperty("isScrumTeam");
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, false);
+    assertEquals("{\"d\":{\"isScrumTeam\":false}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
   public void serializeNull() throws Exception {
-    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
-    final ODataResponse response = new JsonEntityProvider().writeProperty(property, null);
+    EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
+    ODataResponse response = new JsonEntityProvider().writeProperty(property, null);
     assertEquals("{\"d\":{\"ImageUrl\":null}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+
+    property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+    response = new JsonEntityProvider().writeProperty(property, null);
+    assertEquals("{\"d\":{\"Age\":null}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+
+    property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
+    response = new JsonEntityProvider().writeProperty(property, null);
+    assertEquals("{\"d\":{\"EntryDate\":null}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+
+    property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Building").getProperty("Image");
+    response = new JsonEntityProvider().writeProperty(property, null);
+    assertEquals("{\"d\":{\"Image\":null}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
+  public void serializeDateTime() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
+    Calendar dateTime = Calendar.getInstance();
+    dateTime.setTimeInMillis(-42);
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, dateTime);
+    assertEquals("{\"d\":{\"EntryDate\":\"\\/Date(-42)\\/\"}}", StringHelper.inputStreamToString((InputStream) response.getEntity()));
   }
 
   @Test
@@ -89,6 +129,16 @@ public class JsonPropertyProducerTest extends BaseTest {
     assertEquals("{\"d\":{\"Location\":{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},"
         + "\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},"
         + "\"PostalCode\":\"8392\",\"CityName\":\"Å\"},\"Country\":\"NO\"}}}",
+        StringHelper.inputStreamToString((InputStream) response.getEntity()));
+  }
+
+  @Test
+  public void serializeComplexPropertyNull() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, null);
+    assertEquals("{\"d\":{\"Location\":{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},"
+        + "\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},"
+        + "\"PostalCode\":null,\"CityName\":null},\"Country\":null}}}",
         StringHelper.inputStreamToString((InputStream) response.getEntity()));
   }
 }

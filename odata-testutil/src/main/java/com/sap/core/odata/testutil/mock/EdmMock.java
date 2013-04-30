@@ -252,6 +252,7 @@ class EdmMock {
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
     when(edm.getEntityType("RefScenario", "Employee")).thenReturn(employeeType);
+    when(edm.getEntityType("RefScenario", "Team")).thenReturn(teamType);
     when(edm.getEntityType("RefScenario", "Room")).thenReturn(roomType);
     when(edm.getEntityType("RefScenario", "Building")).thenReturn(buildingType);
     when(edm.getComplexType("RefScenario", "c_Location")).thenReturn(locationComplexType);

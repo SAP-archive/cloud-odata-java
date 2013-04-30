@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='utf-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+	xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+	xml:base="https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
+	<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees
+	</id>
+	<title type="text">Employees</title>
+	<updated>2013-04-23T11:46:14.926Z</updated>
+	<author>
+		<name />
+	</author>
+	<link href="Employees" rel="self" title="Employees" />
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')
+		</id>
+		<title type="text">Walter Winter</title>
+		<updated>1999-01-01T00:00:00Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('1')" rel="edit" title="Employee" />
+		<link href="Employees('1')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('1')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('1')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('1')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('1')/$value" />
+		<m:properties>
+			<d:EmployeeId>1</d:EmployeeId>
+			<d:EmployeeName>Walter Winter</d:EmployeeName>
+			<d:ManagerId>1</d:ManagerId>
+			<d:RoomId>1</d:RoomId>
+			<d:TeamId>1</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69124</d:PostalCode>
+					<d:CityName>Heidelberg</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>52</d:Age>
+			<d:EntryDate>1999-01-01T00:00:00</d:EntryDate>
+			<d:ImageUrl>Employees('1')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('2')
+		</id>
+		<title type="text">Frederic Fall</title>
+		<updated>2003-07-01T00:00:00Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('2')" rel="edit" title="Employee" />
+		<link href="Employees('2')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('2')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('2')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('2')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('2')/$value" />
+		<m:properties>
+			<d:EmployeeId>2</d:EmployeeId>
+			<d:EmployeeName>Frederic Fall</d:EmployeeName>
+			<d:ManagerId>1</d:ManagerId>
+			<d:RoomId>2</d:RoomId>
+			<d:TeamId>1</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69190</d:PostalCode>
+					<d:CityName>Walldorf</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>32</d:Age>
+			<d:EntryDate>2003-07-01T00:00:00</d:EntryDate>
+			<d:ImageUrl>Employees('2')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('3')
+		</id>
+		<title type="text">Jonathan Smith</title>
+		<updated>2013-04-23T11:46:14.928Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('3')" rel="edit" title="Employee" />
+		<link href="Employees('3')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('3')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('3')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('3')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('3')/$value" />
+		<m:properties>
+			<d:EmployeeId>3</d:EmployeeId>
+			<d:EmployeeName>Jonathan Smith</d:EmployeeName>
+			<d:ManagerId>1</d:ManagerId>
+			<d:RoomId>2</d:RoomId>
+			<d:TeamId>1</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69190</d:PostalCode>
+					<d:CityName>Walldorf</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>56</d:Age>
+			<d:EntryDate m:null="true" />
+			<d:ImageUrl>Employees('3')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('4')
+		</id>
+		<title type="text">Peter Burke</title>
+		<updated>2004-09-12T00:00:00Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('4')" rel="edit" title="Employee" />
+		<link href="Employees('4')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('4')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('4')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('4')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('4')/$value" />
+		<m:properties>
+			<d:EmployeeId>4</d:EmployeeId>
+			<d:EmployeeName>Peter Burke</d:EmployeeName>
+			<d:ManagerId>3</d:ManagerId>
+			<d:RoomId>2</d:RoomId>
+			<d:TeamId>2</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69190</d:PostalCode>
+					<d:CityName>Walldorf</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>39</d:Age>
+			<d:EntryDate>2004-09-12T00:00:00</d:EntryDate>
+			<d:ImageUrl>Employees('4')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('5')
+		</id>
+		<title type="text">John Field</title>
+		<updated>2001-02-01T00:00:00Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('5')" rel="edit" title="Employee" />
+		<link href="Employees('5')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('5')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('5')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('5')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('5')/$value" />
+		<m:properties>
+			<d:EmployeeId>5</d:EmployeeId>
+			<d:EmployeeName>John Field</d:EmployeeName>
+			<d:ManagerId>3</d:ManagerId>
+			<d:RoomId>3</d:RoomId>
+			<d:TeamId>2</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69190</d:PostalCode>
+					<d:CityName>Walldorf</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>42</d:Age>
+			<d:EntryDate>2001-02-01T00:00:00</d:EntryDate>
+			<d:ImageUrl>Employees('5')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+	<entry>
+		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('6')
+		</id>
+		<title type="text">Susan Bay</title>
+		<updated>2010-12-01T00:00:00Z</updated>
+		<category term="RefScenario.Employee"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Employees('6')" rel="edit" title="Employee" />
+		<link href="Employees('6')/$value" rel="edit-media" type="application/octet-stream" />
+		<link href="Employees('6')/ne_Manager"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager"
+			title="ne_Manager" type="application/atom+xml; type=entry" />
+		<link href="Employees('6')/ne_Team"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team"
+			title="ne_Team" type="application/atom+xml; type=entry" />
+		<link href="Employees('6')/ne_Room"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room"
+			title="ne_Room" type="application/atom+xml; type=entry" />
+		<content type="application/octet-stream" src="Employees('6')/$value" />
+		<m:properties>
+			<d:EmployeeId>6</d:EmployeeId>
+			<d:EmployeeName>Susan Bay</d:EmployeeName>
+			<d:ManagerId>1</d:ManagerId>
+			<d:RoomId>2</d:RoomId>
+			<d:TeamId>3</d:TeamId>
+			<d:Location m:type="RefScenario.c_Location">
+				<d:City m:type="RefScenario.c_City">
+					<d:PostalCode>69190</d:PostalCode>
+					<d:CityName>Walldorf</d:CityName>
+				</d:City>
+				<d:Country>Germany</d:Country>
+			</d:Location>
+			<d:Age>29</d:Age>
+			<d:EntryDate>2010-12-01T00:00:00</d:EntryDate>
+			<d:ImageUrl>Employees('6')/$value</d:ImageUrl>
+		</m:properties>
+	</entry>
+</feed>

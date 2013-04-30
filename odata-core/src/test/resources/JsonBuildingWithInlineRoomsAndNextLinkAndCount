@@ -1,0 +1,39 @@
+{
+	"d" : {
+		"__metadata" : {
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Buildings('1')",
+			"type" : "RefScenario.Building"
+		},
+		"Id" : "1",
+		"Name" : "Building 1",
+		"Image" : null,
+		"nb_Rooms" : {
+			"__count" : "1",
+			"results" : [{
+					"__metadata" : {
+						"id" : "http://localhost:8080/ReferenceScenario.svc/Rooms('1')",
+						"uri" : "http://localhost:8080/ReferenceScenario.svc/Rooms('1')",
+						"type" : "RefScenario.Room",
+						"etag" : "W/\"1\""
+					},
+					"Id" : "1",
+					"Name" : "Room 1",
+					"Seats" : 1,
+					"Version" : 1,
+					"nr_Employees" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Rooms('1')/nr_Employees"
+						}
+					},
+					"nr_Building" : {
+						"__deferred" : {
+							"uri" : "http://localhost:8080/ReferenceScenario.svc/Rooms('1')/nr_Building"
+						}
+					}
+				}
+			],
+			"__next" : "nextLink"
+		}
+	}
+}

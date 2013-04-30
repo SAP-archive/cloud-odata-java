@@ -35,7 +35,7 @@ public class FunctionImportJsonTest extends AbstractRefTest {
     HttpResponse response = callUri("EmployeeSearch?q='nat'&$format=json");
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
     final String body = getBody(response);
-    assertEquals(getBody(callUri("Employees?$filter=substringof(EmployeeName,'nat')&$format=json")), body);
+    assertEquals(getBody(callUri("Employees?$filter=substringof('nat',EmployeeName)&$format=json")), body);
 
     response = callUri("AllLocations?$format=json");
     checkMediaType(response, HttpContentType.APPLICATION_JSON);

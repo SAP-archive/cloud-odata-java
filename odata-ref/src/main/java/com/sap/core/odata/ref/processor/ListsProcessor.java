@@ -49,6 +49,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -62,6 +63,7 @@ import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -113,6 +115,8 @@ import com.sap.core.odata.ref.processor.ListsDataSource.BinaryData;
  * @author SAP AG
  */
 public class ListsProcessor extends ODataSingleProcessor {
+
+  private static final String ODATA_VERBOSE = "odata=verbose";
 
   private static final int SERVER_PAGING_SIZE = 100;
 
@@ -901,7 +905,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         }
         WriteFeedCallbackResult result = new WriteFeedCallbackResult();
         result.setFeedData(values);
-        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();
         result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
@@ -966,7 +970,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, writeProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
-
+    if (contentType.contains(ODATA_VERBOSE) && !response.getContentHeader().contains(ODATA_VERBOSE)) {
+      return ODataResponse.fromResponse(response).contentHeader(contentType).build();
+    }
     return response;
   }
 
@@ -1059,18 +1065,32 @@ public class ListsProcessor extends ODataSingleProcessor {
   private <T> void createInlinedEntities(final T data, final EdmEntitySet entitySet, final ODataEntry entryValues) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
-      @SuppressWarnings("unchecked")
-      final List<ODataEntry> relatedValueList = (List<ODataEntry>) entryValues.getProperties().get(navigationPropertyName);
-      if (relatedValueList != null) {
+
+      final Object relatedValue = entryValues.getProperties().get(navigationPropertyName);
+      if (relatedValue != null) {
         final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
         final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-        for (final ODataEntry relatedValues : relatedValueList) {
+        if (relatedValue instanceof ODataFeed) {
+          ODataFeed feed = (ODataFeed) relatedValue;
+          final List<ODataEntry> relatedValueList = feed.getEntries();
+          for (final ODataEntry relatedValues : relatedValueList) {
+            Object relatedData = dataSource.newDataObject(relatedEntitySet);
+            setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+            dataSource.createData(relatedEntitySet, relatedData);
+            dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
+            createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
+          }
+        } else if (relatedValue instanceof ODataEntry) {
+          final ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
           Object relatedData = dataSource.newDataObject(relatedEntitySet);
-          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValueEntry.getProperties(), true);
           dataSource.createData(relatedEntitySet, relatedData);
           dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
-          createInlinedEntities(relatedData, relatedEntitySet, relatedValues);
+          createInlinedEntities(relatedData, relatedEntitySet, relatedValueEntry);
+        } else {
+          throw new ODataException("Unexpected class for a related value: " + relatedValue.getClass().getSimpleName());
         }
+
       }
     }
   }
@@ -1175,7 +1195,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     try {
       return evaluateExpression(data, filter.getExpression()).equals("true");
-    } catch (RuntimeException e) {
+    } catch (final RuntimeException e) {
       return false;
     } finally {
       context.stopRuntimeMeasurement(timingHandle);
@@ -1305,12 +1325,19 @@ public class ListsProcessor extends ODataSingleProcessor {
       final EdmSimpleType memberType = (EdmSimpleType) memberExpression.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
-      while (currentExpression.getKind() == ExpressionKind.MEMBER) {
-        final MemberExpression currentMember = (MemberExpression) currentExpression;
-        propertyPath.add(0, (EdmProperty) ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
-        currentExpression = currentMember.getPath();
+      while (currentExpression != null) {
+        final PropertyExpression currentPropertyExpression =
+            (PropertyExpression) (currentExpression.getKind() == ExpressionKind.MEMBER ?
+                ((MemberExpression) currentExpression).getProperty() : currentExpression);
+        final EdmTyped currentProperty = currentPropertyExpression.getEdmProperty();
+        final EdmTypeKind kind = currentProperty.getType().getKind();
+        if (kind == EdmTypeKind.SIMPLE || kind == EdmTypeKind.COMPLEX) {
+          propertyPath.add(0, (EdmProperty) currentProperty);
+        } else {
+          throw new ODataNotImplementedException();
+        }
+        currentExpression = currentExpression.getKind() == ExpressionKind.MEMBER ? ((MemberExpression) currentExpression).getPath() : null;
       }
-      propertyPath.add(0, (EdmProperty) ((PropertyExpression) currentExpression).getEdmProperty());
       return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
     case LITERAL:
@@ -1341,10 +1368,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       case TRIM:
         return first.trim();
       case SUBSTRING:
-        final int offset = first.indexOf(second);
+        final int offset = Integer.parseInt(second);
         return first.substring(offset, offset + Integer.parseInt(third));
       case SUBSTRINGOF:
-        return Boolean.toString(first.contains(second));
+        return Boolean.toString(second.contains(first));
       case CONCAT:
         return first + second;
       case LENGTH:

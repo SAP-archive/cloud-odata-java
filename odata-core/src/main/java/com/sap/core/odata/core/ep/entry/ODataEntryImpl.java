@@ -28,21 +28,21 @@ import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
  */
 public class ODataEntryImpl implements ODataEntry {
 
-  private Map<String, Object> data;
-  private EntryMetadata entryMetadata;
-  private MediaMetadata mediaMetadata;
-  private ExpandSelectTreeNode expandSelectTree;
+  private final Map<String, Object> data;
+  private final EntryMetadata entryMetadata;
+  private final MediaMetadata mediaMetadata;
+  private final ExpandSelectTreeNode expandSelectTree;
   private boolean containsInlineEntry;
 
-  public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata) {
-    this(data, mediaMetadata, entryMetadata, false);
+  public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata, final ExpandSelectTreeNodeImpl expandSelectTree) {
+    this(data, mediaMetadata, entryMetadata, expandSelectTree, false);
   }
 
-  public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata, final boolean containsInlineEntry) {
+  public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata, final ExpandSelectTreeNode expandSelectTree, final boolean containsInlineEntry) {
     this.data = data;
     this.entryMetadata = entryMetadata;
     this.mediaMetadata = mediaMetadata;
-    expandSelectTree = new ExpandSelectTreeNodeImpl();
+    this.expandSelectTree = expandSelectTree;
     this.containsInlineEntry = containsInlineEntry;
   }
 
@@ -73,10 +73,6 @@ public class ODataEntryImpl implements ODataEntry {
 
   public void setContainsInlineEntry(final boolean containsInlineEntry) {
     this.containsInlineEntry = containsInlineEntry;
-  }
-
-  public void setExpandSelectTree(final ExpandSelectTreeNode expandSelectTree) {
-    this.expandSelectTree = expandSelectTree;
   }
 
   @Override

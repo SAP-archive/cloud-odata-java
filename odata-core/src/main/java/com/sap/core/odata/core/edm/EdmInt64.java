@@ -23,7 +23,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type Int64
+ * Implementation of the EDM simple type Int64.
  * @author SAP AG
  */
 public class EdmInt64 extends AbstractSimpleType {
@@ -51,16 +51,7 @@ public class EdmInt64 extends AbstractSimpleType {
   }
 
   @Override
-  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      checkNullLiteralAllowed(facets);
-      return null;
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
+  protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     Long valueLong;
     try {
       if (literalKind == EdmLiteralKind.URI) {
@@ -72,7 +63,7 @@ public class EdmInt64 extends AbstractSimpleType {
       } else {
         valueLong = Long.parseLong(value);
       }
-    } catch (NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
@@ -104,33 +95,18 @@ public class EdmInt64 extends AbstractSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      return getNullOrDefaultLiteral(facets);
-    }
-
-    if (literalKind == null) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
-
-    String result;
+  protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
-      result = value.toString();
+      return value.toString();
     } else if (value instanceof BigInteger) {
       if (((BigInteger) value).bitLength() < Long.SIZE) {
-        result = value.toString();
+        return value.toString();
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
       }
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
-
-    if (literalKind == EdmLiteralKind.URI) {
-      result = toUriLiteral(result);
-    }
-
-    return result;
   }
 
   @Override

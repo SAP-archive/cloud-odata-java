@@ -183,7 +183,14 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline", xmlString);
-    assertXpathNotExists(buildingXPathString + "/m:inline/a:feed", xmlString);
+
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:id", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:title", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:updated", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author/a:name", xmlString);
+    assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:link[@href=\"Buildings('1')/nb_Rooms\"]", xmlString);
   }
 
   private HashMap<String, ODataCallback> createCallbacks(final String entitySetName) throws EdmException, ODataException {

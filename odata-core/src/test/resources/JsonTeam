@@ -1,0 +1,17 @@
+{
+	"d" : {
+		"__metadata" : {
+			"id" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+			"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')",
+			"type" : "RefScenario.Team"
+		},
+		"Id" : "1",
+		"Name" : "Team 1",
+		"isScrumTeam" : false,
+		"nt_Employees" : {
+			"__deferred" : {
+				"uri" : "http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees"
+			}
+		}
+	}
+}

@@ -50,7 +50,9 @@ public class PropertyXmlReadOnlyTest extends AbstractRefXmlTest {
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertXpathEvaluatesTo(IMAGE_JPEG, "/d:Image/@m:MimeType", getBody(response));
+    final String body = getBody(response);
+    assertXpathEvaluatesTo(IMAGE_JPEG, "/d:Image/@m:MimeType", body);
+    assertXpathEvaluatesTo(PHOTO_DEFAULT_IMAGE, "/d:Image", body);
 
     response = callUri("Rooms('2')/Seats/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
@@ -64,7 +66,7 @@ public class PropertyXmlReadOnlyTest extends AbstractRefXmlTest {
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
     checkMediaType(response, IMAGE_JPEG);
-    assertNotNull(getBody(response));
+    assertEquals("", getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);

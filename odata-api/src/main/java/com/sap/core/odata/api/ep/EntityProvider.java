@@ -27,6 +27,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
@@ -201,6 +202,19 @@ public final class EntityProvider {
     ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
     /**
+     * Read (de-serialize) a data feed from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
+     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
+     * 
+     * @param contentType format of content in the given input stream.
+     * @param entitySet entity data model for entity set to be read
+     * @param content feed data in form of an {@link InputStream} which contains the data in specified format
+     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+     * @return an {@link ODataFeed} object
+     * @throws EntityProviderException if reading of data (de-serialization) fails
+     */
+    ODataFeed readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
+
+    /**
      * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
      * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
      * 
@@ -265,6 +279,16 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+
+    /**
+     * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
+     * 
+     * @param inputStream the given input stream
+     * @param validate has to be true if metadata should be validated 
+     * @return Edm as {@link Edm}
+     * @throws EntityProviderException if reading of data (de-serialization) fails
+     */
+    Edm readMetadata(InputStream inputStream, boolean validate) throws EntityProviderException;
 
     /**
      * Read (de-serialize) binary data from <code>content</code> (as {@link InputStream}) and provide it as <code>byte[]</code>.
@@ -481,13 +505,28 @@ public final class EntityProvider {
   }
 
   /**
+   * Read (de-serialize) a data feed from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
+   * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
+   * 
+   * @param contentType format of content in the given input stream.
+   * @param entitySet entity data model for entity set to be read
+   * @param content feed data in form of an {@link InputStream} which contains the data in specified format
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
+   * @return an {@link ODataFeed} object
+   * @throws EntityProviderException if reading of data (de-serialization) fails
+   */
+  public static ODataFeed readFeed(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return createEntityProvider().readFeed(contentType, entitySet, content, properties);
+  }
+
+  /**
    * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
    * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
    * 
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity set to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
@@ -503,7 +542,7 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param edmProperty entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}. Must not be null.
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
@@ -578,5 +617,17 @@ public final class EntityProvider {
    */
   public static byte[] readBinary(final InputStream content) throws EntityProviderException {
     return createEntityProvider().readBinary(content);
+  }
+
+  /**
+   * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
+   * 
+   * @param inputStream the given input stream
+   * @param validate has to be true if metadata should be validated 
+   * @return Edm as {@link Edm}
+   * @throws EntityProviderException if reading of data (de-serialization) fails
+   */
+  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
+    return createEntityProvider().readMetadata(inputStream, validate);
   }
 }

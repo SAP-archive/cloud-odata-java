@@ -19,20 +19,19 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -58,7 +57,6 @@ import com.sap.core.odata.core.exception.MessageService.Message;
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
   @Context
@@ -99,16 +97,12 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       } else {
         oDataResponse = convertContextToODataResponse(errorContext);
       }
-      if (isInternalServerError(oDataResponse)) {
-        LOG.error("Internal Server Error: ", toHandleException);
-      }
 
       //Convert ODataResponse to JAXRS Response
       return Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
 
     } catch (Exception e) {
       //Exception mapper has to be robust thus we log the exception and just give back a generic error
-      LOG.error(exception.getMessage(), exception);
       ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
           .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
@@ -117,7 +111,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForApplicationException(final ODataApplicationException toHandleException) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getCode());
@@ -131,7 +125,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
 
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getErrorCode());
@@ -152,7 +146,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     MessageReference messageReference = toHandleException.getMessageReference();
     Message localizedMessage = extractEntity(messageReference);
 
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(responseStatusCode);
     context.setErrorCode(toHandleException.getErrorCode());
@@ -163,7 +157,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForWebApplicationException(final WebApplicationException toHandleException) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
     context.setErrorCode(null);
@@ -174,7 +168,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataErrorContext extractInformationForException(final Exception exception) {
-    ODataErrorContext context = new ODataErrorContext();
+    ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
     context.setErrorCode(null);
@@ -184,12 +178,23 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return context;
   }
 
-  private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
+  private ODataErrorContext createDefaultErrorContext() {
+    ODataErrorContext context = new ODataErrorContext();
+    if (uriInfo != null) {
+      context.setRequestUri(uriInfo.getRequestUri());
+    }
+    if (httpHeaders != null && httpHeaders.getRequestHeaders() != null) {
+      MultivaluedMap<String, String> requestHeaders = httpHeaders.getRequestHeaders();
+      Set<Entry<String, List<String>>> entries = requestHeaders.entrySet();
+      for (Entry<String, List<String>> entry : entries) {
+        context.putRequestHeader(entry.getKey(), entry.getValue());
+      }
+    }
+    return context;
   }
 
-  private boolean isInternalServerError(final ODataResponse response) {
-    return response.getStatus().getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode();
+  private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
+    return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
   }
 
   private Exception extractException(final Exception exception) {

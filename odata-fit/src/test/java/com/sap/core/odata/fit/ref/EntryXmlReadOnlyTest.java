@@ -30,7 +30,7 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * Tests employing the reference scenario reading a single entity in XML format
+ * Tests employing the reference scenario reading a single entity in XML format.
  * @author SAP AG
  */
 public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
@@ -67,6 +67,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     body = getBody(response);
     assertXpathEvaluatesTo("image/png", "/atom:entry/m:properties/d:Type", body);
     assertXpathEvaluatesTo(IMAGE_JPEG, "/atom:entry/m:properties/d:Image/@m:MimeType", body);
+    assertXpathEvaluatesTo(PHOTO_DEFAULT_IMAGE, "/atom:entry/m:properties/d:Image", body);
 
     response = callUri("Container2.Photos(Id=4,Type='foo')");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");

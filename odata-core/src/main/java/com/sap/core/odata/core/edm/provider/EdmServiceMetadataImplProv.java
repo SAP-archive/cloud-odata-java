@@ -18,21 +18,19 @@ package com.sap.core.odata.core.edm.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.edm.EdmEntitySetInfo;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -46,11 +44,10 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
  */
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EdmServiceMetadataImplProv.class);
-
   private EdmProvider edmProvider;
   private String dataServiceVersion;
   private List<Schema> schemas;
+  private List<EdmEntitySetInfo> entitySetInfos;
 
   public EdmServiceMetadataImplProv(final EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
@@ -64,6 +61,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
+    EntityProviderException cachedException = null;
 
     try {
       DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
@@ -71,19 +69,19 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
       XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, null);
       return csb.getInputStream();
-    } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } catch (FactoryConfigurationError e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (Exception e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (writer != null) {
         try {
           writer.close();
         } catch (IOException e) {
-          // don't throw in finally!  
-          LOG.error(e.getLocalizedMessage(), e);
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }
@@ -130,5 +128,28 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
       }
     }
     return dataServiceVersion;
+  }
+
+  @Override
+  public List<EdmEntitySetInfo> getEntitySetInfos() throws ODataException {
+    if (entitySetInfos == null) {
+      entitySetInfos = new ArrayList<EdmEntitySetInfo>();
+
+      if (schemas == null) {
+        schemas = edmProvider.getSchemas();
+      }
+
+      for (Schema schema : schemas) {
+        for (EntityContainer entityContainer : schema.getEntityContainers()) {
+          for (EntitySet entitySet : entityContainer.getEntitySets()) {
+            EdmEntitySetInfo entitySetInfo = new EdmEntitySetInfoImplProv(entitySet, entityContainer);
+            entitySetInfos.add(entitySetInfo);
+          }
+        }
+      }
+
+    }
+
+    return entitySetInfos;
   }
 }
