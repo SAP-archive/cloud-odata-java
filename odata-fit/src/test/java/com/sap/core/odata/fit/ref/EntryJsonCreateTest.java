@@ -83,6 +83,8 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     assertEquals("7", map.get("EmployeeId"));
     assertEquals("Employee 7", map.get("EmployeeName"));
     assertNull(map.get("EntryData"));
+    response = callUri("Employees('7')/$value");
+    checkMediaType(response, HttpContentType.TEXT_PLAIN);
   }
 
 }

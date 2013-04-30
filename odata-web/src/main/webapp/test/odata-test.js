@@ -251,3 +251,91 @@ equal(data.__batchResponses[1].__changeResponses.length,1,"Expected 1 __changeRe
 //       data.__batchResponses[1].__changeResponses[0].statusCode is not defined
 equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall MODIFIED", "Second EmployeeName: Frederic Fall MODIFIED");
 });
+
+module("POST");
+/* Test 6.1 */
+var entry={ 
+   __metadata: {
+     id: "Employees('1')",
+     uri: "Employees('1')",
+     type: "RefScenario.Employee",
+     content_type: "image/jpeg",
+     media_src: "Employees('1')/$value",
+     edit_media: "Employees('1')/$value",
+     properties: {
+       ne_Manager: {
+         associationuri: "Employees('1')/$links/ne_Manager"
+       },
+       ne_Team: {
+         associationuri: "Employees('1')/$links/ne_Team"
+       },
+       ne_Room: {
+         associationuri: "Employees('1')/$links/ne_Room"
+       }
+     }
+   },
+   EmployeeName: "Walter Winter",
+   ManagerId: "1",
+   RoomId: "104",
+   TeamId: "4",
+   Age: 52,
+   ImageUrl: "Employees('1')/$value",
+   ne_Manager: {
+      __deferred: {
+        uri: "Employees('1')/ne_Manager"
+       }
+   },
+   ne_Team: {
+     __metadata: {
+       id: "Teams('1')",
+       uri: "Teams('1')",
+       type: "RefScenario.Team",
+       properties: {
+       	 nt_Employees: {
+           associationuri: "Teams('1')/$links/nt_Employees"
+         }
+       }
+     },
+   Name: "Team X",
+   isScrumTeam: false,
+   nt_Employees: {
+     __deferred: {
+        uri: "Teams('1')/nt_Employees"
+     }
+   }
+     
+   },
+   ne_Room: {
+     __deferred: {
+         uri: "Employees('1')/ne_Room"
+     }
+   }
+};
+request = {
+  method: 'POST',
+  resourcePath: "Rooms",
+  data: {
+ 	 __metadata : { // additional data about the entry
+       id: 'Rooms(\'1\')',
+       uri: 'Rooms(\'1\')', // URI to the entry
+   	   etag: 'W/"1"', // entity ETag value used for concurrency checks
+   	   type: 'RefScenario.Room' ,
+   	},
+    Seats: 3,
+    Name : 'Room 104',
+    nr_Employees: [entry],  
+  	},
+};  
+
+odataTest("DeepInsert", 3, request , function (response, data) {
+  equal(response.statusCode, 201, "StatusCode: 201");
+  equal(data.Seats, 3, "Seats : 3");
+  equal(data.Name, "Room 104", "Room: 104");
+  // var employees = data.nr_Employees.results;
+  //equal(employees[0].EmployeeName, "Walter Winter", "Walter Winter");
+  //equal(employees[0].EmployeeId, 7, "EmployeeId: 7");
+  //var team = employees[0].ne_Team;
+  //equal(team.Name, "Team X", "New team with name 'Team X'");
+  //equal(team.isScrumTeam, false, "IsScrumTeam: false");
+  //equal(team.Id, 4, "Team Id: 4");
+});

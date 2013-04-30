@@ -3,6 +3,9 @@ package com.sap.core.odata.fit.ref;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -161,6 +164,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("2", body);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithInlineFeedObject() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Buildings('2')\","
@@ -192,30 +196,33 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("4", map.get("Id"));
     assertEquals("Building 2", map.get("Name"));
 
-    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap);
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap.get("id"));
     assertEquals("RefScenario.Building", metadataMap.get("type"));
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap.get("uri"));
 
-    response = callUri("Buildings('4')/nb_Rooms('104')/", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
-    body = getBody(response);
-    map = getStringMap(body);
-    assertEquals("104", map.get("Id"));
-    assertEquals("Room 2", map.get("Name"));
+    StringMap<Object> navProperty = (StringMap<Object>) map.get("nb_Rooms");
+    assertNotNull(navProperty);
+    List<StringMap<String>> results = (ArrayList<StringMap<String>>) navProperty.get("results");
+    assertNotNull(results);
+    for (int i = 0; i < results.size(); i++) {
+      StringMap<String> resultMap = (StringMap<String>) results.get(i);
+      switch (i) {
+      case 0:
+        assertEquals("Room 2", resultMap.get("Name"));
+        assertEquals("104", resultMap.get("Id"));
+        break;
+      case 1:
+        assertEquals("105", resultMap.get("Id"));
+        assertEquals("Room 3", resultMap.get("Name"));
+      }
+    }
     response = callUri("Buildings('4')/nb_Rooms('104')/Seats/$value", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
-    body = getBody(response);
-    assertEquals("5", body);
+    assertEquals("5", getBody(response));
 
-    response = callUri("Buildings('4')/nb_Rooms('105')/", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
-    body = getBody(response);
-    map = getStringMap(body);
-    assertEquals("105", map.get("Id"));
-    assertEquals("Room 3", map.get("Name"));
     response = callUri("Buildings('4')/nb_Rooms('105')/Seats/$value", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
-    body = getBody(response);
-    assertEquals("2", body);
+    assertEquals("2", getBody(response));
   }
 
   @Test
