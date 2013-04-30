@@ -42,6 +42,10 @@ import com.sap.core.odata.core.exception.MessageService.Message;
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
+  private static final String DOLLAR_FORMAT_JSON = "json";
+
+  private static final String DOLLAR_FORMAT = "$format";
+
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
   @Context
@@ -222,6 +226,32 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ContentType getContentType() {
+    ContentType contentType = getContentTypeByUriInfo();
+    if (contentType == null) {
+      contentType = getContentTypeByAcceptHeader();
+    }
+    return contentType;
+  }
+
+  private ContentType getContentTypeByUriInfo() {
+    ContentType contentType = null;
+    if(uriInfo != null && uriInfo.getQueryParameters() != null){
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+      if(queryParameters.containsKey(DOLLAR_FORMAT)){
+        String contentTypeString = queryParameters.getFirst(DOLLAR_FORMAT);
+        if(DOLLAR_FORMAT_JSON.equals(contentTypeString)){
+          contentType = ContentType.APPLICATION_JSON;
+        }else{
+          //Any format mentioned in the $format parameter other than json results in an application/xml content type for error messages
+          //due to the OData V2 Specification
+          contentType = ContentType.APPLICATION_XML;
+        }
+      }
+    }
+    return contentType;
+  }
+
+  private ContentType getContentTypeByAcceptHeader() {
     for (MediaType type : httpHeaders.getAcceptableMediaTypes()) {
       if (ContentType.isParseable(type.toString())) {
         ContentType convertedContentType = ContentType.create(type.toString());

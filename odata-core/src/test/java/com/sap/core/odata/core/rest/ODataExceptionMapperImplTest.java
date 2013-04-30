@@ -1,9 +1,10 @@
 package com.sap.core.odata.core.rest;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,6 +93,65 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals(uri.toASCIIString(), response.getHeaderString("RequestUri"));
     assertEquals("[AcceptValue]", response.getHeaderString("Accept"));
     assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
+  }
+  
+  @Test
+  public void dollarFormatJson() throws Exception{
+    MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+    queryParameters.putSingle("$format", "json");
+    when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
+    
+    Response response = exceptionMapper.toResponse(new Exception("text"));
+    assertNotNull(response);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("application/json", contentTypeHeader);
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertEquals("{\"error\":{\"code\":null,\"message\":{\"lang\":\"en\",\"value\":\"text\"}}}", errorMessage);
+  }
+  
+  @Test
+  public void dollarFormatXml() throws Exception{
+    MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+    queryParameters.putSingle("$format", "xml");
+    when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
+    
+    Response response = exceptionMapper.toResponse(new Exception("text"));
+    assertNotNull(response);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("application/xml", contentTypeHeader);
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertXpathExists("/a:error/a:code", errorMessage);
+    assertXpathEvaluatesTo("text", "/a:error/a:message", errorMessage);
+  }
+  
+  @Test
+  public void dollarFormatAtom() throws Exception{
+    MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+    queryParameters.putSingle("$format", "xml");
+    when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
+    
+    Response response = exceptionMapper.toResponse(new Exception("text"));
+    assertNotNull(response);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("application/xml", contentTypeHeader);
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertXpathExists("/a:error/a:code", errorMessage);
+    assertXpathEvaluatesTo("text", "/a:error/a:message", errorMessage);
+  }
+  
+  @Test
+  public void dollarFormatUnknown() throws Exception{
+    MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+    queryParameters.putSingle("$format", "someFormat");
+    when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
+    
+    Response response = exceptionMapper.toResponse(new Exception("text"));
+    assertNotNull(response);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("application/xml", contentTypeHeader);
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertXpathExists("/a:error/a:code", errorMessage);
+    assertXpathEvaluatesTo("text", "/a:error/a:message", errorMessage);
   }
 
   @Test

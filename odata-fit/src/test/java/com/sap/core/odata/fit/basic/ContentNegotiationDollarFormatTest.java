@@ -46,7 +46,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testAtomFormatForServiceDocument() throws Exception {
+  public void atomFormatForServiceDocument() throws Exception {
     final HttpResponse response = executeGetRequest("?$format=atom");
 
     final String responseEntity = StringHelper.httpEntityToString(response.getEntity());
@@ -58,7 +58,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testFormatCustom() throws Exception {
+  public void formatCustom() throws Exception {
     final HttpResponse response = executeGetRequest("?$format=csv");
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -68,7 +68,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testFormatNotAccepted() throws Exception {
+  public void formatNotAccepted() throws Exception {
     final HttpResponse response = executeGetRequest("?$format=csvOrSomethingElse");
 
     assertEquals(HttpStatusCodes.NOT_ACCEPTABLE.getStatusCode(), response.getStatusLine().getStatusCode());

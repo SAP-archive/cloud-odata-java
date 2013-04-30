@@ -29,7 +29,7 @@ public class MetadataTest extends AbstractRefXmlTest {
     assertFalse(getBody(response).isEmpty());
 
     notFound("$invalid");
-    badRequest("$metadata?$format=json");
+    badRequest("$metadata?$format=atom");
   }
 
   @Test
