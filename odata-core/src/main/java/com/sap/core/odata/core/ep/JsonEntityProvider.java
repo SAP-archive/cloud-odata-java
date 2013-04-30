@@ -386,7 +386,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    return new JsonEntityConsumer().readProperty(edmProperty, content, properties);
   }
 
   @Override

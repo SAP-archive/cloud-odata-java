@@ -75,7 +75,7 @@ public class JsonEntryEntityProducer {
         jsonStreamWriter.separator();
         jsonStreamWriter.namedStringValueRaw(FormatJson.CONTENT_TYPE,
             properties.getMediaResourceMimeType() == null ?
-                type.getMapping() == null || type.getMapping().getMimeType() == null ?
+                type.getMapping() == null || type.getMapping().getMimeType() == null || data.get(type.getMapping().getMimeType()) == null ?
                     HttpContentType.APPLICATION_OCTET_STREAM : data.get(type.getMapping().getMimeType()).toString() :
                 properties.getMediaResourceMimeType());
         jsonStreamWriter.separator();

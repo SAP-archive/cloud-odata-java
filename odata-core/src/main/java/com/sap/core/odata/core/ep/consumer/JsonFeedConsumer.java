@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -15,6 +16,9 @@ import com.sap.core.odata.core.ep.feed.FeedMetadataImpl;
 import com.sap.core.odata.core.ep.feed.ODataFeedImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
 
+/**
+ * @author SAP AG
+ */
 public class JsonFeedConsumer {
 
   private JsonReader reader;
@@ -22,41 +26,50 @@ public class JsonFeedConsumer {
   private EntityProviderReadProperties readProperties;
   private List<ODataEntry> entries = new ArrayList<ODataEntry>();
   private FeedMetadataImpl feedMetadata = new FeedMetadataImpl();
+  private boolean dPresent = false;
   private boolean resultsArrayPresent = false;
 
   public JsonFeedConsumer(final JsonReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) {
     this.reader = reader;
     this.eia = eia;
     this.readProperties = readProperties;
-
   }
 
   public ODataFeed readFeedStandalone() throws EntityProviderException {
     try {
-      reader.beginObject();
-      String nextName = reader.nextName();
-      if (FormatJson.D.equals(nextName)) {
-        reader.beginObject();
-        readFeedContent();
-        reader.endObject();
+      if (reader.peek() == JsonToken.BEGIN_ARRAY) {
+        readArrayContent();
       } else {
-        handleName(nextName);
-        readFeedContent();
-      }
+        reader.beginObject();
+        final String nextName = reader.nextName();
+        if (FormatJson.D.equals(nextName)) {
+          if (dPresent) {
+            //TODO: Messagetext
+            throw new EntityProviderException(EntityProviderException.COMMON);
+          } else {
+            dPresent = true;
+            readFeedStandalone();
+          }
+        } else {
+          handleName(nextName);
+          readFeedContent();
+        }
 
-      reader.endObject();
+        reader.endObject();
+      }
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (IllegalStateException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
     return new ODataFeedImpl(entries, feedMetadata);
   }
 
   private void readFeedContent() throws IOException, EdmException, EntityProviderException {
-    String nextName;
     while (reader.hasNext()) {
-      nextName = reader.nextName();
+      final String nextName = reader.nextName();
       handleName(nextName);
     }
 
@@ -68,27 +81,50 @@ public class JsonFeedConsumer {
 
   private void handleName(final String nextName) throws IOException, EdmException, EntityProviderException {
     if (FormatJson.RESULTS.equals(nextName)) {
-      reader.beginArray();
-      while (reader.hasNext()) {
-        JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, readProperties);
-        ODataEntry entry = jec.readFeedEntry();
-        entries.add(entry);
-      }
-      reader.endArray();
       resultsArrayPresent = true;
+      readArrayContent();
+
     } else if (FormatJson.COUNT.equals(nextName)) {
-      int inlineCount = reader.nextInt();
-      feedMetadata.setInlineCount(inlineCount);
+      if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
+        int inlineCount;
+        try {
+          inlineCount = reader.nextInt();
+        } catch (final NumberFormatException e)  {
+          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""));
+        }
+        if (inlineCount >= 0)
+          feedMetadata.setInlineCount(inlineCount);
+        else
+          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
+      } else {
+        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
+      }
+
     } else if (FormatJson.NEXT.equals(nextName)) {
-      String nextLink = reader.nextString();
-      feedMetadata.setNextLink(nextLink);
+      if (reader.peek() == JsonToken.STRING && feedMetadata.getNextLink() == null) {
+        String nextLink = reader.nextString();
+        feedMetadata.setNextLink(nextLink);
+      } else {
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
+      }
+
     } else {
       //TODO: CA Messagetext
       throw new EntityProviderException(EntityProviderException.COMMON);
     }
   }
 
-  public ODataFeed readInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
+  private void readArrayContent() throws IOException, EdmException, EntityProviderException {
+    reader.beginArray();
+    while (reader.hasNext()) {
+      final ODataEntry entry = new JsonEntryConsumer(reader, eia, readProperties).readFeedEntry();
+      entries.add(entry);
+    }
+    reader.endArray();
+  }
+
+  protected ODataFeed readInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
     handleName(name);
     //consume the rest of the entry content

@@ -108,14 +108,16 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ODataErrorContext extractInformationForHttpException(final ODataHttpException toHandleException) {
     MessageReference messageReference = toHandleException.getMessageReference();
-    Message localizedMessage = extractEntity(messageReference);
+    Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
 
     ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getErrorCode());
-    context.setMessage(localizedMessage.getText());
-    context.setLocale(localizedMessage.getLocale());
+    if (localizedMessage != null) {
+      context.setMessage(localizedMessage.getText());
+      context.setLocale(localizedMessage.getLocale());
+    }
     context.setException(toHandleException);
     return context;
   }

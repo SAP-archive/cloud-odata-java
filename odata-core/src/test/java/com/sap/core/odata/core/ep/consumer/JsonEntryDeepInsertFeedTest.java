@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
@@ -18,7 +20,11 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.FeedMetadata;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
 
   private static final String BUILDING_WITH_INLINE_ROOMS = "JsonBuildingWithInlineRooms";
@@ -68,7 +74,22 @@ public class JsonEntryDeepInsertFeedTest extends AbstractConsumerTest {
     FeedMetadata roomsMetadata = innerRoomFeed.getFeedMetadata();
     assertEquals(Integer.valueOf(1), roomsMetadata.getInlineCount());
     assertEquals("nextLink", roomsMetadata.getNextLink());
+  }
 
+  @Test
+  public void innerFeedNoMediaResourceWithoutCallbackSimpleArray() throws Exception {
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Buildings");
+    String content = "{\"d\":{\"Id\":\"1\",\"Name\":\"Building 1\","
+        + "\"nb_Rooms\":[{\"Id\":\"1\",\"Name\":\"Room 1\"}]}}";
+    InputStream contentBody = createContentAsStream(content);
+    final ODataEntry outerEntry = new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+    assertNotNull(outerEntry);
+    final ODataFeed innerRoomFeed = (ODataFeed) outerEntry.getProperties().get("nb_Rooms");
+    assertNotNull(innerRoomFeed);
+
+    final List<ODataEntry> rooms = innerRoomFeed.getEntries();
+    assertNotNull(rooms);
+    assertEquals(1, rooms.size());
   }
 
   @Test

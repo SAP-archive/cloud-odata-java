@@ -114,12 +114,14 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
-    data.addAll((List<?>) retrieveData(
-        uriInfo.getStartEntitySet(),
-        uriInfo.getKeyPredicates(),
-        uriInfo.getFunctionImport(),
-        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
-        uriInfo.getNavigationSegments()));
+    try {
+      data.addAll((List<?>) retrieveData(
+          uriInfo.getStartEntitySet(),
+          uriInfo.getKeyPredicates(),
+          uriInfo.getFunctionImport(),
+          mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+          uriInfo.getNavigationSegments()));
+    } catch (final ODataNotFoundException e) {}
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final InlineCount inlineCountType = uriInfo.getInlineCount();
@@ -191,12 +193,14 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse countEntitySet(final GetEntitySetCountUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
-    data.addAll((List<?>) retrieveData(
-        uriInfo.getStartEntitySet(),
-        uriInfo.getKeyPredicates(),
-        uriInfo.getFunctionImport(),
-        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
-        uriInfo.getNavigationSegments()));
+    try {
+      data.addAll((List<?>) retrieveData(
+          uriInfo.getStartEntitySet(),
+          uriInfo.getKeyPredicates(),
+          uriInfo.getFunctionImport(),
+          mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+          uriInfo.getNavigationSegments()));
+    } catch (final ODataNotFoundException e) {}
 
     applySystemQueryOptions(
         uriInfo.getTargetEntitySet(),
@@ -214,12 +218,14 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse readEntityLinks(final GetEntitySetLinksUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
-    data.addAll((List<?>) retrieveData(
-        uriInfo.getStartEntitySet(),
-        uriInfo.getKeyPredicates(),
-        uriInfo.getFunctionImport(),
-        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
-        uriInfo.getNavigationSegments()));
+    try {
+      data.addAll((List<?>) retrieveData(
+          uriInfo.getStartEntitySet(),
+          uriInfo.getKeyPredicates(),
+          uriInfo.getFunctionImport(),
+          mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+          uriInfo.getNavigationSegments()));
+    } catch (final ODataNotFoundException e) {}
 
     final Integer count = applySystemQueryOptions(
         uriInfo.getTargetEntitySet(),
@@ -272,9 +278,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter())) {
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final ExpandSelectTreeNode expandSelectTreeNode = UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand());
     return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTreeNode, data, contentType)).build();
@@ -885,9 +890,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         final EdmEntityType entityType = context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType();
         final Object relatedData = readRelatedData(context);
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        for (final Object entryData : (List<?>) relatedData) {
+        for (final Object entryData : (List<?>) relatedData)
           values.add(getStructuralTypeValueMap(entryData, entityType));
-        }
         WriteFeedCallbackResult result = new WriteFeedCallbackResult();
         result.setFeedData(values);
         EntityProviderWriteProperties inlineProperties = EntityProviderWriteProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(context.getSelfLink()).build();

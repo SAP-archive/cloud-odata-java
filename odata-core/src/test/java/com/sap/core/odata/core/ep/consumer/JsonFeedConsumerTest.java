@@ -18,6 +18,9 @@ import com.sap.core.odata.api.ep.feed.FeedMetadata;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class JsonFeedConsumerTest extends AbstractConsumerTest {
 
   @Test
@@ -114,7 +117,6 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
   public void emptyFeed() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     String content = "{\"d\":{\"results\":[]}}";
-    assertNotNull(content);
     InputStream contentBody = createContentAsStream(content);
 
     // execute
@@ -132,15 +134,111 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getNextLink());
   }
 
+  @Test
+  public void emptyFeedWithoutDAndResults() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("[]");
+    final ODataFeed feed = new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+    assertNotNull(feed);
+    final List<ODataEntry> entries = feed.getEntries();
+    assertNotNull(entries);
+    assertEquals(0, entries.size());
+    final FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+    assertNull(feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
+  }
+
+  @Test
+  public void emptyFeedWithoutResults() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":[]}");
+    final ODataFeed feed = new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+    assertNotNull(feed);
+    final List<ODataEntry> entries = feed.getEntries();
+    assertNotNull(entries);
+    assertEquals(0, entries.size());
+    final FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+    assertNull(feedMetadata.getInlineCount());
+    assertNull(feedMetadata.getNextLink());
+  }
+
   @Test(expected = EntityProviderException.class)
   public void resultsNotPresent() throws Exception {
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-    String content = "{\"d\":{}}";
-    InputStream contentBody = createContentAsStream(content);
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
 
-    // execute
-    JsonEntityConsumer xec = new JsonEntityConsumer();
-    xec.readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  @Test(expected = EntityProviderException.class)
+  public void countButNoResults() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__count\":\"1\"}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongCountType() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__count\":1,\"results\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongCountContent() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__count\":\"one\",\"results\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void negativeCount() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__count\":\"-1\",\"results\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongNextType() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"results\":[],\"__next\":false}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongTag() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__results\":null}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void doubleCount() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"__count\":\"1\",\"__count\":\"2\",\"results\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void doubleNext() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"results\":[],\"__next\":\"a\",\"__next\":\"b\"}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void doubleResults() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"results\":{\"results\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void doubleD() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream("{\"d\":{\"d\":[]}}");
+    new JsonEntityConsumer().readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
   }
 
   @Test

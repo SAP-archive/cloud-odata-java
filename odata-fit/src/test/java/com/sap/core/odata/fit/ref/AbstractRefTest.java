@@ -100,10 +100,11 @@ public class AbstractRefTest extends AbstractFitTest {
     assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
 
     if (expectedStatusCode == HttpStatusCodes.OK) {
-      assertNotNull(response);
       assertNotNull(response.getEntity());
       assertNotNull(response.getEntity().getContent());
     } else if (expectedStatusCode == HttpStatusCodes.CREATED) {
+      assertNotNull(response.getEntity());
+      assertNotNull(response.getEntity().getContent());
       assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     } else if (expectedStatusCode == HttpStatusCodes.NO_CONTENT) {
       assertTrue(response.getEntity() == null || response.getEntity().getContent() == null);
