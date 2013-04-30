@@ -30,7 +30,7 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
 
 	private URI baseUri;
 	private List<ArrayList<NavigationPropertySegment>> expandList;
-	
+	private EdmEntitySet nextEntitySet = null;
 	
 	private JPAExpandCallBack(URI baseUri,List<ArrayList<NavigationPropertySegment>> expandList) {
 		super();
@@ -45,12 +45,12 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
 		Map<String, Object> edmPropertyValueMap = null;
 		List<EdmNavigationProperty> currentNavPropertyList = null;
 		Map<String,ExpandSelectTreeNode> navigationLinks = null;
-		EdmEntitySet nextEntitySet = null;
 		JPAResultParser jpaResultParser = JPAResultParser.create();
 		EdmNavigationProperty currentNavigationProperty = context.getNavigationProperty();
 		try {
 			Object inlinedEntry = entry.get(currentNavigationProperty.getName());
-			nextEntitySet = context.getSourceEntitySet().getRelatedEntitySet(currentNavigationProperty);
+			if(nextEntitySet == null)
+				nextEntitySet = context.getSourceEntitySet().getRelatedEntitySet(currentNavigationProperty);
 			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(inlinedEntry,nextEntitySet.getEntityType());
 			result.setEntryData(edmPropertyValueMap);
 			navigationLinks = context.getCurrentExpandSelectTreeNode().getLinks();
@@ -85,9 +85,11 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
 		try {
 			@SuppressWarnings({ "unchecked" })
 			List<Object> listOfItems = (List<Object>) inlinedEntry.get(context.getNavigationProperty().getName());
+			if(nextEntitySet == null)
+				nextEntitySet = context.getSourceEntitySet().getRelatedEntitySet(currentNavigationProperty);
 			for(Object object:listOfItems)
 			{
-				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(object,context.getSourceEntitySet().getRelatedEntitySet(currentNavigationProperty).getEntityType());
+				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(object,nextEntitySet.getEntityType());
 				edmEntityList.add(edmPropertyValueMap);
 			}
 			result.setFeedData(edmEntityList);
