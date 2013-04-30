@@ -5,16 +5,17 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.internal.StringMap;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
+/**
+ * @author SAP AG
+ */
 public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
 
-  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithInlineEntry() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Rooms('1')\","
@@ -36,6 +37,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 
+    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap);
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("id"));
@@ -48,15 +50,14 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("4", map.get("Id"));
     assertEquals("Building 4", map.get("Name"));
 
+    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap2 = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap2);
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap2.get("id"));
     assertEquals("RefScenario.Building", metadataMap2.get("type"));
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap2.get("uri"));
-
   }
 
-  @Ignore
   @Test
   public void createEntryRoomWithInlineEmptyFeedArray() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Rooms('1')\","
@@ -80,10 +81,8 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("id"));
     assertEquals("RefScenario.Room", metadataMap.get("type"));
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("uri"));
-
   }
 
-  @Ignore
   @Test
   public void createEntryRoomWithInlineEmptyFeedObject() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Rooms('1')\","
@@ -107,11 +106,8 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("id"));
     assertEquals("RefScenario.Room", metadataMap.get("type"));
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("uri"));
-
   }
 
-  @Ignore
-  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithInlineFeedArray() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Buildings('2')\","
@@ -139,6 +135,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("4", map.get("Id"));
     assertEquals("Building 2", map.get("Name"));
 
+    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap);
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap.get("id"));
@@ -162,10 +159,8 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     response = callUri("Buildings('4')/nb_Rooms('105')/Seats/$value", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
     body = getBody(response);
     assertEquals("2", body);
-
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithInlineFeedObject() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Buildings('2')\","
@@ -197,6 +192,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("4", map.get("Id"));
     assertEquals("Building 2", map.get("Name"));
 
+    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap);
     assertEquals(getEndpoint() + "Buildings('4')", metadataMap.get("id"));
@@ -220,11 +216,8 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     response = callUri("Buildings('4')/nb_Rooms('105')/Seats/$value", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON);
     body = getBody(response);
     assertEquals("2", body);
-
   }
 
-  @Ignore
-  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithInlineFeedEmployee() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Rooms('1')\","
@@ -254,12 +247,12 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 
+    @SuppressWarnings("unchecked")
     StringMap<String> metadataMap = (StringMap<String>) map.get("__metadata");
     assertNotNull(metadataMap);
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("id"));
     assertEquals("RefScenario.Room", metadataMap.get("type"));
     assertEquals(getEndpoint() + "Rooms('104')", metadataMap.get("uri"));
-
   }
 
   @Test

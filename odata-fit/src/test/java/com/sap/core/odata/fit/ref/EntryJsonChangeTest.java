@@ -60,8 +60,8 @@ public class EntryJsonChangeTest extends AbstractRefTest {
     checkUri("Buildings('4')/nb_Rooms('104')?$format=json");
     assertEquals("{\"d\":{\"results\":[]}}", getBody(callUri("Buildings('4')/nb_Rooms('104')/nr_Employees?$format=json")));
     assertEquals("{\"d\":{\"Seats\":6}}", getBody(callUri("Buildings('4')/nb_Rooms('105')/Seats?$format=json")));
-    // assertEquals("{\"d\":{\"EmployeeName\":\"" + EMPLOYEE_5_NAME + "\"}}", getBody(callUri("Buildings('4')/nb_Rooms('105')/nr_Employees('5')/EmployeeName?$format=json")));
-    // assertEquals("{\"d\":{\"Age\":" + EMPLOYEE_6_AGE + "}}", getBody(callUri("Buildings('4')/nb_Rooms('105')/nr_Employees('6')/Age?$format=json")));
+    assertEquals("{\"d\":{\"EmployeeName\":\"" + EMPLOYEE_5_NAME + "\"}}", getBody(callUri("Buildings('4')/nb_Rooms('105')/nr_Employees('5')/EmployeeName?$format=json")));
+    assertEquals("{\"d\":{\"Age\":" + EMPLOYEE_6_AGE + "}}", getBody(callUri("Buildings('4')/nb_Rooms('105')/nr_Employees('6')/Age?$format=json")));
   }
 
   @Test
@@ -76,7 +76,7 @@ public class EntryJsonChangeTest extends AbstractRefTest {
     checkUri("Buildings('4')");
     assertEquals("1", getBody(callUri("Buildings('4')/nb_Rooms('104')/Seats/$value")));
     assertEquals("2015-02-18T06:53:44.242", getBody(callUri("Buildings('4')/nb_Rooms('104')/nr_Employees('7')/EntryDate/$value")));
-    // assertEquals(MANAGER_NAME, getBody(callUri("Buildings('4')/nb_Rooms('104')/nr_Employees('7')/ne_Manager/EmployeeName/$value")));
+    assertEquals(MANAGER_NAME, getBody(callUri("Buildings('4')/nb_Rooms('104')/nr_Employees('7')/ne_Manager/EmployeeName/$value")));
   }
 
   @Test

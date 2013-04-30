@@ -12,6 +12,9 @@ import com.google.gson.internal.StringMap;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
+/**
+ * @author SAP AG
+ */
 public class EntryJsonCreateTest extends AbstractRefJsonTest {
 
   @Test
@@ -42,7 +45,6 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     assertEquals("4", body);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void createEntryRoomWithLink() throws Exception {
     String content = "{\"d\":{\"__metadata\":{\"id\":\"" + getEndpoint() + "Rooms('1')\","
@@ -59,8 +61,10 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     StringMap<Object> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
+    @SuppressWarnings("unchecked")
     StringMap<Object> employeesMap = (StringMap<Object>) map.get("nr_Employees");
     assertNotNull(employeesMap);
+    @SuppressWarnings("unchecked")
     StringMap<String> deferredMap = (StringMap<String>) employeesMap.get("__deferred");
     assertNotNull(deferredMap);
     assertEquals(getEndpoint() + "Rooms('104')/nr_Employees", deferredMap.get("uri"));
@@ -79,7 +83,6 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     assertEquals("7", map.get("EmployeeId"));
     assertEquals("Employee 7", map.get("EmployeeName"));
     assertNull(map.get("EntryData"));
-
   }
 
 }
