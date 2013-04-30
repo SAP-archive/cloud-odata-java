@@ -31,7 +31,8 @@ Contributions to this project are very welcome, but can only be accepted if the 
 Version History
 ---------------
 
-0.4.0-Snapshot  Advanced Read / Write and JSON support  
+0.5.0-SNAPSHOT basic $batch as work in progress
+0.4.0  Advanced Read / Write and JSON support  
 0.3.0  Advanced Read / Basic Write  
 0.2.0  Basic Read / Write  
 0.1.0  Basic Read
