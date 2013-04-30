@@ -291,7 +291,7 @@ public final class EntityProvider {
      * @param errorCode   a String that serves as a substatus to the HTTP response code
      * @param message     a human-readable message describing the error
      * @param locale      the {@link Locale} that should be used to format the error message
-     * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+     * @param innerError  the inner error for this message as a plain string. MUST NOT BE a deep XML structure.  If it is null or an empty String no inner error tag is shown inside the response XML.
      * @return            an {@link ODataResponse} containing the serialized error message
      */
     ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
@@ -315,7 +315,7 @@ public final class EntityProvider {
    * @param errorCode   a String that serves as a substatus to the HTTP response code
    * @param message     a human-readable message describing the error
    * @param locale      the {@link Locale} that should be used to format the error message
-   * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+   * @param innerError  the inner error for this message. MUST NOT BE a deep XML structure. If it is null or an empty String no inner error tag is shown inside the response xml
    * @return            an {@link ODataResponse} containing the serialized error message
    */
   public static ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
