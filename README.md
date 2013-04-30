@@ -15,6 +15,32 @@ The OData Library (Java) is a library which enables developers to implement ODat
 - Clear separation between Core and API 
 - Option to build extensions on top
 
+Maven
+-----
+
+The project build with Maven. To consume sources execute 
+
+    mvn eclipse:eclipse
+
+and import generated projects into Eclipse. 
+
+To consume libraries with Maven add following dependencies to your pom.xml:
+
+    <dependency>
+      <groupId>com.sap.odata</groupId>
+      <artifactId>com.sap.core.odata.api</artifactId>
+      <version>0.4.0</version> 
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sap.odata</groupId>
+      <artifactId>com.sap.core.odata.core</artifactId>
+      <version>0.4.0</version>
+      <scope>runtime</scope>
+    </dependency>
+
+Build artifacts are already available at Maven Central.
+
 Additional Information
 ----------------------
 
@@ -31,7 +57,7 @@ Contributions to this project are very welcome, but can only be accepted if the 
 Version History
 ---------------
 
-0.5.0-SNAPSHOT basic $batch as work in progress
+0.5.0-SNAPSHOT basic $batch as work in progress <br/>
 0.4.0  Advanced Read / Write and JSON support  
 0.3.0  Advanced Read / Basic Write  
 0.2.0  Basic Read / Write  
@@ -40,7 +66,8 @@ Version History
 Roadmap
 -------
 
-1. Advanced Read / Write and JSON support  
+1. Advanced Read / Write and JSON support   
 2. $batch
 3. Conditional Handling  
 4. Client Support
+
