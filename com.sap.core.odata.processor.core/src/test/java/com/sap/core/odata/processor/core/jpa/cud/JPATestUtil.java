@@ -206,7 +206,7 @@ public class JPATestUtil {
 
 
 
-	private static EdmNavigationProperty mockNavigationProperty() {
+	public static EdmNavigationProperty mockNavigationProperty() {
 		EdmNavigationProperty navigationProperty = EasyMock.createMock(EdmNavigationProperty.class);
 		EdmMapping mapping = EasyMock.createMock(EdmMapping.class);
 		EasyMock.expect(mapping.getInternalName()).andStubReturn("salesOrderLineItems");
