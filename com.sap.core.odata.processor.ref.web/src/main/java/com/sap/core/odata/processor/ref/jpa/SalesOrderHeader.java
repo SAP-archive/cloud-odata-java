@@ -1,7 +1,6 @@
 package com.sap.core.odata.processor.ref.jpa;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,15 +18,14 @@ public class SalesOrderHeader {
 
 	public SalesOrderHeader(Date creationDate,int buyerId, String buyerName,
 			Address buyerAddress, String currencyCode, double netAmount,
-			String deliveryStatus,Calendar calendar) {
+			String deliveryStatus) {
 		super();
 		this.creationDate = creationDate;
 		this.buyerId = buyerId;
 		this.buyerName = buyerName;
 		this.buyerAddress = buyerAddress;
 		this.currencyCode = currencyCode;
-		this.deliveryStatus = deliveryStatus;
-		this.creationCalendar = calendar;
+		this.deliveryStatus = deliveryStatus;		
 	}
 	
 	@Id
@@ -38,9 +36,6 @@ public class SalesOrderHeader {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar creationCalendar;
-
 	@Column(name = "BUYER_ID")
 	private int buyerId;
 
@@ -158,13 +153,5 @@ public class SalesOrderHeader {
 
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
-	}
-
-	public Calendar getCreationCalendar() {
-		return creationCalendar;
-	}
-
-	public void setCreationCalendar(Calendar creationCalendar) {
-		this.creationCalendar = creationCalendar;
 	}		
 }
