@@ -295,6 +295,38 @@ body {
 				<td width=60%><code style="font-size: small">SELECT E1
 						FROM SalesOrderHeader E1 ORDERBY E1.soId asc</code></td>
 			</tr>
+			<tr>
+				<td>SUBSTRINGOF Example</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=substringof('NR',CurrencyCode) eq true"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=substringof('NR',CurrencyCode) eq true</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE (CASE WHEN E1.currencyCode LIKE '%NR%' THEN TRUE ELSE FALSE END) = true</code></td>
+			</tr>
+			<tr>
+				<td>SUBSTRING Example</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=substring(CurrencyCode,1,3) eq 'NR '"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=substring(CurrencyCode,1,3) eq 'NR '</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE SUBSTRING(E1.currencyCode, 1 + 1 , 2) = 'NR'</code></td>
+			</tr>
+			<tr>
+				<td>TOLOWER Example</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=tolower(CurrencyCode) eq 'inr rupees'"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=tolower(CurrencyCode) eq 'inr rupees'</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE LOWER(E1.currencyCode) = 'inr rupees'</code></td>
+			</tr>
+			<tr>
+				<td>Mixed Query Example with SUBSTRINGOF,SUBSTRING & TOLOWER</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=substringof('nr',tolower(CurrencyCode)) and substring(BuyerName,1,2) eq 'uy' "
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=substringof('nr',tolower(CurrencyCode)) and substring(BuyerName,1,2) eq 'uy' </a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 </code></td>
+			</tr>
 		</table>
 	</div>
 
