@@ -327,6 +327,30 @@ body {
 				<td width=60%><code style="font-size: small">SELECT E1
 						FROM SalesOrderHeader E1 </code></td>
 			</tr>
+			<tr>
+				<td>$Expand Example1</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE LOWER(E1.currencyCode) = 'inr rupees'</code></td>
+			</tr>
+			<tr>
+				<td>$Expand Example2</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails,NotesDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails,NotesDetails</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE LOWER(E1.currencyCode) = 'inr rupees'</code></td>
+			</tr>
+			<tr>
+				<td>$Expand Example3</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails/MaterialDetails,NotesDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders(5L)?$expand=SalesOrderLineItemDetails/MaterialDetails,NotesDetails</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1
+						FROM SalesOrderHeader E1 WHERE LOWER(E1.currencyCode) = 'inr rupees'</code></td>
+			</tr>
 		</table>
 	</div>
 
