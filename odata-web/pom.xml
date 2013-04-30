@@ -22,10 +22,10 @@
 				<filtering>true</filtering>
 				<targetPath>../${project.build.finalName}/gen</targetPath>
 			</resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
 
 		<plugins>
@@ -33,6 +33,13 @@
 				<groupId>com.sap.research</groupId>
 				<artifactId>nwcloud-maven-plugin</artifactId>
 				<version>1.0.0.RELEASE</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 
