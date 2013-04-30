@@ -50,7 +50,7 @@
 	</developers>
 	
 	<properties>
-		<version.odataforsap>0.4.0-SNAPSHOT</version.odataforsap>
+		<version.odataforsap>0.4.0</version.odataforsap>
 		<version.odataforsap.processor>${project.version}</version.odataforsap.processor>
 		<version.eclipselink>2.1.2</version.eclipselink>
 		<version.javax.persistence>2.0.3</version.javax.persistence>
