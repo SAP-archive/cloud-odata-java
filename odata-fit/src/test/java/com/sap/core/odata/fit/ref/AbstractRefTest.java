@@ -157,6 +157,10 @@ public class AbstractRefTest extends AbstractFitTest {
     return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
   }
 
+  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception {
+    return callUri(ODataHttpMethod.POST, uri, additionalHeader, additionalHeaderValue, requestBody, requestContentType, expectedStatusCode);
+  }
+
   protected void putUri(final String uri,
       final String requestBody, final String requestContentType,
       final HttpStatusCodes expectedStatusCode) throws Exception {
