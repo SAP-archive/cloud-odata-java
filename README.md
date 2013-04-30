@@ -66,8 +66,7 @@ Version History
 Roadmap
 -------
 
-1. Advanced Read / Write and JSON support   
-2. $batch
-3. Conditional Handling  
-4. Client Support
+1. $batch
+2. Conditional Handling  
+3. Client Support
 
