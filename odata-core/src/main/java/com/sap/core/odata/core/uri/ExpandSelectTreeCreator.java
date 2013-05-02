@@ -15,6 +15,9 @@ import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl.AllKinds;
 
+/**
+ * @author SAP AG
+ */
 public class ExpandSelectTreeCreator {
 
   private List<SelectItem> initialSelect;
@@ -101,7 +104,9 @@ public class ExpandSelectTreeCreator {
       Field f = node.getClass().getDeclaredField(string);
       f.setAccessible(true);
       return clazz.cast(f.get(node));
-    } catch (Exception e) {
+    } catch (NoSuchFieldException e) {
+      throw new RuntimeException(e);
+    } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
   }

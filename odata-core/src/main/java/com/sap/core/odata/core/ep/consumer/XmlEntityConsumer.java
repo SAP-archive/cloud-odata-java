@@ -34,6 +34,7 @@ public class XmlEntityConsumer {
 
   public ODataFeed readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
+    EntityProviderException cachedException = null;
 
     try {
       reader = createStaxReader(content);
@@ -42,14 +43,21 @@ public class XmlEntityConsumer {
       XmlFeedConsumer xfc = new XmlFeedConsumer();
       return xfc.readFeed(reader, eia, properties);
     } catch (EntityProviderException e) {
-      throw e;
+      cachedException = e;
+      throw cachedException;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
     } finally {
       if (reader != null) {
         try {
           reader.close();
-        } catch (XMLStreamException e) {}
+        } catch (XMLStreamException e) {
+          if (cachedException != null)
+            throw cachedException;
+          else
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+        }
       }
     }
   }
