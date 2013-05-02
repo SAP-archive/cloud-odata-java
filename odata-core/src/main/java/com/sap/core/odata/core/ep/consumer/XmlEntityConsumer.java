@@ -54,9 +54,9 @@ public class XmlEntityConsumer {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null)
-            throw cachedException;
+            throw cachedException;// NOPMD
           else
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
         }
       }
     }
@@ -85,9 +85,9 @@ public class XmlEntityConsumer {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -112,9 +112,9 @@ public class XmlEntityConsumer {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -159,9 +159,9 @@ public class XmlEntityConsumer {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -185,9 +185,9 @@ public class XmlEntityConsumer {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }

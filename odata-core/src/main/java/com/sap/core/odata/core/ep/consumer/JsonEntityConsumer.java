@@ -43,9 +43,9 @@ public class JsonEntityConsumer {
           reader.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -73,9 +73,9 @@ public class JsonEntityConsumer {
           reader.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -97,8 +97,11 @@ public class JsonEntityConsumer {
         try {
           reader.close();
         } catch (final IOException e) {
-          throw cachedException == null ?
-              new EntityProviderException(EntityProviderException.COMMON, e) : cachedException;
+          if (cachedException != null) {
+            throw cachedException;// NOPMD
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+          }
         }
       }
     }

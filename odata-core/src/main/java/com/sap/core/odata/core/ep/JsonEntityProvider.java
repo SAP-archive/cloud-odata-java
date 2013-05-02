@@ -88,9 +88,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -130,9 +130,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -168,9 +168,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -207,9 +207,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -239,9 +239,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -270,9 +270,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -306,9 +306,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -341,9 +341,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }

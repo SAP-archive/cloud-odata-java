@@ -115,9 +115,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -159,9 +159,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           writer.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -201,9 +201,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -244,9 +244,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -284,9 +284,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -326,9 +326,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -363,9 +363,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
@@ -400,9 +400,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;
+            throw cachedException;// NOPMD
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
           }
         }
       }
