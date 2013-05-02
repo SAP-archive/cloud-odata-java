@@ -57,15 +57,15 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     } catch (Exception e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (writer != null) {
         try {
           writer.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }

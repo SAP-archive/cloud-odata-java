@@ -48,15 +48,16 @@ public class XmlEntityConsumer {
     } catch (XMLStreamException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
-          if (cachedException != null)
-            throw cachedException;// NOPMD
-          else
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
         }
       }
     }
@@ -79,15 +80,15 @@ public class XmlEntityConsumer {
     } catch (XMLStreamException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
@@ -106,15 +107,15 @@ public class XmlEntityConsumer {
     } catch (Exception e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
@@ -153,15 +154,15 @@ public class XmlEntityConsumer {
     } catch (Exception e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
@@ -179,15 +180,15 @@ public class XmlEntityConsumer {
     } catch (Exception e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (XMLStreamException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }

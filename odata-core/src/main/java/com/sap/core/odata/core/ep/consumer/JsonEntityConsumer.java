@@ -37,15 +37,15 @@ public class JsonEntityConsumer {
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
@@ -67,15 +67,15 @@ public class JsonEntityConsumer {
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
@@ -92,15 +92,15 @@ public class JsonEntityConsumer {
     } catch (final UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (final IOException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }
