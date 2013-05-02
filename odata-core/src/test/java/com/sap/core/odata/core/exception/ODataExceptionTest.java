@@ -1,6 +1,8 @@
 package com.sap.core.odata.core.exception;
 
-import junit.framework.Assert;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -35,19 +37,19 @@ public class ODataExceptionTest extends BaseTest {
   @Test
   public void testNoCause() {
     ODataException exception = new ODataException("Some message.");
-    Assert.assertFalse(exception.isCausedByHttpException());
+    assertFalse(exception.isCausedByHttpException());
   }
 
   @Test
   public void testNPECause() {
     ODataException exception = new ODataException("Some message.", new NullPointerException());
-    Assert.assertFalse(exception.isCausedByHttpException());
+    assertFalse(exception.isCausedByHttpException());
   }
 
   @Test
   public void testODataContextedCause() {
     ODataException exception = new ODataException("Some message.", new ODataNotFoundException(ODataNotFoundException.ENTITY));
-    Assert.assertTrue(exception.isCausedByHttpException());
+    assertTrue(exception.isCausedByHttpException());
   }
 
   @Test
@@ -55,7 +57,7 @@ public class ODataExceptionTest extends BaseTest {
     ODataException exception = new ODataException("Some message.",
         new IllegalArgumentException(
             new ODataNotFoundException(ODataNotFoundException.ENTITY)));
-    Assert.assertTrue(exception.isCausedByHttpException());
+    assertTrue(exception.isCausedByHttpException());
   }
 
   //The following tests verify whether all fields of type {@link MessageReference} of 
@@ -159,4 +161,34 @@ public class ODataExceptionTest extends BaseTest {
   public void TestMessagesOfODataNotImplementedException() {
     ODataMessageTextVerifier.TestClass(ODataNotImplementedException.class);
   }
+
+  @Test
+  public void TestRootCauseNpe() {
+    NullPointerException rootCauseException = new NullPointerException();
+    ODataApplicationException intermediateException1 = new ODataApplicationException("bla", Locale.ENGLISH, rootCauseException);
+    ODataMessageException intermediateException2 = new EdmException(EdmException.COMMON, intermediateException1);
+    ODataException outerException = new ODataException(intermediateException2);
+
+    Throwable rootException = outerException.getRootCause();
+    assertEquals(NullPointerException.class, rootException.getClass());
+  }
+
+  @Test
+  public void TestRootCauseODataException() {
+    ODataException rootCauseException = new ODataException();
+    ODataApplicationException intermediateException1 = new ODataApplicationException("bla", Locale.ENGLISH, rootCauseException);
+    ODataMessageException intermediateException2 = new EdmException(EdmException.COMMON, intermediateException1);
+    ODataException outerException = new ODataException(intermediateException2);
+
+    Throwable rootException = outerException.getRootCause();
+    assertEquals(ODataException.class, rootException.getClass());
+  }
+
+  @Test
+  public void TestRootCauseNone() {
+    ODataException outerException = new ODataException();
+    Throwable rootException = outerException.getRootCause();
+    assertEquals(null, rootException);
+  }
+
 }
