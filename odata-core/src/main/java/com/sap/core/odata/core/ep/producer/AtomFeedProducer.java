@@ -116,10 +116,10 @@ public class AtomFeedProducer {
   private String createSelfLink(final EntityInfoAggregator eia) throws EntityProviderException {
     StringBuilder sb = new StringBuilder();
     if (!eia.isDefaultEntityContainer()) {
-      String entityContainerName = Encoder.encode(eia.getEntityContainerName());
+      final String entityContainerName = Encoder.encode(eia.getEntityContainerName());
       sb.append(entityContainerName).append(Edm.DELIMITER);
     }
-    String entitySetName = Encoder.encode(eia.getEntitySetName());
+    final String entitySetName = Encoder.encode(eia.getEntitySetName());
     sb.append(entitySetName);
     return sb.toString();
   }
@@ -156,16 +156,6 @@ public class AtomFeedProducer {
   }
 
   private String createAtomId(final EntityInfoAggregator eia) throws EntityProviderException {
-    String id = "";
-
-    if (!eia.isDefaultEntityContainer()) {
-      String entityContainerName = Encoder.encode(eia.getEntityContainerName());
-      id += entityContainerName + ".";
-    }
-    String entitySetName = Encoder.encode(eia.getEntitySetName());
-    id += entitySetName;
-
-    URI serviceRoot = properties.getServiceRoot();
-    return serviceRoot + id;
+    return properties.getServiceRoot() + createSelfLink(eia);
   }
 }

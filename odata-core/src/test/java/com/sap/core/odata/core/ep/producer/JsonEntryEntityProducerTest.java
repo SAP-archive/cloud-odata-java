@@ -105,11 +105,11 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(json);
     assertEquals("{\"d\":{\"__metadata\":{"
-        + "\"id\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2fpng')\","
-        + "\"uri\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2fpng')\","
+        + "\"id\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2Fpng')\","
+        + "\"uri\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2Fpng')\","
         + "\"type\":\"RefScenario2.Photo\",\"etag\":\"W/\\\"1\\\"\",\"content_type\":\"image/png\","
-        + "\"media_src\":\"Container2.Photos(Id=1,Type='image%2fpng')/$value\","
-        + "\"edit_media\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2fpng')/$value\"},"
+        + "\"media_src\":\"Container2.Photos(Id=1,Type='image%2Fpng')/$value\","
+        + "\"edit_media\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2Fpng')/$value\"},"
         + "\"Id\":1,\"Name\":null,\"Type\":\"image/png\",\"Image\":null,"
         + "\"BinaryData\":\"/wABAg==\",\"Содержание\":null,\"CustomProperty\":null}}",
         json);

@@ -83,7 +83,7 @@ public class ODataSubLocatorTest extends BaseTest {
         Matchers.any(UriInfoImpl.class),
         Matchers.any(InputStream.class),
         Matchers.anyString(),
-        Matchers.anyList())).thenReturn(odataResponse);
+        Matchers.anyListOf(String.class))).thenReturn(odataResponse);
   }
 
   private Dispatcher mockDispatcher(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {

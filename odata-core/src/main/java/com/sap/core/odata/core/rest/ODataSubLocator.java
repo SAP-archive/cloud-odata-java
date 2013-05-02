@@ -295,15 +295,18 @@ public final class ODataSubLocator implements ODataLocator {
       pathSegments = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
 
-    // post condition: we do not allow matrix parameters in OData path segments
-    for (final javax.ws.rs.core.PathSegment ps : pathSegments) {
-      if ((ps.getMatrixParameters() != null) && !ps.getMatrixParameters().isEmpty()) {
-        throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getMatrixParameters().keySet(), ps.getPath()));
-      }
-    }
-
-    pathInfo.setODataPathSegment(convertPathSegmentList(pathSegments));
+    // Percent-decode only the preceding path segments.
+    // The OData path segments are decoded during URI parsing.
     pathInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
+
+    List<PathSegment> odataSegments = new ArrayList<PathSegment>();
+    for (final javax.ws.rs.core.PathSegment segment : pathSegments)
+      if (segment.getMatrixParameters() == null || segment.getMatrixParameters().isEmpty())
+        odataSegments.add(new ODataPathSegmentImpl(segment.getPath(), null));
+      else
+        // post condition: we do not allow matrix parameters in OData path segments
+        throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(segment.getMatrixParameters().keySet(), segment.getPath()));
+    pathInfo.setODataPathSegment(odataSegments);
   }
 
   private URI buildBaseUri(final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
@@ -329,8 +332,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public List<PathSegment> convertPathSegmentList(final List<javax.ws.rs.core.PathSegment> pathSegments) {
-    final ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
-
+    ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
     for (final javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
       final PathSegment segment = new ODataPathSegmentImpl(Decoder.decode(pathSegment.getPath()), pathSegment.getMatrixParameters());
       converted.add(segment);

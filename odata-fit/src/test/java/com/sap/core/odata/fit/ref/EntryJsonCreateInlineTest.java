@@ -36,7 +36,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     checkEtag(response, "W/\"2\"");
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 
@@ -74,7 +74,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     checkEtag(response, "W/\"2\"");
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 
@@ -99,7 +99,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     checkEtag(response, "W/\"2\"");
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 
@@ -134,7 +134,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     //checkEtag(response, "W/\"2\"");
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("4", map.get("Id"));
     assertEquals("Building 2", map.get("Name"));
 
@@ -192,7 +192,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("4", map.get("Id"));
     assertEquals("Building 2", map.get("Name"));
 
@@ -207,7 +207,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     List<StringMap<String>> results = (ArrayList<StringMap<String>>) navProperty.get("results");
     assertNotNull(results);
     for (int i = 0; i < results.size(); i++) {
-      StringMap<String> resultMap = (StringMap<String>) results.get(i);
+      StringMap<String> resultMap = results.get(i);
       switch (i) {
       case 0:
         assertEquals("Room 2", resultMap.get("Name"));
@@ -250,7 +250,7 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
 

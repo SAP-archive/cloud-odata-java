@@ -53,6 +53,6 @@ public class XmlLinkEntityProducerTest extends AbstractProviderTest {
     assertNotNull(xml);
 
     assertXpathExists("/d:uri", xml);
-    assertXpathEvaluatesTo(BASE_URI.toString() + "Container2.Photos(Id=1,Type='image%2fpng')", "/d:uri/text()", xml);
+    assertXpathEvaluatesTo(BASE_URI.toString() + "Container2.Photos(Id=1,Type='image%2Fpng')", "/d:uri/text()", xml);
   }
 }

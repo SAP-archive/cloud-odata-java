@@ -56,6 +56,6 @@ public class JsonLinkEntityProducerTest extends BaseTest {
 
     final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(json);
-    assertEquals("{\"d\":{\"uri\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2fpng')\"}}", json);
+    assertEquals("{\"d\":{\"uri\":\"" + BASE_URI + "Container2.Photos(Id=1,Type='image%2Fpng')\"}}", json);
   }
 }

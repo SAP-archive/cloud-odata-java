@@ -7,6 +7,9 @@ import java.util.List;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 
+/**
+ * @author SAP AG
+ */
 public class PathInfoImpl implements PathInfo {
 
   private List<PathSegment> precedingPathSegment = Collections.emptyList();

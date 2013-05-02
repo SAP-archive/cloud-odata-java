@@ -106,7 +106,7 @@ public class UriParserTest extends BaseTest {
   }
 
   @Test
-  public void parseNonsens() throws Exception {
+  public void parseNonsense() throws Exception {
     parseWrongUri("/bla", UriNotMatchingException.NOTFOUND);
   }
 
@@ -195,6 +195,7 @@ public class UriParserTest extends BaseTest {
   public void parseWrongEntities() throws Exception {
     parseWrongUri("//", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("/Employees%20()", UriNotMatchingException.NOTFOUND);
+    parseWrongUri("Employees%28%29", UriNotMatchingException.NOTFOUND);
     parseWrongUri("/Employees()%2F", UriNotMatchingException.MATCHPROBLEM);
     parseWrongUri("/Employees()/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
     parseWrongUri("/Employees/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
@@ -496,6 +497,9 @@ public class UriParserTest extends BaseTest {
 
     result = parse("/Container2.Photos(Id=1,Type='image%2Fpng')");
     assertEquals("image/png", result.getKeyPredicates().get(1).getLiteral());
+
+    result = parse("/Container2.Photos(Id=5,Type='test%2Ccomma')");
+    assertEquals("test,comma", result.getKeyPredicates().get(1).getLiteral());
   }
 
   @Test

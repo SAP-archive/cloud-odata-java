@@ -30,7 +30,7 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
     @SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("104", map.get("Id"));
     assertEquals("Room 104", map.get("Name"));
     @SuppressWarnings("unchecked")
@@ -79,7 +79,7 @@ public class EntryJsonCreateTest extends AbstractRefJsonTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
 
     String body = getBody(response);
-    StringMap<Object> map = getStringMap(body);
+    StringMap<?> map = getStringMap(body);
     assertEquals("7", map.get("EmployeeId"));
     assertEquals("Employee 7", map.get("EmployeeName"));
     assertNull(map.get("EntryData"));

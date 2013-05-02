@@ -17,7 +17,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -33,12 +32,10 @@ import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
- * Abstract base class for tests employing the reference scenario
+ * Abstract base class for tests employing the reference scenario.
  * @author SAP AG
  */
 public class AbstractRefTest extends AbstractFitTest {
-
-  private static final Logger LOG = Logger.getLogger(AbstractRefTest.class);
 
   protected static final String IMAGE_JPEG = "image/jpeg";
   protected static final String IMAGE_GIF = "image/gif";
@@ -84,15 +81,12 @@ public class AbstractRefTest extends AbstractFitTest {
                 httpMethod == ODataHttpMethod.POST ? new HttpPost() :
                     httpMethod == ODataHttpMethod.PUT ? new HttpPut() : new HttpPatch();
     request.setURI(URI.create(getEndpoint() + uri));
-    if (additionalHeader != null) {
+    if (additionalHeader != null)
       request.addHeader(additionalHeader, additionalHeaderValue);
-    }
     if (requestBody != null) {
       ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(requestBody));
       request.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
     }
-
-    LOG.trace("Request url [" + request.getRequestLine() + "] for " + this.getClass().getSimpleName());
 
     final HttpResponse response = getHttpClient().execute(request);
 
@@ -166,9 +160,8 @@ public class AbstractRefTest extends AbstractFitTest {
       final String requestBody, final String requestContentType,
       final HttpStatusCodes expectedStatusCode) throws Exception {
     final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
-    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT) {
+    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
       response.getEntity().getContent().close();
-    }
   }
 
   protected String getBody(final HttpResponse response) throws Exception {
