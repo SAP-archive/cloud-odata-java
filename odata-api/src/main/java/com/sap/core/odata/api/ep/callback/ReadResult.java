@@ -2,7 +2,6 @@ package com.sap.core.odata.api.ep.callback;
 
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
-import com.sap.core.odata.api.ep.entry.ODataEntry;
 
 /**
  * A {@link ReadResult} represents an inlined navigation property which points to an entry or feed.
@@ -13,7 +12,6 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
  * <code>navigationPropertyName</code> and a <code>NULL</code> entry set.
  * 
  * @author SAP AG
- *
  */
 public abstract class ReadResult {
 
@@ -49,13 +47,13 @@ public abstract class ReadResult {
   /**
    * Common access method to read result.
    * 
-   * @return an {@link ODataEntry} for the case of an single read entry or a list of {@link ODataEntry} in the case of an read feed.
+   * @return an {@link com.sap.core.odata.api.ep.entry.ODataEntry ODataEntry}
+   *         for the case of an single read entry or a list of
+   *         {@link com.sap.core.odata.api.ep.entry.ODataEntry ODataEntry}
+   *         in the case of an read feed.
    */
   public abstract Object getResult();
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return this.getClass().getSimpleName() + " [readProperties=" + readProperties + ", navigationProperty=" + navigationProperty + "]";

@@ -109,15 +109,15 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (Exception e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
         } catch (IOException e) {
           if (cachedException != null) {
-            throw cachedException;// NOPMD
+            throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);// NOPMD
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
           }
         }
       }

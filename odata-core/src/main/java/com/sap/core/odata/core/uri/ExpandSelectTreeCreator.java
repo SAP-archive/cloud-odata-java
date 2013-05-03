@@ -81,8 +81,8 @@ public class ExpandSelectTreeCreator {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private void consolidateTrueNode(final ExpandSelectTreeNodeImpl node) {
+    @SuppressWarnings("unchecked")
     Map<String, ExpandSelectTreeNode> links = accessField(node, "links", Map.class);
 
     Set<Entry<String, ExpandSelectTreeNode>> iterator = links.entrySet();
@@ -105,9 +105,9 @@ public class ExpandSelectTreeCreator {
       f.setAccessible(true);
       return clazz.cast(f.get(node));
     } catch (NoSuchFieldException e) {
-      throw new RuntimeException(e);
+      throw new IllegalArgumentException(e);
     } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
+      throw new SecurityException(e);
     }
   }
 

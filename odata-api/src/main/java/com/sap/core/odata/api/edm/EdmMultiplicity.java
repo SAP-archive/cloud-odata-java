@@ -2,8 +2,13 @@ package com.sap.core.odata.api.edm;
 
 /**
  * @com.sap.core.odata.DoNotImplement
- * EdmMultiplicity indicates the number of entity type instances association end can relate to. 
- * <p>he number can by "0..1", "1" which means exactly one or "*" which means many. 
+ * <p>EdmMultiplicity indicates the number of entity type instances
+ * an association end can relate to:
+ * <dl>
+ * <dt>0..1</dt><dd>one or none</dd>
+ * <dt>   1</dt><dd>exactly one</dd>
+ * <dt>   *</dt><dd>many</dd>
+ * </dl></p> 
  * @author SAP AG
  */
 public enum EdmMultiplicity {
@@ -17,8 +22,7 @@ public enum EdmMultiplicity {
   }
 
   /**
-   * Get the multiplicity for a given name
-   * 
+   * Gets the multiplicity for a given name.
    * @param literal
    * @return {@link EdmMultiplicity}
    */
@@ -31,8 +35,9 @@ public enum EdmMultiplicity {
     throw new IllegalArgumentException("Invalid literal " + literal);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Enum#toString()
+  /**
+   * Returns the OData literal form of this multiplicity.
+   * @return the OData literal form of this multiplicity
    */
   @Override
   public String toString() {
