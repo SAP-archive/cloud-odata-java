@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.rest;
 
-
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
@@ -94,13 +93,13 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals("[AcceptValue]", response.getHeaderString("Accept"));
     assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
   }
-  
+
   @Test
-  public void dollarFormatJson() throws Exception{
+  public void dollarFormatJson() throws Exception {
     MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
     queryParameters.putSingle("$format", "json");
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
-    
+
     Response response = exceptionMapper.toResponse(new Exception("text"));
     assertNotNull(response);
     String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
@@ -108,13 +107,13 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertEquals("{\"error\":{\"code\":null,\"message\":{\"lang\":\"en\",\"value\":\"text\"}}}", errorMessage);
   }
-  
+
   @Test
-  public void dollarFormatXml() throws Exception{
+  public void dollarFormatXml() throws Exception {
     MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
     queryParameters.putSingle("$format", "xml");
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
-    
+
     Response response = exceptionMapper.toResponse(new Exception("text"));
     assertNotNull(response);
     String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
@@ -123,13 +122,13 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathExists("/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo("text", "/a:error/a:message", errorMessage);
   }
-  
+
   @Test
-  public void dollarFormatAtom() throws Exception{
+  public void dollarFormatAtom() throws Exception {
     MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
     queryParameters.putSingle("$format", "xml");
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
-    
+
     Response response = exceptionMapper.toResponse(new Exception("text"));
     assertNotNull(response);
     String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
@@ -138,13 +137,13 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathExists("/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo("text", "/a:error/a:message", errorMessage);
   }
-  
+
   @Test
-  public void dollarFormatUnknown() throws Exception{
+  public void dollarFormatUnknown() throws Exception {
     MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
     queryParameters.putSingle("$format", "someFormat");
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(queryParameters);
-    
+
     Response response = exceptionMapper.toResponse(new Exception("text"));
     assertNotNull(response);
     String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);

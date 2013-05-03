@@ -41,6 +41,7 @@ import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonPropertyEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * @author SAP AG
@@ -62,10 +63,10 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
    * @return            an {@link ODataResponse} containing the serialized error message
    */
   @Override
-  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
+  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
+    ODataRuntimeException cachedException = null;
 
     try {
       BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
@@ -80,7 +81,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new ODataRuntimeException(e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -90,7 +91,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new ODataRuntimeException(e);
           }
         }
       }

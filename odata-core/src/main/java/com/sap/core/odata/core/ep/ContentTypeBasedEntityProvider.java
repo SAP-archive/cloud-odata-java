@@ -48,5 +48,5 @@ public interface ContentTypeBasedEntityProvider {
 
   ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
-  ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
+  ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError);
 }

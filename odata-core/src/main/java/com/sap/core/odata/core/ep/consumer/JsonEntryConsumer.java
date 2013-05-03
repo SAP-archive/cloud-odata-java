@@ -228,14 +228,15 @@ public class JsonEntryConsumer {
       expandSelectTree.putLinkNode(navigationPropertyName, expandSelectTreeNodeImpl);
       OnReadInlineContent callback = readProperties.getCallback();
       EntityProviderReadProperties inlineReadProperties;
-      if (callback == null)
+      if (callback == null) {
         inlineReadProperties = EntityProviderReadProperties.init().mergeSemantic(readProperties.getMergeSemantic()).build();
-      else
+      } else {
         try {
           inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
         } catch (final ODataApplicationException e) {
           throw new EntityProviderException(EntityProviderException.COMMON, e);
         }
+      }
       ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readFeedStandalone();
       if (callback == null) {
         properties.put(navigationPropertyName, feed);

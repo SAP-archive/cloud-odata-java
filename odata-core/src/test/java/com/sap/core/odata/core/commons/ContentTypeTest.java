@@ -685,7 +685,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertTrue(match == null);
   }
-  
+
   @Test
   public void testIsWildcard() {
     assertFalse(ContentType.create("aaa/bbb;x=y;a").isWildcard());

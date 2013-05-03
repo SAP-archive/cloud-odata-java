@@ -178,7 +178,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:author/a:name", xmlString);
     assertXpathExists(buildingXPathString + "/m:inline/a:feed/a:link[@href=\"Buildings('1')/nb_Rooms\"]", xmlString);
   }
-  
+
   @Test(expected = EntityProviderException.class)
   public void expandSelectedRoomsWithNullCallback() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Buildings('1')", "nb_Rooms", "nb_Rooms");

@@ -300,12 +300,14 @@ public final class ODataSubLocator implements ODataLocator {
     pathInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
 
     List<PathSegment> odataSegments = new ArrayList<PathSegment>();
-    for (final javax.ws.rs.core.PathSegment segment : pathSegments)
-      if (segment.getMatrixParameters() == null || segment.getMatrixParameters().isEmpty())
+    for (final javax.ws.rs.core.PathSegment segment : pathSegments) {
+      if (segment.getMatrixParameters() == null || segment.getMatrixParameters().isEmpty()) {
         odataSegments.add(new ODataPathSegmentImpl(segment.getPath(), null));
-      else
+      } else {
         // post condition: we do not allow matrix parameters in OData path segments
         throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(segment.getMatrixParameters().keySet(), segment.getPath()));
+      }
+    }
     pathInfo.setODataPathSegment(odataSegments);
   }
 

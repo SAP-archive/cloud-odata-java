@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.processor.ODataErrorCallback;
 import com.sap.core.odata.api.processor.ODataErrorContext;
@@ -27,7 +28,7 @@ public class FitErrorCallback implements ODataErrorCallback {
       LOG.error("Internal Server Error", context.getException());
     }
 
-    throw new ODataApplicationException(context.getMessage(), context.getLocale(), context.getHttpStatus(), context.getErrorCode(), context.getException());
+    return EntityProvider.writeErrorDocument(context);
   }
 
 }

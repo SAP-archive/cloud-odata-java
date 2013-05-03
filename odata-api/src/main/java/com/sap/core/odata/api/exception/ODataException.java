@@ -103,7 +103,7 @@ public class ODataException extends Exception {
    */
   public Throwable getRootCause() {
     Throwable rootCause = getCause();
-    
+
     if (rootCause != null) {
       if (rootCause instanceof ODataException) {
         ODataException ode = (ODataException) rootCause;
@@ -113,7 +113,7 @@ public class ODataException extends Exception {
         }
       }
     }
-     
+
     return rootCause;
   }
 }

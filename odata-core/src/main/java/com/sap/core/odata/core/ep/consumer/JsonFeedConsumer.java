@@ -89,13 +89,14 @@ public class JsonFeedConsumer {
         int inlineCount;
         try {
           inlineCount = reader.nextInt();
-        } catch (final NumberFormatException e)  {
+        } catch (final NumberFormatException e) {
           throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
         }
-        if (inlineCount >= 0)
+        if (inlineCount >= 0) {
           feedMetadata.setInlineCount(inlineCount);
-        else
+        } else {
           throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
+        }
       } else {
         throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
       }

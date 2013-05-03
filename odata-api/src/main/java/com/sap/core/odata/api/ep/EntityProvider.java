@@ -13,6 +13,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
@@ -293,8 +294,17 @@ public final class EntityProvider {
      * @param locale      the {@link Locale} that should be used to format the error message
      * @param innerError  the inner error for this message as a plain string. MUST NOT BE a deep XML structure.  If it is null or an empty String no inner error tag is shown inside the response XML.
      * @return            an {@link ODataResponse} containing the serialized error message
+     * @deprecated since 0.5.0
      */
+    @Deprecated
     ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
+
+    /**
+     * <p>Serializes an error message according to the OData standard.</p>
+     * @param context     contains error details see {@link ODataErrorContext}
+     * @return            an {@link ODataResponse} containing the serialized error message
+     */
+    ODataResponse writeErrorDocument(ODataErrorContext context);
   }
 
   /**
@@ -317,9 +327,22 @@ public final class EntityProvider {
    * @param locale      the {@link Locale} that should be used to format the error message
    * @param innerError  the inner error for this message. MUST NOT BE a deep XML structure. If it is null or an empty String no inner error tag is shown inside the response xml
    * @return            an {@link ODataResponse} containing the serialized error message
+   * @deprecated since 0.5.0
    */
+  @Deprecated
   public static ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
     return createEntityProvider().writeErrorDocument(contentType, status, errorCode, message, locale, innerError);
+  }
+
+  /**
+   * <p>Serializes an error message according to the OData standard.</p>
+   * <p>In case an error occurs, it is logged.
+   * An exception is not thrown because this method is used in exception handling.</p>
+   * @param context     contains error details see {@link ODataErrorContext}
+   * @return            an {@link ODataResponse} containing the serialized error message
+   */
+  public static ODataResponse writeErrorDocument(final ODataErrorContext context) {
+    return createEntityProvider().writeErrorDocument(context);
   }
 
   /**

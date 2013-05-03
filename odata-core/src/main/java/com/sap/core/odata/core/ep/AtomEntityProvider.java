@@ -43,6 +43,7 @@ import com.sap.core.odata.core.ep.producer.XmlLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlLinksEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlPropertyEntityProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * @author SAP AG
@@ -85,9 +86,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
    * @return            an {@link ODataResponse} containing the serialized error message
    */
   @Override
-  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
+  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) {
     OutputStream outStream = null;
-    EntityProviderException cachedException = null;
+    ODataRuntimeException cachedException = null;
 
     try {
       CircleStreamBuffer csb = new CircleStreamBuffer();
@@ -107,7 +108,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .status(status);
       return response.build();
     } catch (Exception e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new ODataRuntimeException(e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -117,7 +118,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new ODataRuntimeException(e);
           }
         }
       }

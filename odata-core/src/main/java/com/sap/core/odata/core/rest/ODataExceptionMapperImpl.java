@@ -235,13 +235,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ContentType getContentTypeByUriInfo() {
     ContentType contentType = null;
-    if(uriInfo != null && uriInfo.getQueryParameters() != null){
+    if (uriInfo != null && uriInfo.getQueryParameters() != null) {
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-      if(queryParameters.containsKey(DOLLAR_FORMAT)){
+      if (queryParameters.containsKey(DOLLAR_FORMAT)) {
         String contentTypeString = queryParameters.getFirst(DOLLAR_FORMAT);
-        if(DOLLAR_FORMAT_JSON.equals(contentTypeString)){
+        if (DOLLAR_FORMAT_JSON.equals(contentTypeString)) {
           contentType = ContentType.APPLICATION_JSON;
-        }else{
+        } else {
           //Any format mentioned in the $format parameter other than json results in an application/xml content type for error messages
           //due to the OData V2 Specification
           contentType = ContentType.APPLICATION_XML;

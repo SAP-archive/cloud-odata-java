@@ -111,7 +111,7 @@ public class JsonEntryEntityProducer {
               context.setCurrentExpandSelectTreeNode(properties.getExpandSelectTree().getLinks().get(navigationPropertyName));
 
               ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
-              if(callback == null){
+              if (callback == null) {
                 throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
               }
               try {
@@ -135,7 +135,7 @@ public class JsonEntryEntityProducer {
               } catch (final ODataApplicationException e) {
                 throw new EntityProviderException(EntityProviderException.COMMON, e);
               }
-            }else{
+            } else {
               writeDeferredUri(navigationPropertyName);
             }
           } else {
