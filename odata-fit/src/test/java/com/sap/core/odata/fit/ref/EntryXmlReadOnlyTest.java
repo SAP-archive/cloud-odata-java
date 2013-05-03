@@ -87,7 +87,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
 
     // Check that percent-decoding and -encoding works as expected.
     final String url = "Container2.Photos(Id=42,Type='%25%20%3A%2F%3F%23%5B%5D%40%20%21%24%26%27%28%29%2A%2B%2C%3B%3D')";
-    final String expected = url.replace("%27", "''").replace("%3A", ":").replace("%40", "@");
+    final String expected = url.replace("%27", "''");
     final HttpResponse response = callUri(url);
     final String body = getBody(response);
     assertXpathEvaluatesTo("strange Photo", "/atom:entry/m:properties/d:Name", body);

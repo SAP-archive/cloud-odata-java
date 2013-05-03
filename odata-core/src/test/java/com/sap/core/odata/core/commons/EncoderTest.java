@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
+ * Tests for percent-encoding.
  * @author SAP AG
  */
 public class EncoderTest extends BaseTest {
@@ -21,7 +22,7 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void asciiCharacters() {
-    String s = "azAZ019";
+    final String s = "azAZ019";
     assertEquals(s, Encoder.encode(s));
     assertEquals(s, Encoder.encode(s));
   }
@@ -44,7 +45,7 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void rfc3986GenDelims() {
-    assertEquals(":%2F%3F%23%5B%5D@", Encoder.encode(RFC3986_GEN_DELIMS));
+    assertEquals("%3A%2F%3F%23%5B%5D%40", Encoder.encode(RFC3986_GEN_DELIMS));
   }
 
   @Test
@@ -54,7 +55,7 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void rfc3986Reserved() {
-    assertEquals(":%2F%3F%23%5B%5D@%21%24%26'%28%29%2A%2B%2C%3B%3D", Encoder.encode(RFC3986_RESERVED));
+    assertEquals("%3A%2F%3F%23%5B%5D%40%21%24%26'%28%29%2A%2B%2C%3B%3D", Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test
@@ -73,12 +74,12 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void uriDecoding() throws URISyntaxException {
-    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@"
+    final String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@"
         + "\u2323\uFDFC" + String.valueOf(Character.toChars(0x1F603));
 
-    String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
-    String encodedQuery = Encoder.encode(decodedValue);
-    URI uri = new URI("http://host:80/" + encodedPath + "?" + encodedQuery + "=" + encodedQuery);
+    final String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
+    final String encodedQuery = Encoder.encode(decodedValue);
+    final URI uri = new URI("http://host:80/" + encodedPath + "?" + encodedQuery + "=" + encodedQuery);
 
     assertEquals(uri.getPath(), "/" + decodedValue + "/" + decodedValue);
     assertEquals(uri.getQuery(), decodedValue + "=" + decodedValue);

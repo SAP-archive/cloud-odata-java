@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.commons;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -25,19 +26,21 @@ public class Encoder {
     return encoder.encodeInternal(value);
   }
 
-  private final String unencoded; // characters to remain unencoded in addition to UNRESERVED
+  /** characters to remain unencoded in addition to {@link #UNRESERVED} */
+  private final String unencoded;
   private final Map<Character, String> map;
 
   private Encoder(final String unencoded, final Map<Character, String> map) {
-    this.unencoded = unencoded;
-    this.map = map;
+    this.unencoded = unencoded == null ? "" : unencoded;
+    this.map = map == null ? Collections.<Character, String> emptyMap() : map;
   }
 
-  // RFC 3986 allows literal ":" and "@" in path segments.
-  // OData has special handling for "'", so we allow that to remain
-  // unencoded, too. Other sub-delims not used by OData could be added
+  // OData has special handling for "'", so we allow that to remain unencoded.
+  // Other sub-delims not used neither by JAX-RS nor by OData could be added
   // if the encoding is considered to be too aggressive.
-  private static final String ODATA_UNENCODED = ":@'";
+  // RFC 3986 would also allow the gen-delims ":" and "@" to appear literally
+  // in path-segment parts.
+  private static final String ODATA_UNENCODED = "'";
 
   // Character classes from RFC 3986
   private final static String UNRESERVED = "-._~"; // + ALPHA + DIGIT
@@ -112,7 +115,7 @@ public class Encoder {
     try {
       for (byte utf8Byte : input.getBytes("UTF-8")) {
         final char character = (char) utf8Byte;
-        if (map != null && map.containsKey(character)) // case mapping
+        if (map.containsKey(character)) // case mapping
           resultStr.append(map.get(character));
         else if (isUnreserved(character)) // case unreserved
           resultStr.append(character);
@@ -120,7 +123,8 @@ public class Encoder {
           resultStr.append(character);
         else if (utf8Byte >= 0) // case other ASCII
           resultStr.append(hex[utf8Byte]);
-        else // case UTF-8 continuation byte
+        else
+          // case UTF-8 continuation byte
           resultStr.append(hex[256 + utf8Byte]); // index adjusted for the usage of signed bytes
       }
     } catch (final UnsupportedEncodingException e) { // should never happen; UTF-8 is always there
@@ -137,6 +141,6 @@ public class Encoder {
   }
 
   private boolean isUnencoded(final char character) {
-    return unencoded != null && unencoded.indexOf(character) >= 0;
+    return unencoded.indexOf(character) >= 0;
   }
 }
