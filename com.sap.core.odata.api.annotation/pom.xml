@@ -12,7 +12,6 @@
 	</parent>
 
 	<artifactId>com.sap.core.odata.api.annotation</artifactId>
-	<name>Annotations</name>
 
 	<dependencies>
 		<dependency>

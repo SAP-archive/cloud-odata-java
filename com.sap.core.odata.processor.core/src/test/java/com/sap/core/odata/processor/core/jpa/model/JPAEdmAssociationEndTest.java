@@ -22,146 +22,146 @@ import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType.SimpleTypeA;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmAssociationEnd;
 
 public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 
-	private final static int VARIANT1 = 1;
-	private final static int VARIANT2 = 2;
-	private final static int VARIANT3 = 3;
+  private final static int VARIANT1 = 1;
+  private final static int VARIANT2 = 2;
+  private final static int VARIANT3 = 3;
 
-	private static int variant;
+  private static int variant;
 
-	private static final String PUNIT_NAME = "salesorderprocessing";
-	private static JPAEdmAssociationEnd objJPAEdmAssociationEnd = null;
-	private static JPAEdmAssociationEndTest objJPAEdmAssociationEndTest = null;
+  private static final String PUNIT_NAME = "salesorderprocessing";
+  private static JPAEdmAssociationEnd objJPAEdmAssociationEnd = null;
+  private static JPAEdmAssociationEndTest objJPAEdmAssociationEndTest = null;
 
-	
+  @BeforeClass
+  public static void setup() {
+    objJPAEdmAssociationEndTest = new JPAEdmAssociationEndTest();
+    objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(
+        objJPAEdmAssociationEndTest, objJPAEdmAssociationEndTest);
+    try {
+      objJPAEdmAssociationEnd.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+  }
 
-	@BeforeClass
-	public static void setup() {
-		objJPAEdmAssociationEndTest = new JPAEdmAssociationEndTest();
-		objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(
-				objJPAEdmAssociationEndTest, objJPAEdmAssociationEndTest);
-		try {
-			objJPAEdmAssociationEnd.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-	}
+  @Test
+  public void testGetBuilder() {
+    JPAEdmBuilder builder = objJPAEdmAssociationEnd.getBuilder();
+    assertNotNull(builder);
 
-	@Test
-	public void testGetBuilder() {
-		JPAEdmBuilder builder = objJPAEdmAssociationEnd.getBuilder();
-		assertNotNull(builder);
+  }
 
-	}
-	
-	@Test
-	public void testGetBuilderIdempotent(){
-		JPAEdmBuilder builder1 = objJPAEdmAssociationEnd.getBuilder();
-		JPAEdmBuilder builder2 = objJPAEdmAssociationEnd.getBuilder();
-		
-		assertEquals(builder1.hashCode(), builder2.hashCode());
-	}
-	
-	@Test
-	public void testGetAssociationEnd1() {
-		AssociationEnd associationEnd = objJPAEdmAssociationEnd
-				.getEdmAssociationEnd1();
-		assertEquals(associationEnd.getType().getName(), "SOID");
-	}
+  @Test
+  public void testGetBuilderIdempotent() {
+    JPAEdmBuilder builder1 = objJPAEdmAssociationEnd.getBuilder();
+    JPAEdmBuilder builder2 = objJPAEdmAssociationEnd.getBuilder();
 
-	@Test
-	public void testGetAssociationEnd2() {
-		AssociationEnd associationEnd = objJPAEdmAssociationEnd
-				.getEdmAssociationEnd2();
-		assertEquals(associationEnd.getType().getName(), "String");
-	}
+    assertEquals(builder1.hashCode(), builder2.hashCode());
+  }
 
-	@Test
-	public void testCompare() {
-		assertTrue(objJPAEdmAssociationEnd.compare(
-				getAssociationEnd("SOID", 1), getAssociationEnd("String", 1)));
-		assertFalse(objJPAEdmAssociationEnd.compare(
-				getAssociationEnd("String", 2), getAssociationEnd("SOID", 1)));
-	}
-	
-	@Test
-	public void testBuildAssociationEnd() 
-	{
-		assertEquals("SOID",objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType().getName());
-		assertEquals(new FullQualifiedName("salesorderprocessing", "SOID"), objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType());
-		assertTrue(objJPAEdmAssociationEnd.isConsistent());
-		
-	}
+  @Test
+  public void testGetAssociationEnd1() {
+    AssociationEnd associationEnd = objJPAEdmAssociationEnd
+        .getEdmAssociationEnd1();
+    assertEquals(associationEnd.getType().getName(), "SOID");
+  }
 
-	private AssociationEnd getAssociationEnd(String typeName, int variant) {
-		AssociationEnd associationEnd = new AssociationEnd();
-		associationEnd.setType(getFullQualifiedName(typeName));
-		if (variant == VARIANT1)
-			associationEnd.setMultiplicity(EdmMultiplicity.MANY);
-		else if (variant == VARIANT2)
-			associationEnd.setMultiplicity(EdmMultiplicity.ONE);
-		else if (variant == VARIANT3)
-			associationEnd.setMultiplicity(EdmMultiplicity.ZERO_TO_ONE);
-		else
-			associationEnd.setMultiplicity(EdmMultiplicity.MANY);//
-		return associationEnd;
-	}
+  @Test
+  public void testGetAssociationEnd2() {
+    AssociationEnd associationEnd = objJPAEdmAssociationEnd
+        .getEdmAssociationEnd2();
+    assertEquals(associationEnd.getType().getName(), "String");
+  }
 
-	private FullQualifiedName getFullQualifiedName(String typeName) {
-		FullQualifiedName fullQualifiedName = new FullQualifiedName(PUNIT_NAME,
-				typeName);
-		return fullQualifiedName;
-	}
+  @Test
+  public void testCompare() {
+    assertTrue(objJPAEdmAssociationEnd.compare(
+        getAssociationEnd("SOID", 1), getAssociationEnd("String", 1)));
+    assertFalse(objJPAEdmAssociationEnd.compare(
+        getAssociationEnd("String", 2), getAssociationEnd("SOID", 1)));
+  }
 
-	private Attribute<?,?> getJPAAttributeLocal() {
-		AttributeMock<Object, String> attr = new AttributeMock<Object,String>();
-		return attr;
-	}
+  @Test
+  public void testBuildAssociationEnd()
+  {
+    assertEquals("SOID", objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType().getName());
+    assertEquals(new FullQualifiedName("salesorderprocessing", "SOID"), objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType());
+    assertTrue(objJPAEdmAssociationEnd.isConsistent());
 
-	@Override
-	public Attribute<?, ?> getJPAAttribute() {
-		return getJPAAttributeLocal();
-	}
+  }
 
-	@Override
-	public String getpUnitName() {
-		return PUNIT_NAME;
-	}
+  private AssociationEnd getAssociationEnd(final String typeName, final int variant) {
+    AssociationEnd associationEnd = new AssociationEnd();
+    associationEnd.setType(getFullQualifiedName(typeName));
+    if (variant == VARIANT1) {
+      associationEnd.setMultiplicity(EdmMultiplicity.MANY);
+    } else if (variant == VARIANT2) {
+      associationEnd.setMultiplicity(EdmMultiplicity.ONE);
+    } else if (variant == VARIANT3) {
+      associationEnd.setMultiplicity(EdmMultiplicity.ZERO_TO_ONE);
+    }
+    else {
+      associationEnd.setMultiplicity(EdmMultiplicity.MANY);//
+    }
+    return associationEnd;
+  }
 
-	@Override
-	public EntityType getEdmEntityType() {
-		EntityType entityType = new EntityType();
-		entityType.setName(SimpleTypeA.NAME);
-		return entityType;
-	}
+  private FullQualifiedName getFullQualifiedName(final String typeName) {
+    FullQualifiedName fullQualifiedName = new FullQualifiedName(PUNIT_NAME,
+        typeName);
+    return fullQualifiedName;
+  }
 
-	// The inner class which gives us an replica of the jpa attribute
-	@SuppressWarnings("hiding")
-	private class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
+  private Attribute<?, ?> getJPAAttributeLocal() {
+    AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
+    return attr;
+  }
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public Class<String> getJavaType() {
-			return (Class<String>) SimpleType.SimpleTypeA.clazz;
-		}
+  @Override
+  public Attribute<?, ?> getJPAAttribute() {
+    return getJPAAttributeLocal();
+  }
 
-		@Override
-		public PersistentAttributeType getPersistentAttributeType() {
-			if (variant == VARIANT1)
-				return PersistentAttributeType.ONE_TO_MANY;
-			else if (variant == VARIANT2)
-				return PersistentAttributeType.ONE_TO_ONE;
-			else if (variant == VARIANT3)
-				return PersistentAttributeType.MANY_TO_ONE;
-			else
-				return PersistentAttributeType.MANY_TO_MANY;
-		
-		}
-	}
+  @Override
+  public String getpUnitName() {
+    return PUNIT_NAME;
+  }
+
+  @Override
+  public EntityType getEdmEntityType() {
+    EntityType entityType = new EntityType();
+    entityType.setName(SimpleTypeA.NAME);
+    return entityType;
+  }
+
+  // The inner class which gives us an replica of the jpa attribute
+  @SuppressWarnings("hiding")
+  private class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<String> getJavaType() {
+      return (Class<String>) SimpleType.SimpleTypeA.clazz;
+    }
+
+    @Override
+    public PersistentAttributeType getPersistentAttributeType() {
+      if (variant == VARIANT1) {
+        return PersistentAttributeType.ONE_TO_MANY;
+      } else if (variant == VARIANT2) {
+        return PersistentAttributeType.ONE_TO_ONE;
+      } else if (variant == VARIANT3) {
+        return PersistentAttributeType.MANY_TO_ONE;
+      } else {
+        return PersistentAttributeType.MANY_TO_MANY;
+      }
+
+    }
+  }
 
 }

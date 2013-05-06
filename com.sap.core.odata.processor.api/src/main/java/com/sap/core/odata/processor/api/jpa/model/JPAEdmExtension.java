@@ -22,14 +22,14 @@ package com.sap.core.odata.processor.api.jpa.model;
  * 
  */
 public interface JPAEdmExtension {
-	/**
-	 * The method is used to extend the JPA EDM schema view. Use this method to
-	 * register custom operations.
-	 * 
-	 * @param view
-	 *            is the schema view
-	 * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView#registerOperations(Class,
-	 *      String[])
-	 */
-	public void extend(JPAEdmSchemaView view);
+  /**
+   * The method is used to extend the JPA EDM schema view. Use this method to
+   * register custom operations.
+   * 
+   * @param view
+   *            is the schema view
+   * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView#registerOperations(Class,
+   *      String[])
+   */
+  public void extend(JPAEdmSchemaView view);
 }

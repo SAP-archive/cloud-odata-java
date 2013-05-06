@@ -31,12 +31,12 @@ package com.sap.core.odata.processor.api.jpa.model;
  * @see com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory
  */
 public interface JPAEdmModelView extends JPAEdmBaseView {
-	/**
-	 * The method returns a consistent JPA EDM schema view created from the JPA
-	 * meta model.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView}
-	 */
-	public JPAEdmSchemaView getEdmSchemaView();
+  /**
+   * The method returns a consistent JPA EDM schema view created from the JPA
+   * meta model.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView}
+   */
+  public JPAEdmSchemaView getEdmSchemaView();
 }

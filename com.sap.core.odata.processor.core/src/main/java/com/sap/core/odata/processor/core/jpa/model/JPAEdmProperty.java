@@ -50,290 +50,293 @@ import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
 
 public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
-		JPAEdmPropertyView, JPAEdmComplexPropertyView {
+    JPAEdmPropertyView, JPAEdmComplexPropertyView {
 
+  private JPAEdmSchemaView schemaView;
+  private JPAEdmEntityTypeView entityTypeView;
+  private JPAEdmComplexTypeView complexTypeView;
+  private JPAEdmNavigationPropertyView navigationPropertyView = null;
 
-	private JPAEdmSchemaView schemaView;
-	private JPAEdmEntityTypeView entityTypeView;
-	private JPAEdmComplexTypeView complexTypeView;
-	private JPAEdmNavigationPropertyView navigationPropertyView = null;
+  private JPAEdmKeyView keyView;
+  private List<Property> properties;
+  private SimpleProperty currentSimpleProperty = null;
+  private ComplexProperty currentComplexProperty = null;
+  private Attribute<?, ?> currentAttribute;
+  private boolean isBuildModeComplexType;
 
-	private JPAEdmKeyView keyView;
-	private List<Property> properties;
-	private SimpleProperty currentSimpleProperty = null;
-	private ComplexProperty currentComplexProperty = null;
-	private Attribute<?, ?> currentAttribute;
-	private boolean isBuildModeComplexType;
+  public JPAEdmProperty(final JPAEdmSchemaView view) {
+    super(view);
+    schemaView = view;
+    entityTypeView = schemaView.getJPAEdmEntityContainerView()
+        .getJPAEdmEntitySetView().getJPAEdmEntityTypeView();
+    complexTypeView = schemaView.getJPAEdmComplexTypeView();
+    navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
+    isBuildModeComplexType = false;
+  }
 
-	public JPAEdmProperty(JPAEdmSchemaView view) {
-		super(view);
-		this.schemaView = view;
-		this.entityTypeView = this.schemaView.getJPAEdmEntityContainerView()
-				.getJPAEdmEntitySetView().getJPAEdmEntityTypeView();
-		this.complexTypeView = this.schemaView.getJPAEdmComplexTypeView();
-		navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
-		isBuildModeComplexType = false;
-	}
+  public JPAEdmProperty(final JPAEdmSchemaView schemaView,
+      final JPAEdmComplexTypeView view) {
+    super(view);
+    this.schemaView = schemaView;
+    complexTypeView = view;
+    isBuildModeComplexType = true;
+  }
 
-	public JPAEdmProperty(JPAEdmSchemaView schemaView,
-			JPAEdmComplexTypeView view) {
-		super(view);
-		this.schemaView = schemaView;
-		this.complexTypeView = view;
-		this.isBuildModeComplexType = true;
-	}
+  @Override
+  public JPAEdmBuilder getBuilder() {
+    if (builder == null) {
+      builder = new JPAEdmPropertyBuilder();
+    }
 
-	@Override
-	public JPAEdmBuilder getBuilder() {
-		if (this.builder == null)
-			this.builder = new JPAEdmPropertyBuilder();
-		
-		return builder;
-	}
+    return builder;
+  }
 
-	@Override
-	public List<Property> getEdmPropertyList() {
-		return properties;
-	}
+  @Override
+  public List<Property> getEdmPropertyList() {
+    return properties;
+  }
 
-	@Override
-	public JPAEdmKeyView getJPAEdmKeyView() {
-		return keyView;
-	}
+  @Override
+  public JPAEdmKeyView getJPAEdmKeyView() {
+    return keyView;
+  }
 
-	@Override
-	public SimpleProperty getEdmSimpleProperty() {
-		return currentSimpleProperty;
-	}
+  @Override
+  public SimpleProperty getEdmSimpleProperty() {
+    return currentSimpleProperty;
+  }
 
-	@Override
-	public Attribute<?, ?> getJPAAttribute() {
-		return currentAttribute;
-	}
+  @Override
+  public Attribute<?, ?> getJPAAttribute() {
+    return currentAttribute;
+  }
 
-	@Override
-	public ComplexProperty getEdmComplexProperty() {
-		return currentComplexProperty;
-	}
-	
-	@Override
-	public JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView()
-	{
-		return navigationPropertyView;
-	}
+  @Override
+  public ComplexProperty getEdmComplexProperty() {
+    return currentComplexProperty;
+  }
 
-	private class JPAEdmPropertyBuilder implements JPAEdmBuilder {
-		/*
-		 * 
-		 * Each call to build method creates a new EDM Property List. 
-		 * The Property List can be created either by an Entity type or
-		 * ComplexType. The flag isBuildModeComplexType tells if the
-		 * Properties are built for complex type or for Entity Type.
-		 * 
-		 * While Building Properties Associations are built. However
-		 * the associations thus built does not contain Referential
-		 * constraint. Associations thus built only contains
-		 * information about Referential constraints. Adding of
-		 * referential constraints to Associations is the taken care
-		 * by Schema.
-		 * 
-		 * Building Properties is divided into four parts
-		 * 	A) Building Simple Properties
-		 * 	B) Building Complex Properties
-		 * 	C) Building Associations
-		 * 	D) Building Navigation Properties
-		 *  
-		 * ************************************************************
-		 * 					Build EDM Schema - STEPS
-		 * ************************************************************
-		 * A) 	Building Simple Properties:
-		 * 
-		 * 	1) 	Fetch JPA Attribute List from 
-		 * 			A) Complex Type
-		 * 			B) Entity Type
-		 * 	  	depending on isBuildModeComplexType.
-		 * B)	Building Complex Properties
-		 * C)	Building Associations
-		 * D)	Building Navigation Properties
-			
-		 * ************************************************************
-		 * 					Build EDM Schema - STEPS
-		 * ************************************************************
-		 *
-		 */
-		@Override
-		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+  @Override
+  public JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView()
+  {
+    return navigationPropertyView;
+  }
 
-			JPAEdmBuilder keyViewBuilder = null;
+  private class JPAEdmPropertyBuilder implements JPAEdmBuilder {
+    /*
+     * 
+     * Each call to build method creates a new EDM Property List. 
+     * The Property List can be created either by an Entity type or
+     * ComplexType. The flag isBuildModeComplexType tells if the
+     * Properties are built for complex type or for Entity Type.
+     * 
+     * While Building Properties Associations are built. However
+     * the associations thus built does not contain Referential
+     * constraint. Associations thus built only contains
+     * information about Referential constraints. Adding of
+     * referential constraints to Associations is the taken care
+     * by Schema.
+     * 
+     * Building Properties is divided into four parts
+     * 	A) Building Simple Properties
+     * 	B) Building Complex Properties
+     * 	C) Building Associations
+     * 	D) Building Navigation Properties
+     *  
+     * ************************************************************
+     * 					Build EDM Schema - STEPS
+     * ************************************************************
+     * A) 	Building Simple Properties:
+     * 
+     * 	1) 	Fetch JPA Attribute List from 
+     * 			A) Complex Type
+     * 			B) Entity Type
+     * 	  	depending on isBuildModeComplexType.
+     * B)	Building Complex Properties
+     * C)	Building Associations
+     * D)	Building Navigation Properties
+    	
+     * ************************************************************
+     * 					Build EDM Schema - STEPS
+     * ************************************************************
+     *
+     */
+    @Override
+    public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
-			properties = new ArrayList<Property>();
+      JPAEdmBuilder keyViewBuilder = null;
 
-			Set<?> jpaAttributes = null;
+      properties = new ArrayList<Property>();
 
-			if (isBuildModeComplexType) {
-				jpaAttributes = complexTypeView.getJPAEmbeddableType()
-						.getAttributes();
-			} else {
+      Set<?> jpaAttributes = null;
 
-				jpaAttributes = entityTypeView.getJPAEntityType()
-						.getAttributes();
-			}
+      if (isBuildModeComplexType) {
+        jpaAttributes = complexTypeView.getJPAEmbeddableType()
+            .getAttributes();
+      } else {
 
-			for (Object jpaAttribute : jpaAttributes) {
-				currentAttribute = (Attribute<?, ?>) jpaAttribute;
+        jpaAttributes = entityTypeView.getJPAEntityType()
+            .getAttributes();
+      }
 
-				PersistentAttributeType attributeType = currentAttribute
-						.getPersistentAttributeType();
+      for (Object jpaAttribute : jpaAttributes) {
+        currentAttribute = (Attribute<?, ?>) jpaAttribute;
 
-				switch (attributeType) {
-				case BASIC:
+        PersistentAttributeType attributeType = currentAttribute
+            .getPersistentAttributeType();
 
-					currentSimpleProperty = new SimpleProperty();
-					JPAEdmNameBuilder
-							.build((JPAEdmPropertyView) JPAEdmProperty.this,isBuildModeComplexType);
+        switch (attributeType) {
+        case BASIC:
 
-					EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor
-							.convertToEdmSimpleType(currentAttribute
-									.getJavaType(),currentAttribute);
+          currentSimpleProperty = new SimpleProperty();
+          JPAEdmNameBuilder
+              .build((JPAEdmPropertyView) JPAEdmProperty.this, isBuildModeComplexType);
 
-					currentSimpleProperty.setType(simpleTypeKind);
-					currentSimpleProperty
-							.setFacets(setFacets(currentAttribute));
+          EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor
+              .convertToEdmSimpleType(currentAttribute
+                  .getJavaType(), currentAttribute);
 
-					properties.add(currentSimpleProperty);
-					
-					if (((SingularAttribute<?, ?>) currentAttribute).isId()) {
-						if (keyView == null) {
-							keyView = new JPAEdmKey(JPAEdmProperty.this);
-							keyViewBuilder = keyView.getBuilder();
-						}
+          currentSimpleProperty.setType(simpleTypeKind);
+          currentSimpleProperty
+              .setFacets(setFacets(currentAttribute));
 
-						keyViewBuilder.build();
-					}
-					
-					break;
-				case EMBEDDED:
-					ComplexType complexType = complexTypeView
-							.searchEdmComplexType(currentAttribute.getJavaType().getName());
+          properties.add(currentSimpleProperty);
 
-					if (complexType == null) {
-						JPAEdmComplexTypeView complexTypeViewLocal = new JPAEdmComplexType(
-								schemaView, currentAttribute);
-						complexTypeViewLocal.getBuilder().build();
-						complexType = complexTypeViewLocal.getEdmComplexType();
-						complexTypeView.addJPAEdmCompleTypeView(complexTypeViewLocal);
+          if (((SingularAttribute<?, ?>) currentAttribute).isId()) {
+            if (keyView == null) {
+              keyView = new JPAEdmKey(JPAEdmProperty.this);
+              keyViewBuilder = keyView.getBuilder();
+            }
 
-					}
+            keyViewBuilder.build();
+          }
 
-					if (isBuildModeComplexType == false
-							&& entityTypeView.getJPAEntityType().getIdType()
-									.getJavaType()
-									.equals(currentAttribute.getJavaType())) {
+          break;
+        case EMBEDDED:
+          ComplexType complexType = complexTypeView
+              .searchEdmComplexType(currentAttribute.getJavaType().getName());
 
-						if (keyView == null)
-							keyView = new JPAEdmKey(complexTypeView,
-									JPAEdmProperty.this);
-						keyView.getBuilder().build();
-						complexTypeView.expandEdmComplexType(complexType,properties,currentAttribute.getName());
-					}
-					else{
-						currentComplexProperty = new ComplexProperty();
-						if (isBuildModeComplexType)
-							JPAEdmNameBuilder
-									.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
-											complexTypeView.getJPAEmbeddableType().getJavaType().getSimpleName());
-						else
-							JPAEdmNameBuilder
-									.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
-											JPAEdmProperty.this);
-						currentComplexProperty.setType(new FullQualifiedName(
-								schemaView.getEdmSchema().getNamespace(),
-								complexType.getName()));
-						currentComplexProperty
-								.setFacets(setFacets(currentAttribute));
-						properties.add(currentComplexProperty);
-						List<String> nonKeyComplexTypes = schemaView.getNonKeyComplexTypeList();
-						if(!nonKeyComplexTypes.contains(currentComplexProperty.getType().getName()))
-						{
-							schemaView.addNonKeyComplexName(currentComplexProperty.getType().getName());
-						}
-					}
+          if (complexType == null) {
+            JPAEdmComplexTypeView complexTypeViewLocal = new JPAEdmComplexType(
+                schemaView, currentAttribute);
+            complexTypeViewLocal.getBuilder().build();
+            complexType = complexTypeViewLocal.getEdmComplexType();
+            complexTypeView.addJPAEdmCompleTypeView(complexTypeViewLocal);
 
-					break;
-				case MANY_TO_MANY :
-				case ONE_TO_MANY:
-				case ONE_TO_ONE :
-				case MANY_TO_ONE:
-					
-					JPAEdmAssociationEndView associationEndView = new JPAEdmAssociationEnd(entityTypeView,JPAEdmProperty.this);
-					associationEndView.getBuilder().build( );
-					
-					JPAEdmAssociationView associationView = schemaView.getJPAEdmAssociationView();
-					if(associationView.searchAssociation(associationEndView) == null){
-						JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView,entityTypeView,JPAEdmProperty.this);
-						associationViewLocal.getBuilder().build();
-						associationView.addJPAEdmAssociationView(associationViewLocal);
-					}
-					
-					JPAEdmReferentialConstraintView refConstraintView = new JPAEdmReferentialConstraint(
-							associationView, entityTypeView,JPAEdmProperty.this);
-					refConstraintView.getBuilder().build();
-					
-					if(refConstraintView.isExists())
-						associationView.addJPAEdmRefConstraintView(refConstraintView);
-					
-					if(navigationPropertyView == null)
-					{
-						navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
-					}
-					JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(associationView,JPAEdmProperty.this);
-					localNavigationPropertyView.getBuilder().build();
-					navigationPropertyView.addJPAEdmNavigationPropertyView(localNavigationPropertyView);
-					break;
-				default:
-					break;
-				}
-			}
+          }
 
-		}
-		
-		private EdmFacets setFacets(Attribute<?, ?> jpaAttribute)
-				throws ODataJPAModelException, ODataJPARuntimeException {
+          if (isBuildModeComplexType == false
+              && entityTypeView.getJPAEntityType().getIdType()
+                  .getJavaType()
+                  .equals(currentAttribute.getJavaType())) {
 
-			Facets facets = new Facets();
-			if (jpaAttribute.getJavaMember() instanceof AnnotatedElement) {
-				Column column = ((AnnotatedElement) jpaAttribute
-						.getJavaMember()).getAnnotation(Column.class);
-				if (column != null) {
-					EdmSimpleTypeKind attrEmdType = JPATypeConvertor
-							.convertToEdmSimpleType(jpaAttribute.getJavaType(),jpaAttribute);
-					if (column.nullable()) {
-						facets.setNullable(true);
-					}
-					else
-						facets.setNullable(false);
-					if (column.length() != 0
-							&& attrEmdType.equals(EdmSimpleTypeKind.String)) {
-						facets.setMaxLength(column.length());
-					}
-					if (column.precision() != 0
-							&& attrEmdType.equals(EdmSimpleTypeKind.Double)) {
-						facets.setPrecision(column.precision());
-					}
-				}
-				return facets;
-			}
-			return facets;
-		}
-	}
+            if (keyView == null) {
+              keyView = new JPAEdmKey(complexTypeView,
+                  JPAEdmProperty.this);
+            }
+            keyView.getBuilder().build();
+            complexTypeView.expandEdmComplexType(complexType, properties, currentAttribute.getName());
+          }
+          else {
+            currentComplexProperty = new ComplexProperty();
+            if (isBuildModeComplexType) {
+              JPAEdmNameBuilder
+                  .build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
+                      complexTypeView.getJPAEmbeddableType().getJavaType().getSimpleName());
+            } else {
+              JPAEdmNameBuilder
+                  .build((JPAEdmComplexPropertyView) JPAEdmProperty.this,
+                      JPAEdmProperty.this);
+            }
+            currentComplexProperty.setType(new FullQualifiedName(
+                schemaView.getEdmSchema().getNamespace(),
+                complexType.getName()));
+            currentComplexProperty
+                .setFacets(setFacets(currentAttribute));
+            properties.add(currentComplexProperty);
+            List<String> nonKeyComplexTypes = schemaView.getNonKeyComplexTypeList();
+            if (!nonKeyComplexTypes.contains(currentComplexProperty.getType().getName()))
+            {
+              schemaView.addNonKeyComplexName(currentComplexProperty.getType().getName());
+            }
+          }
 
-	@Override
-	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
-		return entityTypeView;
-	}
-	
-	@Override
-	public JPAEdmComplexTypeView getJPAEdmComplexTypeView( ){
-		return complexTypeView;
-	}
+          break;
+        case MANY_TO_MANY:
+        case ONE_TO_MANY:
+        case ONE_TO_ONE:
+        case MANY_TO_ONE:
+
+          JPAEdmAssociationEndView associationEndView = new JPAEdmAssociationEnd(entityTypeView, JPAEdmProperty.this);
+          associationEndView.getBuilder().build();
+
+          JPAEdmAssociationView associationView = schemaView.getJPAEdmAssociationView();
+          if (associationView.searchAssociation(associationEndView) == null) {
+            JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView, entityTypeView, JPAEdmProperty.this);
+            associationViewLocal.getBuilder().build();
+            associationView.addJPAEdmAssociationView(associationViewLocal);
+          }
+
+          JPAEdmReferentialConstraintView refConstraintView = new JPAEdmReferentialConstraint(
+              associationView, entityTypeView, JPAEdmProperty.this);
+          refConstraintView.getBuilder().build();
+
+          if (refConstraintView.isExists()) {
+            associationView.addJPAEdmRefConstraintView(refConstraintView);
+          }
+
+          if (navigationPropertyView == null)
+          {
+            navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
+          }
+          JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(associationView, JPAEdmProperty.this);
+          localNavigationPropertyView.getBuilder().build();
+          navigationPropertyView.addJPAEdmNavigationPropertyView(localNavigationPropertyView);
+          break;
+        default:
+          break;
+        }
+      }
+
+    }
+
+    private EdmFacets setFacets(final Attribute<?, ?> jpaAttribute)
+        throws ODataJPAModelException, ODataJPARuntimeException {
+
+      Facets facets = new Facets();
+      if (jpaAttribute.getJavaMember() instanceof AnnotatedElement) {
+        Column column = ((AnnotatedElement) jpaAttribute
+            .getJavaMember()).getAnnotation(Column.class);
+        if (column != null) {
+          EdmSimpleTypeKind attrEmdType = JPATypeConvertor
+              .convertToEdmSimpleType(jpaAttribute.getJavaType(), jpaAttribute);
+          if (column.nullable()) {
+            facets.setNullable(true);
+          } else {
+            facets.setNullable(false);
+          }
+          if (column.length() != 0
+              && attrEmdType.equals(EdmSimpleTypeKind.String)) {
+            facets.setMaxLength(column.length());
+          }
+          if (column.precision() != 0
+              && attrEmdType.equals(EdmSimpleTypeKind.Double)) {
+            facets.setPrecision(column.precision());
+          }
+        }
+        return facets;
+      }
+      return facets;
+    }
+  }
+
+  @Override
+  public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
+    return entityTypeView;
+  }
+
+  @Override
+  public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
+    return complexTypeView;
+  }
 }

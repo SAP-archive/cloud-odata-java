@@ -38,12 +38,12 @@ import com.sap.core.odata.api.edm.provider.Key;
  * 
  */
 public interface JPAEdmKeyView extends JPAEdmBaseView {
-	/**
-	 * The method returns an instance of EDM key for the given JPA EDM Entity
-	 * type.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.Key}
-	 */
-	public Key getEdmKey();
+  /**
+   * The method returns an instance of EDM key for the given JPA EDM Entity
+   * type.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.Key}
+   */
+  public Key getEdmKey();
 }

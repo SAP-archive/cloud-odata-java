@@ -20,10 +20,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Documentation {
-	String summary( ) default "";
-	String longDescription( ) default "";
+  String summary() default "";
+
+  String longDescription() default "";
 }

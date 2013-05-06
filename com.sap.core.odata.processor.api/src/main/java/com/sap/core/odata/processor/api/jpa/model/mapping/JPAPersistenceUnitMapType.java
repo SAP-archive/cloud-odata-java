@@ -53,100 +53,100 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JPAPersistenceUnitMapType", propOrder = {
-		"edmSchemaNamespace", "jpaEntityTypes", "jpaEmbeddableTypes" })
+    "edmSchemaNamespace", "jpaEntityTypes", "jpaEmbeddableTypes" })
 public class JPAPersistenceUnitMapType {
 
-	@XmlElement(name = "EDMSchemaNamespace")
-	protected String edmSchemaNamespace;
-	@XmlElement(name = "JPAEntityTypes", required = true)
-	protected JPAEntityTypesMapType jpaEntityTypes;
-	@XmlElement(name = "JPAEmbeddableTypes", required = true)
-	protected JPAEmbeddableTypesMapType jpaEmbeddableTypes;
-	@XmlAttribute(name = "name", required = true)
-	protected String name;
+  @XmlElement(name = "EDMSchemaNamespace")
+  protected String edmSchemaNamespace;
+  @XmlElement(name = "JPAEntityTypes", required = true)
+  protected JPAEntityTypesMapType jpaEntityTypes;
+  @XmlElement(name = "JPAEmbeddableTypes", required = true)
+  protected JPAEmbeddableTypesMapType jpaEmbeddableTypes;
+  @XmlAttribute(name = "name", required = true)
+  protected String name;
 
-	/**
-	 * Gets the value of the edmSchemaNamespace property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEDMSchemaNamespace() {
-		return edmSchemaNamespace;
-	}
+  /**
+   * Gets the value of the edmSchemaNamespace property.
+   * 
+   * @return possible object is {@link String }
+   * 
+   */
+  public String getEDMSchemaNamespace() {
+    return edmSchemaNamespace;
+  }
 
-	/**
-	 * Sets the value of the edmSchemaNamespace property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setEDMSchemaNamespace(String value) {
-		this.edmSchemaNamespace = value;
-	}
+  /**
+   * Sets the value of the edmSchemaNamespace property.
+   * 
+   * @param value
+   *            allowed object is {@link String }
+   * 
+   */
+  public void setEDMSchemaNamespace(final String value) {
+    edmSchemaNamespace = value;
+  }
 
-	/**
-	 * Gets the value of the jpaEntityTypes property.
-	 * 
-	 * @return possible object is {@link JPAEntityTypesMapType }
-	 * 
-	 */
-	public JPAEntityTypesMapType getJPAEntityTypes() {
-		return jpaEntityTypes;
-	}
+  /**
+   * Gets the value of the jpaEntityTypes property.
+   * 
+   * @return possible object is {@link JPAEntityTypesMapType }
+   * 
+   */
+  public JPAEntityTypesMapType getJPAEntityTypes() {
+    return jpaEntityTypes;
+  }
 
-	/**
-	 * Sets the value of the jpaEntityTypes property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link JPAEntityTypesMapType }
-	 * 
-	 */
-	public void setJPAEntityTypes(JPAEntityTypesMapType value) {
-		this.jpaEntityTypes = value;
-	}
+  /**
+   * Sets the value of the jpaEntityTypes property.
+   * 
+   * @param value
+   *            allowed object is {@link JPAEntityTypesMapType }
+   * 
+   */
+  public void setJPAEntityTypes(final JPAEntityTypesMapType value) {
+    jpaEntityTypes = value;
+  }
 
-	/**
-	 * Gets the value of the jpaEmbeddableTypes property.
-	 * 
-	 * @return possible object is {@link JPAEmbeddableTypesMapType }
-	 * 
-	 */
-	public JPAEmbeddableTypesMapType getJPAEmbeddableTypes() {
-		return jpaEmbeddableTypes;
-	}
+  /**
+   * Gets the value of the jpaEmbeddableTypes property.
+   * 
+   * @return possible object is {@link JPAEmbeddableTypesMapType }
+   * 
+   */
+  public JPAEmbeddableTypesMapType getJPAEmbeddableTypes() {
+    return jpaEmbeddableTypes;
+  }
 
-	/**
-	 * Sets the value of the jpaEmbeddableTypes property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link JPAEmbeddableTypesMapType }
-	 * 
-	 */
-	public void setJPAEmbeddableTypes(JPAEmbeddableTypesMapType value) {
-		this.jpaEmbeddableTypes = value;
-	}
+  /**
+   * Sets the value of the jpaEmbeddableTypes property.
+   * 
+   * @param value
+   *            allowed object is {@link JPAEmbeddableTypesMapType }
+   * 
+   */
+  public void setJPAEmbeddableTypes(final JPAEmbeddableTypesMapType value) {
+    jpaEmbeddableTypes = value;
+  }
 
-	/**
-	 * Gets the value of the name property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getName() {
-		return name;
-	}
+  /**
+   * Gets the value of the name property.
+   * 
+   * @return possible object is {@link String }
+   * 
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * Sets the value of the name property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setName(String value) {
-		this.name = value;
-	}
+  /**
+   * Sets the value of the name property.
+   * 
+   * @param value
+   *            allowed object is {@link String }
+   * 
+   */
+  public void setName(final String value) {
+    name = value;
+  }
 
 }

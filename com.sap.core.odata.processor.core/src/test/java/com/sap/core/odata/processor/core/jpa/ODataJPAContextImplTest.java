@@ -22,61 +22,62 @@ import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
 
 public class ODataJPAContextImplTest {
 
-	private ODataContext odataContext = null;
-	private ODataJPAContext odataJPAContext = null;
-	private EdmProvider edmProvider = null;
-	private EntityManagerFactory emf = null;
-	private EntityManager em = null;
-	private ODataProcessor processor = null;
+  private ODataContext odataContext = null;
+  private ODataJPAContext odataJPAContext = null;
+  private EdmProvider edmProvider = null;
+  private EntityManagerFactory emf = null;
+  private EntityManager em = null;
+  private ODataProcessor processor = null;
 
-	@Before
-	public void setup() {
+  @Before
+  public void setup() {
 
-		edmProvider = new ODataJPAEdmProvider();
-		emf = EasyMock.createMock(EntityManagerFactory.class);
-		em = EasyMock.createMock(EntityManager.class);
-		EasyMock.replay(em);
-		
-		EasyMock.expect(emf.createEntityManager()).andStubReturn(em);
-		EasyMock.replay(emf);
+    edmProvider = new ODataJPAEdmProvider();
+    emf = EasyMock.createMock(EntityManagerFactory.class);
+    em = EasyMock.createMock(EntityManager.class);
+    EasyMock.replay(em);
 
-		odataContext = EasyMock.createMock(ODataContext.class);
-		List<Locale> listLocale = new ArrayList<Locale>();
-        listLocale.add(Locale.ENGLISH);
-        listLocale.add(Locale.GERMAN);
+    EasyMock.expect(emf.createEntityManager()).andStubReturn(em);
+    EasyMock.replay(emf);
 
-		EasyMock.expect(odataContext.getAcceptableLanguages()).andStubReturn(listLocale);
-		EasyMock.replay(odataContext);
+    odataContext = EasyMock.createMock(ODataContext.class);
+    List<Locale> listLocale = new ArrayList<Locale>();
+    listLocale.add(Locale.ENGLISH);
+    listLocale.add(Locale.GERMAN);
 
-		processor = EasyMock.createMock(ODataProcessor.class);
-		EasyMock.replay(processor);
+    EasyMock.expect(odataContext.getAcceptableLanguages()).andStubReturn(listLocale);
+    EasyMock.replay(odataContext);
 
-		odataJPAContext = new ODataJPAContextImpl();
-		odataJPAContext.setEdmProvider(edmProvider);
-		odataJPAContext.setEntityManagerFactory(emf);
-		odataJPAContext.setODataContext(odataContext);
-		odataJPAContext.setODataProcessor(processor);
-		odataJPAContext
-				.setPersistenceUnitName(ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
-		odataJPAContext.setJPAEdmMappingModel(ODataJPAContextMock.MAPPING_MODEL);
-	}
+    processor = EasyMock.createMock(ODataProcessor.class);
+    EasyMock.replay(processor);
 
-	@Test
-	public void testgetMethodsOfODataJPAContext() {
+    odataJPAContext = new ODataJPAContextImpl();
+    odataJPAContext.setEdmProvider(edmProvider);
+    odataJPAContext.setEntityManagerFactory(emf);
+    odataJPAContext.setODataContext(odataContext);
+    odataJPAContext.setODataProcessor(processor);
+    odataJPAContext
+        .setPersistenceUnitName(ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
+    odataJPAContext.setJPAEdmMappingModel(ODataJPAContextMock.MAPPING_MODEL);
+  }
 
-		assertEquals(odataJPAContext.getEdmProvider().hashCode(), edmProvider.hashCode());
-		assertEquals(odataJPAContext.getEntityManagerFactory().hashCode(), emf.hashCode());
-		assertEquals(odataJPAContext.getODataContext().hashCode(), odataContext.hashCode());
-		assertEquals(odataJPAContext.getODataProcessor().hashCode(), processor.hashCode());
-		assertEquals(odataJPAContext.getPersistenceUnitName(),
-				ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
-		assertEquals(odataJPAContext.getJPAEdmMappingModel(), ODataJPAContextMock.MAPPING_MODEL);
-		
-		EntityManager em1 = odataJPAContext.getEntityManager();
-		EntityManager em2 = odataJPAContext.getEntityManager();
-		if(em1 != null && em2 != null) //Fix for build - TODO
-			assertEquals(em1.hashCode(), em2.hashCode());
+  @Test
+  public void testgetMethodsOfODataJPAContext() {
 
-	}
+    assertEquals(odataJPAContext.getEdmProvider().hashCode(), edmProvider.hashCode());
+    assertEquals(odataJPAContext.getEntityManagerFactory().hashCode(), emf.hashCode());
+    assertEquals(odataJPAContext.getODataContext().hashCode(), odataContext.hashCode());
+    assertEquals(odataJPAContext.getODataProcessor().hashCode(), processor.hashCode());
+    assertEquals(odataJPAContext.getPersistenceUnitName(),
+        ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
+    assertEquals(odataJPAContext.getJPAEdmMappingModel(), ODataJPAContextMock.MAPPING_MODEL);
+
+    EntityManager em1 = odataJPAContext.getEntityManager();
+    EntityManager em2 = odataJPAContext.getEntityManager();
+    if (em1 != null && em2 != null) {
+      assertEquals(em1.hashCode(), em2.hashCode());
+    }
+
+  }
 
 }

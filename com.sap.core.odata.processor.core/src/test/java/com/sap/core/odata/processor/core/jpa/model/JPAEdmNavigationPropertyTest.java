@@ -24,161 +24,161 @@ import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 
-	private static JPAEdmNavigationProperty objNavigationProperty;
-	private static JPAEdmNavigationPropertyTest navPropView;
+  private static JPAEdmNavigationProperty objNavigationProperty;
+  private static JPAEdmNavigationPropertyTest navPropView;
 
-	@BeforeClass
-	public static void setup() {
-		JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
-		navPropView = new JPAEdmNavigationPropertyTest();
-		objNavigationProperty = new JPAEdmNavigationProperty(localView,
-				localView);
-		try {
-			objNavigationProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-	}
+  @BeforeClass
+  public static void setup() {
+    JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
+    navPropView = new JPAEdmNavigationPropertyTest();
+    objNavigationProperty = new JPAEdmNavigationProperty(localView,
+        localView);
+    try {
+      objNavigationProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+  }
 
-	@Override
-	public String getpUnitName() {
-		return "salesorderprocessing";
-	}
-	
-	@Override
-	public JPAEdmEntityTypeView getJPAEdmEntityTypeView( ){
-		return this;
-	}
-	
-	@Override
-	public EntityType<?> getJPAEntityType(){
-		return new JPAEdmEntityType( );
-	}
-	
-	private Attribute<?, ?> getJPAAttributeLocal() {
-		AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
-		return attr;
-	}
+  @Override
+  public String getpUnitName() {
+    return "salesorderprocessing";
+  }
 
-	@Override
-	public Attribute<?, ?> getJPAAttribute() {
-		return getJPAAttributeLocal();
-	}
+  @Override
+  public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
+    return this;
+  }
 
-	@Override
-	public Association getEdmAssociation() {
+  @Override
+  public EntityType<?> getJPAEntityType() {
+    return new JPAEdmEntityType();
+  }
 
-		Association association = new Association();
-		association.setName("Assoc_SalesOrderHeader_SalesOrderItem");
-		association.setEnd1(new AssociationEnd().setType(
-				new FullQualifiedName("salesorderprocessing", "String"))
-				.setRole("SalesOrderHeader"));
-		association.setEnd2(new AssociationEnd()
-				.setType(
-						new FullQualifiedName("salesorderprocessing",
-								"SalesOrderItem")).setRole("SalesOrderItem"));
-		return association;
-	}
+  private Attribute<?, ?> getJPAAttributeLocal() {
+    AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
+    return attr;
+  }
 
-	@Test
-	public void testGetBuilder() {
-		assertNotNull(objNavigationProperty.getBuilder());
+  @Override
+  public Attribute<?, ?> getJPAAttribute() {
+    return getJPAAttributeLocal();
+  }
 
-	}
+  @Override
+  public Association getEdmAssociation() {
 
-	@Test
-	public void testGetBuilderIdempotent() {
-		JPAEdmBuilder builder1 = objNavigationProperty.getBuilder();
-		JPAEdmBuilder builder2 = objNavigationProperty.getBuilder();
+    Association association = new Association();
+    association.setName("Assoc_SalesOrderHeader_SalesOrderItem");
+    association.setEnd1(new AssociationEnd().setType(
+        new FullQualifiedName("salesorderprocessing", "String"))
+        .setRole("SalesOrderHeader"));
+    association.setEnd2(new AssociationEnd()
+        .setType(
+            new FullQualifiedName("salesorderprocessing",
+                "SalesOrderItem")).setRole("SalesOrderItem"));
+    return association;
+  }
 
-		assertEquals(builder1.hashCode(), builder2.hashCode());
-	}
+  @Test
+  public void testGetBuilder() {
+    assertNotNull(objNavigationProperty.getBuilder());
 
-	@Test
-	public void testGetEdmNavigationProperty() {
-		if(objNavigationProperty == null || objNavigationProperty.getEdmNavigationProperty() == null ){
-			JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
-			navPropView = new JPAEdmNavigationPropertyTest();
-			objNavigationProperty = new JPAEdmNavigationProperty(localView,
-					localView);
-			try {
-				objNavigationProperty.getBuilder().build();
-			} catch (ODataJPAModelException e) {
-				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-			} catch (ODataJPARuntimeException e) {
-				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-			}
-		}
-		assertEquals(
-				objNavigationProperty.getEdmNavigationProperty().getName(),
-				"StringDetails");
-	}
+  }
 
-	@Test
-	public void testGetConsistentEdmNavigationProperties() {
-		assertTrue(objNavigationProperty.getConsistentEdmNavigationProperties()
-				.size() > 0);
-	}
+  @Test
+  public void testGetBuilderIdempotent() {
+    JPAEdmBuilder builder1 = objNavigationProperty.getBuilder();
+    JPAEdmBuilder builder2 = objNavigationProperty.getBuilder();
 
-	@Test
-	public void testAddJPAEdmNavigationPropertyView() {
-		JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
-		navPropView = new JPAEdmNavigationPropertyTest();
-		objNavigationProperty = new JPAEdmNavigationProperty(localView,
-				localView);
-		try {
-			objNavigationProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		objNavigationProperty.addJPAEdmNavigationPropertyView(navPropView);
-		assertTrue(objNavigationProperty.getConsistentEdmNavigationProperties()
-				.size() > 1);
-	}
+    assertEquals(builder1.hashCode(), builder2.hashCode());
+  }
 
-	@Override
-	public boolean isConsistent() {
-		return true;
-	}
+  @Test
+  public void testGetEdmNavigationProperty() {
+    if (objNavigationProperty == null || objNavigationProperty.getEdmNavigationProperty() == null) {
+      JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
+      navPropView = new JPAEdmNavigationPropertyTest();
+      objNavigationProperty = new JPAEdmNavigationProperty(localView,
+          localView);
+      try {
+        objNavigationProperty.getBuilder().build();
+      } catch (ODataJPAModelException e) {
+        fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+      } catch (ODataJPARuntimeException e) {
+        fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+      }
+    }
+    assertEquals(
+        objNavigationProperty.getEdmNavigationProperty().getName(),
+        "StringDetails");
+  }
 
-	@Test
-	public void testBuildNavigationProperty() {
+  @Test
+  public void testGetConsistentEdmNavigationProperties() {
+    assertTrue(objNavigationProperty.getConsistentEdmNavigationProperties()
+        .size() > 0);
+  }
 
-		try {
-			objNavigationProperty.getBuilder().build();
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		assertEquals(objNavigationProperty.getEdmNavigationProperty()
-				.getFromRole(), "SalesOrderItem");
-		assertEquals(objNavigationProperty.getEdmNavigationProperty()
-				.getToRole(), "SalesOrderHeader");
+  @Test
+  public void testAddJPAEdmNavigationPropertyView() {
+    JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
+    navPropView = new JPAEdmNavigationPropertyTest();
+    objNavigationProperty = new JPAEdmNavigationProperty(localView,
+        localView);
+    try {
+      objNavigationProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+    objNavigationProperty.addJPAEdmNavigationPropertyView(navPropView);
+    assertTrue(objNavigationProperty.getConsistentEdmNavigationProperties()
+        .size() > 1);
+  }
 
-	}
+  @Override
+  public boolean isConsistent() {
+    return true;
+  }
 
-	@SuppressWarnings("hiding")
-	private class AttributeMock<Object, String> extends
-			JPAAttributeMock<Object, String> {
+  @Test
+  public void testBuildNavigationProperty() {
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public Class<String> getJavaType() {
-			return (Class<String>) java.lang.String.class;
-		}
+    try {
+      objNavigationProperty.getBuilder().build();
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+    assertEquals(objNavigationProperty.getEdmNavigationProperty()
+        .getFromRole(), "SalesOrderItem");
+    assertEquals(objNavigationProperty.getEdmNavigationProperty()
+        .getToRole(), "SalesOrderHeader");
 
-	}
-	
-	private class JPAEdmEntityType extends JPAEntityTypeMock<String>{
-		@Override
-		public String getName() {
-			return "SalesOrderHeader";
-		}
-	}
+  }
+
+  @SuppressWarnings("hiding")
+  private class AttributeMock<Object, String> extends
+      JPAAttributeMock<Object, String> {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<String> getJavaType() {
+      return (Class<String>) java.lang.String.class;
+    }
+
+  }
+
+  private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
+    @Override
+    public String getName() {
+      return "SalesOrderHeader";
+    }
+  }
 
 }

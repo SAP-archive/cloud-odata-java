@@ -37,6 +37,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -55,450 +56,466 @@ import com.sap.core.odata.processor.core.jpa.access.data.JPAExpandCallBack;
 
 public final class ODataJPAResponseBuilder {
 
-	public static <T> ODataResponse build(List<T> jpaEntities,
-			GetEntitySetUriInfo resultsView, String contentType,
-			ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
+  public static <T> ODataResponse build(final List<T> jpaEntities,
+      final GetEntitySetUriInfo resultsView, final String contentType,
+      final ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
 
-		EdmEntityType edmEntityType = null;
-		ODataResponse odataResponse = null;
-		List<ArrayList<NavigationPropertySegment>> expandList = null;
+    EdmEntityType edmEntityType = null;
+    ODataResponse odataResponse = null;
+    List<ArrayList<NavigationPropertySegment>> expandList = null;
 
-		try {
-			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
-			List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
-			Map<String, Object> edmPropertyValueMap = null;
-			JPAResultParser jpaResultParser = JPAResultParser.create();
-			final List<SelectItem> selectedItems = resultsView.getSelect();
-			if (selectedItems != null && selectedItems.size() > 0) {
-				for (Object jpaEntity : jpaEntities) {
-					edmPropertyValueMap = jpaResultParser
-							.parse2EdmPropertyValueMapFromList(
-									jpaEntity,
-									buildSelectItemList(selectedItems,
-											edmEntityType));
-					edmEntityList.add(edmPropertyValueMap);
-				}
-			} else {
-				for (Object jpaEntity : jpaEntities) {
-					edmPropertyValueMap = jpaResultParser
-							.parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
-					edmEntityList.add(edmPropertyValueMap);
-				}
-			}
-			expandList = resultsView.getExpand();
-			if (expandList != null && expandList.size() != 0) {
-				int count = 0;
-				for (Object jpaEntity : jpaEntities) {
-					jpaResultParser.parse2EdmPropertyListMap(
-							edmEntityList.get(count), jpaEntity,
-							constructListofNavProperty(expandList));
-					count++;
-				}
-			}
-			
-			EntityProviderWriteProperties feedProperties = null;
-			// Getting the entity feed properties
-			feedProperties = getEntityProviderProperties(odataJPAContext,
-					resultsView, edmEntityList);
-			odataResponse = EntityProvider.writeFeed(contentType,
-					resultsView.getTargetEntitySet(), edmEntityList,
-					feedProperties);
-			odataResponse = ODataResponse.fromResponse(odataResponse)
-					.status(HttpStatusCodes.OK).build();
+    try {
+      edmEntityType = resultsView.getTargetEntitySet().getEntityType();
+      List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
+      Map<String, Object> edmPropertyValueMap = null;
+      JPAResultParser jpaResultParser = JPAResultParser.create();
+      final List<SelectItem> selectedItems = resultsView.getSelect();
+      if (selectedItems != null && selectedItems.size() > 0) {
+        for (Object jpaEntity : jpaEntities) {
+          edmPropertyValueMap = jpaResultParser
+              .parse2EdmPropertyValueMapFromList(
+                  jpaEntity,
+                  buildSelectItemList(selectedItems,
+                      edmEntityType));
+          edmEntityList.add(edmPropertyValueMap);
+        }
+      } else {
+        for (Object jpaEntity : jpaEntities) {
+          edmPropertyValueMap = jpaResultParser
+              .parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
+          edmEntityList.add(edmPropertyValueMap);
+        }
+      }
+      expandList = resultsView.getExpand();
+      if (expandList != null && expandList.size() != 0) {
+        int count = 0;
+        for (Object jpaEntity : jpaEntities) {
+          jpaResultParser.parse2EdmPropertyListMap(
+              edmEntityList.get(count), jpaEntity,
+              constructListofNavProperty(expandList));
+          count++;
+        }
+      }
 
-		} catch (EntityProviderException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		}
+      EntityProviderWriteProperties feedProperties = null;
+      // Getting the entity feed properties
+      feedProperties = getEntityProviderProperties(odataJPAContext,
+          resultsView, edmEntityList);
+      odataResponse = EntityProvider.writeFeed(contentType,
+          resultsView.getTargetEntitySet(), edmEntityList,
+          feedProperties);
+      odataResponse = ODataResponse.fromResponse(odataResponse)
+          .status(HttpStatusCodes.OK).build();
 
-		return odataResponse;
-	}
-	public static ODataResponse build(Object jpaEntity,
-			GetEntityUriInfo resultsView, String contentType,
-			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
-			ODataNotFoundException {
+    } catch (EntityProviderException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (EdmException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
 
-		List<ArrayList<NavigationPropertySegment>> expandList = null;
-		if (jpaEntity == null)
-			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
-																				// to
-																				// throw
-																				// 404
-																				// with
-																				// Message
-																				// body
-		EdmEntityType edmEntityType = null;
-		ODataResponse odataResponse = null;
+    return odataResponse;
+  }
 
-		try {
+  public static ODataResponse build(final Object jpaEntity,
+      final GetEntityUriInfo resultsView, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+      ODataNotFoundException {
 
-			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
-			Map<String, Object> edmPropertyValueMap = null;
+    List<ArrayList<NavigationPropertySegment>> expandList = null;
+    if (jpaEntity == null)
+    {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
+    }
+    // to
+    // throw
+    // 404
+    // with
+    // Message
+    // body
+    EdmEntityType edmEntityType = null;
+    ODataResponse odataResponse = null;
 
-			JPAResultParser jpaResultParser = JPAResultParser.create();
-			final List<SelectItem> selectedItems = resultsView.getSelect();
-			if (selectedItems != null && selectedItems.size() > 0) {
-				edmPropertyValueMap = jpaResultParser
-						.parse2EdmPropertyValueMapFromList(
-								jpaEntity,
-								buildSelectItemList(selectedItems, resultsView
-										.getTargetEntitySet().getEntityType()));
-			} else
-				edmPropertyValueMap = jpaResultParser
-						.parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
+    try {
 
-			expandList = resultsView.getExpand();
-			if (expandList != null && expandList.size() != 0)
-				jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap,
-						jpaEntity, constructListofNavProperty(expandList));
-			EntityProviderWriteProperties feedProperties = null;
-			feedProperties = getEntityProviderProperties(oDataJPAContext,
-					resultsView);
-			odataResponse = EntityProvider.writeEntry(contentType,
-					resultsView.getTargetEntitySet(), edmPropertyValueMap,
-					feedProperties);
+      edmEntityType = resultsView.getTargetEntitySet().getEntityType();
+      Map<String, Object> edmPropertyValueMap = null;
 
-			odataResponse = ODataResponse.fromResponse(odataResponse)
-					.status(HttpStatusCodes.OK).build();
+      JPAResultParser jpaResultParser = JPAResultParser.create();
+      final List<SelectItem> selectedItems = resultsView.getSelect();
+      if (selectedItems != null && selectedItems.size() > 0) {
+        edmPropertyValueMap = jpaResultParser
+            .parse2EdmPropertyValueMapFromList(
+                jpaEntity,
+                buildSelectItemList(selectedItems, resultsView
+                    .getTargetEntitySet().getEntityType()));
+      } else {
+        edmPropertyValueMap = jpaResultParser
+            .parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
+      }
 
-		} catch (EntityProviderException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		}
+      expandList = resultsView.getExpand();
+      if (expandList != null && expandList.size() != 0) {
+        jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap,
+            jpaEntity, constructListofNavProperty(expandList));
+      }
+      EntityProviderWriteProperties feedProperties = null;
+      feedProperties = getEntityProviderProperties(oDataJPAContext,
+          resultsView);
+      odataResponse = EntityProvider.writeEntry(contentType,
+          resultsView.getTargetEntitySet(), edmPropertyValueMap,
+          feedProperties);
 
-		return odataResponse;
-	}
+      odataResponse = ODataResponse.fromResponse(odataResponse)
+          .status(HttpStatusCodes.OK).build();
 
-	public static ODataResponse build(long jpaEntityCount,
-			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+    } catch (EntityProviderException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (EdmException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
 
-		ODataResponse odataResponse = null;
-		try {
-			odataResponse = EntityProvider.writeText(String
-					.valueOf(jpaEntityCount));
-			odataResponse = ODataResponse.fromResponse(odataResponse).build();
-		} catch (EntityProviderException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		}
-		return odataResponse;
-	}
-	
-	public static ODataResponse build(List<Object> createdObjectList,
-			PostUriInfo uriInfo, String contentType,
-			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
-			ODataNotFoundException {
+    return odataResponse;
+  }
 
-		if (createdObjectList == null || createdObjectList.size() == 0 || createdObjectList.get(0) == null)
-			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
-																				// to
-																				// throw
-																				// 404
-																				// with
-																				// Message
-																				// body
+  public static ODataResponse build(final long jpaEntityCount,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
 
-		EdmEntityType edmEntityType = null;
-		ODataResponse odataResponse = null;
+    ODataResponse odataResponse = null;
+    try {
+      odataResponse = EntityProvider.writeText(String
+          .valueOf(jpaEntityCount));
+      odataResponse = ODataResponse.fromResponse(odataResponse).build();
+    } catch (EntityProviderException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
+    return odataResponse;
+  }
 
-		try {
+  public static ODataResponse build(final List<Object> createdObjectList,
+      final PostUriInfo uriInfo, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+      ODataNotFoundException {
 
-			edmEntityType = uriInfo.getTargetEntitySet().getEntityType();
-			Map<String, Object> edmPropertyValueMap = null;
+    if (createdObjectList == null || createdObjectList.size() == 0 || createdObjectList.get(0) == null)
+    {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
+      // to
+      // throw
+      // 404
+      // with
+      // Message
+      // body
+    }
 
-			JPAResultParser jpaResultParser = JPAResultParser.create();
-			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
-					createdObjectList.get(0), edmEntityType);
+    EdmEntityType edmEntityType = null;
+    ODataResponse odataResponse = null;
 
-			EntityProviderWriteProperties feedProperties = null;
-			try {
-				feedProperties = EntityProviderWriteProperties.serviceRoot(
-						oDataJPAContext.getODataContext().getPathInfo()
-								.getServiceRoot()).expandSelectTree((ExpandSelectTreeNode) createdObjectList.get(1)).build();
-			} catch (ODataException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.INNER_EXCEPTION, e);
-			}
+    try {
 
-			odataResponse = EntityProvider.writeEntry(contentType,
-					uriInfo.getTargetEntitySet(), edmPropertyValueMap,
-					feedProperties);
+      edmEntityType = uriInfo.getTargetEntitySet().getEntityType();
+      Map<String, Object> edmPropertyValueMap = null;
 
-			odataResponse = ODataResponse.fromResponse(odataResponse)
-					.status(HttpStatusCodes.CREATED).build(); // Send status
-																// code along
-																// with body of
-																// created
-																// content
+      JPAResultParser jpaResultParser = JPAResultParser.create();
+      edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
+          createdObjectList.get(0), edmEntityType);
 
-		} catch (EntityProviderException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		}
+      EntityProviderWriteProperties feedProperties = null;
+      try {
+        feedProperties = EntityProviderWriteProperties.serviceRoot(
+            oDataJPAContext.getODataContext().getPathInfo()
+                .getServiceRoot()).expandSelectTree((ExpandSelectTreeNode) createdObjectList.get(1)).build();
+      } catch (ODataException e) {
+        throw ODataJPARuntimeException.throwException(
+            ODataJPARuntimeException.INNER_EXCEPTION, e);
+      }
 
-		return odataResponse;
-	}
+      odataResponse = EntityProvider.writeEntry(contentType,
+          uriInfo.getTargetEntitySet(), edmPropertyValueMap,
+          feedProperties);
 
-	public static ODataResponse build(Object updatedObject,
-			PutMergePatchUriInfo putUriInfo) throws ODataJPARuntimeException,
-			ODataNotFoundException {
-		if (updatedObject == null)
-			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
-																				// to
-																				// throw
-																				// 404
-																				// with
-																				// Message
-																				// body
+      odataResponse = ODataResponse.fromResponse(odataResponse)
+          .status(HttpStatusCodes.CREATED).build(); // Send status
+      // code along
+      // with body of
+      // created
+      // content
 
-		return ODataResponse.status(HttpStatusCodes.ACCEPTED).build(); // Body
-																		// is
-																		// not
-																		// needed
-																		// for
-																		// successful
-																		// update;
-	}
-	public static ODataResponse build(Object deletedObject,
-			DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException,
-			ODataNotFoundException {
+    } catch (EntityProviderException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (EdmException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
 
-		if (deletedObject == null) {
-			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
-																				// to
-																				// throw
-																				// 404
-																				// with
-																				// Message
-																				// body
-		}
-		return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build(); // Body
-																			// is
-																			// not
-																			// needed
-																			// for
-																			// successful
-																			// delete;
-	}
+    return odataResponse;
+  }
 
-	public static ODataResponse build(Object result,
-			GetFunctionImportUriInfo resultsView)
-			throws ODataJPARuntimeException {
+  public static ODataResponse build(final Object updatedObject,
+      final PutMergePatchUriInfo putUriInfo) throws ODataJPARuntimeException,
+      ODataNotFoundException {
+    if (updatedObject == null)
+    {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
+      // to
+      // throw
+      // 404
+      // with
+      // Message
+      // body
+    }
 
-		try {
-			final EdmFunctionImport functionImport = resultsView
-					.getFunctionImport();
-			final EdmSimpleType type = (EdmSimpleType) functionImport
-					.getReturnType().getType();
+    return ODataResponse.status(HttpStatusCodes.ACCEPTED).build(); // Body
+    // is
+    // not
+    // needed
+    // for
+    // successful
+    // update;
+  }
 
-			if (result != null) {
-				ODataResponse response = null;
+  public static ODataResponse build(final Object deletedObject,
+      final DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException,
+      ODataNotFoundException {
 
-				final String value = type.valueToString(result,
-						EdmLiteralKind.DEFAULT, null);
-				response = EntityProvider.writeText(value);
+    if (deletedObject == null) {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need
+      // to
+      // throw
+      // 404
+      // with
+      // Message
+      // body
+    }
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build(); // Body
+    // is
+    // not
+    // needed
+    // for
+    // successful
+    // delete;
+  }
 
-				return ODataResponse.fromResponse(response).build();
-			} else
-				throw new ODataNotFoundException(ODataNotFoundException.COMMON);
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (EntityProviderException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		} catch (ODataException e) {
-			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.INNER_EXCEPTION, e);
-		}
-	}
+  public static ODataResponse build(final Object result,
+      final GetFunctionImportUriInfo resultsView)
+      throws ODataJPARuntimeException {
 
-	public static ODataResponse build(List<Object> resultList,
-			GetFunctionImportUriInfo resultsView, String contentType,
-			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
-			ODataNotFoundException {
+    try {
+      final EdmFunctionImport functionImport = resultsView
+          .getFunctionImport();
+      final EdmSimpleType type = (EdmSimpleType) functionImport
+          .getReturnType().getType();
 
-		ODataResponse odataResponse = null;
+      if (result != null) {
+        ODataResponse response = null;
 
-		if (resultList != null && !resultList.isEmpty()) {
-			JPAResultParser jpaResultParser = JPAResultParser.create();
-			EdmType edmType = null;
-			EdmFunctionImport functionImport = null;
-			Map<String, Object> edmPropertyValueMap = null;
-			List<Map<String, Object>> edmEntityList = null;
-			Object result = null;
-			try {
-				EntityProviderWriteProperties feedProperties = null;
+        final String value = type.valueToString(result,
+            EdmLiteralKind.DEFAULT, null);
+        response = EntityProvider.writeText(value);
 
-				feedProperties = EntityProviderWriteProperties.serviceRoot(
-						oDataJPAContext.getODataContext().getPathInfo()
-								.getServiceRoot()).build();
+        return ODataResponse.fromResponse(response).build();
+      } else {
+        throw new ODataNotFoundException(ODataHttpException.COMMON);
+      }
+    } catch (EdmException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (EntityProviderException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (ODataException e) {
+      throw ODataJPARuntimeException.throwException(
+          ODataJPARuntimeException.INNER_EXCEPTION, e);
+    }
+  }
 
-				functionImport = resultsView.getFunctionImport();
-				edmType = functionImport.getReturnType().getType();
+  public static ODataResponse build(final List<Object> resultList,
+      final GetFunctionImportUriInfo resultsView, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+      ODataNotFoundException {
 
-				if (edmType.getKind().equals(EdmTypeKind.ENTITY)
-						|| edmType.getKind().equals(EdmTypeKind.COMPLEX)) {
-					if (functionImport.getReturnType().getMultiplicity()
-							.equals(EdmMultiplicity.MANY)) {
-						edmEntityList = new ArrayList<Map<String, Object>>();
-						for (Object jpaEntity : resultList) {
-							edmPropertyValueMap = jpaResultParser
-									.parse2EdmPropertyValueMap(jpaEntity,
-											(EdmStructuralType) edmType);
-							edmEntityList.add(edmPropertyValueMap);
-						}
-						result = edmEntityList;
-					} else {
+    ODataResponse odataResponse = null;
 
-						Object resultObject = resultList.get(0);
-						edmPropertyValueMap = jpaResultParser
-								.parse2EdmPropertyValueMap(resultObject,
-										(EdmStructuralType) edmType);
+    if (resultList != null && !resultList.isEmpty()) {
+      JPAResultParser jpaResultParser = JPAResultParser.create();
+      EdmType edmType = null;
+      EdmFunctionImport functionImport = null;
+      Map<String, Object> edmPropertyValueMap = null;
+      List<Map<String, Object>> edmEntityList = null;
+      Object result = null;
+      try {
+        EntityProviderWriteProperties feedProperties = null;
 
-						result = edmPropertyValueMap;
-					}
+        feedProperties = EntityProviderWriteProperties.serviceRoot(
+            oDataJPAContext.getODataContext().getPathInfo()
+                .getServiceRoot()).build();
 
-				} else if (edmType.getKind().equals(EdmTypeKind.SIMPLE)) {
-					result = resultList.get(0);
-				}
+        functionImport = resultsView.getFunctionImport();
+        edmType = functionImport.getReturnType().getType();
 
-				odataResponse = EntityProvider
-						.writeFunctionImport(contentType,
-								resultsView.getFunctionImport(), result,
-								feedProperties);
-				odataResponse = ODataResponse.fromResponse(odataResponse)
-						.status(HttpStatusCodes.OK).build();
+        if (edmType.getKind().equals(EdmTypeKind.ENTITY)
+            || edmType.getKind().equals(EdmTypeKind.COMPLEX)) {
+          if (functionImport.getReturnType().getMultiplicity()
+              .equals(EdmMultiplicity.MANY)) {
+            edmEntityList = new ArrayList<Map<String, Object>>();
+            for (Object jpaEntity : resultList) {
+              edmPropertyValueMap = jpaResultParser
+                  .parse2EdmPropertyValueMap(jpaEntity,
+                      (EdmStructuralType) edmType);
+              edmEntityList.add(edmPropertyValueMap);
+            }
+            result = edmEntityList;
+          } else {
 
-			} catch (EdmException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL.addContent(e
-								.getMessage()), e);
-			} catch (EntityProviderException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL.addContent(e
-								.getMessage()), e);
-			} catch (ODataException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.INNER_EXCEPTION, e);
-			}
+            Object resultObject = resultList.get(0);
+            edmPropertyValueMap = jpaResultParser
+                .parse2EdmPropertyValueMap(resultObject,
+                    (EdmStructuralType) edmType);
 
-		} else
-			throw new ODataNotFoundException(ODataNotFoundException.COMMON);
+            result = edmPropertyValueMap;
+          }
 
-		return odataResponse;
-	}
+        } else if (edmType.getKind().equals(EdmTypeKind.SIMPLE)) {
+          result = resultList.get(0);
+        }
 
-	/*
-	 * Method to build the entity provider Property.Callbacks for $expand would
-	 * be registered here
-	 */
-	private static EntityProviderWriteProperties getEntityProviderProperties(
-			ODataJPAContext odataJPAContext, GetEntitySetUriInfo resultsView,
-			List<Map<String, Object>> edmEntityList)
-			throws ODataJPARuntimeException {
-		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
-		Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
-				.size() : null;
-		try {
-			entityFeedPropertiesBuilder = EntityProviderWriteProperties
-					.serviceRoot(odataJPAContext.getODataContext()
-							.getPathInfo().getServiceRoot());
-			entityFeedPropertiesBuilder.inlineCount(count);
-			entityFeedPropertiesBuilder.inlineCountType(resultsView
-					.getInlineCount());
-			ExpandSelectTreeNode expandSelectTree = UriParser
-					.createExpandSelectTree(resultsView.getSelect(),
-							resultsView.getExpand());
-			entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
-					.getCallbacks(odataJPAContext.getODataContext()
-							.getPathInfo().getServiceRoot(), expandSelectTree,
-							resultsView.getExpand()));
-			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+        odataResponse = EntityProvider
+            .writeFunctionImport(contentType,
+                resultsView.getFunctionImport(), result,
+                feedProperties);
+        odataResponse = ODataResponse.fromResponse(odataResponse)
+            .status(HttpStatusCodes.OK).build();
 
-		} catch (ODataException e) {
-			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.INNER_EXCEPTION, e);
-		}
+      } catch (EdmException e) {
+        throw ODataJPARuntimeException.throwException(
+            ODataJPARuntimeException.GENERAL.addContent(e
+                .getMessage()), e);
+      } catch (EntityProviderException e) {
+        throw ODataJPARuntimeException.throwException(
+            ODataJPARuntimeException.GENERAL.addContent(e
+                .getMessage()), e);
+      } catch (ODataException e) {
+        throw ODataJPARuntimeException.throwException(
+            ODataJPARuntimeException.INNER_EXCEPTION, e);
+      }
 
-		return entityFeedPropertiesBuilder.build();
-	}
-	private static EntityProviderWriteProperties getEntityProviderProperties(
-			ODataJPAContext odataJPAContext, GetEntityUriInfo resultsView)
-			throws ODataJPARuntimeException {
-		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
-		ExpandSelectTreeNode expandSelectTree = null;
-		try {
-			entityFeedPropertiesBuilder = EntityProviderWriteProperties
-					.serviceRoot(odataJPAContext.getODataContext()
-							.getPathInfo().getServiceRoot());
-			expandSelectTree = UriParser.createExpandSelectTree(
-					resultsView.getSelect(), resultsView.getExpand());
-			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
-			entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
-					.getCallbacks(odataJPAContext.getODataContext()
-							.getPathInfo().getServiceRoot(), expandSelectTree,
-							resultsView.getExpand()));
-		} catch (ODataException e) {
-			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.INNER_EXCEPTION, e);
-		}
+    } else {
+      throw new ODataNotFoundException(ODataHttpException.COMMON);
+    }
 
-		return entityFeedPropertiesBuilder.build();
-	}
+    return odataResponse;
+  }
 
+  /*
+   * Method to build the entity provider Property.Callbacks for $expand would
+   * be registered here
+   */
+  private static EntityProviderWriteProperties getEntityProviderProperties(
+      final ODataJPAContext odataJPAContext, final GetEntitySetUriInfo resultsView,
+      final List<Map<String, Object>> edmEntityList)
+      throws ODataJPARuntimeException {
+    ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
+    Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
+        .size() : null;
+    try {
+      entityFeedPropertiesBuilder = EntityProviderWriteProperties
+          .serviceRoot(odataJPAContext.getODataContext()
+              .getPathInfo().getServiceRoot());
+      entityFeedPropertiesBuilder.inlineCount(count);
+      entityFeedPropertiesBuilder.inlineCountType(resultsView
+          .getInlineCount());
+      ExpandSelectTreeNode expandSelectTree = UriParser
+          .createExpandSelectTree(resultsView.getSelect(),
+              resultsView.getExpand());
+      entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
+          .getCallbacks(odataJPAContext.getODataContext()
+              .getPathInfo().getServiceRoot(), expandSelectTree,
+              resultsView.getExpand()));
+      entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
 
-	private static List<EdmProperty> buildSelectItemList(
-			List<SelectItem> selectItems, EdmEntityType entity) throws ODataJPARuntimeException {
-		boolean flag = false;
-		List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
-		try {
-			for (SelectItem selectItem : selectItems)
-				selectPropertyList.add(selectItem.getProperty());
-			for (EdmProperty keyProperty : entity.getKeyProperties()) {
-				flag = true;
-				for (SelectItem selectedItem : selectItems) {
-					if (selectedItem.getProperty().equals(keyProperty)) {
-						flag = false;
-						break;
-					}
-				}
-				if (flag == true)
-					selectPropertyList.add(keyProperty);
-			}
+    } catch (ODataException e) {
+      throw ODataJPARuntimeException.throwException(
+          ODataJPARuntimeException.INNER_EXCEPTION, e);
+    }
 
-		} catch (EdmException e) {
-			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
-		}
-		return selectPropertyList;
-	}
-	private static List<EdmNavigationProperty> constructListofNavProperty(
-			List<ArrayList<NavigationPropertySegment>> expandList) {
-		List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
-		for (ArrayList<NavigationPropertySegment> navpropSegment : expandList)
-			navigationPropertyList.add(navpropSegment.get(0)
-					.getNavigationProperty());
-		return navigationPropertyList;
-	}
+    return entityFeedPropertiesBuilder.build();
+  }
+
+  private static EntityProviderWriteProperties getEntityProviderProperties(
+      final ODataJPAContext odataJPAContext, final GetEntityUriInfo resultsView)
+      throws ODataJPARuntimeException {
+    ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
+    ExpandSelectTreeNode expandSelectTree = null;
+    try {
+      entityFeedPropertiesBuilder = EntityProviderWriteProperties
+          .serviceRoot(odataJPAContext.getODataContext()
+              .getPathInfo().getServiceRoot());
+      expandSelectTree = UriParser.createExpandSelectTree(
+          resultsView.getSelect(), resultsView.getExpand());
+      entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+      entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
+          .getCallbacks(odataJPAContext.getODataContext()
+              .getPathInfo().getServiceRoot(), expandSelectTree,
+              resultsView.getExpand()));
+    } catch (ODataException e) {
+      throw ODataJPARuntimeException.throwException(
+          ODataJPARuntimeException.INNER_EXCEPTION, e);
+    }
+
+    return entityFeedPropertiesBuilder.build();
+  }
+
+  private static List<EdmProperty> buildSelectItemList(
+      final List<SelectItem> selectItems, final EdmEntityType entity) throws ODataJPARuntimeException {
+    boolean flag = false;
+    List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
+    try {
+      for (SelectItem selectItem : selectItems) {
+        selectPropertyList.add(selectItem.getProperty());
+      }
+      for (EdmProperty keyProperty : entity.getKeyProperties()) {
+        flag = true;
+        for (SelectItem selectedItem : selectItems) {
+          if (selectedItem.getProperty().equals(keyProperty)) {
+            flag = false;
+            break;
+          }
+        }
+        if (flag == true) {
+          selectPropertyList.add(keyProperty);
+        }
+      }
+
+    } catch (EdmException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
+    return selectPropertyList;
+  }
+
+  private static List<EdmNavigationProperty> constructListofNavProperty(
+      final List<ArrayList<NavigationPropertySegment>> expandList) {
+    List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
+    for (ArrayList<NavigationPropertySegment> navpropSegment : expandList) {
+      navigationPropertyList.add(navpropSegment.get(0)
+          .getNavigationProperty());
+    }
+    return navigationPropertyList;
+  }
 
 }
