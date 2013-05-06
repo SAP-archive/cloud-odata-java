@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.sap.core.odata</groupId>
-		<artifactId>com.sap.core.odata.processor.parent</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<groupId>com.sap.odata</groupId>
+		<artifactId>com.sap.core.odata.parent</artifactId>
+		<version>0.5.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
 	</parent>
 
 	<artifactId>com.sap.core.odata.processor.core</artifactId>
@@ -16,7 +16,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.api.annotation</artifactId>
 			<version>${version.odataforsap.processor}</version>
 			<scope>provided</scope>
@@ -33,26 +33,26 @@
 		</dependency>
 
 		<!-- ########################## -->
-		<!-- ODATA4SAP Support -->
+		<!-- OData Java Library Support -->
 		<!-- ########################## -->
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<!-- ########################## -->
-		<!-- OData4SAP JPA API -->
+		<!-- OData Java JPA API -->
 		<!-- ########################## -->
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
+			<groupId>com.sap.odata</groupId>
 			<artifactId>com.sap.core.odata.processor.api</artifactId>
 			<version>${version.odataforsap.processor}</version>
 			<scope>provided</scope>
