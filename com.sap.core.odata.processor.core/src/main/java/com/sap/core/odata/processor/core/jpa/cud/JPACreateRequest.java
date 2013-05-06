@@ -267,7 +267,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 	private <T> void createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
 		if(jpaEntity == null) return;
 		Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
-		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
+		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();		
 	    final EdmEntityType entityType = entitySet.getEntityType();
 	    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
 	    	final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
@@ -275,8 +275,9 @@ public class JPACreateRequest extends JPAWriteRequest{
 	    	if(entryValues.getProperties().get(navigationPropertyName) != null){
     			relatedValueList = ((com.sap.core.odata.core.ep.feed.ODataFeedImpl)entryValues.getProperties().get(navigationPropertyName)).getEntries();
     		}
-	    
+	    	List<Object> relatedDataList = null;
 	      if (relatedValueList != null) {
+	    	relatedDataList = new ArrayList<Object>();
 	        final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
 	        
 	        for (final ODataEntry relatedValues : relatedValueList) {
@@ -317,13 +318,15 @@ public class JPACreateRequest extends JPAWriteRequest{
 		  				}
 		  			}
 		  		}
-		  		if(relatedValues != null && relatedEntitySet != null)
+		  		if(relatedValues != null && relatedEntitySet != null){
+		  			relatedDataList.add(relatedData);
 		  			parse2JPAEntityValueMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(),currentEntityName);
+		  		}
 		  		else continue;
-	          relatedPropertyValueMap.put(navigationProperty.getMapping().getInternalName(), relatedData);
 	          createInlinedEntities(relatedData, relatedEntitySet, relatedValues,currentEntityName);
 	        }
 	      }
+	      relatedPropertyValueMap.put(navigationProperty.getMapping().getInternalName(), relatedDataList);
 	    }
 	    setNavigationProperties(jpaEntity, entitySet, relatedPropertyValueMap, jpaEntityName, relatedClassMap);
 	  }
@@ -339,15 +342,13 @@ public class JPACreateRequest extends JPAWriteRequest{
 		HashMap<String, EdmMultiplicity> multiplicityMap = (HashMap<String, EdmMultiplicity>) mapList.get(1);
 		for (String key : setters.keySet()) {
 			Method method = setters.get(key);
-			Object propertyValue = propertyValueMap.get(key);
-			if(propertyValue == null) continue;
+			List<Object> propertyValue = (List<Object>) propertyValueMap.get(key);
+			if(propertyValue == null || propertyValue.size() == 0) continue;
 			try {
 				if(multiplicityMap.get(key) == EdmMultiplicity.MANY){
-					List<Object> propertyList = new ArrayList<Object>();
-					propertyList.add(propertyValue);
-					propertyValue = propertyList;
-				}
-				method.invoke(jpaEntity,propertyValue);
+					method.invoke(jpaEntity, propertyValue);
+				}else 
+					method.invoke(jpaEntity,propertyValue.get(0));
 			} catch (IllegalAccessException e) {
 				throw ODataJPARuntimeException
 				.throwException(ODataJPARuntimeException.GENERAL
@@ -402,6 +403,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 		    	    	multiplicityMap.put(entityName, EdmMultiplicity.MANY);
 		    	    }else{
 		    	    	propertyClass = relatedClassMap.get(entityName);
+		    	    	if(propertyClass == null) continue;
 		    	    	multiplicityMap.put(entityName, EdmMultiplicity.ONE);
 		    	    }
 		    	    try {
@@ -440,8 +442,5 @@ public class JPACreateRequest extends JPAWriteRequest{
 		else
 			return null;
 
-	}
-
-	
-	
+	}	
 }

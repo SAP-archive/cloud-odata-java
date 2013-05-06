@@ -279,8 +279,10 @@ public class JPAEdmNameBuilder {
 	public static void build(JPAEdmComplexPropertyView complexView,String parentComplexTypeName)
 	{
 		ComplexProperty complexProperty = complexView.getEdmComplexProperty();
+		
 		JPAEdmMappingModelAccess mappingModelAccess = complexView.getJPAEdmMappingModelAccess();
-		String jpaAttributeName = ((JPAEdmPropertyView)complexView).getJPAAttribute().getName();
+		JPAEdmPropertyView propertyView = ((JPAEdmPropertyView)complexView);
+		String jpaAttributeName = propertyView.getJPAAttribute().getName();
 		String propertyName = null;
 		if (mappingModelAccess != null
 				&& mappingModelAccess.isMappingModelExists())
@@ -291,7 +293,7 @@ public class JPAEdmNameBuilder {
 					+ jpaAttributeName.substring(1);
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
 		((Mapping) mapping).setInternalName(jpaAttributeName);
-		//mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
+		mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
 		complexProperty.setMapping((Mapping) mapping);
 		complexProperty.setName(propertyName);
 
