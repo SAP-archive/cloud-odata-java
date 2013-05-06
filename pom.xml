@@ -26,6 +26,31 @@
 
 	<developers>
 		<developer>
+			<id>chandan.v.a</id>
+			<name>Chandan V A</name>
+			<email>chandan.v.a@sap.com</email>
+		</developer>
+		<developer>
+			<id>chitresh.chauhan</id>
+			<name>Chitresh Chauhan</name>
+			<email>chitresh.chauhan@sap.com</email>
+		</developer>
+		<developer>
+			<id>anirban.roy</id>
+			<name>Anirban Roy</name>
+			<email>anirban.roy@sap.com</email>
+		</developer>
+		<developer>
+			<id>apoorva.kumar</id>
+			<name>Apoorva Kumar</name>
+			<email>apoorva.kumar@sap.com</email>
+		</developer>
+		<developer>
+			<id>santosh.kumar</id>
+			<name>Santosh Kumar</name>
+			<email>santosh.kumar04@sap.com</email>
+		</developer>
+		<developer>
 			<id>stephan.klevenz</id>
 			<name>Stephan Klevenz</name>
 			<email>stephan.klevenz@sap.com</email>
@@ -76,6 +101,9 @@
 		<mockito.version>1.9.0</mockito.version>
 		<junit.version>4.10</junit.version>
 		<xmlunit.version>1.3</xmlunit.version>
+
+		<version.eclipselink>2.1.2</version.eclipselink>
+		<version.javax.persistence>2.0.3</version.javax.persistence>
 	</properties>
 
 	<modules>
@@ -85,6 +113,9 @@
 		<module>odata-fit</module>
 		<module>odata-ref</module>
 		<module>odata-web</module>
+		<module>com.sap.core.odata.processor.api</module>
+		<module>com.sap.core.odata.api.annotation</module>
+		<module>com.sap.core.odata.processor.core</module>
 	</modules>
 
 	<build>
