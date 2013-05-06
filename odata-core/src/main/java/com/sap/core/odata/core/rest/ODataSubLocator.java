@@ -42,6 +42,7 @@ import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.core.ContentNegotiator;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
@@ -164,7 +165,7 @@ public final class ODataSubLocator implements ODataLocator {
     service.getProcessor().setContext(context);
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
-    dispatcher = new Dispatcher(service);
+    dispatcher = new Dispatcher(service, new ContentNegotiator());
   }
 
   String getServerDataServiceVersion() throws ODataException {

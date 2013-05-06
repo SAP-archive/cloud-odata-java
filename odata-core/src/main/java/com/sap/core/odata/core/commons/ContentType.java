@@ -183,6 +183,30 @@ public class ContentType {
   }
 
   /**
+   * Create a list of {@link ContentType} based on given input strings (<code>contentTypes</code>).
+   * 
+   * Supported format is <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
+   * This format is used as
+   * <code>HTTP Accept HEADER</code> format as defined in <code>RFC 2616 chapter 14.1</code>
+   * and 
+   * <code>HTTP Content-Type HEADER</code> format as defined in <code>RFC 2616 chapter 14.17</code>.
+   * <p>
+   * If one of the given strings can not be parsed an exception is thrown (hence no list is returned with the parseable strings).
+   * </p>
+   * 
+   * @param contentTypeStrings a list of strings in format as defined in <code>RFC 2616 section 3.7</code>
+   * @return a list of new <code>ContentType</code> object
+   * @throws IllegalArgumentException if one of the given input string is not parseable this exceptions is thrown
+   */
+  public static List<ContentType> create(final List<String> contentTypeStrings) {
+    List<ContentType> contentTypes = new ArrayList<ContentType>(contentTypeStrings.size());
+    for (String contentTypeString: contentTypeStrings) {
+      contentTypes.add(create(contentTypeString));
+    }
+    return contentTypes;
+  }
+
+  /**
    * Parse given input string (<code>format</code>) and return created {@link ContentType} if input was valid 
    * or return <code>NULL</code> if input was not parseable.
    * 
@@ -198,6 +222,7 @@ public class ContentType {
       return null;
     }
   }
+
 
   /**
    * 
@@ -257,6 +282,36 @@ public class ContentType {
 
   private static boolean isParameterAllowed(final String key) {
     return key != null && !PARAMETER_Q.equals(key.toLowerCase(Locale.US));
+  }
+
+  /**
+   * Ensure that charset parameter ({@link #PARAMETER_CHARSET}) is set on returned content type
+   * if this {@link ContentType} is a <code>odata text related</code> content type (@see {@link #isContentTypeODataTextRelated()}).
+   * If <code>this</code> {@link ContentType} has no charset parameter set a new {@link ContentType}
+   * with given <code>defaultCharset</code> is created.
+   * Otherwise if charset parameter is already set nothing is done.
+   * 
+   * @param defaultCharset
+   * @return
+   */
+  public ContentType receiveWithCharsetParameter(String defaultCharset) {
+    if (isContentTypeODataTextRelated()) {
+      if (!parameters.containsKey(ContentType.PARAMETER_CHARSET)) {
+        return ContentType.create(this, ContentType.PARAMETER_CHARSET, defaultCharset);
+      }
+    }
+    return this;
+  }
+
+  /**
+   * 
+   * @return <code>true</code> if this {@link ContentType} is text related (in the view of OData)
+   */
+  public boolean isContentTypeODataTextRelated() {
+    return (ContentType.TEXT_PLAIN.equals(this) 
+        || (getODataFormat() == ODataFormat.XML) 
+        || (getODataFormat() == ODataFormat.ATOM) 
+        || (getODataFormat() == ODataFormat.JSON));
   }
 
   public String getType() {

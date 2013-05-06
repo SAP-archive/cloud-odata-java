@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,6 +204,91 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json", mt.toString());
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationFromStrings() {
+    List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json;key=value"));
+
+    assertEquals(3, types.size());
+    
+    ContentType first = types.get(0);
+    assertEquals("type", first.getType());
+    assertEquals("subtype", first.getSubtype());
+    assertEquals("type/subtype", first.toString());
+    assertEquals(ODataFormat.CUSTOM, first.getODataFormat());
+    
+    ContentType second = types.get(1);
+    assertEquals("application", second.getType());
+    assertEquals("xml", second.getSubtype());
+    assertEquals("application/xml", second.toString());
+    assertEquals(ODataFormat.XML, second.getODataFormat());
+
+    ContentType third = types.get(2);
+    assertEquals("application", third.getType());
+    assertEquals("json", third.getSubtype());
+    assertEquals("application/json; key=value", third.toString());
+    assertEquals("value", third.getParameters().get("key"));
+    assertEquals(ODataFormat.JSON, third.getODataFormat());
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testContentTypeCreationFromStringsFail() {
+    List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json/FAIL;key=value"));
+
+    assertEquals(3, types.size());
+  }
+  
+  @Test
+  public void testEnsureCharsetParameter() {
+    ContentType mt = ContentType.create("application/json");
+
+    mt = mt.receiveWithCharsetParameter("utf-8");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterIso() {
+    ContentType mt = ContentType.create("application/xml");
+
+    mt = mt.receiveWithCharsetParameter("iso-8859-1");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml; charset=iso-8859-1", mt.toString());
+    assertEquals("iso-8859-1", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterAlreadySet() {
+    ContentType mt = ContentType.create("application/json;charset=utf-8");
+
+    mt = mt.receiveWithCharsetParameter("utf-8");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterAlreadySetDiffValue() {
+    ContentType mt = ContentType.create("application/json;charset=utf-8");
+
+    mt = mt.receiveWithCharsetParameter("iso-8859-1");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
 

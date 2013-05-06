@@ -1,11 +1,8 @@
 package com.sap.core.odata.core;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -14,7 +11,6 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
-import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -33,31 +29,27 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
-import com.sap.core.odata.core.uri.UriType;
 
 /**
  * Request dispatching according to URI type and HTTP method
  * @author SAP AG
  */
 public class Dispatcher {
-  private static final String URI_INFO_FOMRAT_JSON = "json";
-  private static final String URI_INFO_FOMRAT_ATOM = "atom";
-  private static final String URI_INFO_FOMRAT_XML = "xml";
-  private static final String DEFAULT_CHARSET = "utf-8";
 
   private final ODataService service;
+  private final ContentNegotiator contentNegotiator;
 
-  public Dispatcher(final ODataService service) {
+  public Dispatcher(final ODataService service, final ContentNegotiator contentNegotiator) {
     this.service = service;
+    this.contentNegotiator = contentNegotiator;
   }
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final List<String> acceptHeaderContentTypes) throws ODataException {
     preDispatchValidation(method, uriInfo, requestContentType);
-    final String acceptContentType = doContentNegotiation(uriInfo, acceptHeaderContentTypes);
+    final String acceptContentType = contentNegotiator.doContentNegotiation(uriInfo, acceptHeaderContentTypes, getSupportedContentTypes(uriInfo));
     return doDispatch(method, uriInfo, content, requestContentType, acceptContentType);
   }
   
@@ -255,12 +247,12 @@ public class Dispatcher {
     if (contentType == null || contentType.hasWildcard()) {
       return false;
     }
-    final ContentType requested = ensureCharsetParameterIsSet(contentType);
+    final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
     return requested.hasMatch(allowedContentTypes);
   }
 
   private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final ContentType contentType) throws EdmException {
-    final ContentType requested = ensureCharsetParameterIsSet(contentType);
+    final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
     final String mimeType = property.getMimeType();
     if (mimeType != null) {
       return requested.equals(ContentType.create(mimeType));
@@ -269,292 +261,120 @@ public class Dispatcher {
     }
   }
 
-  private String doContentNegotiation(final UriInfoImpl uriInfo, List<String> acceptHeaderContentTypes) throws ODataException {
-    ContentType contentType;
-    if (uriInfo.getFormat() == null) {
-      contentType = doContentNegotiationForAcceptHeader(uriInfo, acceptHeaderContentTypes);
-    } else {
-      contentType = doContentNegotiationForFormat(uriInfo);
-    }
-
-    if (contentType.getODataFormat() == ODataFormat.CUSTOM) {
-      return contentType.getType();
-    }
-    return contentType.toContentTypeString();
-  }
-
-  private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
-    validateFormatQuery(uriInfo);
-    ContentType formatContentType = mapFormat(uriInfo);
-    formatContentType = ensureCharsetParameterIsSet(formatContentType);
-
+  private List<String> getSupportedContentTypes(UriInfoImpl uriInfo) throws ODataException {
     final Class<? extends ODataProcessor> processorFeature = mapUriTypeToProcessorFeature(uriInfo);
-    final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
-    for (final ContentType contentType : supportedContentTypes) {
-      if (contentType.equals(formatContentType)) {
-        return formatContentType;
-      }
-    }
-
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(uriInfo.getFormat()));
+    
+    return service.getSupportedContentTypes(processorFeature);
   }
-
-  /**
-   * Validates that <code>dollar format query/syntax</code> is correct for further processing.
-   * If some validation error occurs an exception is thrown.
-   * 
-   * @param uriInfo
-   * @throws ODataBadRequestException
-   */
-  private void validateFormatQuery(final UriInfoImpl uriInfo) throws ODataBadRequestException {
-    if (uriInfo.isValue()) {
-      throw new ODataBadRequestException(ODataBadRequestException.INVALID_SYNTAX);
-    }
-  }
-
-  private ContentType ensureCharsetParameterIsSet(final ContentType contentType) {
-    if (isContentTypeODataTextRelated(contentType)) {
-      if (!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
-        return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
-      }
-    }
-    return contentType;
-  }
-
-  private boolean isContentTypeODataTextRelated(final ContentType contentType) {
-    return (contentType != null) && (contentType.equals(ContentType.TEXT_PLAIN) || (contentType.getODataFormat() == ODataFormat.XML) || (contentType.getODataFormat() == ODataFormat.ATOM) || (contentType.getODataFormat() == ODataFormat.JSON));
-  }
-
-  private ContentType mapFormat(final UriInfoImpl uriInfo) {
-    final String format = uriInfo.getFormat();
-    if (URI_INFO_FOMRAT_XML.equals(format)) {
-      return ContentType.APPLICATION_XML;
-    } else if (URI_INFO_FOMRAT_ATOM.equals(format)) {
-      if (uriInfo.getUriType() == UriType.URI0) {
-        // special handling for serviceDocument uris (UriType.URI0)
-        return ContentType.APPLICATION_ATOM_SVC;
-      }
-      return ContentType.APPLICATION_ATOM_XML;
-    } else if (URI_INFO_FOMRAT_JSON.equals(format)) {
-      return ContentType.APPLICATION_JSON;
-    }
-
-    return ContentType.create(format);
-  }
-
-  private ContentType doContentNegotiationForAcceptHeader(final UriInfoImpl uriInfo, List<String> acceptHeaderContentTypes) throws ODataException {
-    final Class<? extends ODataProcessor> processorFeature = mapUriTypeToProcessorFeature(uriInfo);
-    final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
-    return contentNegotiation(extractAcceptHeaders(acceptHeaderContentTypes), supportedContentTypes);
-  }
-  
-  private List<ContentType> extractAcceptHeaders(List<String> acceptHeaderValues) throws ODataBadRequestException {
-    final List<ContentType> mediaTypes = new ArrayList<ContentType>();
-    if(acceptHeaderValues != null) {
-      for (final String mediaType : acceptHeaderValues) {
-        try {
-          mediaTypes.add(ContentType.create(mediaType.toString()));
-        } catch (IllegalArgumentException e) {
-          throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Accept")
-              .addContent(mediaType.toString()), e);
-        }
-      }
-    }
-
-
-    return mediaTypes;
-  }
-
 
   private List<ContentType> getSupportedContentTypes(final Class<? extends ODataProcessor> processorFeature) throws ODataException {
-    final List<ContentType> resultContentTypes = new ArrayList<ContentType>();
-    for (final String contentType : service.getSupportedContentTypes(processorFeature)) {
-      resultContentTypes.add(ContentType.create(contentType));
-    }
-
-    return resultContentTypes;
+    List<String> contentTypeStrings = service.getSupportedContentTypes(processorFeature);
+    return ContentType.create(contentTypeStrings);
   }
-
-  ContentType contentNegotiation(final List<ContentType> acceptedContentTypes, final List<ContentType> supportedContentTypes) throws ODataException {
-    final Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
-
-    if (acceptedContentTypes.isEmpty()) {
-      if (!setSupported.isEmpty()) {
-        return supportedContentTypes.get(0);
-      }
-    } else {
-      for (ContentType contentType : acceptedContentTypes) {
-        contentType = ensureCharsetParameterIsSet(contentType);
-        final ContentType match = contentType.match(supportedContentTypes);
-        if (match != null) {
-          return match;
-        }
-      }
-    }
-
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_ACCEPT_HEADER.addContent(acceptedContentTypes.toString()));
-  }
-
 
   private void validateUriMethod(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI1:
     case URI6B:
-      switch (method) {
-      case GET:
-      case POST:
-        return;
-      default:
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI2:
-      switch (method) {
-      case GET:
-      case PUT:
-      case PATCH:
-      case MERGE:
-      case DELETE:
-        return;
-      default:
+      if(method == ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI3:
-      switch (method) {
-      case GET:
-      case PUT:
-      case PATCH:
-      case MERGE:
-        return;
-      default:
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT
+            && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI4:
     case URI5:
-      switch (method) {
-      case GET:
-      case PUT:
-      case PATCH:
-      case MERGE:
-        return;
-      case DELETE:
-        if (uriInfo.isValue()) {
-          return;
-        } else {
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-        }
-      default:
+      if (method == ODataHttpMethod.DELETE && !uriInfo.isValue()) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      } else if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT && method != ODataHttpMethod.DELETE
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI6A:
-      switch (method) {
-      case GET:
-        return;
-      case PUT:
-      case PATCH:
-      case MERGE:
-      case DELETE:
+      if(method == ODataHttpMethod.POST) {
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      } else if (method != ODataHttpMethod.GET) {
         throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
-      default:
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
-
+      break;
+      
     case URI7A:
-      switch (method) {
-      case GET:
-      case PUT:
-      case PATCH:
-      case MERGE:
-      case DELETE:
-        return;
-      default:
+      if(method == ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI7B:
-      switch (method) {
-      case GET:
-      case POST:
-        return;
-      default:
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
-
+      break;
+      
     case URI8:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI9:
-      if (method == ODataHttpMethod.POST) {
-        return;
-      } else {
+      if (method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI10:
     case URI11:
     case URI12:
     case URI13:
     case URI14:
-      return;
+      break;
 
     case URI15:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-
     case URI16:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI17:
-      switch (method) {
-      case GET:
-      case PUT:
-      case DELETE:
-        return;
-      default:
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT && method != ODataHttpMethod.DELETE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     case URI50A:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-
     case URI50B:
-      if (method == ODataHttpMethod.GET) {
-        return;
-      } else {
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
+      break;
 
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriInfo.getUriType());
     }
   }
   
-  public ODataResponse doDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  private ODataResponse doDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET) {
@@ -738,7 +558,12 @@ public class Dispatcher {
     }
   }
 
-  public Class<? extends ODataProcessor> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
+  /**
+   * 
+   * @param uriInfo
+   * @return
+   */
+  Class<? extends ODataProcessor> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
     Class<? extends ODataProcessor> feature;
 
     switch (uriInfo.getUriType()) {
