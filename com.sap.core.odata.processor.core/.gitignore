@@ -1,11 +1,8 @@
 .project
 .classpath
 .settings
-.pmd
 target
 bin
 *.bak
 classes
 .DS_Store
-nwcloud.properties
-
