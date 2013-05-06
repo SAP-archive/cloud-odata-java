@@ -127,6 +127,38 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
   }
 
+  @Test(expected=IllegalArgumentException.class)
+  @SuppressWarnings("unused")
+  public void testContentTypeCreationWildcardType() {
+    ContentType mt = ContentType.create("*", "subtype");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  @SuppressWarnings("unused")
+  public void testContentTypeCreationWildcardTypeSingleFormat() {
+    ContentType mt = ContentType.create("*/subtype");
+  }
+
+  @Test
+  public void testContentTypeCreationWildcardSubType() {
+    ContentType mt = ContentType.create("type", "*");
+
+    assertEquals("type", mt.getType());
+    assertEquals("*", mt.getSubtype());
+    assertEquals("type/*", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationWildcardSubTypeSingleFormat() {
+    ContentType mt = ContentType.create("type/*");
+
+    assertEquals("type", mt.getType());
+    assertEquals("*", mt.getSubtype());
+    assertEquals("type/*", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+  
   @Test
   public void testContentTypeCreationAtom() {
     ContentType mt = ContentType.create("application", "atom+xml");
