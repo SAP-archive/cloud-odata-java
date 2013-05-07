@@ -358,7 +358,7 @@ public class XmlEntryConsumer {
   private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) {
     expandSelectTree.setExpanded();
     ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
-    expandSelectTree.putLinkNode(navigationPropertyName, subNode);
+    expandSelectTree.putLink(navigationPropertyName, subNode);
   }
 
   /**

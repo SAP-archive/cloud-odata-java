@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -74,7 +73,7 @@ public class ExpandSelectTreeCreator {
       Map.Entry<String, ExpandSelectTreeNode> entry = iterator.next();
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
       if (!subNode.isExpanded()) {
-        node.putLinkNode(entry.getKey(), null);
+        node.putLink(entry.getKey(), null);
       } else {
         consolidate(subNode);
       }
@@ -82,11 +81,11 @@ public class ExpandSelectTreeCreator {
   }
 
   private void consolidateTrueNode(final ExpandSelectTreeNodeImpl node) {
-    @SuppressWarnings("unchecked")
-    Map<String, ExpandSelectTreeNode> links = accessField(node, "links", Map.class);
-
-    Set<Entry<String, ExpandSelectTreeNode>> iterator = links.entrySet();
-    for (Entry<String, ExpandSelectTreeNode> entry : iterator) {
+    Map<String, ExpandSelectTreeNode> links = node.getLinks();
+    Set<Entry<String, ExpandSelectTreeNode>> linkEntries = links.entrySet();
+    List<String> toRemove = new ArrayList<String>();
+    
+    for (Entry<String, ExpandSelectTreeNode> entry : linkEntries) {
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
       if (subNode.isExpanded() && node.isExplicitlySelected()) {
         subNode.setExplicitlySelected();
@@ -94,22 +93,16 @@ public class ExpandSelectTreeCreator {
       } else if (subNode.isExpanded()) {
         consolidate(subNode);
       } else {
-        links.remove(entry.getKey());
+        toRemove.add(entry.getKey());
       }
+    }
+    
+    //
+    for (String key : toRemove) {
+      node.removeLink(key);
     }
   }
 
-  private <T> T accessField(final Object node, final String string, final Class<T> clazz) {
-    try {
-      Field f = node.getClass().getDeclaredField(string);
-      f.setAccessible(true);
-      return clazz.cast(f.get(node));
-    } catch (NoSuchFieldException e) {
-      throw new IllegalArgumentException(e);
-    } catch (IllegalAccessException e) {
-      throw new SecurityException(e);
-    }
-  }
 
   private void createSelectTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     for (SelectItem item : initialSelect) {
@@ -134,7 +127,7 @@ public class ExpandSelectTreeCreator {
     Map<String, ExpandSelectTreeNode> links = actualNode.getLinks();
     if (!links.containsKey(navigationPropertyName)) {
       ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
-      actualNode.putLinkNode(navigationPropertyName, subNode);
+      actualNode.putLink(navigationPropertyName, subNode);
       if (actualNode.isExplicitlySelected()) {
         //if a node was explicitly selected all sub nodes are explicitly selected
         subNode.setExplicitlySelected();
@@ -169,7 +162,7 @@ public class ExpandSelectTreeCreator {
         ExpandSelectTreeNodeImpl subNode = new ExpandSelectTreeNodeImpl();
         subNode.setExpanded();
         subNode.setExplicitlySelected();
-        actualNode.putLinkNode(navigationPropertyName, subNode);
+        actualNode.putLink(navigationPropertyName, subNode);
         return subNode;
       } else {
         return null;
