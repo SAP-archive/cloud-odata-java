@@ -182,7 +182,7 @@ public class JsonEntryConsumer {
         EntityProviderReadProperties inlineReadProperties;
         ExpandSelectTreeNodeImpl expandSelectTreeNodeImpl = new ExpandSelectTreeNodeImpl();
         expandSelectTreeNodeImpl.setAllExplicitly();
-        expandSelectTree.putLinkNode(navigationPropertyName, expandSelectTreeNodeImpl);
+        expandSelectTree.putLink(navigationPropertyName, expandSelectTreeNodeImpl);
         OnReadInlineContent callback = readProperties.getCallback();
         try {
           if (callback == null) {
@@ -225,7 +225,7 @@ public class JsonEntryConsumer {
       final EntityInfoAggregator inlineInfo = EntityInfoAggregator.create(inlineEntitySet);
       ExpandSelectTreeNodeImpl expandSelectTreeNodeImpl = new ExpandSelectTreeNodeImpl();
       expandSelectTreeNodeImpl.setAllExplicitly();
-      expandSelectTree.putLinkNode(navigationPropertyName, expandSelectTreeNodeImpl);
+      expandSelectTree.putLink(navigationPropertyName, expandSelectTreeNodeImpl);
       OnReadInlineContent callback = readProperties.getCallback();
       EntityProviderReadProperties inlineReadProperties;
       if (callback == null) {

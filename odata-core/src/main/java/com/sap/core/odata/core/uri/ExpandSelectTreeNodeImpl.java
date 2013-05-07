@@ -34,7 +34,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   private boolean isExplicitlySelected = false;
   private boolean isExpanded = false;
   private final List<EdmProperty> properties = new ArrayList<EdmProperty>();
-  private final HashMap<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
+  private final Map<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
 
   @Override
   public boolean isAll() {
@@ -51,8 +51,12 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     return Collections.unmodifiableMap(links);
   }
 
-  public void putLinkNode(final String name, final ExpandSelectTreeNode node) {
+  public void putLink(final String name, final ExpandSelectTreeNode node) {
     links.put(name, node);
+  }
+
+  public void removeLink(String name) {
+    links.remove(name);
   }
 
   public boolean isExplicitlySelected() {
