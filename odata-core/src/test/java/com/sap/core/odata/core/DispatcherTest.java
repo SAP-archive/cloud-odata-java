@@ -49,7 +49,7 @@ import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
- * Tests for request dispatching according to URI type and HTTP method
+ * Tests for request dispatching according to URI type and HTTP method.
  * @author SAP AG
  */
 public class DispatcherTest extends BaseTest {
@@ -161,13 +161,13 @@ public class DispatcherTest extends BaseTest {
     when(edmEntitySet.getEntityType()).thenReturn(entityType);
     when(uriInfo.getTargetEntitySet()).thenReturn(edmEntitySet);
 
-    if(isValue) {
+    if (isValue) {
       EdmProperty edmProp = Mockito.mock(EdmProperty.class);
       when(edmProp.getMimeType()).thenReturn("*/*");
       List<EdmProperty> properties = Arrays.asList(edmProp);
       when(uriInfo.getPropertyPath()).thenReturn(properties);
     }
-    
+
     return uriInfo;
   }
 
@@ -405,49 +405,47 @@ public class DispatcherTest extends BaseTest {
     checkFeature(UriType.URI50A, false, EntityLinkProcessor.class);
     checkFeature(UriType.URI50B, false, EntityLinksProcessor.class);
   }
-  
+
   @Test
   public void contentNegotiationDefaultCharset() throws Exception {
     negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
   }
-  
+
   @Test
   public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
     negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", true);
   }
-  
+
   @Test
   public void contentNegotiationSupportedCharset() throws Exception {
     negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", false);
   }
-  
+
   @Test
   public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
     negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
   }
-  
-  
+
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
-  
+
     ODataService service = Mockito.mock(ODataService.class);
     Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
-  
-  
+
     UriInfoImpl uriInfo = new UriInfoImpl();
     uriInfo.setUriType(UriType.URI1); // 
     if (asFormat) {
       uriInfo.setFormat(requestType);
     }
     List<String> acceptedContentTypes = Arrays.asList(requestType);
-  
+
     Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(Arrays.asList(supportedType));
     EntitySetProcessor processor = Mockito.mock(EntitySetProcessor.class);
     ODataResponse response = Mockito.mock(ODataResponse.class);
     Mockito.when(response.getContentHeader()).thenReturn(supportedType);
     Mockito.when(processor.readEntitySet(uriInfo, supportedType)).thenReturn(response);
     Mockito.when(service.getEntitySetProcessor()).thenReturn(processor);
-  
+
     InputStream content = null;
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriInfo, content, requestType, acceptedContentTypes);
     assertEquals(supportedType, odataResponse.getContentHeader());

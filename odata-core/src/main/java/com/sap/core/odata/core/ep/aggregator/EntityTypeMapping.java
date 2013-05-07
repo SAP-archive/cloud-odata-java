@@ -10,8 +10,6 @@ import java.util.Set;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
 /**
- * 
- * 
  * @author SAP AG
  */
 public class EntityTypeMapping {
@@ -72,10 +70,9 @@ public class EntityTypeMapping {
   }
 
   /**
-   * If this {@link EntityTypeMapping} is complex ({@link #isComplex()} the mapping for the property
-   * with given <code>name</code> is returned.
-   * If it is not complex an empty {@link EntityTypeMapping} is returned.
-   * 
+   * If this {@link EntityTypeMapping} is complex the mapping for the property
+   * with the given <code>name</code> is returned; otherwise an empty
+   * {@link EntityTypeMapping} is returned.
    * @param name
    * @return the mapping for this entity type
    */
@@ -91,10 +88,8 @@ public class EntityTypeMapping {
   }
 
   /**
-   * If this {@link EntityTypeMapping} is complex ({@link #isComplex()} the mapping {@link Class} for the property
-   * with given <code>name</code> is returned.
-   * If it is not complex <code>NULL</code> is returned.
-   * 
+   * If this {@link EntityTypeMapping} is complex the mapping {@link Class} for the property
+   * with the given <code>name</code> is returned; otherwise <code>NULL</code> is returned.
    * @param name
    * @return mapping {@link Class} for the property with given <code>name</code> or <code>NULL</code>.
    */

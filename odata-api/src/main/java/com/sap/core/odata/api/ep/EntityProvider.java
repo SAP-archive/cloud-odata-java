@@ -18,13 +18,12 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * Entity Provider<p>
- * 
- * An {@link com.sap.core.odata.api.ep.EntityProvider} provides all necessary <b>read</b> and <b>write</b> methods for accessing 
- * the entities defined in an <code>Entity Data Model</code>.
- * Therefore this library provides (in its <code>core</code> packages) as convenience basic {@link com.sap.core.odata.api.ep.EntityProvider} 
- * for accessing entities in the <b>XML</b> and <b>JSON</b> format.
- *
+ * <p>Entity Provider</p> 
+ * <p>An {@link EntityProvider} provides all necessary <b>read</b> and <b>write</b>
+ * methods for accessing the entities defined in an <code>Entity Data Model</code>.
+ * Therefore this library provides (in its <code>core</code> packages) as convenience
+ * basic entity providers for accessing entities in the <b>XML</b> and <b>JSON</b>
+ * formats.</p>
  * @author SAP AG
  */
 public final class EntityProvider {
@@ -37,7 +36,7 @@ public final class EntityProvider {
    * access (and basic implementation for <b>XML</b> and <b>JSON</b> format) to all interface methods.
    * <br/>
    * Hence, it is <b>not recommended</b> to implement this interface (it is possible to implement it and to provide an 
-   * own {@link com.sap.core.odata.api.ep.EntityProvider} for support of additional formats but it is recommended to
+   * own {@link EntityProvider} for support of additional formats but it is recommended to
    * handle additional formats directly within an <code>ODataProcessor</code>).
    */
   public interface EntityProviderInterface {

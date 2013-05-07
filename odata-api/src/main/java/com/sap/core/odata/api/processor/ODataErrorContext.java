@@ -8,11 +8,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.ep.EntityProvider;
 
 /**
- * Error context information bean. Usually created and in error situations. See {@link EntityProvider}, {@link ODataErrorCallback}.
- * 
+ * Error context information bean. Usually created and in error situations.
+ * @see com.sap.core.odata.api.ep.EntityProvider EntityProvider
+ * @see ODataErrorCallback
  * @author SAP AG
  */
 public class ODataErrorContext {
