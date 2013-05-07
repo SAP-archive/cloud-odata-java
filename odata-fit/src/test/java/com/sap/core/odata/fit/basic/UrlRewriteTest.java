@@ -105,7 +105,7 @@ public class UrlRewriteTest extends AbstractBasicTest {
   public void testSomethingUnsupportedServiceDocumentRedirect() throws Exception {
     final HttpRequestBase httpMethod = createRedirectRequest(HttpSomethingUnsupported.class);
     final HttpResponse response = getHttpClient().execute(httpMethod);
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_IMPLEMENTED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   private HttpRequestBase createRedirectRequest(final Class<? extends HttpRequestBase> clazz) throws Exception {

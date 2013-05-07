@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
-import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hamcrest.BaseMatcher;
@@ -66,16 +65,15 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-    final Map<String, String> prefixMap = new HashMap<String, String>();
+    Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-    final NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-    XMLUnit.setXpathNamespaceContext(ctx);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
     assertXpathExists("/a:error/a:code", content);
     assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
   }
 
   @Test
-  public void testGenericHttpExceptions() throws Exception {
+  public void genericHttpExceptions() throws Exception {
     disableLogging();
 
     final List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
@@ -92,10 +90,9 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
           oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
 
       final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-      final Map<String, String> prefixMap = new HashMap<String, String>();
+      Map<String, String> prefixMap = new HashMap<String, String>();
       prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-      NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-      XMLUnit.setXpathNamespaceContext(ctx);
+      XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
       assertXpathExists("/a:error/a:code", content);
     }
 
@@ -108,9 +105,6 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     return ClassHelper.getClassInstances(exClasses, new Class<?>[] { MessageReference.class }, new Object[] { mr });
   }
 
-  /**
-   * 
-   */
   private class EntityKeyMatcher extends BaseMatcher<GetEntityUriInfo> {
 
     private final String keyLiteral;

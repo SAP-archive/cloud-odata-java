@@ -9,6 +9,9 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class ODataResponseTest extends BaseTest {
 
   @Test

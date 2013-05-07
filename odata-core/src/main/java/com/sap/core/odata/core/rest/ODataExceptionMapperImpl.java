@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -42,9 +43,8 @@ import com.sap.core.odata.core.exception.MessageService.Message;
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
-  private static final String DOLLAR_FORMAT_JSON = "json";
-
   private static final String DOLLAR_FORMAT = "$format";
+  private static final String DOLLAR_FORMAT_JSON = "json";
 
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
@@ -151,6 +151,15 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
+    if (toHandleException instanceof NotAllowedException)
+      // RFC 2616, 5.1.1: " An origin server SHOULD return the status code
+      // 405 (Method Not Allowed) if the method is known by the origin server
+      // but not allowed for the requested resource, and 501 (Not Implemented)
+      // if the method is unrecognized or not implemented by the origin server."
+      // Since all recognized methods are handled elsewhere, we unconditionally
+      // switch to 501 here for not-allowed exceptions thrown directly from
+      // JAX-RS implementations.
+      context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
     context.setErrorCode(null);
     context.setMessage(toHandleException.getMessage());
     context.setLocale(DEFAULT_RESPONSE_LOCALE);

@@ -18,6 +18,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,9 +36,8 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -108,15 +108,25 @@ public final class ODataSubLocator implements ODataLocator {
     } else {
       /* tunneling */
       if ("MERGE".equals(xHttpMethod)) {
-        response = handleMerge();
+        response = handleHttpMethod(ODataHttpMethod.MERGE);
       } else if ("PATCH".equals(xHttpMethod)) {
-        response = handlePatch();
-      } else if ("DELETE".equals(xHttpMethod)) {
-        response = handleDelete();
-      } else if ("PUT".equals(xHttpMethod)) {
-        response = handlePut();
+        response = handleHttpMethod(ODataHttpMethod.PATCH);
+      } else if (HttpMethod.DELETE.equals(xHttpMethod)) {
+        response = handleHttpMethod(ODataHttpMethod.DELETE);
+      } else if (HttpMethod.PUT.equals(xHttpMethod)) {
+        response = handleHttpMethod(ODataHttpMethod.PUT);
+      } else if (HttpMethod.GET.equals(xHttpMethod)) {
+        response = handleHttpMethod(ODataHttpMethod.GET);
+      } else if (HttpMethod.POST.equals(xHttpMethod)) {
+        response = handleHttpMethod(ODataHttpMethod.POST);
+      } else if (HttpMethod.HEAD.equals(xHttpMethod)) {
+        response = handleHead();
+      } else if (HttpMethod.OPTIONS.equals(xHttpMethod)) {
+        response = handleOptions();
       } else {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.TUNNELING);
+        // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
+        // 501 (Not Implemented) if the method is unrecognized [...] by the origin server."
+        throw new ODataNotImplementedException(ODataNotImplementedException.TUNNELING);
       }
     }
     return response;
@@ -124,12 +134,18 @@ public final class ODataSubLocator implements ODataLocator {
 
   @OPTIONS
   public Response handleOptions() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMessageException.COMMON);
+    // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
+    // 501 (Not Implemented) if the method is unrecognized or not implemented
+    // by the origin server."
+    throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
   }
 
   @HEAD
   public Response handleHead() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMessageException.COMMON);
+    // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
+    // 501 (Not Implemented) if the method is unrecognized or not implemented
+    // by the origin server."
+    throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
   }
 
   private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
