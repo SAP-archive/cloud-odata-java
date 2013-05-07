@@ -29,13 +29,13 @@ To consume libraries with Maven add following dependencies to your pom.xml:
     <dependency>
       <groupId>com.sap.odata</groupId>
       <artifactId>com.sap.core.odata.api</artifactId>
-      <version>0.4.0</version> 
+      <version>0.4.1</version> 
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.sap.odata</groupId>
       <artifactId>com.sap.core.odata.core</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -58,6 +58,7 @@ Version History
 ---------------
 
 0.5.0-SNAPSHOT basic $batch as work in progress <br/>
+0.4.1  JPA processor support  
 0.4.0  Advanced Read / Write and JSON support  
 0.3.0  Advanced Read / Basic Write  
 0.2.0  Basic Read / Write  
