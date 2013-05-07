@@ -123,4 +123,59 @@ public interface JPAEdmMappingModelAccess {
 	public String mapJPAEmbeddableTypeAttribute(String jpaEmbeddableTypeName,
 			String jpaAttributeName);
 
+	/**
+	 * The method returns whether the JPA Entity should be excluded from EDM
+	 * model
+	 * 
+	 * @param jpaEntityTypeName
+	 *            is the name of JPA Entity Type
+	 * @return <b>true</b> - if JPA Entity should be excluded<br>
+	 *         <b>false</b> - if JPA Entity should be not be excluded
+	 * 
+	 */
+	public boolean checkExclusionOfJPAEntityType(String jpaEntityTypeName);
+
+	/**
+	 * The method returns whether the JPA Attribute should be excluded from EDM
+	 * Entity Type
+	 * 
+	 * @param jpaEntityTypeName
+	 *            is the name of JPA Entity Type
+	 * @param jpaAttributeName
+	 *            is the name of JPA attribute
+	 * @return <b>true</b> - if JPA attribute should be excluded<br>
+	 *         <b>false</b> - if JPA attribute should be not be excluded
+	 * 
+	 */
+	public boolean checkExclusionOfJPAAttributeType(String jpaEntityTypeName,
+			String jpaAttributeName);
+
+	/**
+	 * The method returns whether the JPA Embeddable Type should be excluded
+	 * from EDM model
+	 * 
+	 * @param jpaEmbeddableTypeName
+	 *            is the name of JPA Embeddable Type
+	 * @return <b>true</b> - if JPA Embeddable Type should be excluded<br>
+	 *         <b>false</b> - if JPA Embeddable Type should be not be excluded
+	 * 
+	 */
+	public boolean checkExclusionOfJPAEmbeddableType(
+			String jpaEmbeddableTypeName);
+
+	/**
+	 * The method returns whether the JPA Embeddable Attribute Type should be
+	 * excluded from EDM model
+	 * 
+	 * @param jpaEmbeddableTypeName
+	 *            is the name of JPA Embeddable Attribute Type
+	 * @param jpaAttributeName
+	 * 				is the name of JPA Attribute name
+	 * @return <b>true</b> - if JPA Embeddable Attribute Type should be excluded<br>
+	 *         <b>false</b> - if JPA Embeddable Attribute Type should be not be
+	 *         excluded
+	 * 
+	 */
+	public boolean checkExclusionOfJPAEmbeddableAttributeType(
+			String jpaEmbeddableTypeName, String jpaAttributeName);
 }
