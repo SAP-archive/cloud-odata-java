@@ -22,17 +22,7 @@ public class Encoder {
    * @return the encoded String
    */
   public static String encode(final String value) {
-    Encoder encoder = new Encoder(ODATA_UNENCODED, null);
     return encoder.encodeInternal(value);
-  }
-
-  /** characters to remain unencoded in addition to {@link #UNRESERVED} */
-  private final String unencoded;
-  private final Map<Character, String> map;
-
-  private Encoder(final String unencoded, final Map<Character, String> map) {
-    this.unencoded = unencoded == null ? "" : unencoded;
-    this.map = map == null ? Collections.<Character, String> emptyMap() : map;
   }
 
   // OData has special handling for "'", so we allow that to remain unencoded.
@@ -94,6 +84,15 @@ public class Encoder {
       "%F8", "%F9", "%FA", "%FB", "%FC", "%FD", "%FE", "%FF"
   };
 
+  private static final Encoder encoder = new Encoder(ODATA_UNENCODED);
+
+  /** characters to remain unencoded in addition to {@link #UNRESERVED} */
+  private final String unencoded;
+
+  private Encoder(final String unencoded) {
+    this.unencoded = unencoded == null ? "" : unencoded;
+  }
+
   /**
    * <p>Returns the percent-encoded UTF-8 representation of a String.</p>
    * <p>In order to avoid producing percent-encoded CESU-8 (as described in
@@ -115,9 +114,7 @@ public class Encoder {
     try {
       for (byte utf8Byte : input.getBytes("UTF-8")) {
         final char character = (char) utf8Byte;
-        if (map.containsKey(character)) // case mapping
-          resultStr.append(map.get(character));
-        else if (isUnreserved(character)) // case unreserved
+        if (isUnreserved(character)) // case unreserved
           resultStr.append(character);
         else if (isUnencoded(character)) // case unencoded as defined per constructor parameter
           resultStr.append(character);
