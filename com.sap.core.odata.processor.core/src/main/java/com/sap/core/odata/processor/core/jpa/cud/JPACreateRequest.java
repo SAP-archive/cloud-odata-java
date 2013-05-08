@@ -25,7 +25,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
@@ -46,7 +45,6 @@ public class JPACreateRequest extends JPAWriteRequest{
 
 	@SuppressWarnings("unchecked")
 	public <T> List<T> process(PostUriInfo postUriInfo, InputStream content, String requestContentType) throws ODataJPARuntimeException  {
-		ExpandSelectTreeNode expandSelectTree = null;
 		final EdmEntitySet entitySet = postUriInfo.getTargetEntitySet();
 	    EdmEntityType entityType = null;
 		try {
@@ -106,19 +104,18 @@ public class JPACreateRequest extends JPAWriteRequest{
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e.getMessage()), e);
 		}
+		Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap = null;
 		try {
-			createInlinedEntities(jpaEntity, entitySet, entryValues, currentEntityName);
+			navPropEntitySetMap = createInlinedEntities(jpaEntity, entitySet, entryValues, currentEntityName);
 		} catch (ODataException e) { 
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e.getMessage()), e);
 		}
-		expandSelectTree = entryValues.getExpandSelectTree();
 		List<T> objectList = new ArrayList<T>();
 		objectList.add((T) jpaEntity);
-		objectList.add((T) expandSelectTree);
-		return objectList;
-		
+		objectList.add((T) navPropEntitySetMap);
+		return objectList;		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -264,10 +261,11 @@ public class JPACreateRequest extends JPAWriteRequest{
 			}
 	}
 	
-	private <T> void createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
-		if(jpaEntity == null) return;
+	private <T> Map<EdmNavigationProperty, EdmEntitySet> createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
+		if(jpaEntity == null) return null;
 		Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
-		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();		
+		Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
+		Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap = new HashMap<EdmNavigationProperty, EdmEntitySet>();
 	    final EdmEntityType entityType = entitySet.getEntityType();
 	    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
 	    	final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
@@ -320,6 +318,8 @@ public class JPACreateRequest extends JPAWriteRequest{
 		  		}
 		  		if(relatedValues != null && relatedEntitySet != null){
 		  			relatedDataList.add(relatedData);
+		  			if(navPropEntitySetMap.get(navigationProperty) == null)
+		  				navPropEntitySetMap.put(navigationProperty, relatedEntitySet);
 		  			parse2JPAEntityValueMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(),currentEntityName);
 		  		}
 		  		else continue;
@@ -329,6 +329,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 	      relatedPropertyValueMap.put(navigationProperty.getMapping().getInternalName(), relatedDataList);
 	    }
 	    setNavigationProperties(jpaEntity, entitySet, relatedPropertyValueMap, jpaEntityName, relatedClassMap);
+	    return navPropEntitySetMap;
 	  }
 	
 	
