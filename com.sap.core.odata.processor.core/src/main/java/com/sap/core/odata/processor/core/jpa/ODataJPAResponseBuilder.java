@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -180,6 +181,7 @@ public final class ODataJPAResponseBuilder {
 		return odataResponse;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static ODataResponse build(List<Object> createdObjectList,
 			PostUriInfo uriInfo, String contentType,
 			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
@@ -206,11 +208,15 @@ public final class ODataJPAResponseBuilder {
 			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
 					createdObjectList.get(0), edmEntityType);
 
+			List<ArrayList<NavigationPropertySegment>> expandList = null;
+			if(createdObjectList.get(1) != null && ((Map<EdmNavigationProperty, EdmEntitySet>) createdObjectList.get(1)).size() > 0){
+				expandList = getExpandList((Map<EdmNavigationProperty, EdmEntitySet>) createdObjectList.get(1));
+				jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap,
+						createdObjectList.get(0), constructListofNavProperty(expandList));
+			}
 			EntityProviderWriteProperties feedProperties = null;
 			try {
-				feedProperties = EntityProviderWriteProperties.serviceRoot(
-						oDataJPAContext.getODataContext().getPathInfo()
-								.getServiceRoot()).expandSelectTree((ExpandSelectTreeNode) createdObjectList.get(1)).build();
+				feedProperties = getEntityProviderPropertiesforPost(oDataJPAContext, uriInfo , expandList);
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.INNER_EXCEPTION, e);
@@ -449,8 +455,55 @@ public final class ODataJPAResponseBuilder {
 
 		return entityFeedPropertiesBuilder.build();
 	}
+	
+	private static EntityProviderWriteProperties getEntityProviderPropertiesforPost(
+			ODataJPAContext odataJPAContext, PostUriInfo resultsView, List<ArrayList<NavigationPropertySegment>> expandList)
+			throws ODataJPARuntimeException {
+		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
+		ExpandSelectTreeNode expandSelectTree = null;
+		try {
+			entityFeedPropertiesBuilder = EntityProviderWriteProperties
+					.serviceRoot(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot());
+			expandSelectTree = UriParser.createExpandSelectTree(
+					null, expandList);
+			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+			entityFeedPropertiesBuilder.callbacks(JPAExpandCallBack
+					.getCallbacks(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot(), expandSelectTree,
+							expandList));
+		} catch (ODataException e) {
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.INNER_EXCEPTION, e);
+		}
+
+		return entityFeedPropertiesBuilder.build();
+	}
 
 
+	private static List<ArrayList<NavigationPropertySegment>> getExpandList(Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap) {
+		List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
+		ArrayList<NavigationPropertySegment> navigationPropertySegmentList= new ArrayList<NavigationPropertySegment>();
+			for(Map.Entry<EdmNavigationProperty, EdmEntitySet> entry : navPropEntitySetMap.entrySet()){
+				final EdmNavigationProperty edmNavigationProperty = entry.getKey();
+				final EdmEntitySet edmEntitySet = entry.getValue();
+				NavigationPropertySegment navigationPropertySegment = new NavigationPropertySegment() {
+				
+				@Override
+				public EdmEntitySet getTargetEntitySet() {
+					return edmEntitySet;
+				}
+				
+				@Override
+				public EdmNavigationProperty getNavigationProperty() {
+					return edmNavigationProperty;
+				}
+			};
+			navigationPropertySegmentList.add(navigationPropertySegment);
+		}
+		expandList.add(navigationPropertySegmentList);
+		return expandList;
+	}
 	private static List<EdmProperty> buildSelectItemList(
 			List<SelectItem> selectItems, EdmEntityType entity) throws ODataJPARuntimeException {
 		boolean flag = false;
@@ -477,6 +530,7 @@ public final class ODataJPAResponseBuilder {
 		}
 		return selectPropertyList;
 	}
+	
 	private static List<EdmNavigationProperty> constructListofNavProperty(
 			List<ArrayList<NavigationPropertySegment>> expandList) {
 		List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
@@ -485,5 +539,4 @@ public final class ODataJPAResponseBuilder {
 					.getNavigationProperty());
 		return navigationPropertyList;
 	}
-
 }
