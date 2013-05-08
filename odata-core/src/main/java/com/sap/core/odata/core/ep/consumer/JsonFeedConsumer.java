@@ -62,7 +62,7 @@ public class JsonFeedConsumer {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
     return new ODataFeedImpl(entries, feedMetadata);
   }

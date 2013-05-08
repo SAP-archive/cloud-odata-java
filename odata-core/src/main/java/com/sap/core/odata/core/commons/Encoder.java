@@ -1,8 +1,6 @@
 package com.sap.core.odata.core.commons;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Encodes a Java String (in its internal UTF-16 encoding) into its
@@ -130,7 +128,7 @@ public class Encoder {
     return resultStr.toString();
   }
 
-  private boolean isUnreserved(final char character) {
+  private static boolean isUnreserved(final char character) {
     return 'A' <= character && character <= 'Z' // case A..Z
         || 'a' <= character && character <= 'z' // case a..z
         || '0' <= character && character <= '9' // case 0..9

@@ -228,6 +228,20 @@ public class JsonPropertyConsumerTest extends BaseTest {
     assertEquals(Integer.valueOf(67), resultMap.get("Age"));
   }
 
+  @Test(expected = EntityProviderException.class)
+  public void noContent() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+    JsonReader reader = prepareReader("{}");
+    new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void simplePropertyUnfinished() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+    JsonReader reader = prepareReader("{\"Age\":67");
+    new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
+  }
+
   @Test
   public void complexPropertyWithStringToStringMappingStandalone() throws Exception {
     String simplePropertyJson = "{\"d\":{\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"}}}";
@@ -279,7 +293,6 @@ public class JsonPropertyConsumerTest extends BaseTest {
     assertEquals("69124", innerResult.get("PostalCode"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void complexPropertyOnOpenReader() throws Exception {
     String simplePropertyJson = "{\"__metadata\":{\"type\":\"RefScenario.c_City\"},\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"}";
@@ -289,6 +302,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
+    @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
@@ -296,7 +310,6 @@ public class JsonPropertyConsumerTest extends BaseTest {
     assertEquals("69124", result.get("PostalCode"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void complexPropertyOnOpenReaderWithNoMetadata() throws Exception {
     String simplePropertyJson = "{\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"}";
@@ -306,6 +319,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
+    @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
@@ -313,7 +327,6 @@ public class JsonPropertyConsumerTest extends BaseTest {
     assertEquals("69124", result.get("PostalCode"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void deepComplexPropertyOnOpenReader() throws Exception {
     String simplePropertyJson = "{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"},\"Country\":\"Germany\"}";
@@ -322,10 +335,12 @@ public class JsonPropertyConsumerTest extends BaseTest {
     EntityComplexPropertyInfo entityPropertyInfo = (EntityComplexPropertyInfo) EntityInfoAggregator.create(edmProperty);
 
     JsonPropertyConsumer jpc = new JsonPropertyConsumer();
+    @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) jpc.readPropertyValue(reader, entityPropertyInfo, null);
 
     assertEquals(2, result.size());
     assertEquals("Germany", result.get("Country"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> innerResult = (Map<String, Object>) result.get("City");
     assertEquals(2, innerResult.size());
     assertEquals("Heidelberg", innerResult.get("CityName"));
@@ -342,7 +357,6 @@ public class JsonPropertyConsumerTest extends BaseTest {
     assertEquals("Team 1", result.get("Name"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void complexPropertyStandalone() throws Exception {
     String simplePropertyJson = "{\"d\":{\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"}}}";
@@ -353,12 +367,12 @@ public class JsonPropertyConsumerTest extends BaseTest {
     Map<String, Object> result = new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, null);
 
     assertEquals(1, result.size());
+    @SuppressWarnings("unchecked")
     Map<String, Object> innerResult = (Map<String, Object>) result.get("City");
     assertEquals("Heidelberg", innerResult.get("CityName"));
     assertEquals("69124", innerResult.get("PostalCode"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void deepComplexPropertyStandalone() throws Exception {
     String simplePropertyJson = "{\"d\":{\"Location\":{\"__metadata\":{\"type\":\"RefScenario.c_Location\"},\"City\":{\"__metadata\":{\"type\":\"RefScenario.c_City\"},\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"},\"Country\":\"Germany\"}}}";
@@ -369,9 +383,11 @@ public class JsonPropertyConsumerTest extends BaseTest {
     Map<String, Object> result = jpc.readPropertyStandalone(reader, edmProperty, null);
 
     assertEquals(1, result.size());
+    @SuppressWarnings("unchecked")
     Map<String, Object> locationResult = (Map<String, Object>) result.get("Location");
     assertEquals(2, locationResult.size());
     assertEquals("Germany", locationResult.get("Country"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> innerResult = (Map<String, Object>) locationResult.get("City");
     assertEquals(2, innerResult.size());
     assertEquals("Heidelberg", innerResult.get("CityName"));

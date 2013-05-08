@@ -65,6 +65,8 @@ public class JsonEntryConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (IllegalStateException e) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
 
     return entryResult;

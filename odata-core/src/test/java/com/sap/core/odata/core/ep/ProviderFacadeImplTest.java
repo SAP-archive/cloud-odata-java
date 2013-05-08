@@ -1,15 +1,21 @@
 package com.sap.core.odata.core.ep;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
@@ -22,15 +28,19 @@ public class ProviderFacadeImplTest {
 
   public static final String EMPLOYEE_1_XML =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-          "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" +
-          "<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')</id>" +
+          "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" +
+          " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\"" +
+          " xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" +
+          " xml:base=\"https://some.host.com/some.service.root.segment/ReferenceScenario.svc/\">" +
+          "<id>https://some.host.com/some.service.root.segment/ReferenceScenario.svc/Employees('1')</id>" +
           "<title type=\"text\">Walter Winter</title>" +
           "<updated>1999-01-01T00:00:00Z</updated>" +
-          "<category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
-          "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/><link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\"/>" +
-          "<link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" +
-          "<link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" +
-          "<link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" +
+          "<category term=\"RefScenario.Employee\" scheme=\"" + Edm.NAMESPACE_SCHEME_2007_08 + "\"/>" +
+          "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
+          "<link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\"/>" +
+          "<link href=\"Employees('1')/ne_Room\" rel=\"" + Edm.NAMESPACE_REL_2007_08 + "ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" +
+          "<link href=\"Employees('1')/ne_Manager\" rel=\"" + Edm.NAMESPACE_REL_2007_08 + "ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" +
+          "<link href=\"Employees('1')/ne_Team\" rel=\"" + Edm.NAMESPACE_REL_2007_08 + "ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" +
           "<content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
           "<m:properties>" +
           "<d:EmployeeId>1</d:EmployeeId>" +
@@ -47,7 +57,7 @@ public class ProviderFacadeImplTest {
           "</d:Location>" +
           "<d:Age>52</d:Age>" +
           "<d:EntryDate>1999-01-01T00:00:00</d:EntryDate>" +
-          "<d:ImageUrl>/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg</d:ImageUrl>" +
+          "<d:ImageUrl>male_1_WinterW.jpg</d:ImageUrl>" +
           "</m:properties>" +
           "</entry>";
 
@@ -64,9 +74,11 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void testReadPropertyValue() {
-    fail("Not yet implemented");
+  public void testReadPropertyValue() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
+    InputStream content = new ByteArrayInputStream("2012-02-29T01:02:03".getBytes("UTF-8"));
+    final Object result = new ProviderFacadeImpl().readPropertyValue(property, content, Long.class);
+    assertEquals(1330477323000L, result);
   }
 
   @Test
@@ -100,9 +112,13 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void testReadProperty() {
-    fail("Not yet implemented");
+  public void testReadProperty() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+    final String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Age>";
+    InputStream content = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+    final Map<String, Object> result = new ProviderFacadeImpl().readProperty(HttpContentType.APPLICATION_XML, property, content, EntityProviderReadProperties.init().build());
+    assertFalse(result.isEmpty());
+    assertEquals(42, result.get("Age"));
   }
 
   @Test
