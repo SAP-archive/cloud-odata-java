@@ -100,8 +100,6 @@ import com.sap.core.odata.ref.processor.ListsDataSource.BinaryData;
  */
 public class ListsProcessor extends ODataSingleProcessor {
 
-  private static final String ODATA_VERBOSE = "odata=verbose";
-
   private static final int SERVER_PAGING_SIZE = 100;
 
   private final ListsDataSource dataSource;
@@ -964,9 +962,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, writeProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
-    if (contentType.contains(ODATA_VERBOSE) && !response.getContentHeader().contains(ODATA_VERBOSE)) {
-      return ODataResponse.fromResponse(response).contentHeader(contentType).build();
-    }
+
     return response;
   }
 

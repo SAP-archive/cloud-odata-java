@@ -97,16 +97,15 @@ public class ContentType {
   }
 
   /**
-   * Validates if given <code>format</code> is parseable and can be used as input for {@link #create(String)} method.
-   * 
+   * Validates if given <code>format</code> is parseable and can be used as input for
+   * {@link #create(String)} method.
    * @param format to be validated string
    * @return <code>true</code> if format is parseable otherwise <code>false</code>
    */
   public static boolean isParseable(final String format) {
     try {
-      ContentType ct = ContentType.create(format);
-      return ct != null;
-    } catch (Exception e) {
+      return ContentType.create(format) != null;
+    } catch (IllegalArgumentException e) {
       return false;
     }
   }
@@ -200,17 +199,18 @@ public class ContentType {
    */
   public static List<ContentType> create(final List<String> contentTypeStrings) {
     List<ContentType> contentTypes = new ArrayList<ContentType>(contentTypeStrings.size());
-    for (String contentTypeString: contentTypeStrings) {
+    for (String contentTypeString : contentTypeStrings) {
       contentTypes.add(create(contentTypeString));
     }
     return contentTypes;
   }
 
   /**
-   * Parse given input string (<code>format</code>) and return created {@link ContentType} if input was valid 
-   * or return <code>NULL</code> if input was not parseable.
+   * Parses the given input string (<code>format</code>) and returns created
+   * {@link ContentType} if input was valid or return <code>NULL</code> if
+   * input was not parseable.
    * 
-   * For definition of the supported format see {@link #create(String)}
+   * For the definition of the supported format see {@link #create(String)}.
    * 
    * @param format a string in format as defined in <code>RFC 2616 section 3.7</code>
    * @return a new <code>ContentType</code> object
@@ -218,11 +218,10 @@ public class ContentType {
   public static ContentType parse(final String format) {
     try {
       return ContentType.create(format);
-    } catch (Exception e) {
+    } catch (IllegalArgumentException e) {
       return null;
     }
   }
-
 
   /**
    * 
@@ -308,9 +307,9 @@ public class ContentType {
    * @return <code>true</code> if this {@link ContentType} is text related (in the view of OData)
    */
   public boolean isContentTypeODataTextRelated() {
-    return (ContentType.TEXT_PLAIN.equals(this) 
-        || (getODataFormat() == ODataFormat.XML) 
-        || (getODataFormat() == ODataFormat.ATOM) 
+    return (ContentType.TEXT_PLAIN.equals(this)
+        || (getODataFormat() == ODataFormat.XML)
+        || (getODataFormat() == ODataFormat.ATOM)
         || (getODataFormat() == ODataFormat.JSON));
   }
 

@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
@@ -98,13 +99,13 @@ public class XmlEntityConsumer {
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
     EntityProviderException cachedException = null;
+    XmlPropertyConsumer xec = new XmlPropertyConsumer();
 
     try {
-      XmlPropertyConsumer xec = new XmlPropertyConsumer();
       reader = createStaxReader(content);
       Map<String, Object> result = xec.readProperty(reader, edmProperty, properties.getMergeSemantic(), properties.getTypeMappings());
       return result;
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -138,7 +139,7 @@ public class XmlEntityConsumer {
         result = readProperty(edmProperty, content, propertiesBuilder.addTypeMappings(typeMappings).build());
       }
       return result.get(edmProperty.getName());
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -146,12 +147,12 @@ public class XmlEntityConsumer {
   public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
     EntityProviderException cachedException = null;
+    XmlLinkConsumer xlc = new XmlLinkConsumer();
 
     try {
-      XmlLinkConsumer xlc = new XmlLinkConsumer();
       reader = createStaxReader(content);
       return xlc.readLink(reader, entitySet);
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -172,12 +173,12 @@ public class XmlEntityConsumer {
   public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
     EntityProviderException cachedException = null;
+    XmlLinkConsumer xlc = new XmlLinkConsumer();
 
     try {
-      XmlLinkConsumer xlc = new XmlLinkConsumer();
       reader = createStaxReader(content);
       return xlc.readLinks(reader, entitySet);
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)

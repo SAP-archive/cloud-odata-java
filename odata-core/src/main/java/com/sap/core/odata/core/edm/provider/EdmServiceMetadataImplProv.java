@@ -3,10 +3,12 @@ package com.sap.core.odata.core.edm.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -47,14 +49,17 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     EntityProviderException cachedException = null;
+    DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
 
     try {
-      DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
       writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
       XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, null);
       return csb.getInputStream();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)

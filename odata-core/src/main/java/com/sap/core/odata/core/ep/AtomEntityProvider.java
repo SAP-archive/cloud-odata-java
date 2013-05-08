@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -107,7 +109,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .status(status);
       return response.build();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new ODataRuntimeException(e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new ODataRuntimeException(e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -151,7 +156,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .build();
 
       return response;
-    } catch (Exception e) {
+    } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -193,7 +198,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .eTag(as.getETag())
           .idLiteral(as.getLocation());
       return response.build();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -236,7 +244,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
       return response;
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -266,7 +277,6 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
-      //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
       atomFeedProvider.append(writer, eia, data, false);
 
@@ -276,7 +286,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -318,7 +331,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -355,7 +371,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -392,7 +411,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.close();
 
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)

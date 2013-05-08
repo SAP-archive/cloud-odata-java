@@ -41,7 +41,7 @@ public class JsonEntryEntityProducer {
   private JsonStreamWriter jsonStreamWriter;
 
   public JsonEntryEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
@@ -59,7 +59,7 @@ public class JsonEntryEntityProducer {
       jsonStreamWriter.name(FormatJson.METADATA);
       jsonStreamWriter.beginObject();
       final String self = AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
-      location = properties.getServiceRoot().toASCIIString() + self;
+      location = (properties.getServiceRoot() == null ? "" : properties.getServiceRoot().toASCIIString()) + self;
       jsonStreamWriter.namedStringValue(FormatJson.ID, location);
       jsonStreamWriter.separator();
       jsonStreamWriter.namedStringValue(FormatJson.URI, location);

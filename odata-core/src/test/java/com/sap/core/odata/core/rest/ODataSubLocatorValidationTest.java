@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,7 +218,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   private void mockSubLocatorInputForUriInfoTests(final ODataSubLocator locator,
       final List<PathSegment> pathSegments,
       final MultivaluedMap<String, String> queryParameters,
-      final String requestContentType) throws Exception {
+      final String requestContentType) throws IOException, ODataException {
 
     InitParameter param = locator.new InitParameter();
 
@@ -322,7 +323,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   private void checkRequest(final ODataHttpMethod method,
       final List<PathSegment> pathSegments,
       final MultivaluedMap<String, String> queryParameters,
-      final String requestContentType) throws Exception {
+      final String requestContentType) throws IOException, ODataException {
 
     ODataSubLocator locator = new ODataSubLocator();
     mockSubLocatorInputForUriInfoTests(locator, pathSegments, queryParameters, requestContentType);
@@ -356,14 +357,12 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   private void wrongRequest(final ODataHttpMethod method,
       final List<PathSegment> pathSegments,
-      final MultivaluedMap<String, String> queryParameters) {
+      final MultivaluedMap<String, String> queryParameters) throws IOException, ODataException {
     try {
       checkRequest(method, pathSegments, queryParameters, null);
       fail("Expected ODataMethodNotAllowedException not thrown");
     } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception '" + e.getClass().getSimpleName() + "' thrown");
     }
   }
 
@@ -371,13 +370,13 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
-      final boolean expand, final boolean select) {
+      final boolean expand, final boolean select) throws IOException, ODataException {
     wrongRequest(method,
         mockPathSegments(uriType, false, false),
         mockOptions(format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select));
   }
 
-  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) {
+  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) throws IOException, ODataException {
     if (uriType == UriType.URI1) {
       wrongRequest(method, Arrays.asList(mockPathSegment("EmployeeSearch")), null);
     } else {
@@ -385,7 +384,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
-  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) {
+  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) throws IOException, ODataException {
     EdmProperty property = null;
     try {
       if (ofComplex) {
@@ -415,62 +414,53 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongRequest(method, pathSegments, null);
   }
 
-  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
+  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) throws IOException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, true, false), null, null);
       fail("Expected ODataBadRequestException not thrown");
     } catch (ODataBadRequestException e) {
       assertNotNull(e);
     } catch (ODataMethodNotAllowedException e) {
-      // TODO
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
     }
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws EdmException, IOException, ODataException {
     wrongRequestContentType(method, uriType, false, requestContentType);
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final ContentType requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final ContentType requestContentType) throws EdmException, IOException, ODataException {
     wrongRequestContentType(method, uriType, isValue, requestContentType.toContentTypeString());
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown fot method '" + method + "' and uriType '" + uriType + "'.");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
     }
   }
 
-  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
     }
   }
 
-  private void notAllowedMethodRequest(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+  private void notAllowedMethodRequest(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown");
     } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
     }
   }
 
-  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, ODataException {
+  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, IOException, ODataException {
     try {
       MultivaluedMap<String, String> options = new MultivaluedHashMap<String, String>(3);
       options.putSingle("$format", dollarFormatOption);
@@ -478,8 +468,6 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       fail("Expected ODataException not thrown");
     } catch (ODataBadRequestException e) {
       assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
     }
   }
 

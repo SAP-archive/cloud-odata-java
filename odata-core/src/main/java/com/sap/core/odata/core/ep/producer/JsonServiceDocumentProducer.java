@@ -30,11 +30,10 @@ public class JsonServiceDocumentProducer {
 
       boolean first = true;
       for (EdmEntitySetInfo info : serviceMetadata.getEntitySetInfos()) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         jsonStreamWriter.stringValue(info.getEntitySetUri().toASCIIString());
       }
 
