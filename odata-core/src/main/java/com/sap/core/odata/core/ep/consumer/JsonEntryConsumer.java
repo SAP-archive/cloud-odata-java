@@ -109,11 +109,17 @@ public class JsonEntryConsumer {
 
   private void readMetadata() throws IOException, EdmException, EntityProviderException {
     String name = null;
+    String value = null;
     reader.beginObject();
     while (reader.hasNext()) {
       name = reader.nextName();
-      String value = reader.nextString();
 
+      if (FormatJson.PROPERTIES.equals(name)) {
+        reader.skipValue();
+        continue;
+      }
+
+      value = reader.nextString();
       if (FormatJson.ID.equals(name)) {
         entryMetadata.setId(value);
       } else if (FormatJson.URI.equals(name)) {

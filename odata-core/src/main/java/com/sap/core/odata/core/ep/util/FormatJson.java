@@ -16,6 +16,7 @@ public class FormatJson {
   public static final String MEDIA_SRC = "media_src";
   public static final String MEDIA_ETAG = "media_etag";
   public static final String EDIT_MEDIA = "edit_media";
+  public static final String PROPERTIES = "properties";
   public static final String URI = "uri";
   public static final String NULL = "null";
   public static final String TRUE = "true";

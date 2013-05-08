@@ -148,6 +148,17 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
     }
   }
 
+  @Test
+  public void entryWithMetadataElementProperties() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream(
+        "{\"__metadata\":{\"properties\":{\"nt_Employees\":{\"associationuri\":"
+        + "\"http://some.host.com/service.root/Teams('1')/$links/nt_Employees\"}}}," 
+    		+ "\"Id\":\"1\"}");
+    ODataEntry result = new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+    checkMediaDataInitial(result.getMediaMetadata());
+  }
+
   private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {
     assertNull(mediaMetadata.getContentType());
     assertNull(mediaMetadata.getEditLink());
