@@ -1,8 +1,6 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,6 @@ import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
@@ -111,17 +108,7 @@ public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 			if (firstBuild) {
 				firstBuild();
 			} else if (roleExists) {
-				try {
-					buildRole();
-				} catch (SecurityException e) {
-					throw ODataJPAModelException.throwException(
-							ODataJPAModelException.GENERAL.addContent(e
-									.getMessage()), e);
-				} catch (NoSuchFieldException e) {
-					throw ODataJPAModelException.throwException(
-							ODataJPAModelException.GENERAL.addContent(e
-									.getMessage()), e);
-				}
+				buildRole();
 			}
 
 		}
@@ -146,23 +133,17 @@ public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 
 		}
 
-		private void buildRole() throws SecurityException, NoSuchFieldException {
+		private void buildRole() {
 
 			if (currentRole == null) {
 				currentRole = new ReferentialConstraintRole();
-				String jpaAttributeType = null;
+
 				EntityType edmEntityType = null;
 
-				if (roleType == RoleType.PRINCIPAL){
-					jpaAttributeType = jpaAttribute.getJavaType().getSimpleName();
-					if(jpaAttributeType.equals("List")){
-						Type type = ((ParameterizedType)jpaAttribute.getJavaMember().getDeclaringClass().getDeclaredField(jpaAttribute.getName()).getGenericType()).getActualTypeArguments()[0];
-						int lastIndexOfDot = type.toString().lastIndexOf(".");
-						jpaAttributeType = type.toString().substring(lastIndexOfDot+1);
-					}
+				if (roleType == RoleType.PRINCIPAL)
 					edmEntityType = entityTypeView
-							.searchEdmEntityType(jpaAttributeType);
-				}
+							.searchEdmEntityType(jpaAttribute.getJavaType()
+									.getSimpleName());
 				else if (roleType == RoleType.DEPENDENT)
 					edmEntityType = entityTypeView
 							.searchEdmEntityType(jpaAttribute

@@ -371,17 +371,20 @@ public class JPAEdmNameBuilder {
 	 * ************************************************************************
 	 */
 
-	public static void build(JPAEdmAssociationView view) {
+	public static void build(JPAEdmAssociationView view,int count) {
 		Association association = view.getEdmAssociation();
-
+		String associationName = null;
 		String end1Name = association.getEnd1().getType().getName();
 		String end2Name = association.getEnd2().getType().getName();
 
 		if (end1Name.compareToIgnoreCase(end2Name) > 0) {
-			association.setName(end2Name + UNDERSCORE + end1Name);
+			associationName = end2Name + UNDERSCORE + end1Name;
 		} else {
-			association.setName(end1Name + UNDERSCORE + end2Name);
+			associationName = end1Name + UNDERSCORE + end2Name;
 		}
+		if(count > 1)
+			associationName = associationName + Integer.toString(count-1);
+		association.setName(associationName);
 
 	}
 
@@ -404,7 +407,7 @@ public class JPAEdmNameBuilder {
 
 	public static void build(JPAEdmAssociationView associationView,
 			JPAEdmPropertyView propertyView,
-			JPAEdmNavigationPropertyView navPropertyView) {
+			JPAEdmNavigationPropertyView navPropertyView,int count) {
 
 		String toName = null;
 		String fromName = null;
@@ -449,7 +452,8 @@ public class JPAEdmNameBuilder {
 
 			if (navPropName == null)
 				navPropName = toName.concat(NAVIGATION_NAME);
-
+			if(count > 1)
+				navPropName = navPropName + Integer.toString(count - 1);
 			navProp.setName(navPropName);
 
 			if (toName.equals(associationEndTypeOne.getName())) {
@@ -477,7 +481,8 @@ public class JPAEdmNameBuilder {
 
 			if (navPropName == null)
 				navPropName = toName.concat(NAVIGATION_NAME);
-
+			if(count > 1)
+				navPropName = navPropName + Integer.toString(count - 1);
 			navProp.setName(navPropName);
 
 			if (toName.equals(associationEndTypeOne.getName())) {
