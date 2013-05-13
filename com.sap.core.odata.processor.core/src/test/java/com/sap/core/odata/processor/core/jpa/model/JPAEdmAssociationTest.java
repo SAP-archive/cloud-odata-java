@@ -153,7 +153,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	public void testGetEdmAssociation() {
 		assertNotNull(objAssociation.getEdmAssociation());
 		assertEquals(objAssociation.getEdmAssociation().getName(),
-				ASSOCIATION_NAME+"1");
+				ASSOCIATION_NAME);
 	}
 
 	@Test
@@ -323,7 +323,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 			Field field = objAssociation.getClass().getDeclaredField("associationEndMap");
 			field.setAccessible(true);
 			Map<String,JPAEdmAssociationEndView> associationEndMap = new HashMap<String, JPAEdmAssociationEndView>();
-			associationEndMap.put("SalesOrderHeader_String1", objJPAEdmAssociationEnd);
+			associationEndMap.put("SalesOrderHeader_String", objJPAEdmAssociationEnd);
 			field.set(objAssociation, associationEndMap);
 		} catch (ODataJPARuntimeException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -339,7 +339,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
-		assertEquals("SalesOrderHeader_String1",objAssociation.searchAssociation(objJPAEdmAssociationEnd).getName());
+		assertEquals("SalesOrderHeader_String",objAssociation.searchAssociation(objJPAEdmAssociationEnd).getName());
 
 	}
 
