@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
@@ -161,15 +162,24 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 			List<Attribute<?, ?>> jpaAttributes = null;
 			String currentEntityName = null;
 			String targetEntityName = null;
-			if (isBuildModeComplexType) 
+			String entityTypeName = null;
+			if (isBuildModeComplexType){
 				jpaAttributes = sortInAscendingOrder(complexTypeView.getJPAEmbeddableType()
 						.getAttributes());
-			 else 
-					jpaAttributes = sortInAscendingOrder(entityTypeView.getJPAEntityType()
-						.getAttributes());
+				entityTypeName = complexTypeView.getJPAEmbeddableType().getJavaType()
+						.getSimpleName();
+			} else {
+				 jpaAttributes = sortInAscendingOrder(entityTypeView.getJPAEntityType()
+						 .getAttributes());
+				 entityTypeName = entityTypeView.getJPAEntityType().getName();
+			 }
 
 			for (Object jpaAttribute : jpaAttributes) {
 				currentAttribute = (Attribute<?, ?>) jpaAttribute;
+
+				// Check for need to Exclude 
+				if(isExcluded((JPAEdmPropertyView) JPAEdmProperty.this, entityTypeName, currentAttribute.getName()))
+					continue;
 
 				PersistentAttributeType attributeType = currentAttribute
 						.getPersistentAttributeType();
@@ -352,5 +362,19 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	@Override
 	public JPAEdmComplexTypeView getJPAEdmComplexTypeView( ){
 		return complexTypeView;
+	}
+	private boolean isExcluded(JPAEdmPropertyView jpaEdmPropertyView, String jpaEntityTypeName, String jpaAttributeName) {
+		JPAEdmMappingModelAccess mappingModelAccess = jpaEdmPropertyView
+				.getJPAEdmMappingModelAccess();
+		boolean isExcluded = false;
+		if (mappingModelAccess != null	&& mappingModelAccess.isMappingModelExists()) {
+			// Exclusion of a simple property in a complex type
+			if(isBuildModeComplexType && mappingModelAccess.checkExclusionOfJPAEmbeddableAttributeType(jpaEntityTypeName, jpaAttributeName)
+					// Exclusion of a simple property of an Entity Type
+					|| (!isBuildModeComplexType && mappingModelAccess.checkExclusionOfJPAAttributeType(jpaEntityTypeName, jpaAttributeName))){
+				isExcluded = true;
+			}
+		}
+		return isExcluded;
 	}
 }

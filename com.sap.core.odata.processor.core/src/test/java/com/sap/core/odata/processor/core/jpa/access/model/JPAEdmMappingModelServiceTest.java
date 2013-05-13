@@ -37,6 +37,7 @@ public class JPAEdmMappingModelServiceTest extends JPAEdmMappingModelService {
 	private static String EMBEDDABLE_TYPE_NAME_JPA = "SalesOrderItemKey";
 	private static String EMBEDDABLE_ATTRIBUTE_NAME_JPA = "liId";
 	private static String EMBEDDABLE_ATTRIBUTE_NAME_EDM = "ID";
+	private static String EMBEDDABLE_TYPE_2_NAME_JPA = "SalesOrderItemKey";
 	
 	
 	private static String ENTITY_TYPE_NAME_JPA_WRONG = "SalesOrderHeaders";
@@ -152,6 +153,28 @@ public class JPAEdmMappingModelServiceTest extends JPAEdmMappingModelService {
 	 public void testMapJPAEmbeddableTypeAttributeNegative() {
 		 assertNull(objJPAEdmMappingModelServiceTest.mapJPAEmbeddableTypeAttribute(EMBEDDABLE_TYPE_NAME_JPA_WRONG, EMBEDDABLE_ATTRIBUTE_NAME_JPA));
 	 }
+	 
+	 @Test
+	 public void testCheckExclusionOfJPAEntityType() {
+		 assertTrue(!objJPAEdmMappingModelServiceTest.checkExclusionOfJPAEntityType(ENTITY_TYPE_NAME_JPA));
+	 }
+	 
+	 @Test
+	 public void testCheckExclusionOfJPAAttributeType() {
+		 assertTrue(!objJPAEdmMappingModelServiceTest.checkExclusionOfJPAAttributeType(ENTITY_TYPE_NAME_JPA, ATTRIBUTE_NAME_JPA));
+	 }
+	 
+	 @Test
+	 public void testCheckExclusionOfJPAEmbeddableType() {
+		 assertTrue(!objJPAEdmMappingModelServiceTest.checkExclusionOfJPAEmbeddableType(EMBEDDABLE_TYPE_2_NAME_JPA));
+	 }
+	 
+	 @Test
+	 public void testCheckExclusionOfJPAEmbeddableAttributeType() {
+		 assertTrue(!objJPAEdmMappingModelServiceTest.checkExclusionOfJPAEmbeddableAttributeType(EMBEDDABLE_TYPE_NAME_JPA, EMBEDDABLE_ATTRIBUTE_NAME_JPA));
+	 }
+	 
+	 
 
 	 /**
 	  * This method is for loading the xml file for testing.

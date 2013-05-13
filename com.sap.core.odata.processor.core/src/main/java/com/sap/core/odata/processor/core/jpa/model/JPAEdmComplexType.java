@@ -16,6 +16,7 @@ import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
@@ -193,6 +194,10 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 
 				if (searchMap.containsKey(searchKey))
 					continue;
+				
+				// Check for need to Exclude
+				if(isExcluded(JPAEdmComplexType.this))
+					continue;
 
 				JPAEdmPropertyView propertyView = new JPAEdmProperty(
 						schemaView, JPAEdmComplexType.this);
@@ -208,6 +213,19 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 
 			}
 
+		}
+
+		private boolean isExcluded(JPAEdmComplexType jpaEdmComplexType) {
+			
+			JPAEdmMappingModelAccess mappingModelAccess = jpaEdmComplexType
+					.getJPAEdmMappingModelAccess();
+			if (mappingModelAccess != null
+					&& mappingModelAccess.isMappingModelExists()
+					&& mappingModelAccess.checkExclusionOfJPAEmbeddableType(jpaEdmComplexType.getJPAEmbeddableType()
+							.getJavaType().getSimpleName())){
+				return true;
+			}
+			return false;
 		}
 
 	}

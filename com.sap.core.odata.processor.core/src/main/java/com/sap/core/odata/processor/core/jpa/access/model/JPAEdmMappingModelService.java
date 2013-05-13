@@ -101,7 +101,11 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 	public String mapJPAAttribute(String jpaEntityTypeName,
 			String jpaAttributeName) {
 		JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (jpaEntityTypeMap != null)
+		if (jpaEntityTypeMap != null
+				&& jpaEntityTypeMap.getJPAAttributes() != null)// Extra Null check for
+																// fixing attributes
+																// removal issue
+																// from mapping
 			for (JPAAttribute jpaAttribute : jpaEntityTypeMap
 					.getJPAAttributes().getJPAAttribute())
 				if (jpaAttribute.getName().equals(jpaAttributeName))
@@ -136,7 +140,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 	public String mapJPAEmbeddableTypeAttribute(String jpaEmbeddableTypeName,
 			String jpaAttributeName) {
 		JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (jpaEmbeddableType != null)
+		if (jpaEmbeddableType != null && jpaEmbeddableType.getJPAAttributes() != null)
 			for (JPAAttribute jpaAttribute : jpaEmbeddableType
 					.getJPAAttributes().getJPAAttribute())
 				if (jpaAttribute.getName().equals(jpaAttributeName))
@@ -185,7 +189,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 	public boolean checkExclusionOfJPAAttributeType(String jpaEntityTypeName,
 			String jpaAttributeName) {
 		JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (type != null) {
+		if (type != null && type.getJPAAttributes() !=null) {
 			for (JPAAttribute jpaAttribute : type.getJPAAttributes()
 					.getJPAAttribute())
 				if (jpaAttribute.getName().equals(jpaAttributeName))
@@ -207,7 +211,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 	public boolean checkExclusionOfJPAEmbeddableAttributeType(
 			String jpaEmbeddableTypeName, String jpaAttributeName) {
 		JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (type != null) {
+		if (type != null && type.getJPAAttributes() != null) {
 			for (JPAAttribute jpaAttribute : type.getJPAAttributes()
 					.getJPAAttribute())
 				if (jpaAttribute.getName().equals(jpaAttributeName))

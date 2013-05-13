@@ -11,6 +11,8 @@
 					<JPAAttribute name="soId">ID</JPAAttribute>
 					<JPAAttribute name="netAmount">NetAmount</JPAAttribute>
 					<JPAAttribute name="buyerAddress">BuyerAddressInfo</JPAAttribute>
+					<JPAAttribute name="dummyAttributeForExclusion" exclude="true"></JPAAttribute>
+					<JPAAttribute name="dummyComplexAttributeForExclusion" exclude="true"></JPAAttribute>
 				</JPAAttributes>
 				<JPARelationships>
 					<JPARelationship name="salesOrderItem">SalesOrderLineItemDetails</JPARelationship>
@@ -29,6 +31,8 @@
 					<JPARelationship name="materials">MaterialDetails</JPARelationship>
 				</JPARelationships>
 			</JPAEntityType>
+			<JPAEntityType name="DummyEntityForExclusion" exclude="true">
+			</JPAEntityType>
 		</JPAEntityTypes>
 		<JPAEmbeddableTypes>
 			<JPAEmbeddableType name="Address">
@@ -37,6 +41,12 @@
 						<JPAAttribute name="houseNumber">Number</JPAAttribute>
 						<JPAAttribute name="streetName">Street</JPAAttribute>
 					</JPAAttributes>
+			</JPAEmbeddableType>
+			<JPAEmbeddableType name="DummyComplexAttributeForExclusion">
+			<!-- <JPAEmbeddableType name="DummyComplexAttributeForExclusion" exclude="true"> -->
+				<JPAAttributes>
+					<JPAAttribute name="dummyAttributeForExclusion" exclude="true"></JPAAttribute>
+				</JPAAttributes>
 			</JPAEmbeddableType>
 		</JPAEmbeddableTypes>
 	</PersistenceUnit>

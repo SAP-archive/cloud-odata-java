@@ -8,6 +8,7 @@
 		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderHeader</class>
 		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Note</class>
+		<class>com.sap.core.odata.processor.ref.jpa.DummyEntityForExclusion</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Material</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Store</class>
 		<properties>
