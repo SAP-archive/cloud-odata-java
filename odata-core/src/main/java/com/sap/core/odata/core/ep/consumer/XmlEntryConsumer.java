@@ -354,11 +354,34 @@ public class XmlEntryConsumer {
    * 
    * @param navigationPropertyName
    * @param inlineEntries
+   * @throws EntityProviderException 
    */
-  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) {
+  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) throws EntityProviderException {
     expandSelectTree.setExpanded();
-    ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
+    ExpandSelectTreeNodeImpl subNode = getExpandSelectTreeNode(inlineEntries);
     expandSelectTree.putLink(navigationPropertyName, subNode);
+  }
+  
+  /**
+   * Get the {@link ExpandSelectTreeNodeImpl} from the <code>inlineEntries</code> or if none exists create a new
+   * {@link ExpandSelectTreeNodeImpl}.
+   * 
+   * @param inlineEntries entries which are checked for existing {@link ExpandSelectTreeNodeImpl}
+   * @return {@link ExpandSelectTreeNodeImpl} from the <code>inlineEntries</code> or if none exists create a new {@link ExpandSelectTreeNodeImpl}.
+   * @throws EntityProviderException if an unsupported {@link ExpandSelectTreeNode} implementation was found.
+   */
+  private ExpandSelectTreeNodeImpl getExpandSelectTreeNode(final List<ODataEntry> inlineEntries) throws EntityProviderException {
+    if(inlineEntries.isEmpty()) {
+      return new ExpandSelectTreeNodeImpl();
+    } else {
+      ExpandSelectTreeNode inlinedEntryEstNode = inlineEntries.get(0).getExpandSelectTree();
+      if(inlinedEntryEstNode instanceof ExpandSelectTreeNodeImpl) {
+        return (ExpandSelectTreeNodeImpl) inlinedEntryEstNode;
+      } else {
+        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
+            .addContent("Unsupported implementation for " + ExpandSelectTreeNode.class + " found."));
+      }
+    }
   }
 
   /**
