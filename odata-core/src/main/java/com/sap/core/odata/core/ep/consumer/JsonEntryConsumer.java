@@ -61,6 +61,11 @@ public class JsonEntryConsumer {
         readEntryContent();
       }
       reader.endObject();
+      
+      if(reader.peek() != JsonToken.END_DOCUMENT){
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
+      }
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
@@ -212,7 +217,7 @@ public class JsonEntryConsumer {
             }
           } else {
             JsonFeedConsumer inlineConsumer = new JsonFeedConsumer(reader, inlineEia, inlineReadProperties);
-            ODataFeed feed = inlineConsumer.readInlineFeed(name);
+            ODataFeed feed = inlineConsumer.readStartedInlineFeed(name);
             if (callback == null) {
               properties.put(navigationPropertyName, feed);
               entryResult.setContainsInlineEntry(true);
@@ -245,7 +250,7 @@ public class JsonEntryConsumer {
           throw new EntityProviderException(EntityProviderException.COMMON, e);
         }
       }
-      ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readFeedStandalone();
+      ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readInlineFeedStandalone();
       if (callback == null) {
         properties.put(navigationPropertyName, feed);
         entryResult.setContainsInlineEntry(true);

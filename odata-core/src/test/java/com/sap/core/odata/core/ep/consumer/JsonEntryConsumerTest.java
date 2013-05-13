@@ -37,6 +37,17 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   private static final String negativeJsonStart_1 = "{ \"abc\": {";
   private static final String negativeJsonStart_2 = "{ \"d\": [a: 1, b: 2] }";
 
+  @Test(expected = EntityProviderException.class)
+  public void doubleClosingBracketsAtTheEnd() throws Exception{
+    String invalidJson = "{ \"Id\" : \"1\", \"Seats\" : 1, \"Version\" : 1}}";
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream contentBody = createContentAsStream(invalidJson);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    xec.readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+  
   @SuppressWarnings("unchecked")
   @Test
   public void readSimpleEmployeeEntry() throws Exception {

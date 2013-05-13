@@ -410,4 +410,22 @@ public class JsonPropertyConsumerTest extends BaseTest {
     return new ByteArrayInputStream(json.getBytes("UTF-8"));
   }
 
+  @Test(expected = EntityProviderException.class)
+  public void invalidDoubleClosingBrackets() throws Exception {
+    String simplePropertyJson = "{\"d\":{\"Name\":\"Team 1\"}}}";
+    EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams").getEntityType().getProperty("Name");
+    JsonReader reader = prepareReader(simplePropertyJson);
+
+    new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, null);
+  }
+  
+  @Test(expected = EntityProviderException.class)
+  public void invalidDoubleClosingBracketsWithoutD() throws Exception {
+    String simplePropertyJson = "{\"Name\":\"Team 1\"}}";
+    EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams").getEntityType().getProperty("Name");
+    JsonReader reader = prepareReader(simplePropertyJson);
+
+    new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, null);
+  }
+
 }
