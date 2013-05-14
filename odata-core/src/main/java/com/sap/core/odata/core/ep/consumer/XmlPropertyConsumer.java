@@ -81,40 +81,56 @@ public class XmlPropertyConsumer {
     }
   }
 
-  protected Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, final EntityTypeMapping typeMappings) throws EntityProviderException, XMLStreamException, EdmException {
+  protected Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, final EntityTypeMapping typeMappings) throws EntityProviderException, EdmException {
     Map<String, Object> name2Value = new HashMap<String, Object>();
     Object result = null;
 
-    reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
-    final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
+    try {
+      reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
+      final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
-    if ("true".equals(nullAttribute)) {
-      reader.nextTag();
-    } else if (propertyInfo.isComplex()) {
-      reader.nextTag();
-      while (reader.hasNext() && !reader.isEndElement()) {
-        String childName = reader.getLocalName();
-        EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
-
-        Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
-        name2Value.put(childName, value);
+      if ("true".equals(nullAttribute)) {
         reader.nextTag();
-      }
-    } else {
-      reader.next();
-      if (reader.isCharacters()) {
-        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
-        result = convert(propertyInfo, reader.getText(), mapping);
+      } else if (propertyInfo.isComplex()) {
         reader.nextTag();
-      }
-    }
-    reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
+        while (reader.hasNext() && !reader.isEndElement()) {
+          String childName = reader.getLocalName();
+          EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
 
-    // if reading finished check which result must be returned
-    if (result != null) {
-      return result;
-    } else if (!name2Value.isEmpty()) {
-      return name2Value;
+          Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
+          name2Value.put(childName, value);
+          reader.nextTag();
+        }
+      } else {
+        String value = null;
+        while (!reader.isEndElement() && reader.hasNext()) {
+          reader.next();
+          if (reader.isCharacters()) {
+            if (value == null) {
+              value = reader.getText();
+            } else {
+              value = value + reader.getText();
+            }
+          }
+          //TODO: should we throw exceptions for events: COMMENT, CDATA
+          //TODO: JUnit Test
+        }
+
+        if (value != null) {
+          Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
+          result = convert(propertyInfo, value, mapping);
+        }
+      }
+      reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
+
+      // if reading finished check which result must be returned
+      if (result != null) {
+        return result;
+      } else if (!name2Value.isEmpty()) {
+        return name2Value;
+      }
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
     return null;
   }
