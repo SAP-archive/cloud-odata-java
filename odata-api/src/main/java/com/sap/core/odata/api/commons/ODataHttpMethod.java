@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.commons;
+package com.sap.core.odata.api.commons;
 
 /**
  * The supported HTTP methods.

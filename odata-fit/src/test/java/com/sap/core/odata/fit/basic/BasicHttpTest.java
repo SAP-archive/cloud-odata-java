@@ -23,6 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -31,7 +32,6 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.testutil.helper.HttpMerge;
 import com.sap.core.odata.testutil.helper.HttpSomethingUnsupported;
 import com.sap.core.odata.testutil.helper.StringHelper;
