@@ -1,8 +1,13 @@
 package com.sap.core.odata.core.svc.parser;
 
+/**
+ * A Title element
+ * <p>Title element gives a human-readable title
+ * @author SAP AG
+ */
 public interface Title {
   /**
-   * @return <b>String> human-readable title 
+   * @return text as String
    */
   public String getText();
 }

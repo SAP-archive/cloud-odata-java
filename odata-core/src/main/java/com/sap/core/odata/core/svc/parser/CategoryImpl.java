@@ -1,5 +1,10 @@
 package com.sap.core.odata.core.svc.parser;
 
+/**
+ * CategoryImpl
+ * <p>The implementiation of the interface Category
+ * @author SAP AG
+ */
 public class CategoryImpl {
   private String scheme;
   private String term;

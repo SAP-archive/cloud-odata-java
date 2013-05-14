@@ -2,6 +2,11 @@ package com.sap.core.odata.core.svc.parser;
 
 import java.util.List;
 
+/**
+ * WorkspaceImpl
+ * <p>The implementiation of the interface Workspace
+ * @author SAP AG
+ */
 public class WorkspaceImpl {
   private TitleImpl title;
   private List<CollectionImpl> collections;

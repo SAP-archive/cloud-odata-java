@@ -2,6 +2,11 @@ package com.sap.core.odata.core.svc.parser;
 
 import java.util.List;
 
+/**
+ * ServiceDokumentImpl
+ * <p>The implementiation of the interface ServiceDocument
+ * @author SAP AG
+ */
 public class ServiceDokumentImpl {
   private List<WorkspaceImpl> workspaces;
   private CommonAttributesImpl attributes;

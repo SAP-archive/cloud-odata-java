@@ -2,6 +2,11 @@ package com.sap.core.odata.core.svc.parser;
 
 import java.util.List;
 
+/**
+ * CollectionImpl
+ * <p>The implementiation of the interface Collection
+ * @author SAP AG
+ */
 public class CollectionImpl {
   private TitleImpl title;
   private String href;

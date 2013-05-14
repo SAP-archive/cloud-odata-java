@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
+<service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sap="http://www.sap.com/Protocols/SAPData">
 	<workspace>
-		<atom:title>Main Site</atom:title>
+	 	<atom:title>Main Site</atom:title>
 		<collection href="http://example.org/blog/main">
 			<atom:title>My Blog Entries</atom:title>
 			<categories href="http://example.com/cats/forMain.cats" />
@@ -26,4 +26,9 @@
 			</categories>
 		</collection>
 	</workspace>
+	<sap:extension>
+		<sap:extension2 attr="attributeValue"/>
+		<sap:extension3>value</sap:extension3>
+		<sap:extension4 attr="attributeValue">text</sap:extension4>
+	</sap:extension>
 </service>

@@ -1,5 +1,11 @@
 package com.sap.core.odata.core.svc.parser;
 
+/**
+ * CommonAttributesImpl
+ * <p>The implementiation of the interface CommonAttributes
+ * @author SAP AG
+ */
+import java.util.Collections;
 import java.util.List;
 
 public class CommonAttributesImpl {
@@ -16,7 +22,7 @@ public class CommonAttributesImpl {
   }
 
   public List<ExtensionAttributeImpl> getAttributes() {
-    return attributes;
+    return Collections.unmodifiableList(attributes);
   }
 
   public CommonAttributesImpl setBase(final String base) {
