@@ -21,6 +21,7 @@ public class EdmParserConstants {
   public static final String EDM_PROPERTY = "Property";
   public static final String EDM_PROPERTY_NULLABLE = "Nullable";
   public static final String EDM_PROPERTY_MAX_LENGTH = "MaxLength";
+  public static final String EDM_PROPERTY_MAX_LENGTH_MAX_VALUE = "Max";
   public static final String EDM_PROPERTY_DEFAULT_VALUE = "DefaultValue";
   public static final String EDM_PROPERTY_FIXED_LENGTH = "FixedLength";
   public static final String EDM_PROPERTY_UNICODE = "Unicode";

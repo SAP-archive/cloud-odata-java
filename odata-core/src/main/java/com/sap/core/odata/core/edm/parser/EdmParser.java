@@ -569,7 +569,11 @@ public class EdmParser {
     }
     String maxLength = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_MAX_LENGTH);
     if (maxLength != null) {
-      facets.setMaxLength(Integer.parseInt(maxLength));
+      if (EdmParserConstants.EDM_PROPERTY_MAX_LENGTH_MAX_VALUE.equals(maxLength)) {
+        facets.setMaxLength(Integer.MAX_VALUE);
+      } else {
+        facets.setMaxLength(Integer.parseInt(maxLength));
+      }
     }
     String precision = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_PRECISION);
     if (precision != null) {
