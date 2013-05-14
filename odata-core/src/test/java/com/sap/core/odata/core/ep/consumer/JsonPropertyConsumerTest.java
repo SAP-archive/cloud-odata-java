@@ -160,6 +160,22 @@ public class JsonPropertyConsumerTest extends BaseTest {
   }
 
   @Test
+  public void veryLongStringStandalone() throws Exception {
+    char[] chars = new char[32768];
+    Arrays.fill(chars, 0, 32768, 'a');
+    String propertyValue = new String(chars);
+    String simplePropertyJson = "{\"d\":{\"Name\":\"" + propertyValue + "\"}}";
+    JsonReader reader = prepareReader(simplePropertyJson);
+    final EdmProperty edmProperty = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Room").getProperty("Name");
+
+    EntityProviderReadProperties readProperties = mock(EntityProviderReadProperties.class);
+    when(readProperties.getTypeMappings()).thenReturn(null);
+    Map<String, Object> resultMap = new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, readProperties);
+
+    assertEquals(propertyValue, resultMap.get("Name"));
+  }
+
+  @Test
   public void simplePropertyWithNullMappingStandalone() throws Exception {
     String simplePropertyJson = "{\"d\":{\"Age\":67}}";
     JsonReader reader = prepareReader(simplePropertyJson);
@@ -418,7 +434,7 @@ public class JsonPropertyConsumerTest extends BaseTest {
 
     new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, null);
   }
-  
+
   @Test(expected = EntityProviderException.class)
   public void invalidDoubleClosingBracketsWithoutD() throws Exception {
     String simplePropertyJson = "{\"Name\":\"Team 1\"}}";

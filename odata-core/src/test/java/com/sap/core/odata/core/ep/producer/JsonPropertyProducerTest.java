@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +40,24 @@ public class JsonPropertyProducerTest extends BaseTest {
     final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(json);
     assertEquals("{\"d\":{\"EmployeeName\":\"\\\"Игорь\\tНиколаевич\\tЛарионов\\\"\"}}", json);
+  }
+
+  @Test
+  public void serializeVeryLongString() throws Exception {
+    char[] chars = new char[32768];
+    Arrays.fill(chars, 0, 32768, 'a');
+    String propertyValue = new String(chars);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
+
+    final ODataResponse response = new JsonEntityProvider().writeProperty(property, propertyValue);
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
+    assertEquals(ODataServiceVersion.V10, response.getHeader(ODataHttpHeaders.DATASERVICEVERSION));
+
+    final String json = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(json);
+    assertEquals("{\"d\":{\"EmployeeName\":\"" + propertyValue + "\"}}", json);
   }
 
   @Test
