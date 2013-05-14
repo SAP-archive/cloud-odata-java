@@ -109,6 +109,12 @@ public class EdmxProviderTest {
     EntityContainerInfo testContainer = testProvider.getEntityContainerInfo("Container2");
     assertEquals(testContainer.getName(), container.getName());
     assertEquals(testContainer.isDefaultEntityContainer(), container.isDefaultEntityContainer());
+    
+    container = edmImpl.getEdmProvider().getEntityContainerInfo(null);
+    testContainer = testProvider.getEntityContainerInfo(null);
+    assertNotNull(container);
+    assertEquals(testContainer.getName(), container.getName());
+    assertEquals(testContainer.isDefaultEntityContainer(), container.isDefaultEntityContainer());
   }
 
   private Edm createEdm() throws EntityProviderException, ODataException {
