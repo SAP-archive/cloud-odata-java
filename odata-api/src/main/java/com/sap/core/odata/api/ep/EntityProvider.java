@@ -629,12 +629,12 @@ public final class EntityProvider {
   /**
    * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
    * 
-   * @param inputStream the given input stream
+   * @param metadataXml a metadata xml input stream (means the metadata document)
    * @param validate has to be true if metadata should be validated 
    * @return Edm as {@link Edm}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
-    return createEntityProvider().readMetadata(inputStream, validate);
+  public static Edm readMetadata(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
+    return createEntityProvider().readMetadata(metadataXml, validate);
   }
 }
