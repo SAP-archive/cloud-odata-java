@@ -28,6 +28,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -50,6 +51,7 @@ import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
+import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -72,6 +74,7 @@ public final class ODataSubLocator implements ODataLocator {
   private List<String> acceptHeaderContentTypes;
 
   private InputStream requestContent;
+
   private ContentType requestContentTypeHeader;
 
   @GET
@@ -156,13 +159,28 @@ public final class ODataSubLocator implements ODataLocator {
 
     final String requestContentType = (requestContentTypeHeader == null ? null : requestContentTypeHeader.toContentTypeString());
 
-    final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptHeaderContentTypes);
+    ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptHeaderContentTypes);
 
     final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
     final HttpStatusCodes s = odataResponse.getStatus() == null ? method == ODataHttpMethod.POST ? uriInfo.getUriType() == UriType.URI9 ? HttpStatusCodes.OK : uriInfo.getUriType() == UriType.URI7B ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.CREATED : method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE || method == ODataHttpMethod.DELETE ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.OK : odataResponse.getStatus();
-    final Response response = Util.convertResponse(odataResponse, s, serverDataServiceVersion, location);
 
+    odataResponse = wrapInDebugResponse(odataResponse, method);
+
+    final Response response = Util.convertResponse(odataResponse, s, serverDataServiceVersion, location);
     return response;
+  }
+
+  private ODataResponse wrapInDebugResponse(ODataResponse odataResponse, ODataHttpMethod method) {
+    ODataResponse finalResponse = odataResponse;
+
+    if (context.isInDebugMode()) {
+      final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
+      if (ODataDebugResponseWrapper.ODATA_DEBUG_TRUE.equals(debugValue) || ODataDebugResponseWrapper.ODATA_DEBUG_DOWNLOAD.equals(debugValue)) {
+        ODataDebugResponseWrapper wrapper = new ODataDebugResponseWrapper(context, method, odataResponse, debugValue);
+        finalResponse = wrapper.wrapResponse();
+      }
+    }
+    return finalResponse;
   }
 
   public void initialize(final InitParameter param) throws ODataException {
@@ -179,9 +197,22 @@ public final class ODataSubLocator implements ODataLocator {
     service = param.getServiceFactory().createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
+    context.setDebugMode(checkDebugMode(param));
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service, new ContentNegotiator());
+  }
+
+  private boolean checkDebugMode(final InitParameter param) {
+    boolean debug = false;
+    String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
+    if (ODataDebugResponseWrapper.ODATA_DEBUG_TRUE.equals(debugValue) || ODataDebugResponseWrapper.ODATA_DEBUG_DOWNLOAD.equals(debugValue)) {
+      ODataDebugCallback callback = param.getServiceFactory().getCallback(ODataDebugCallback.class);
+      if (callback != null) {
+        debug = callback.isDebugEnabled();
+      }
+    }
+    return debug;
   }
 
   String getServerDataServiceVersion() throws ODataException {
@@ -285,12 +316,12 @@ public final class ODataSubLocator implements ODataLocator {
   private PathInfo buildODataUriInfo(final InitParameter param) throws ODataException {
     final PathInfoImpl pathInfo = new PathInfoImpl();
 
+    pathInfo.setRequestUri(param.getUriInfo().getRequestUri());
+
     splitPath(pathInfo, param);
 
     final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
     pathInfo.setServiceRoot(uri);
-
-    context.setUriInfo(pathInfo);
 
     return pathInfo;
   }

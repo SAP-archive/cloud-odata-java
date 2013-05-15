@@ -197,5 +197,4 @@ public class ODataContextImpl implements ODataContext {
       this.acceptableLanguages.add(wildcard);
     }
   }
-
 }

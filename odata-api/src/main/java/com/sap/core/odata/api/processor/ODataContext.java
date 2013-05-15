@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.processor;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,7 +16,7 @@ import com.sap.core.odata.api.uri.PathInfo;
  * @com.sap.core.odata.DoNotImplement
  */
 public interface ODataContext {
-
+  
   /**
    * @return ODataService related for this context
    * @throws ODataException
