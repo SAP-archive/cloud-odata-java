@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
