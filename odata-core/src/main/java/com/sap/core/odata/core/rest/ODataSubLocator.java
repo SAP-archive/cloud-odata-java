@@ -173,12 +173,12 @@ public final class ODataSubLocator implements ODataLocator {
   private ODataResponse wrapInDebugResponse(ODataResponse odataResponse, ODataHttpMethod method) {
     ODataResponse finalResponse = odataResponse;
 
-    if (context.isInDebugMode()) {
-      final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
-      if (ODataDebugResponseWrapper.ODATA_DEBUG_TRUE.equals(debugValue) || ODataDebugResponseWrapper.ODATA_DEBUG_DOWNLOAD.equals(debugValue)) {
-        ODataDebugResponseWrapper wrapper = new ODataDebugResponseWrapper(context, method, odataResponse, debugValue);
+    if(context.isInDebugMode()){
+      String debugValue = queryParameters.get(ODataDebugResponseWrapper.oDataDebugQueryParameter); 
+      if (ODataDebugResponseWrapper.oDataDebugTrue.equals(debugValue) || ODataDebugResponseWrapper.oDataDebugDownload.equals(debugValue)) {
+        ODataDebugResponseWrapper wrapper = new ODataDebugResponseWrapper(odataResponse, context, method, debugValue);
         finalResponse = wrapper.wrapResponse();
-      }
+      }      
     }
     return finalResponse;
   }
@@ -188,6 +188,7 @@ public final class ODataSubLocator implements ODataLocator {
     context.setUriInfo(buildODataUriInfo(param));
 
     queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
+
 
     acceptHeaderContentTypes = extractAcceptHeaders(param);
     requestContent = contentAsStream(extractRequestContent(param));
@@ -200,18 +201,18 @@ public final class ODataSubLocator implements ODataLocator {
     context.setDebugMode(checkDebugMode(param));
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
-    dispatcher = new Dispatcher(service, new ContentNegotiator());
+    dispatcher = new Dispatcher(service, new ContentNegotiator());    
   }
 
   private boolean checkDebugMode(final InitParameter param) {
-    boolean debug = false;
-    String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
-    if (ODataDebugResponseWrapper.ODATA_DEBUG_TRUE.equals(debugValue) || ODataDebugResponseWrapper.ODATA_DEBUG_DOWNLOAD.equals(debugValue)) {
+    boolean debug = false;    
+    String debugValue = queryParameters.get(ODataDebugResponseWrapper.oDataDebugQueryParameter);
+    if (ODataDebugResponseWrapper.oDataDebugTrue.equals(debugValue) || ODataDebugResponseWrapper.oDataDebugDownload.equals(debugValue)) {
       ODataDebugCallback callback = param.getServiceFactory().getCallback(ODataDebugCallback.class);
-      if (callback != null) {
+      if(callback != null){
         debug = callback.isDebugEnabled();
       }
-    }
+    }  
     return debug;
   }
 
@@ -317,7 +318,7 @@ public final class ODataSubLocator implements ODataLocator {
     final PathInfoImpl pathInfo = new PathInfoImpl();
 
     pathInfo.setRequestUri(param.getUriInfo().getRequestUri());
-
+    
     splitPath(pathInfo, param);
 
     final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
