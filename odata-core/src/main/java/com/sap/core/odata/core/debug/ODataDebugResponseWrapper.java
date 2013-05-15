@@ -5,85 +5,138 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
 
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext.RuntimeMeasurement;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
+/**
+ * Wraps an OData response into an HTML page containing additional information
+ * useful for support purposes.
+ * @author SAP AG
+ */
 public class ODataDebugResponseWrapper {
 
-  public static final String oDataDebugQueryParameter = "odata-debug";
-  public static final String oDataDebugTrue = "true";
-  public static final String oDataDebugDownload = "download";
+  public static final String ODATA_DEBUG_QUERY_PARAMETER = "odata-debug";
+  public static final String ODATA_DEBUG_TRUE = "true";
+  public static final String ODATA_DEBUG_DOWNLOAD = "download";
 
+  private final ODataContextImpl context;
+  private final ODataHttpMethod method;
   private ODataResponse response;
-  private ODataContextImpl context;
   private final boolean isDownload;
 
-  public ODataDebugResponseWrapper(ODataResponse response, ODataContextImpl context, ODataHttpMethod method, String debugValue) {
-    this.response = response;
+  public ODataDebugResponseWrapper(final ODataContextImpl context, final ODataHttpMethod method, ODataResponse response, final String debugValue) {
     this.context = context;
-    if (oDataDebugDownload.equals(debugValue)) {
-      isDownload = true;
-    } else {
-      isDownload = false;
-    }
+    this.method = method;
+    this.response = response;
+    this.isDownload = ODATA_DEBUG_DOWNLOAD.equals(debugValue);
   }
 
   public ODataResponse wrapResponse() {
     try {
+      final String data = getStringFromInputStream((InputStream) response.getEntity());
+      final String contentType = response.getContentHeader();
 
-      String data = getStringFromInputStream((InputStream) response.getEntity());
-      String contentType = response.getHeader("Content-Type");
-
-      String content;
+      String scriptyType;
       if (contentType.contains("xml")) {
-        content = "<script type=\"text/x-scripty-xml\">" + data + "</script>";
+        scriptyType = "xml";
       } else if (data != null && contentType.equals("application/json")) {
-        content = "<script type=\"text/x-scripty-json\">" + data + "</script>";
+        scriptyType = "json";
       } else {
         // no further supported formats for now
         return response;
       }
+      final String content = "<script type=\"text/x-scripty-" + scriptyType + "\">" + data + "</script>";
 
-      String title = "<title>" + context.getPathInfo().toString() + "</title>";
+      final String title = "<title>" + context.getPathInfo().toString() + "</title>";
 
-      String styles = loadStyles();
-      String jQuery = loadScripts("/jquery-1.6.2.js");
-      String scripts = loadScripts("/scripts.js");
+      final String styles = loadStyles();
+      final String jQuery = loadScripts("/jquery-1.6.2.js");
+      final String scripty = loadScripts("/scripty.js");
 
       String base = "<base href=\"" + context.getPathInfo().getServiceRoot().toASCIIString() + "\">";
 
-      // render box generically
-      String box = renderBox(createTabs());
+      // format box generically
+      String box = formatBox(createTabs());
 
-      String html = "<!DOCTYPE HTML>" + "\n" + "<html lang=\"en\">" + "\n" + "<head>" + "\n" + "<meta charset=\"utf-8\">" + "\n" + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge;chrome=1\">" + "\n" + title + "\n" + base + "\n" + styles + "\n" + "</head>" + "\n"
-          + "<body>" + "\n" + box + "\n" + content + "\n" + jQuery + "\n" + scripts + "\n" + "<script type=\"text/javascript\">" + "\n" + "$(function(){" + "\n" + "  $('script[type|=\"text/x-scripty\"]').scripty();" + "\n" + "  $('.tab_content').hide();"
-          + "\n" + "  $('#trigger').click(function() {" + "\n" + "    var href = $('ul.tabs li.active a').attr('href');" + "\n" + "    window.location.hash = (href) ? href : '#tab1';" + "\n" + "  });" + "\n" + "  $('#box a.close').click(function(e) {"
-          + "\n" + "    e.preventDefault();" + "\n" + "    window.location.hash = '#none';" + "\n" + "  });" + "\n" + "  $('ul.tabs li').click(function(e) {" + "\n" + "    e.preventDefault();" + "\n"
-          + "    window.location.hash = $(this).find('a').attr('href');" + "\n" + "  });" + "\n" + "  var switchTab = function(hash) {" + "\n" + "    if (/^#tab\\d$/.test(hash)) {" + "\n" + "      $('#box:hidden').fadeIn('fast');" + "\n"
-          + "      $(\"ul.tabs li\").removeClass(\"active\");" + "\n" + "      $(\"ul.tabs\").find('a[href=\"' + hash + '\"]').parent('li').addClass(\"active\");" + "\n" + "      $(\".tab_content\").hide().css({opacity: 0.1});" + "\n"
-          + "      var maxHeight = $(window).height()*0.85-96;" + "\n" + "      if (maxHeight < $(hash).outerHeight()) {" + "\n" + "        $(hash).show().animate({opacity: 1.0, height: maxHeight},'fast');" + "\n" + "      } else {" + "\n"
-          + "        $(hash).show().animate({opacity: 1.0},'fast');" + "\n" + "      }" + "\n" + "    } else {" + "\n" + "      $('#box').fadeOut('fast');" + "\n" + "    }" + "\n" + "  };" + "\n"
-          + "  if ((\"onhashchange\" in window) && !($.browser.msie)) {" + "\n" + "    $(window).bind('hashchange', function() {" + "\n" + "      switchTab(window.location.hash);" + "\n" + "    }).trigger('hashchange');" + "\n" + "  } else {" + "\n"
-          + "    $(window).data('~hash~', window.location.hash);" + "\n" + "    window.setInterval(function() {" + "\n" + "      if ($(window).data('~hash~') != window.location.hash) {" + "\n" + "        $(window).data('~hash~', window.location.hash);"
-          + "\n" + "        switchTab(window.location.hash);" + "\n" + "      }" + "\n" + "    }, 500);" + "\n" + "    switchTab(window.location.hash);" + "\n" + "  }" + "\n" + "  $('tr:odd').addClass('odd');" + "\n"
-          + "  $('ul.tree li:last-child').addClass('last');" + "});" + "\n" + "</script>" + "\n" + "</body>" + "\n" + "</html>";
-      ;
-      return ODataResponse.status(HttpStatusCodes.OK).entity(html).contentHeader(MediaType.TEXT_HTML).build();
-      
-    } catch (ODataException e) {
+      String html = "<!DOCTYPE HTML>" + "\n"
+          + "<html lang=\"en\">" + "\n"
+          + "<head>" + "\n" + title + "\n" + base + "\n" + styles + "\n" + "</head>" + "\n"
+          + "<body>" + "\n" + box + "\n" + content + "\n" + jQuery + "\n" + scripty + "\n"
+          + "<script type=\"text/javascript\">" + "\n"
+          + "$(function() {" + "\n"
+          + "  $('script[type|=\"text/x-scripty\"]').scripty();" + "\n"
+          + "  $('.tab_content').hide();" + "\n"
+          + "  $('#trigger').click(function() {" + "\n"
+          + "    var href = $('ul.tabs li.active a').attr('href');" + "\n"
+          + "    window.location.hash = (href) ? href : '#tab1';" + "\n"
+          + "  });" + "\n"
+          + "  $('#box a.close').click(function(e) {" + "\n"
+          + "    e.preventDefault();" + "\n"
+          + "    window.location.hash = '#none';" + "\n"
+          + "  });" + "\n"
+          + "  $('ul.tabs li').click(function(e) {" + "\n"
+          + "    e.preventDefault();" + "\n"
+          + "    window.location.hash = $(this).find('a').attr('href');" + "\n"
+          + "  });" + "\n"
+          + "  var switchTab = function(hash) {" + "\n"
+          + "    if (/^#tab\\d$/.test(hash)) {" + "\n"
+          + "      $('#box:hidden').fadeIn('fast');" + "\n"
+          + "      $(\"ul.tabs li\").removeClass(\"active\");" + "\n"
+          + "      $(\"ul.tabs\").find('a[href=\"' + hash + '\"]').parent('li').addClass(\"active\");" + "\n"
+          + "      $(\".tab_content\").hide().css({opacity: 0.1});" + "\n"
+          + "      var maxHeight = $(window).height()*0.85-96;" + "\n"
+          + "      if (maxHeight < $(hash).outerHeight()) {" + "\n"
+          + "        $(hash).show().animate({opacity: 1.0, height: maxHeight},'fast');" + "\n"
+          + "      } else {" + "\n"
+          + "        $(hash).show().animate({opacity: 1.0},'fast');" + "\n"
+          + "      }" + "\n"
+          + "    } else {" + "\n"
+          + "      $('#box').fadeOut('fast');" + "\n"
+          + "    }" + "\n"
+          + "  };" + "\n"
+          + "  if ((\"onhashchange\" in window) && !($.browser.msie)) {" + "\n"
+          + "    $(window).bind('hashchange', function() {" + "\n"
+          + "      switchTab(window.location.hash);" + "\n"
+          + "    }).trigger('hashchange');" + "\n"
+          + "  } else {" + "\n"
+          + "    $(window).data('~hash~', window.location.hash);" + "\n"
+          + "    window.setInterval(function() {" + "\n"
+          + "      if ($(window).data('~hash~') != window.location.hash) {" + "\n"
+          + "        $(window).data('~hash~', window.location.hash);" + "\n"
+          + "        switchTab(window.location.hash);" + "\n"
+          + "      }" + "\n"
+          + "    }, 500);" + "\n"
+          + "    switchTab(window.location.hash);" + "\n"
+          + "  }" + "\n"
+          + "  $('tr:odd').addClass('odd');" + "\n"
+          + "  $('ul.tree li:last-child').addClass('last');" + "});" + "\n"
+          + "</script>" + "\n"
+          + "</body>" + "\n"
+          + "</html>";
+
+      ODataResponseBuilder result = ODataResponse.status(HttpStatusCodes.OK)
+          .entity(html)
+          .contentHeader(MediaType.TEXT_HTML);
+      if (isDownload)
+        result = result.header("Content-Disposition",
+            "attachment; filename=odata-response." + System.currentTimeMillis() + ".html");
+      return result.build();
+    } catch (final ODataException e) {
       throw new ODataRuntimeException("Should not happen");
     }
   }
@@ -94,65 +147,39 @@ public class ODataDebugResponseWrapper {
     Properties properties = new Properties();
 
     // request tabstrip
-//    Enumeration<?> e = request.getHeaderNames();
-//    while (e.hasMoreElements()) {
-//      String headerName = (String) e.nextElement();
-//      String headerValue = request.getHeader(headerName);
-//      properties.setProperty(headerName, headerValue);
-//    }
+    for (final String headerName : context.getHttpRequestHeaders().keySet()) {
+      final String headerValue = context.getHttpRequestHeader(headerName);
+      properties.setProperty(headerName, headerValue);
+    }
 
     tabs.add(createTabNvp("Request", "Name", "Value", properties));
 
     // response tabstrip
     properties.clear();
-    setProperty(properties, "Status-Code", Integer.toString(response.getStatus().getStatusCode()));
-    //setProperty(properties, "Content-Type", getValuesAsString(response.getHeader("Content-Type")));
+    String value = Integer.toString(response.getStatus().getStatusCode());
+    properties.setProperty("Status-Code", value == null ? "" : value);
+    value = response.getContentHeader();
+    properties.setProperty(HttpHeaders.CONTENT_TYPE, value == null ? "" : value);
 
     tabs.add(createTabNvp("Response", "Name", "Value", properties));
 
-    // clear response environment
+    // environment tabstrip
     properties.clear();
-
-    //request tabstrip
-
-
-    //environment tabstrip
     tabs.add(createTabNvp("Environment", "Name", "Value", properties));
 
-    if (context.getRuntimeMeasurements() != null) {
+    // runtime measurements
+    if (context.getRuntimeMeasurements() != null)
       tabs.add(createTabRuntime(context.getRuntimeMeasurements()));
-    }
 
     return tabs;
   }
 
-  private void setProperty(Properties properties, String name, String value) {
-    if (value == null) {
-      value = "";
-    }
-    properties.setProperty(name, value);
-  }
-
-  private String getValuesAsString(List<?> list) {
-    String valuesAsString = "";
-    for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
-      valuesAsString += iterator.next();
-      valuesAsString += "\n";
-    }
-
-    if (valuesAsString.length() > 0) {
-      valuesAsString.substring(0, valuesAsString.length() - 2);
-    }
-
-    return valuesAsString;
-  }
-
-  private DebugTab createTabNvp(String header, String tHeadName, String tHeadValue, Properties nvp) {
+  private DebugTab createTabNvp(final String title, String tHeadName, String tHeadValue, Properties nvp) {
     DebugTabImpl tab = new DebugTabImpl();
-    tab.setHeader(header);
+    tab.setHeader(title);
 
-    String tabContent = "<table><thead>";
-    tabContent = tabContent + "\n<tr><td>" + tHeadName + "</td><td>" + tHeadValue + "</td></tr>\n";
+    String tabContent = "<table><thead>\n"
+        + "<tr><td>" + tHeadName + "</td><td>" + tHeadValue + "</td></tr>\n";
 
     Enumeration<?> propertyNames = nvp.propertyNames();
     while (propertyNames.hasMoreElements()) {
@@ -175,8 +202,7 @@ public class ODataDebugResponseWrapper {
     List<RuntimeTree> tree = new ArrayList<RuntimeTree>();
     String node;
 
-    for (Iterator<RuntimeMeasurement> iterator = runtimeMeasurements.iterator(); iterator.hasNext();) {
-      RuntimeMeasurement runtimeMeasurement = (RuntimeMeasurement) iterator.next();
+    for (final RuntimeMeasurement runtimeMeasurement : runtimeMeasurements) {
       treeNode = new RuntimeTree();
       treeNode.runtimeMeasurement = runtimeMeasurement;
       if (previous != null) {
@@ -194,13 +220,11 @@ public class ODataDebugResponseWrapper {
     tab.setHeader("Runtime");
     tab.setContent("<ul class=\"tree code\">");
 
-    for (Iterator<RuntimeTree> iterator = tree.iterator(); iterator.hasNext();) {
-      RuntimeTree runtimeTree = (RuntimeTree) iterator.next();
+    for (final RuntimeTree runtimeTree : tree)
       if (runtimeTree.parent == null) {
         node = createRuntimeTreeNode(tree, runtimeTree);
         tab.setContent(tab.getContent() + node);
       }
-    }
 
     tab.setContent(tab.getContent() + "</ul>");
 
@@ -223,32 +247,27 @@ public class ODataDebugResponseWrapper {
       content += "<span class=\"numeric\" title=\"Duration brutto [ms]\">" + String.format("%1$,d", time) + "</span>";
     }
 
-    for (Iterator<RuntimeTree> iterator = tree.iterator(); iterator.hasNext();) {
-      RuntimeTree runtimeTree = (RuntimeTree) iterator.next();
+    for (final RuntimeTree runtimeTree : tree)
       if (runtimeTree.parent != null) {
         parent = runtimeTree.parent;
-        if (parent.runtimeMeasurement.getTimeStarted() == treeNode.runtimeMeasurement.getTimeStarted()) {
+        if (parent.runtimeMeasurement.getTimeStarted() == treeNode.runtimeMeasurement.getTimeStarted())
           innerContent += createRuntimeTreeNode(tree, runtimeTree);
-        }
       }
-    }
 
-    if (innerContent.length() > 0) {
+    if (innerContent.length() > 0)
       content += "\n" + "<ul>" + innerContent + "</ul>" + "\n" + "</li>";
-    } else {
+    else
       content += "</li>";
-    }
 
     return content;
   }
 
-  private String renderBox(List<DebugTab> tabs) {
+  private String formatBox(List<DebugTab> tabs) {
     String header = "<ul class=\"tabs\">";
     String content = "<div class=\"tab_container\">";
 
     int counter = 0;
-    for (Iterator<DebugTab> iterator = tabs.iterator(); iterator.hasNext();) {
-      DebugTab tab = (DebugTab) iterator.next();
+    for (final DebugTab tab : tabs) {
       // tab header
       String headerTag = "<li><a href=\"#tab" + counter + "\">" + tab.getName() + "</a></li>";
       header = header + "\n" + headerTag;
@@ -258,13 +277,13 @@ public class ODataDebugResponseWrapper {
       counter++;
     }
 
-    header = header + "</ul>";
-    content = content + "</div>";
+    header += "</ul>";
+    content += "</div>";
 
     return "<div class=\"trigger\"><a id=\"trigger\"></a></div>" + "<div class=\"box\" id=\"box\">" + "<div id=\"box-close\"><a class=\"close\"></a></div>" + "\n" + header + "\n" + content + "\n" + "</div>";
   }
 
-  private String loadScripts(String name) {
+  private String loadScripts(final String name) {
     InputStream inputStream = ODataDebugResponseWrapper.class.getResourceAsStream(name);
     return "<script type=\"text/javascript\">" + getStringFromInputStream(inputStream) + "</script>\n";
   }
@@ -283,8 +302,10 @@ public class ODataDebugResponseWrapper {
           sw.write(bufText, 0, charRead);
         }
         strText = sw.toString();
-      } catch (Exception es) {
-        es.printStackTrace();
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
       } finally {
         try {
           reader.close();
