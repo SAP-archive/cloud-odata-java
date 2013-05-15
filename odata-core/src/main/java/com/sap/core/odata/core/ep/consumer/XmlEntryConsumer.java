@@ -361,7 +361,7 @@ public class XmlEntryConsumer {
     ExpandSelectTreeNodeImpl subNode = getExpandSelectTreeNode(inlineEntries);
     expandSelectTree.putLink(navigationPropertyName, subNode);
   }
-  
+
   /**
    * Get the {@link ExpandSelectTreeNodeImpl} from the <code>inlineEntries</code> or if none exists create a new
    * {@link ExpandSelectTreeNodeImpl}.
@@ -371,11 +371,11 @@ public class XmlEntryConsumer {
    * @throws EntityProviderException if an unsupported {@link ExpandSelectTreeNode} implementation was found.
    */
   private ExpandSelectTreeNodeImpl getExpandSelectTreeNode(final List<ODataEntry> inlineEntries) throws EntityProviderException {
-    if(inlineEntries.isEmpty()) {
+    if (inlineEntries.isEmpty()) {
       return new ExpandSelectTreeNodeImpl();
     } else {
       ExpandSelectTreeNode inlinedEntryEstNode = inlineEntries.get(0).getExpandSelectTree();
-      if(inlinedEntryEstNode instanceof ExpandSelectTreeNodeImpl) {
+      if (inlinedEntryEstNode instanceof ExpandSelectTreeNodeImpl) {
         return (ExpandSelectTreeNodeImpl) inlinedEntryEstNode;
       } else {
         throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT

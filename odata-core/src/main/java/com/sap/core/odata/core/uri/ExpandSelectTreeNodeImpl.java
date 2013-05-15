@@ -56,7 +56,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     links.put(name, node);
   }
 
-  public void removeLink(String name) {
+  public void removeLink(final String name) {
     links.remove(name);
   }
 

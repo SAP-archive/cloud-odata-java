@@ -26,10 +26,12 @@ public class XmlLinkEntityProducer {
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.D_URI);
-      if (isRootElement)
+      if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
-      if (properties.getServiceRoot() != null)
+      }
+      if (properties.getServiceRoot() != null) {
         writer.writeCharacters(properties.getServiceRoot().toASCIIString());
+      }
       writer.writeCharacters(AtomEntryEntityProducer.createSelfLink(entityInfo, data, null));
       writer.writeEndElement();
       writer.flush();

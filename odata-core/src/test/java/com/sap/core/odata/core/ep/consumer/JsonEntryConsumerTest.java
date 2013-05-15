@@ -38,7 +38,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   private static final String negativeJsonStart_2 = "{ \"d\": [a: 1, b: 2] }";
 
   @Test(expected = EntityProviderException.class)
-  public void doubleClosingBracketsAtTheEnd() throws Exception{
+  public void doubleClosingBracketsAtTheEnd() throws Exception {
     String invalidJson = "{ \"Id\" : \"1\", \"Seats\" : 1, \"Version\" : 1}}";
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream contentBody = createContentAsStream(invalidJson);
@@ -47,7 +47,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
     JsonEntityConsumer xec = new JsonEntityConsumer();
     xec.readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
   }
-  
+
   @SuppressWarnings("unchecked")
   @Test
   public void readSimpleEmployeeEntry() throws Exception {
@@ -164,8 +164,8 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream contentBody = createContentAsStream(
         "{\"__metadata\":{\"properties\":{\"nt_Employees\":{\"associationuri\":"
-        + "\"http://some.host.com/service.root/Teams('1')/$links/nt_Employees\"}}}," 
-    		+ "\"Id\":\"1\"}");
+            + "\"http://some.host.com/service.root/Teams('1')/$links/nt_Employees\"}}},"
+            + "\"Id\":\"1\"}");
     ODataEntry result = new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
     checkMediaDataInitial(result.getMediaMetadata());
   }

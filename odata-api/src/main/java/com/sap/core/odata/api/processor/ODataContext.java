@@ -15,7 +15,7 @@ import com.sap.core.odata.api.uri.PathInfo;
  * @com.sap.core.odata.DoNotImplement
  */
 public interface ODataContext {
-  
+
   /**
    * @return ODataService related for this context
    * @throws ODataException
@@ -57,7 +57,7 @@ public interface ODataContext {
    * @return Http Method as {@link String}
    */
   String getHttpMethod();
-  
+
   /**
    * Set parameter
    * 

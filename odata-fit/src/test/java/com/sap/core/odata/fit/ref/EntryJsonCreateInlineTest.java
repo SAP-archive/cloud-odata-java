@@ -25,22 +25,22 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
         + "\"nr_Employees\" : {\"__deferred\" : {\"uri\" : \"" + getEndpoint() + "Rooms('1')/nr_Employees\""
         + "}},\"nr_Building\" : {\"__deferred\" : {\"uri\" : \"" + getEndpoint() + "/Rooms('1')/nr_Building\""
         + "}}}]}}}";
-    
+
     HttpResponse response = postUri("Rooms", content, HttpContentType.APPLICATION_JSON, HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
-    
+
     String body = getBody(response);
-    
+
     //Check inline building
     StringMap<?> map = getStringMap(body);
     map = (StringMap<?>) map.get("nr_Building");
     assertNotNull(map);
     assertEquals("Building 2", map.get("Name"));
-    
+
     //Check inline rooms of the inline building
     map = (StringMap<?>) map.get("nb_Rooms");
     assertNotNull(map);
-    
+
     ArrayList<?> results = (ArrayList<?>) map.get("results");
     assertNotNull(results);
     assertEquals(2, results.size());

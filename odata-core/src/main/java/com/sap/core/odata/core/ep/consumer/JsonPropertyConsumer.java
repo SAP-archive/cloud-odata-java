@@ -40,8 +40,8 @@ public class JsonPropertyConsumer {
         handleName(reader, typeMappings, entityPropertyInfo, result, nextName);
       }
       reader.endObject();
-      
-      if(reader.peek() != JsonToken.END_DOCUMENT){
+
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
         //TODO: CA Messagetext
         throw new EntityProviderException(EntityProviderException.COMMON);
       }

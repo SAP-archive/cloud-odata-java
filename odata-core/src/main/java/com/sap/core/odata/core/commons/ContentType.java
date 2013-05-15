@@ -293,7 +293,7 @@ public class ContentType {
    * @param defaultCharset
    * @return
    */
-  public ContentType receiveWithCharsetParameter(String defaultCharset) {
+  public ContentType receiveWithCharsetParameter(final String defaultCharset) {
     if (isContentTypeODataTextRelated()) {
       if (!parameters.containsKey(ContentType.PARAMETER_CHARSET)) {
         return ContentType.create(this, ContentType.PARAMETER_CHARSET, defaultCharset);

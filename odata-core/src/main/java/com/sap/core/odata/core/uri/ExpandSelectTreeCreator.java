@@ -84,7 +84,7 @@ public class ExpandSelectTreeCreator {
     Map<String, ExpandSelectTreeNode> links = node.getLinks();
     Set<Entry<String, ExpandSelectTreeNode>> linkEntries = links.entrySet();
     List<String> toRemove = new ArrayList<String>();
-    
+
     for (Entry<String, ExpandSelectTreeNode> entry : linkEntries) {
       ExpandSelectTreeNodeImpl subNode = (ExpandSelectTreeNodeImpl) entry.getValue();
       if (subNode.isExpanded() && node.isExplicitlySelected()) {
@@ -96,13 +96,12 @@ public class ExpandSelectTreeCreator {
         toRemove.add(entry.getKey());
       }
     }
-    
+
     //
     for (String key : toRemove) {
       node.removeLink(key);
     }
   }
-
 
   private void createSelectTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     for (SelectItem item : initialSelect) {

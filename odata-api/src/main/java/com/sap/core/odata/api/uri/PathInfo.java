@@ -27,7 +27,7 @@ public interface PathInfo {
    * @return absolute base URI of the request
    */
   URI getServiceRoot();
-  
+
   /**
    * Get the absolute request URI including any query parameters.
    * @return the absolute request URI

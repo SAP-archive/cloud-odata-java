@@ -18,7 +18,7 @@ public class EdmProviderFactory {
    * @param validate true if semantic checks for metadata document input stream shall be done
    * @return an instance of EdmProvider
    */
-  public static EdmProvider getEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException {
+  public static EdmProvider getEdmProvider(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
     return RuntimeDelegate.createEdmProvider(metadataXml, validate);
   }
 }

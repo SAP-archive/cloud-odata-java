@@ -62,7 +62,7 @@ public class JsonEntityConsumer {
 
       JsonFeedConsumer jfc = new JsonFeedConsumer(reader, eia, readProperties);
       ODataFeed result = jfc.readFeedStandalone();
-      
+
       return result;
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);

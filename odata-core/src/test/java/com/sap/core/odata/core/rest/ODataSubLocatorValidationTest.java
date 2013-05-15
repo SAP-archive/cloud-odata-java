@@ -256,7 +256,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     mockODataService(serviceFactory);
 
     param.setServiceFactory(serviceFactory);
-    
+
     Request request = mock(Request.class);
     param.setRequest(request);
 

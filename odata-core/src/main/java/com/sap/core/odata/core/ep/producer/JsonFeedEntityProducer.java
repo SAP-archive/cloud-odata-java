@@ -46,10 +46,11 @@ public class JsonFeedEntityProducer {
       JsonEntryEntityProducer entryProducer = new JsonEntryEntityProducer(properties);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         entryProducer.append(writer, entityInfo, entryData, false);
       }
       jsonStreamWriter.endArray();
@@ -63,8 +64,9 @@ public class JsonFeedEntityProducer {
         jsonStreamWriter.namedStringValue(FormatJson.NEXT, properties.getNextLink());
       }
 
-      if (isRootElement)
+      if (isRootElement) {
         jsonStreamWriter.endObject();
+      }
 
       jsonStreamWriter.endObject();
     } catch (final IOException e) {

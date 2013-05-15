@@ -110,9 +110,9 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
   @Override
   public EdmSimpleType getEdmSimpleTypeInstance(final EdmSimpleTypeKind typeKind) {
-	  return getEdmSimpleType(typeKind);
+    return getEdmSimpleType(typeKind);
   }
-  
+
   public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind typeKind) {
 
     switch (typeKind) {

@@ -43,17 +43,19 @@ public class JsonLinksEntityProducer {
       final String serviceRoot = properties.getServiceRoot().toASCIIString();
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         JsonLinkEntityProducer.appendUri(jsonStreamWriter,
             (serviceRoot == null ? "" : serviceRoot) + AtomEntryEntityProducer.createSelfLink(entityInfo, entryData, null));
       }
       jsonStreamWriter.endArray();
 
-      if (properties.getInlineCountType() == InlineCount.ALLPAGES)
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         jsonStreamWriter.endObject();
+      }
 
       jsonStreamWriter.endObject();
     } catch (final IOException e) {

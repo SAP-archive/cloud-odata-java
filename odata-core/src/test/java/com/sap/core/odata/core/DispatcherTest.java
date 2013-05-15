@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -125,7 +126,7 @@ public class DispatcherTest extends BaseTest {
     when(service.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
     when(service.getEntityMediaProcessor()).thenReturn(entityMedia);
     //
-    when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(Arrays.asList("*/*"));
+    when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList("*/*"));
 
     return service;
   }
@@ -439,7 +440,7 @@ public class DispatcherTest extends BaseTest {
     }
     List<String> acceptedContentTypes = Arrays.asList(requestType);
 
-    Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(Arrays.asList(supportedType));
+    Mockito.when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList(supportedType));
     EntitySetProcessor processor = Mockito.mock(EntitySetProcessor.class);
     ODataResponse response = Mockito.mock(ODataResponse.class);
     Mockito.when(response.getContentHeader()).thenReturn(supportedType);

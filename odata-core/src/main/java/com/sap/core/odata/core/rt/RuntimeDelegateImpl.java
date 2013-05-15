@@ -64,7 +64,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException {
+  protected EdmProvider createEdmProvider(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
     return new EdmxProvider().parse(metadataXml, validate);
   }
 }

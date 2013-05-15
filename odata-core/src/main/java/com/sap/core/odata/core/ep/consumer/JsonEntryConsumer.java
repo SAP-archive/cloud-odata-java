@@ -62,8 +62,8 @@ public class JsonEntryConsumer {
         readEntryContent();
       }
       reader.endObject();
-      
-      if(reader.peek() != JsonToken.END_DOCUMENT){
+
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
         //TODO: CA Messagetext
         throw new EntityProviderException(EntityProviderException.COMMON);
       }
@@ -263,19 +263,19 @@ public class JsonEntryConsumer {
     }
   }
 
-  private void updateExpandSelectTree(String navigationPropertyName, ODataFeed feed) {
-   List<ODataEntry> entries = feed.getEntries();
-   if(entries.size() > 0){
-     updateExpandSelectTree(navigationPropertyName, entries.get(0));
-   }else{
-     expandSelectTree.setExpanded();
-     expandSelectTree.setExplicitlySelected();
-     expandSelectTree.putLink(navigationPropertyName, new ExpandSelectTreeNodeImpl());
-   }
-    
+  private void updateExpandSelectTree(final String navigationPropertyName, final ODataFeed feed) {
+    List<ODataEntry> entries = feed.getEntries();
+    if (entries.size() > 0) {
+      updateExpandSelectTree(navigationPropertyName, entries.get(0));
+    } else {
+      expandSelectTree.setExpanded();
+      expandSelectTree.setExplicitlySelected();
+      expandSelectTree.putLink(navigationPropertyName, new ExpandSelectTreeNodeImpl());
+    }
+
   }
 
-  private void updateExpandSelectTree(final String navigationPropertyName, ODataEntry entry) {
+  private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {
     expandSelectTree.setExpanded();
     expandSelectTree.setExplicitlySelected();
     //TODO: CA get rid of cast

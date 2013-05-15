@@ -58,14 +58,14 @@ public enum EdmSimpleTypeKind {
    * @throws EdmLiteralException if the literal is malformed
    */
   public static EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
-	return SimpleTypeFacadeHolder.instance.parseUriLiteral(uriLiteral);
+    return SimpleTypeFacadeHolder.instance.parseUriLiteral(uriLiteral);
   }
-  
+
   /**
    * Cached access to {@link EdmSimpleTypeFacade} which is used i.a. for {@link EdmSimpleType} instance creation 
    * or parsing of {@link EdmLiteral}s.
    */
   private static class SimpleTypeFacadeHolder {
-	  static final EdmSimpleTypeFacade instance = RuntimeDelegate.getSimpleTypeFacade();
+    static final EdmSimpleTypeFacade instance = RuntimeDelegate.getSimpleTypeFacade();
   }
 }

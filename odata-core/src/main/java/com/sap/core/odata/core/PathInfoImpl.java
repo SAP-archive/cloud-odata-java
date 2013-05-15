@@ -48,8 +48,8 @@ public class PathInfoImpl implements PathInfo {
   public URI getRequestUri() {
     return requestUri;
   }
-  
-  public void setRequestUri(URI requestUri){
+
+  public void setRequestUri(final URI requestUri) {
     this.requestUri = requestUri;
   }
 }
