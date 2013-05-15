@@ -22,13 +22,12 @@ public class EdmDateTime extends AbstractSimpleType {
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
-  private static final SimpleDateFormat  DATE_FORMAT;
+  private static final SimpleDateFormat DATE_FORMAT;
   static {
     DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
   }
 
-  
   public static EdmDateTime getInstance() {
     return instance;
   }
@@ -68,15 +67,13 @@ public class EdmDateTime extends AbstractSimpleType {
     }
 
     Calendar calendarValue;
-    if (literalKind == EdmLiteralKind.URI) {
-      if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'")) {
+    if (literalKind == EdmLiteralKind.URI)
+      if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
         calendarValue = parseLiteral(value.substring(9, value.length() - 1), facets);
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
-    } else {
+    else
       calendarValue = parseLiteral(value, facets);
-    }
 
     if (returnType.isAssignableFrom(Calendar.class)) {
       return returnType.cast(calendarValue);
@@ -95,9 +92,8 @@ public class EdmDateTime extends AbstractSimpleType {
     dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
 
     final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches()) {
+    if (!matcher.matches())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
 
     dateTimeValue.set(
         Short.parseShort(matcher.group(1)),
@@ -105,24 +101,19 @@ public class EdmDateTime extends AbstractSimpleType {
         Byte.parseByte(matcher.group(3)),
         Byte.parseByte(matcher.group(4)),
         Byte.parseByte(matcher.group(5)));
-    if (matcher.group(6) != null) {
+    if (matcher.group(6) != null)
       dateTimeValue.set(Calendar.SECOND, Byte.parseByte(matcher.group(6)));
-    }
 
     if (matcher.group(7) != null) {
       String milliSeconds = matcher.group(7).substring(1);
-      while (milliSeconds.endsWith("0")) {
+      while (milliSeconds.endsWith("0"))
         milliSeconds = milliSeconds.substring(0, milliSeconds.length() - 1);
-      }
-      if (milliSeconds.length() > 3) {
+      if (milliSeconds.length() > 3)
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length()) {
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-      while (milliSeconds.length() < 3) {
+      while (milliSeconds.length() < 3)
         milliSeconds += "0";
-      }
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
 
@@ -142,7 +133,7 @@ public class EdmDateTime extends AbstractSimpleType {
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    final long timeInMillis;
+    long timeInMillis;
     if (value instanceof Date) {
       timeInMillis = ((Date) value).getTime();
     } else if (value instanceof Calendar) {
@@ -153,30 +144,25 @@ public class EdmDateTime extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    if (literalKind == EdmLiteralKind.JSON) {
+    if (literalKind == EdmLiteralKind.JSON)
       return "/Date(" + timeInMillis + ")/";
-    }
+
     String result = DATE_FORMAT.format(timeInMillis);
 
-    if (facets == null || facets.getPrecision() == null) {
-      while (result.endsWith("0")) {
+    if (facets == null || facets.getPrecision() == null)
+      while (result.endsWith("0"))
         result = result.substring(0, result.length() - 1);
-      }
-    } else if (facets.getPrecision() <= 3) {
-      if (result.endsWith("000".substring(0, 3 - facets.getPrecision()))) {
+    else if (facets.getPrecision() <= 3)
+      if (result.endsWith("000".substring(0, 3 - facets.getPrecision())))
         result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-    } else {
-      for (int i = 4; i <= facets.getPrecision(); i++) {
+    else
+      for (int i = 4; i <= facets.getPrecision(); i++)
         result += "0";
-      }
-    }
 
-    if (result.endsWith(".")) {
+    if (result.endsWith("."))
       result = result.substring(0, result.length() - 1);
-    }
 
     return result;
   }

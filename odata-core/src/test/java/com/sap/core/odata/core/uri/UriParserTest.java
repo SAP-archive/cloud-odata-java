@@ -764,10 +764,10 @@ public class UriParserTest extends BaseTest {
 
   @Test
   public void parsePossibleQueryOptions() throws Exception {
-    UriInfoImpl result = parse("EmployeeSearch?q='a'&sap-client=100&sap-ds-debug=true");
+    UriInfoImpl result = parse("EmployeeSearch?q='a'&client=100&odata-debug=true");
     assertEquals(2, result.getCustomQueryOptions().size());
-    assertEquals("100", result.getCustomQueryOptions().get("sap-client"));
-    assertEquals("true", result.getCustomQueryOptions().get("sap-ds-debug"));
+    assertEquals("100", result.getCustomQueryOptions().get("client"));
+    assertEquals("true", result.getCustomQueryOptions().get("odata-debug"));
   }
 
   @Test
