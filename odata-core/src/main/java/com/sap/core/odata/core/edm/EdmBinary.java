@@ -29,13 +29,11 @@ public class EdmBinary extends AbstractSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null) {
+    if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
-    }
 
-    if (literalKind == null) {
+    if (literalKind == null)
       return false;
-    }
 
     return validateLiteral(value, literalKind) && validateMaxLength(value, literalKind, facets);
   }
@@ -48,29 +46,29 @@ public class EdmBinary extends AbstractSimpleType {
   private static boolean validateMaxLength(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     return facets == null || facets.getMaxLength() == null ? true :
         literalKind == EdmLiteralKind.URI ?
-            facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8) :
-            facets.getMaxLength() * 4 >= value.length() * 3;
+            // In URI representation, each byte is represented as two hexadecimal digits;
+            // additionally, we have to account for the prefix and the surrounding "'"s.
+            facets.getMaxLength() >= (value.length() - (value.startsWith("X") ? 3 : 8)) / 2 :
+            // In default representation, every three bytes are represented as four base-64 characters.
+            facets.getMaxLength() >= value.length() * 3 / 4;
   }
 
   @Override
   protected <T> T internalValueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (!validateLiteral(value, literalKind)) {
+    if (!validateLiteral(value, literalKind))
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
-    if (!validateMaxLength(value, literalKind, facets)) {
+    if (!validateMaxLength(value, literalKind, facets))
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-    }
 
     byte[] result;
-    if (literalKind == EdmLiteralKind.URI) {
+    if (literalKind == EdmLiteralKind.URI)
       try {
         result = Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
       } catch (final DecoderException e) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
       }
-    } else {
+    else
       result = Base64.decodeBase64(value);
-    }
 
     if (returnType.isAssignableFrom(byte[].class)) {
       return returnType.cast(result);
