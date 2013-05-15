@@ -51,7 +51,7 @@ public class ServiceDocWithExtensionParserTest {
   }
 
   @Test
-  public void testExtensions() throws EntityProviderException, IOException {
+  public void testExtensionsWithAttributes() throws EntityProviderException, IOException {
     ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
     ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
     assertNotNull(svcDocument);
@@ -65,12 +65,6 @@ public class ServiceDocWithExtensionParserTest {
       assertEquals("href", extElement.getAttributes().get(1).getName());
     }
 
-  }
-
-  @Test(expected = EntityProviderException.class)
-  public void testSvcWithoutWorkspaces() throws EntityProviderException, IOException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    svcDocumentParser.readServiceDokument(createStreamReader("/invalidSvcExample.xml"));
   }
 
   @Test
@@ -123,7 +117,7 @@ public class ServiceDocWithExtensionParserTest {
   }
 
   @Test
-  public void testExtensions2() throws EntityProviderException, IOException {
+  public void testNestedExtensions() throws EntityProviderException, IOException {
     ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
     ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
     assertNotNull(svcDocument);
@@ -147,7 +141,18 @@ public class ServiceDocWithExtensionParserTest {
         }
       }
     }
+  }
 
+  @Test(expected = EntityProviderException.class)
+  public void testWithoutTitle() throws EntityProviderException, IOException {
+    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
+    svcDocumentParser.readServiceDokument(createStreamReader("/svcDocument.xml"));
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testSvcWithoutWorkspaces() throws EntityProviderException, IOException {
+    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
+    svcDocumentParser.readServiceDokument(createStreamReader("/invalidSvcExample.xml"));
   }
 
   private XMLStreamReader createStreamReader(final String fileName) throws EntityProviderException, IOException {
