@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -255,6 +256,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     mockODataService(serviceFactory);
 
     param.setServiceFactory(serviceFactory);
+    
+    Request request = mock(Request.class);
+    param.setRequest(request);
 
     locator.initialize(param);
   }

@@ -181,6 +181,8 @@ public final class ODataSubLocator implements ODataLocator {
     context.setService(service);
     service.getProcessor().setContext(context);
 
+    context.setHttpMethod(param.request.getMethod());
+
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service, new ContentNegotiator());
   }
