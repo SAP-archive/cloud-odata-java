@@ -200,7 +200,7 @@ public class ContentType {
    */
   public static List<ContentType> create(final List<String> contentTypeStrings) {
     List<ContentType> contentTypes = new ArrayList<ContentType>(contentTypeStrings.size());
-    for (String contentTypeString: contentTypeStrings) {
+    for (String contentTypeString : contentTypeStrings) {
       contentTypes.add(create(contentTypeString));
     }
     return contentTypes;
@@ -222,7 +222,6 @@ public class ContentType {
       return null;
     }
   }
-
 
   /**
    * 
@@ -294,7 +293,7 @@ public class ContentType {
    * @param defaultCharset
    * @return
    */
-  public ContentType receiveWithCharsetParameter(String defaultCharset) {
+  public ContentType receiveWithCharsetParameter(final String defaultCharset) {
     if (isContentTypeODataTextRelated()) {
       if (!parameters.containsKey(ContentType.PARAMETER_CHARSET)) {
         return ContentType.create(this, ContentType.PARAMETER_CHARSET, defaultCharset);
@@ -308,9 +307,9 @@ public class ContentType {
    * @return <code>true</code> if this {@link ContentType} is text related (in the view of OData)
    */
   public boolean isContentTypeODataTextRelated() {
-    return (ContentType.TEXT_PLAIN.equals(this) 
-        || (getODataFormat() == ODataFormat.XML) 
-        || (getODataFormat() == ODataFormat.ATOM) 
+    return (ContentType.TEXT_PLAIN.equals(this)
+        || (getODataFormat() == ODataFormat.XML)
+        || (getODataFormat() == ODataFormat.ATOM)
         || (getODataFormat() == ODataFormat.JSON));
   }
 

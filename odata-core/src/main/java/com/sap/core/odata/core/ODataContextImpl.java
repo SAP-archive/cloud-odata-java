@@ -10,6 +10,7 @@ import java.util.Map;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
 
 /**
@@ -17,13 +18,13 @@ import com.sap.core.odata.api.uri.PathInfo;
  */
 public class ODataContextImpl implements ODataContext {
 
+  private static final String ODATA_REQUEST = "~odataRequest";
   private static final String DEBUG_MODE = "~debugMode";
   private static final String SERVICE = "~service";
   private static final String PATH_INFO = "~pathInfo";
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
 
   private final Map<String, Object> parameterTable = new HashMap<String, Object>();
-  private final Map<String, String> requestHeader = new HashMap<String, String>();
 
   private List<Locale> acceptableLanguages;
 
@@ -64,7 +65,7 @@ public class ODataContextImpl implements ODataContext {
     return (ODataService) getParameter(SERVICE);
   }
 
-  public void setUriInfo(final PathInfo uriInfo) {
+  public void setPathInfo(final PathInfo uriInfo) {
     setParameter(PATH_INFO, uriInfo);
   }
 
@@ -165,15 +166,12 @@ public class ODataContextImpl implements ODataContext {
     }
   }
 
-  public void setHttpRequestHeader(final String name, final String value) {
-    requestHeader.put(name, value);
-  }
-
   @Override
   public String getHttpRequestHeader(final String name) {
-    for (final String headerName : requestHeader.keySet()) {
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    for (final String headerName : request.getHeaders().keySet()) {
       if (headerName.equalsIgnoreCase(name)) {
-        return requestHeader.get(headerName);
+        return request.getHeaders().get(headerName);
       }
     }
     return null;
@@ -181,7 +179,8 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public Map<String, String> getHttpRequestHeaders() {
-    return Collections.unmodifiableMap(requestHeader);
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    return request.getHeaders();
   }
 
   @Override
@@ -196,6 +195,10 @@ public class ODataContextImpl implements ODataContext {
       final Locale wildcard = new Locale("*");
       this.acceptableLanguages.add(wildcard);
     }
+  }
+
+  public void setRequest(final ODataRequest request) {
+    setParameter(ODATA_REQUEST, request);
   }
 
 }

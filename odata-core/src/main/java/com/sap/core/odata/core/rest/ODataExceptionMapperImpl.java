@@ -88,14 +88,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       }
 
       //Convert ODataResponse to JAXRS Response
-      return Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
+      return Util.convertResponse(oDataResponse);
 
     } catch (Exception e) {
       //Exception mapper has to be robust thus we log the exception and just give back a generic error
       ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
           .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
-      return Util.convertResponse(response, response.getStatus(), null, null);
+      return Util.convertResponse(response);
     }
   }
 
@@ -151,7 +151,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
-    if (toHandleException instanceof NotAllowedException)
+    if (toHandleException instanceof NotAllowedException) {
       // RFC 2616, 5.1.1: " An origin server SHOULD return the status code
       // 405 (Method Not Allowed) if the method is known by the origin server
       // but not allowed for the requested resource, and 501 (Not Implemented)
@@ -160,6 +160,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       // switch to 501 here for not-allowed exceptions thrown directly from
       // JAX-RS implementations.
       context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
+    }
     context.setErrorCode(null);
     context.setMessage(toHandleException.getMessage());
     context.setLocale(DEFAULT_RESPONSE_LOCALE);

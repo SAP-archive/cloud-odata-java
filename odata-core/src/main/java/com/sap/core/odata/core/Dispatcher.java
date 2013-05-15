@@ -52,11 +52,11 @@ public class Dispatcher {
     final String acceptContentType = contentNegotiator.doContentNegotiation(uriInfo, acceptHeaderContentTypes, getSupportedContentTypes(uriInfo));
     return doDispatch(method, uriInfo, content, requestContentType, acceptContentType);
   }
-  
+
   private void preDispatchValidation(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String requestContentType) throws ODataException {
     validateUriMethod(method, uriInfo);
     checkFunctionImport(method, uriInfo);
-    
+
     if (method != ODataHttpMethod.GET) {
       checkNotGetSystemQueryOptions(method, uriInfo);
       checkNumberOfNavigationSegments(uriInfo);
@@ -68,7 +68,7 @@ public class Dispatcher {
       }
     }
   }
-  
+
   private void checkFunctionImport(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     if (uriInfo.getFunctionImport() != null
         && uriInfo.getFunctionImport().getHttpMethod() != null
@@ -194,8 +194,9 @@ public class Dispatcher {
       break;
     }
   }
+
   private EdmProperty getProperty(final UriInfo uriInfo) {
-    if(uriInfo.getPropertyPath() == null || uriInfo.getPropertyPath().isEmpty()) {
+    if (uriInfo.getPropertyPath() == null || uriInfo.getPropertyPath().isEmpty()) {
       return null;
     }
     return uriInfo.getPropertyPath().get(uriInfo.getPropertyPath().size() - 1);
@@ -261,9 +262,9 @@ public class Dispatcher {
     }
   }
 
-  private List<String> getSupportedContentTypes(UriInfoImpl uriInfo) throws ODataException {
+  private List<String> getSupportedContentTypes(final UriInfoImpl uriInfo) throws ODataException {
     final Class<? extends ODataProcessor> processorFeature = mapUriTypeToProcessorFeature(uriInfo);
-    
+
     return service.getSupportedContentTypes(processorFeature);
   }
 
@@ -288,14 +289,14 @@ public class Dispatcher {
       break;
 
     case URI2:
-      if(method == ODataHttpMethod.POST) {
+      if (method == ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
 
     case URI3:
       if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT
-            && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
@@ -306,20 +307,20 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       } else if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT && method != ODataHttpMethod.DELETE
           && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
 
     case URI6A:
-      if(method == ODataHttpMethod.POST) {
+      if (method == ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       } else if (method != ODataHttpMethod.GET) {
         throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
       }
       break;
-      
+
     case URI7A:
-      if(method == ODataHttpMethod.POST) {
+      if (method == ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
@@ -329,7 +330,7 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
-      
+
     case URI8:
       if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -373,7 +374,7 @@ public class Dispatcher {
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriInfo.getUriType());
     }
   }
-  
+
   private ODataResponse doDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:

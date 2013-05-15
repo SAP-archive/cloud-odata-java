@@ -127,13 +127,13 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardType() {
     ContentType mt = ContentType.create("*", "subtype");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardTypeSingleFormat() {
     ContentType mt = ContentType.create("*/subtype");
@@ -158,7 +158,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("type/*", mt.toString());
     assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
   }
-  
+
   @Test
   public void testContentTypeCreationAtom() {
     ContentType mt = ContentType.create("application", "atom+xml");
@@ -244,13 +244,13 @@ public class ContentTypeTest extends BaseTest {
     List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json;key=value"));
 
     assertEquals(3, types.size());
-    
+
     ContentType first = types.get(0);
     assertEquals("type", first.getType());
     assertEquals("subtype", first.getSubtype());
     assertEquals("type/subtype", first.toString());
     assertEquals(ODataFormat.CUSTOM, first.getODataFormat());
-    
+
     ContentType second = types.get(1);
     assertEquals("application", second.getType());
     assertEquals("xml", second.getSubtype());
@@ -265,19 +265,19 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(ODataFormat.JSON, third.getODataFormat());
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testContentTypeCreationFromStringsFail() {
     List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json/FAIL;key=value"));
 
     assertEquals(3, types.size());
   }
-  
+
   @Test
   public void testEnsureCharsetParameter() {
     ContentType mt = ContentType.create("application/json");
 
     mt = mt.receiveWithCharsetParameter("utf-8");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json; charset=utf-8", mt.toString());
@@ -290,7 +290,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType mt = ContentType.create("application/xml");
 
     mt = mt.receiveWithCharsetParameter("iso-8859-1");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
     assertEquals("application/xml; charset=iso-8859-1", mt.toString());
@@ -303,7 +303,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType mt = ContentType.create("application/json;charset=utf-8");
 
     mt = mt.receiveWithCharsetParameter("utf-8");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json; charset=utf-8", mt.toString());
@@ -316,7 +316,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType mt = ContentType.create("application/json;charset=utf-8");
 
     mt = mt.receiveWithCharsetParameter("iso-8859-1");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json; charset=utf-8", mt.toString());

@@ -19,10 +19,9 @@ public class ContentNegotiator {
   private static final String URI_INFO_FOMRAT_XML = "xml";
   static final String DEFAULT_CHARSET = "utf-8";
 
-  public ContentNegotiator() {
-  }
-  
-  public String doContentNegotiation(final UriInfoImpl uriInfo, List<String> acceptHeaderContentTypes, List<String> supportedContentTypes) throws ODataException {
+  public ContentNegotiator() {}
+
+  public String doContentNegotiation(final UriInfoImpl uriInfo, final List<String> acceptHeaderContentTypes, final List<String> supportedContentTypes) throws ODataException {
     ContentType contentType;
     if (uriInfo.getFormat() == null) {
       contentType = doContentNegotiationForAcceptHeader(acceptHeaderContentTypes, ContentType.create(supportedContentTypes));
@@ -36,7 +35,7 @@ public class ContentNegotiator {
     return contentType.toContentTypeString();
   }
 
-  private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo, List<ContentType> supportedContentTypes) throws ODataException {
+  private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo, final List<ContentType> supportedContentTypes) throws ODataException {
     validateFormatQuery(uriInfo);
     ContentType formatContentType = mapFormat(uriInfo);
     formatContentType = formatContentType.receiveWithCharsetParameter(DEFAULT_CHARSET);
@@ -49,7 +48,7 @@ public class ContentNegotiator {
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(uriInfo.getFormat()));
   }
-  
+
   /**
    * Validates that <code>dollar format query/syntax</code> is correct for further processing.
    * If some validation error occurs an exception is thrown.
@@ -62,7 +61,6 @@ public class ContentNegotiator {
       throw new ODataBadRequestException(ODataBadRequestException.INVALID_SYNTAX);
     }
   }
-
 
   private ContentType mapFormat(final UriInfoImpl uriInfo) {
     final String format = uriInfo.getFormat();
@@ -81,13 +79,13 @@ public class ContentNegotiator {
     return ContentType.create(format);
   }
 
-  private ContentType doContentNegotiationForAcceptHeader(List<String> acceptHeaderContentTypes, List<ContentType> supportedContentTypes) throws ODataException {
+  private ContentType doContentNegotiationForAcceptHeader(final List<String> acceptHeaderContentTypes, final List<ContentType> supportedContentTypes) throws ODataException {
     return contentNegotiation(extractAcceptHeaders(acceptHeaderContentTypes), supportedContentTypes);
   }
-  
-  private List<ContentType> extractAcceptHeaders(List<String> acceptHeaderValues) throws ODataBadRequestException {
+
+  private List<ContentType> extractAcceptHeaders(final List<String> acceptHeaderValues) throws ODataBadRequestException {
     final List<ContentType> mediaTypes = new ArrayList<ContentType>();
-    if(acceptHeaderValues != null) {
+    if (acceptHeaderValues != null) {
       for (final String mediaType : acceptHeaderValues) {
         try {
           mediaTypes.add(ContentType.create(mediaType.toString()));
@@ -98,10 +96,9 @@ public class ContentNegotiator {
       }
     }
 
-
     return mediaTypes;
   }
-  
+
   ContentType contentNegotiation(final List<ContentType> acceptedContentTypes, final List<ContentType> supportedContentTypes) throws ODataException {
     final Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
 
@@ -121,6 +118,5 @@ public class ContentNegotiator {
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_ACCEPT_HEADER.addContent(acceptedContentTypes.toString()));
   }
-  
 
 }

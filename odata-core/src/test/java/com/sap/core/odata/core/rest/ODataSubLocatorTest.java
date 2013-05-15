@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -29,6 +30,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 /**
  * @author SAP AG
  */
+@Ignore
 public class ODataSubLocatorTest extends BaseTest {
 
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)

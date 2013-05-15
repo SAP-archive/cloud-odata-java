@@ -1,13 +1,13 @@
 package com.sap.core.odata.core;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.processor.ODataRequest;
+import com.sap.core.odata.api.uri.PathInfo;
 
 /**
  * 
@@ -21,29 +21,29 @@ public class ODataRequestImpl implements ODataRequest {
 
   private InputStream body;
 
-  private URI uri;
+  private PathInfo pathInfo;
 
-  public void setMethod(ODataHttpMethod method) {
+  public void setMethod(final ODataHttpMethod method) {
     this.method = method;
   }
 
-  public void setHeaders(Map<String, String> headers) {
+  public void setHeaders(final Map<String, String> headers) {
     this.headers = headers;
   }
 
-  public void setBody(InputStream body) {
+  public void setBody(final InputStream body) {
     this.body = body;
   }
 
-  public void setUri(URI uri) {
-    this.uri = uri;
+  public void setPathInfo(final PathInfo pathInfo) {
+    this.pathInfo = pathInfo;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public String getHeaderValue(String name) {
+  public String getHeaderValue(final String name) {
     return headers.get(name);
   }
 
@@ -67,16 +67,16 @@ public class ODataRequestImpl implements ODataRequest {
    * {@inheritDoc}
    */
   @Override
-  public URI getUri() {
-    return uri;
+  public ODataHttpMethod getMethod() {
+    return method;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ODataHttpMethod getMethod() {
-    return method;
+  public PathInfo getPathInfo() {
+    return pathInfo;
   }
 
 }

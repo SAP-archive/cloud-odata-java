@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -69,6 +70,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * Tests for the validation of URI path, query options, and request-body content type.
  * @author SAP AG
  */
+@Ignore
 public class ODataSubLocatorValidationTest extends BaseTest {
 
   private Edm edm = null;

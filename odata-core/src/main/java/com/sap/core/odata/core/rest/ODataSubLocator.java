@@ -28,12 +28,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
-import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpHeaders;
-import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -41,38 +37,21 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
-import com.sap.core.odata.core.ContentNegotiator;
-import com.sap.core.odata.core.Dispatcher;
-import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
+import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.Decoder;
-import com.sap.core.odata.core.uri.UriInfoImpl;
-import com.sap.core.odata.core.uri.UriParserImpl;
-import com.sap.core.odata.core.uri.UriType;
 
 /**
  * @author SAP AG
  */
 public final class ODataSubLocator implements ODataLocator {
 
-  private ODataService service;
+  private ODataRequestImpl request;
 
-  private Dispatcher dispatcher;
-
-  private UriParserImpl uriParser;
-
-  private final ODataContextImpl context = new ODataContextImpl();
-
-  private Map<String, String> queryParameters;
-
-  private List<String> acceptHeaderContentTypes;
-
-  private InputStream requestContent;
-  private ContentType requestContentTypeHeader;
+  private ODataRequestHandler requestHandler;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -149,61 +128,28 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
-    final String serverDataServiceVersion = getServerDataServiceVersion();
-    validateDataServiceVersion(serverDataServiceVersion);
-    final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
-    final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
+    request.setMethod(method);
+    final ODataResponse odataResponse = requestHandler.handleHttpMethod(request);
 
-    final String requestContentType = (requestContentTypeHeader == null ? null : requestContentTypeHeader.toContentTypeString());
-
-    final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptHeaderContentTypes);
-
-    final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
-    final HttpStatusCodes s = odataResponse.getStatus() == null ? method == ODataHttpMethod.POST ? uriInfo.getUriType() == UriType.URI9 ? HttpStatusCodes.OK : uriInfo.getUriType() == UriType.URI7B ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.CREATED : method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE || method == ODataHttpMethod.DELETE ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.OK : odataResponse.getStatus();
-    final Response response = Util.convertResponse(odataResponse, s, serverDataServiceVersion, location);
+    final Response response = Util.convertResponse(odataResponse);
 
     return response;
   }
 
   public void initialize(final InitParameter param) throws ODataException {
-    fillRequestHeader(param.getHttpHeaders());
-    context.setUriInfo(buildODataUriInfo(param));
+    requestHandler = new ODataRequestHandler(param.getServiceFactory());
 
-    queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
+    request = new ODataRequestImpl();
 
-    acceptHeaderContentTypes = extractAcceptHeaders(param);
-    requestContent = contentAsStream(extractRequestContent(param));
-    requestContentTypeHeader = extractRequestContentType(param);
+    request.setHeaders(extractRequestHeaders(param.getHttpHeaders()));
+    request.setPathInfo(buildODataPathInfo(param));
+    request.setBody(contentAsStream(extractRequestContent(param)));
 
-    context.setAcceptableLanguages(param.httpHeaders.getAcceptableLanguages());
-    service = param.getServiceFactory().createService(context);
-    context.setService(service);
-    service.getProcessor().setContext(context);
+    requestHandler.setQueryParameters(convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()));
+    requestHandler.setAcceptHeaderContentTypes(extractAcceptHeaders(param));
+    requestHandler.setRequestContentType(extractRequestContentType(param));
+    requestHandler.setAcceptableLanguages(param.httpHeaders.getAcceptableLanguages());
 
-    uriParser = new UriParserImpl(service.getEntityDataModel());
-    dispatcher = new Dispatcher(service, new ContentNegotiator());
-  }
-
-  String getServerDataServiceVersion() throws ODataException {
-    String serverDataServiceVersion = ODataServiceVersion.V20;
-    if (service.getVersion() != null) {
-      serverDataServiceVersion = service.getVersion();
-    }
-    return serverDataServiceVersion;
-  }
-
-  private void validateDataServiceVersion(final String serverDataServiceVersion) throws ODataException {
-    final String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
-    if (requestDataServiceVersion != null) {
-      try {
-        final boolean isValid = ODataServiceVersion.validateDataServiceVersion(requestDataServiceVersion);
-        if (!isValid || ODataServiceVersion.isBiggerThan(requestDataServiceVersion, serverDataServiceVersion)) {
-          throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestDataServiceVersion.toString()));
-        }
-      } catch (final IllegalArgumentException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(requestDataServiceVersion), e);
-      }
-    }
   }
 
   private ContentType extractRequestContentType(final InitParameter param) throws ODataUnsupportedMediaTypeException {
@@ -273,29 +219,30 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
-  private void fillRequestHeader(final javax.ws.rs.core.HttpHeaders httpHeaders) {
+  private Map<String, String> extractRequestHeaders(final javax.ws.rs.core.HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
+    Map<String, String> headerMap = new HashMap<String, String>();
 
     for (final String key : headers.keySet()) {
       final String value = httpHeaders.getHeaderString(key);
-      context.setHttpRequestHeader(key, value);
+      headerMap.put(key, value);
     }
+    return headerMap;
   }
 
-  private PathInfo buildODataUriInfo(final InitParameter param) throws ODataException {
-    final PathInfoImpl pathInfo = new PathInfoImpl();
+  private PathInfoImpl buildODataPathInfo(final InitParameter param) throws ODataException {
 
-    splitPath(pathInfo, param);
+    final PathInfoImpl pathInfo = splitPath(param);
 
     final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
     pathInfo.setServiceRoot(uri);
 
-    context.setUriInfo(pathInfo);
-
     return pathInfo;
   }
 
-  private void splitPath(final PathInfoImpl pathInfo, final InitParameter param) throws ODataException {
+  private PathInfoImpl splitPath(final InitParameter param) throws ODataException {
+    final PathInfoImpl pathInfo = new PathInfoImpl();
+
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
 
@@ -326,6 +273,8 @@ public final class ODataSubLocator implements ODataLocator {
       }
     }
     pathInfo.setODataPathSegment(odataSegments);
+
+    return pathInfo;
   }
 
   private URI buildBaseUri(final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {

@@ -115,17 +115,19 @@ public class Encoder {
     try {
       for (byte utf8Byte : input.getBytes("UTF-8")) {
         final char character = (char) utf8Byte;
-        if (map.containsKey(character)) // case mapping
+        if (map.containsKey(character)) {
           resultStr.append(map.get(character));
-        else if (isUnreserved(character)) // case unreserved
+        } else if (isUnreserved(character)) {
           resultStr.append(character);
-        else if (isUnencoded(character)) // case unencoded as defined per constructor parameter
+        } else if (isUnencoded(character)) {
           resultStr.append(character);
-        else if (utf8Byte >= 0) // case other ASCII
+        } else if (utf8Byte >= 0) {
           resultStr.append(hex[utf8Byte]);
-        else
+        }
+        else {
           // case UTF-8 continuation byte
           resultStr.append(hex[256 + utf8Byte]); // index adjusted for the usage of signed bytes
+        }
       }
     } catch (final UnsupportedEncodingException e) { // should never happen; UTF-8 is always there
       return null;

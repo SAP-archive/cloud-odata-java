@@ -11,9 +11,10 @@ public class AbstractRefJsonTest extends AbstractRefTest {
   public StringMap<?> getStringMap(final String body) {
     Gson gson = new Gson();
     final StringMap<?> map = gson.fromJson(body, new TypeToken<StringMap<?>>() {}.getType());
-    if (map.get("d") instanceof StringMap<?>)
+    if (map.get("d") instanceof StringMap<?>) {
       return (StringMap<?>) map.get("d");
-    else
+    } else {
       return map;
+    }
   }
 }

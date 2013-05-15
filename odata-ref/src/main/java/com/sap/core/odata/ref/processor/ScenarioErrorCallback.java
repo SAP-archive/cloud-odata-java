@@ -20,8 +20,9 @@ public class ScenarioErrorCallback implements ODataErrorCallback {
 
   @Override
   public ODataResponse handleError(final ODataErrorContext context) throws ODataApplicationException {
-    if (context.getHttpStatus() == HttpStatusCodes.INTERNAL_SERVER_ERROR)
+    if (context.getHttpStatus() == HttpStatusCodes.INTERNAL_SERVER_ERROR) {
       LOG.error("Internal Server Error", context.getException());
+    }
 
     return EntityProvider.writeErrorDocument(context);
   }
