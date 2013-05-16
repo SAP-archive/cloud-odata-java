@@ -62,7 +62,7 @@ public class ServiceDocWithExtensionParserTest {
     ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
     assertNotNull(svcDocument);
     assertNotNull(svcDocument.getExtesionElements());
-    assertEquals(2,svcDocument.getExtesionElements().size());
+    assertEquals(2, svcDocument.getExtesionElements().size());
     for (ExtensionElement extElement : svcDocument.getExtesionElements()) {
       assertEquals("link", extElement.getName());
       assertEquals("atom", extElement.getPrefix());
