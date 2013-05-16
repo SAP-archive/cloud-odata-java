@@ -3,6 +3,7 @@ package com.sap.core.odata.core.rt;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.doc.ServiceDocumentParser;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -15,6 +16,7 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.ODataResponseImpl;
+import com.sap.core.odata.core.doc.ServiceDocWithExtensionParser;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
@@ -66,5 +68,9 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   @Override
   protected EdmProvider createEdmProvider(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
     return new EdmxProvider().parse(metadataXml, validate);
+  }
+
+  protected ServiceDocumentParser createServiceDocumentParser() {
+    return new ServiceDocWithExtensionParser();
   }
 }
