@@ -62,7 +62,6 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   protected ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return new ODataSingleProcessorService(provider, processor);
   }
-<<<<<<< HEAD
 
   @Override
   protected EdmProvider createEdmProvider(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
@@ -72,6 +71,4 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   protected ServiceDocumentParser createServiceDocumentParser() {
     return new ServiceDocWithExtensionParser();
   }
-=======
->>>>>>> add interface ServiceDocument to api
 }

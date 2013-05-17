@@ -6,8 +6,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.doc.ServiceDocument;
 import com.sap.core.odata.api.doc.AtomServiceDocument;
+import com.sap.core.odata.api.doc.ServiceDocument;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -171,18 +171,17 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     EdmProvider provider = new EdmxProvider().parse(inputStream, validate);
     return new EdmImplProv(provider);
   }
-  
+
   @Override
-  public AtomServiceDocument readServiceDocumentXml(final InputStream serviceDocumentXml) throws ServiceDocumentParserException{
+  public AtomServiceDocument readServiceDocumentXml(final InputStream serviceDocumentXml) throws ServiceDocumentParserException {
     AtomServiceDocumentParser parser = new AtomServiceDocumentParser();
-    return parser.parseXml( serviceDocumentXml);
+    return parser.parseXml(serviceDocumentXml);
   }
-  
+
   @Override
-  public ServiceDocument readServiceDocument(final InputStream serviceDocument /*, final String contentType*/) throws ServiceDocumentParserException{
-   // return create(contentType).readServiceDocument(serviceDocument);
+  public ServiceDocument readServiceDocument(final InputStream serviceDocument /*, final String contentType*/) throws ServiceDocumentParserException {
+    // return create(contentType).readServiceDocument(serviceDocument);
     return null;
   }
-  
 
 }

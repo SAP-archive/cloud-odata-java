@@ -7,7 +7,7 @@ import java.util.List;
  * <p>Service element is the container for service information associated with one or more Workspace. 
  * @author SAP AG
  */
-public interface AtomServiceDocument extends ServiceDocument{
+public interface AtomServiceDocument extends ServiceDocument {
 
   /**
    * Get the list of workspaces

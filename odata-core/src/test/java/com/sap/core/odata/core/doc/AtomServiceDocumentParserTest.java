@@ -22,8 +22,9 @@ import com.sap.core.odata.api.doc.ExtensionElement;
 import com.sap.core.odata.api.doc.Fixed;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.doc.Workspace;
+import com.sap.core.odata.api.edm.Edm;
 
-public class ServiceDocWithExtensionParserTest {
+public class AtomServiceDocumentParserTest {
   private static final String NAMESPACE_SAP = "http://www.sap.com/Protocols/SAPData";
   private static final String PREFIX_SAP = "sap";
 
@@ -160,6 +161,53 @@ public class ServiceDocWithExtensionParserTest {
   public void testSvcWithoutWorkspaces() throws IOException, ServiceDocumentParserException {
     AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
     svcDocumentParser.readServiceDokument(createStreamReader("/invalidSvcExample.xml"));
+  }
+
+  @Test
+  public void testServiceDocument3() throws IOException, ServiceDocumentParserException {
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/serviceDocExample.xml"));
+    assertNotNull(svcDocument);
+    assertNotNull(svcDocument.getWorkspaces());
+    for (Workspace workspace : svcDocument.getWorkspaces()) {
+      assertEquals("Data", workspace.getTitle().getText());
+      assertEquals(9, workspace.getCollections().size());
+      for (Collection collection : workspace.getCollections()) {
+        assertNotNull(collection.getHref());
+        if ("TravelagencyCollection".equals(collection.getHref())) {
+          assertEquals("TravelagencyCollection", collection.getTitle().getText());
+          assertEquals(2, collection.getCommonAttributes().getAttributes().size());
+          assertEquals("content-version", collection.getCommonAttributes().getAttributes().get(1).getName());
+          assertEquals(NAMESPACE_SAP, collection.getCommonAttributes().getAttributes().get(1).getNamespace());
+          assertEquals(PREFIX_SAP, collection.getCommonAttributes().getAttributes().get(1).getPrefix());
+          assertEquals("1", collection.getCommonAttributes().getAttributes().get(1).getText());
+          assertFalse(collection.getExtesionElements().isEmpty());
+          for (ExtensionElement extElement : collection.getExtesionElements()) {
+            if ("member-title".equals(extElement.getName())) {
+              assertEquals(PREFIX_SAP, extElement.getPrefix());
+              assertEquals(NAMESPACE_SAP, extElement.getNamespace());
+              assertEquals("Travelagency", extElement.getText());
+            } else if ("collectionLayout".equals(extElement.getName())) {
+              assertEquals("gp", extElement.getPrefix());
+              assertEquals("http://www.sap.com/Protocols/SAPData/GenericPlayer", extElement.getNamespace());
+              assertNotNull(extElement.getAttributes());
+              assertEquals(2, extElement.getAttributes().size());
+              assertEquals("display-order", extElement.getAttributes().get(0).getName());
+              assertEquals("0010", extElement.getAttributes().get(0).getText());
+              assertEquals("top-level", extElement.getAttributes().get(1).getName());
+              assertEquals("true", extElement.getAttributes().get(1).getText());
+            } else if ("link".equals(extElement.getName())) {
+              assertEquals(Edm.NAMESPACE_ATOM_2005, extElement.getNamespace());
+              assertEquals(4, extElement.getAttributes().size());
+              assertEquals("TravelagencyCollection/OpenSearchDescription.xml", extElement.getAttributes().get(0).getText());
+              assertEquals("href", extElement.getAttributes().get(0).getName());
+            } else {
+              fail();
+            }
+          }
+        }
+      }
+    }
   }
 
   private XMLStreamReader createStreamReader(final String fileName) throws ServiceDocumentParserException, IOException {

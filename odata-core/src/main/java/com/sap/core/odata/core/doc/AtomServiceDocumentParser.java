@@ -9,9 +9,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.doc.Fixed;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
-import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
@@ -58,9 +58,9 @@ public class AtomServiceDocumentParser {
     attribute.setBase(reader.getAttributeValue(null, FormatXml.XML_BASE));
     attribute.setLang(reader.getAttributeValue(null, FormatXml.XML_LANG));
     for (int i = 0; i < reader.getAttributeCount(); i++) {
-      if (!(FormatXml.XML_BASE.equals(reader.getAttributeLocalName(i)) && Edm.PREFIX_XML.equals(reader.getAttributePrefix(i)))
+      if (!(FormatXml.XML_BASE.equals(reader.getAttributeLocalName(i)) && Edm.PREFIX_XML.equals(reader.getAttributePrefix(i))
           || (FormatXml.XML_LANG.equals(reader.getAttributeLocalName(i)) && Edm.PREFIX_XML.equals(reader.getAttributePrefix(i)))
-          || ("local".equals(reader.getAttributeNamespace(i)) || DEFAULT_PREFIX.equals(reader.getAttributePrefix(i)))) {
+          || ("local".equals(reader.getAttributeNamespace(i)) || DEFAULT_PREFIX.equals(reader.getAttributePrefix(i))))) {
         extAttributes.add(new ExtensionAttributeImpl()
             .setName(reader.getAttributeLocalName(i))
             .setNamespace(reader.getAttributeNamespace(i))
@@ -197,13 +197,11 @@ public class AtomServiceDocumentParser {
     return category.setCommonAttributes(attributes);
   }
 
-  private ExtensionElementImpl parseExtensionSansTitleElement(final XMLStreamReader reader) {
+  private ExtensionElementImpl parseExtensionSansTitleElement(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException {
     ExtensionElementImpl extElement = new ExtensionElementImpl();
     if (!(Edm.NAMESPACE_APP_2007.equals(reader.getNamespaceURI())
-    || (FormatXml.ATOM_TITLE.equals(reader.getLocalName()) || Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI())))) {
-      extElement.setName(reader.getLocalName());
-      extElement.setNamespace(reader.getNamespaceURI());
-      extElement.setPrefix(reader.getPrefix());
+    || (FormatXml.ATOM_TITLE.equals(reader.getLocalName()) && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI())))) {
+      extElement = parseElement(reader);
     }
     return extElement;
   }
@@ -211,24 +209,26 @@ public class AtomServiceDocumentParser {
   private ExtensionElementImpl parseExtensionElement(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException {
     ExtensionElementImpl extElement = null;
     if (!Edm.NAMESPACE_APP_2007.equals(reader.getNamespaceURI())) {
-      extElement = new ExtensionElementImpl();
-      List<ExtensionElementImpl> extensionElements = new ArrayList<ExtensionElementImpl>();
-      extElement.setName(reader.getLocalName());
-      extElement.setNamespace(reader.getNamespaceURI());
-      extElement.setPrefix(reader.getPrefix());
-      extElement.setAttributes(parseAttribute(reader));
-      while (reader.hasNext() && !(reader.isEndElement() && extElement.getName() != null && extElement.getName().equals(reader.getLocalName()))) {
-        reader.next();
-        if (reader.isCharacters()) {
-          extElement.setText(reader.getText());
-        } else if (reader.isStartElement()) {
-          extensionElements.add(parseExtensionElement(reader));
-        }
+      extElement = parseElement(reader);
+    }
+    return extElement;
+  }
+
+  private ExtensionElementImpl parseElement(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException {
+    List<ExtensionElementImpl> extensionElements = new ArrayList<ExtensionElementImpl>();
+    ExtensionElementImpl extElement = new ExtensionElementImpl().setName(reader.getLocalName()).setNamespace(reader.getNamespaceURI()).setPrefix(reader.getPrefix());
+    extElement.setAttributes(parseAttribute(reader));
+    while (reader.hasNext() && !(reader.isEndElement() && extElement.getName() != null && extElement.getName().equals(reader.getLocalName()))) {
+      reader.next();
+      if (reader.isCharacters()) {
+        extElement.setText(reader.getText());
+      } else if (reader.isStartElement()) {
+        extensionElements.add(parseExtensionElement(reader));
       }
-      extElement.setElements(extensionElements);
-      if (extElement.getText() == null && extElement.getAttributes().isEmpty() && extElement.getElements().isEmpty()) {
-        throw new ServiceDocumentParserException("Invalid extension element");
-      }
+    }
+    extElement.setElements(extensionElements);
+    if (extElement.getText() == null && extElement.getAttributes().isEmpty() && extElement.getElements().isEmpty()) {
+      throw new ServiceDocumentParserException("Invalid extension element");
     }
     return extElement;
   }

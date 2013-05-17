@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app:service xml:lang="de" xml:base="https://ldcigiq.wdf.sap.corp:44315/sap/opu/odata/IWFND/RMTSAMPLEFLIGHT/" xmlns:app="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gp="http://www.sap.com/Protocols/SAPData/GenericPlayer" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" xmlns:ux="http://www.sap.com/Protocols/OData4SAP/UX">
+        <app:workspace>
+                <atom:title type="text">Data</atom:title>
+                <app:collection sap:pageable="false" sap:content-version="1" href="BookingCollection">
+                        <atom:title type="text">BookingCollection</atom:title>
+                        <sap:member-title>Booking</sap:member-title>
+                </app:collection>
+                <app:collection sap:creatable="false" sap:deletable="false" sap:content-version="1" href="CarrierCollection">
+                        <atom:title type="text">CarrierCollection</atom:title>
+                        <sap:member-title>Carrier</sap:member-title>
+                </app:collection>
+                <app:collection sap:searchable="true" sap:content-version="1" href="TravelagencyCollection">
+                        <atom:title type="text">TravelagencyCollection</atom:title>
+                        <gp:collectionLayout display-order="0010" top-level="true"/>
+                        <sap:member-title>Travelagency</sap:member-title>
+                        <atom:link href="TravelagencyCollection/OpenSearchDescription.xml" rel="search" type="application/opensearchdescription+xml" title="searchTravelagencyCollection"/>
+                </app:collection>
+                <app:collection sap:searchable="true" sap:content-version="1" href="TravelAgencies">
+                        <atom:title type="text">TravelAgencies</atom:title>
+                        <sap:member-title>Travelagency</sap:member-title>
+                        <atom:link href="TravelagencyCollection/OpenSearchDescription.xml" rel="search" type="application/opensearchdescription+xml" title="searchTravelagencyCollection"/>
+                </app:collection>
+                <app:collection sap:searchable="true" sap:content-version="1" href="TravelAgencies_DQ">
+                        <atom:title type="text">TravelAgencies_DQ</atom:title>
+                        <sap:member-title>Travelagency_DQ</sap:member-title>
+                        <atom:link href="TravelAgencies_DQ/OpenSearchDescription.xml" rel="search" type="application/opensearchdescription+xml" title="searchTravelAgencies_DQ"/>
+                </app:collection>
+                <app:collection sap:content-version="1" href="SubscriptionCollection">
+                        <atom:title type="text">SubscriptionCollection</atom:title>
+                        <sap:member-title>Subscription</sap:member-title>
+                </app:collection>
+                <app:collection sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:addressable="false" sap:content-version="1" href="NotificationCollection">
+                        <atom:title type="text">NotificationCollection</atom:title>
+                        <sap:member-title>Notification</sap:member-title>
+                </app:collection>
+                <app:collection sap:content-version="1" href="FlightCollection">
+                        <atom:title type="text">FlightCollection</atom:title>
+                        <gp:collectionLayout display-order="0010" top-level="true"/>
+                        <sap:member-title>Flight</sap:member-title>
+                        <atom:link href="SubscriptionCollection" rel="http://www.sap.com/Protocols/SAPData/rel#subscribe"/>
+                </app:collection>
+                <app:collection sap:content-version="1" href="FlightCollection_DQ">
+                        <atom:title type="text">FlightCollection_DQ</atom:title>
+                        <sap:member-title>Flight_DQ</sap:member-title>
+                </app:collection>
+        </app:workspace>
+        <atom:link rel="self" href="https://ldcigiq.wdf.sap.corp:44315/sap/opu/odata/IWFND/RMTSAMPLEFLIGHT/"/>
+        <atom:link rel="latest-version" href="https://ldcigiq.wdf.sap.corp:44315/sap/opu/odata/IWFND/RMTSAMPLEFLIGHT/"/>
+</app:service>
+ 

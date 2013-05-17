@@ -69,14 +69,10 @@ public abstract class RuntimeDelegate {
     protected abstract EntityProviderInterface createEntityProvider();
 
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
-<<<<<<< HEAD
 
     protected abstract EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException;
 
     protected abstract ServiceDocumentParser createServiceDocumentParser();
-
-=======
->>>>>>> add interface ServiceDocument to api
   }
 
   /**

@@ -3,11 +3,11 @@ package com.sap.core.odata.core.doc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.doc.Collection;
 import com.sap.core.odata.api.doc.CommonAttributes;
 import com.sap.core.odata.api.doc.ExtensionElement;
 import com.sap.core.odata.api.doc.Workspace;
-import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.edm.EdmEntitySetInfo;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;

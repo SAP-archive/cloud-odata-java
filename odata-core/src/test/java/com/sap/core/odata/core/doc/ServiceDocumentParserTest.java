@@ -7,11 +7,11 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.doc.Collection;
 import com.sap.core.odata.api.doc.ExtensionElement;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.doc.Workspace;
-import com.sap.core.odata.api.doc.AtomServiceDocument;
 import com.sap.core.odata.api.ep.EntityProvider;
 
 public class ServiceDocumentParserTest {

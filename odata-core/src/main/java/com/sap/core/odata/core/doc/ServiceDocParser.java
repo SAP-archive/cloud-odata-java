@@ -9,9 +9,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.sap.core.odata.api.doc.ServiceDocument;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.edm.provider.EntitySet;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 public class ServiceDocParser {
   private static final String ATOM_NAMESPACE_ATOM = "http://www.w3.org/2005/Atom";
@@ -22,10 +22,10 @@ public class ServiceDocParser {
   public List<EntitySet> readServiceDokument(final XMLStreamReader reader) throws ServiceDocumentParserException {
     try {
       while (reader.hasNext()
-          && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_SERVICE.equals(reader.getLocalName()))) {
+          && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && FormatXml.APP_SERVICE.equals(reader.getLocalName()))) {
         reader.next();
         if (reader.isStartElement()) {
-          if (ServiceDocConstants.APP_WORKSPACE.equals(reader.getLocalName())) {
+          if (FormatXml.APP_WORKSPACE.equals(reader.getLocalName())) {
             parseWorkspace(reader);
           }
         }
@@ -38,13 +38,13 @@ public class ServiceDocParser {
     }
   }
 
-  private void parseWorkspace(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException{
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_WORKSPACE);
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_WORKSPACE.equals(reader.getLocalName()))) {
+  private void parseWorkspace(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException {
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, FormatXml.APP_WORKSPACE);
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && FormatXml.APP_WORKSPACE.equals(reader.getLocalName()))) {
       reader.next();
       if (reader.isStartElement()) {
         currentHandledStartTagName = reader.getLocalName();
-        if (ServiceDocConstants.APP_COLLECTION.equals(currentHandledStartTagName)) {
+        if (FormatXml.APP_COLLECTION.equals(currentHandledStartTagName)) {
           parseCollection(reader);
         }
       }
@@ -52,18 +52,18 @@ public class ServiceDocParser {
   }
 
   private void parseCollection(final XMLStreamReader reader) throws XMLStreamException, ServiceDocumentParserException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_COLLECTION);
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, FormatXml.APP_COLLECTION);
     String resourceIdentifier = reader.getAttributeValue(null, "href");
     if (resourceIdentifier != null) {
       entitySets.add(new EntitySet().setName(resourceIdentifier));
     } else {
       throw new ServiceDocumentParserException("Missing Attribute href");
     }
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_COLLECTION.equals(reader.getLocalName()))) {
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && FormatXml.APP_COLLECTION.equals(reader.getLocalName()))) {
       reader.next();
       if (reader.isStartElement()) {
         currentHandledStartTagName = reader.getLocalName();
-        if (ServiceDocConstants.ATOM_TITLE.equals(currentHandledStartTagName)) {
+        if (FormatXml.ATOM_TITLE.equals(currentHandledStartTagName)) {
           parseTitle(reader);
         }
       }
@@ -71,12 +71,13 @@ public class ServiceDocParser {
   }
 
   private void parseTitle(final XMLStreamReader reader) throws XMLStreamException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_ATOM, ServiceDocConstants.ATOM_TITLE);
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI()) && ServiceDocConstants.ATOM_TITLE.equals(reader.getLocalName()))) {
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_ATOM, FormatXml.ATOM_TITLE);
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI()) && FormatXml.ATOM_TITLE.equals(reader.getLocalName()))) {
       if (reader.isCharacters()) {}
       reader.next();
     }
   }
+
   public List<EntitySet> parseXml(final InputStream in) throws ServiceDocumentParserException {
     return readServiceDokument(createStreamReader(in));
   }
