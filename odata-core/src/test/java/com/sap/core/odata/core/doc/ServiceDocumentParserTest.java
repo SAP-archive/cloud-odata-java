@@ -9,26 +9,23 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.doc.Collection;
 import com.sap.core.odata.api.doc.ExtensionElement;
-import com.sap.core.odata.api.doc.ServiceDocument;
-import com.sap.core.odata.api.doc.ServiceDocumentParser;
 import com.sap.core.odata.api.doc.ServiceDocumentParserException;
-import com.sap.core.odata.api.doc.ServiceDocumentParserFactory;
 import com.sap.core.odata.api.doc.Workspace;
+import com.sap.core.odata.api.doc.AtomServiceDocument;
+import com.sap.core.odata.api.ep.EntityProvider;
 
 public class ServiceDocumentParserTest {
 
   @Test
   public void test() throws ServiceDocumentParserException {
     InputStream in = ClassLoader.class.getResourceAsStream("/svcExample.xml");
-    ServiceDocumentParser parser = ServiceDocumentParserFactory.create();
-    assertNotNull(parser.parseXml(in));
+    assertNotNull(EntityProvider.readServiceDocumentXml(in));
   }
 
   @Test
   public void testServiceDocument() throws ServiceDocumentParserException {
     InputStream in = ClassLoader.class.getResourceAsStream("/svcExample.xml");
-    ServiceDocumentParser parser = ServiceDocumentParserFactory.create();
-    ServiceDocument serviceDocument = parser.parseXml(in);
+    AtomServiceDocument serviceDocument = EntityProvider.readServiceDocumentXml(in);
     assertNotNull(serviceDocument);
     for (Workspace workspace : serviceDocument.getWorkspaces()) {
       assertEquals(10, workspace.getCollections().size());

@@ -29,8 +29,8 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test
   public void testServiceDocument() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
     assertNotNull(svcDocument);
     assertNotNull(svcDocument.getWorkspaces());
     for (Workspace workspace : svcDocument.getWorkspaces()) {
@@ -58,8 +58,8 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test
   public void testExtensionsWithAttributes() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcExample.xml"));
     assertNotNull(svcDocument);
     assertNotNull(svcDocument.getExtesionElements());
     assertEquals(2, svcDocument.getExtesionElements().size());
@@ -76,8 +76,8 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test
   public void testServiceDocument2() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
     assertNotNull(svcDocument);
     assertEquals(2, svcDocument.getWorkspaces().size());
 
@@ -98,8 +98,8 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test
   public void testCategories() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
     assertNotNull(svcDocument);
     assertEquals(2, svcDocument.getWorkspaces().size());
 
@@ -125,8 +125,8 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test
   public void testNestedExtensions() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
-    ServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
+    AtomServiceDokumentImpl svcDocument = svcDocumentParser.readServiceDokument(createStreamReader("/svcAtomExample.xml"));
     assertNotNull(svcDocument);
     assertNotNull(svcDocument.getExtesionElements());
     for (ExtensionElement extElement : svcDocument.getExtesionElements()) {
@@ -152,13 +152,13 @@ public class ServiceDocWithExtensionParserTest {
 
   @Test(expected = ServiceDocumentParserException.class)
   public void testWithoutTitle() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
     svcDocumentParser.readServiceDokument(createStreamReader("/svcDocument.xml"));
   }
 
   @Test(expected = ServiceDocumentParserException.class)
   public void testSvcWithoutWorkspaces() throws IOException, ServiceDocumentParserException {
-    ServiceDocWithExtensionParser svcDocumentParser = new ServiceDocWithExtensionParser();
+    AtomServiceDocumentParser svcDocumentParser = new AtomServiceDocumentParser();
     svcDocumentParser.readServiceDokument(createStreamReader("/invalidSvcExample.xml"));
   }
 

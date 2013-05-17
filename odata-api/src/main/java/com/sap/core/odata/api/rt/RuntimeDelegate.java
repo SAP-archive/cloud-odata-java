@@ -3,7 +3,6 @@ package com.sap.core.odata.api.rt;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
-import com.sap.core.odata.api.doc.ServiceDocumentParser;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -70,11 +69,14 @@ public abstract class RuntimeDelegate {
     protected abstract EntityProviderInterface createEntityProvider();
 
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
+<<<<<<< HEAD
 
     protected abstract EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException;
 
     protected abstract ServiceDocumentParser createServiceDocumentParser();
 
+=======
+>>>>>>> add interface ServiceDocument to api
   }
 
   /**
@@ -155,13 +157,5 @@ public abstract class RuntimeDelegate {
     public RuntimeDelegateException(final Exception e) {
       super(e);
     }
-  }
-
-  /**
-   * Creates and returns a parser for ServiceDocument. 
-   * @return a implementation object
-   */
-  public static ServiceDocumentParser createServiceDocumentParser() {
-    return RuntimeDelegate.getInstance().createServiceDocumentParser();
   }
 }
