@@ -626,7 +626,8 @@ public class EdmParser {
           feedMapping.setFcContentKind(EdmContentKind.values()[i]);
         }
       }
-      return feedMapping.setFcTargetPath(targetPath).setFcSourcePath(sourcePath).setFcNsUri(nsUri).setFcNsPrefix(nsPrefix);
+      feedMapping.setFcTargetPath(targetPath).setFcSourcePath(sourcePath).setFcNsUri(nsUri).setFcNsPrefix(nsPrefix);
+      return feedMapping;
     } else {
       return null;
     }
