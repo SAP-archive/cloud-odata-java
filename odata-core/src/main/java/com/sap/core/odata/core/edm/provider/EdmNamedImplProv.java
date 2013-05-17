@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmNamed;
 
 public abstract class EdmNamedImplProv implements EdmNamed {
 
-  private static final Pattern pattern = Pattern
+  private static final Pattern PATTERN_VALID_NAME = Pattern
       .compile("^[:A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d"
           + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff"
           + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF]"
@@ -21,8 +21,7 @@ public abstract class EdmNamedImplProv implements EdmNamed {
 
   public EdmNamedImplProv(final EdmImplProv edm, final String name) throws EdmException {
     this.edm = edm;
-    this.name = name;
-    validateName(name);
+    this.name = getValidatedName(name);
   }
 
   @Override
@@ -30,10 +29,11 @@ public abstract class EdmNamedImplProv implements EdmNamed {
     return name;
   }
 
-  private void validateName(final String name) throws EdmException {
-    Matcher matcher = pattern.matcher(name);
-    if (!matcher.matches()) {
-      throw new EdmException(EdmException.COMMON);
+  private String getValidatedName(final String name) throws EdmException {
+    Matcher matcher = PATTERN_VALID_NAME.matcher(name);
+    if (matcher.matches()) {
+        return name;
     }
+    throw new EdmException(EdmException.COMMON);
   }
 }
