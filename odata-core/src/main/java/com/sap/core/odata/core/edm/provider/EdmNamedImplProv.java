@@ -32,7 +32,7 @@ public abstract class EdmNamedImplProv implements EdmNamed {
   private String getValidatedName(final String name) throws EdmException {
     Matcher matcher = PATTERN_VALID_NAME.matcher(name);
     if (matcher.matches()) {
-        return name;
+      return name;
     }
     throw new EdmException(EdmException.COMMON);
   }

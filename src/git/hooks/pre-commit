@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# This hook will run the eclipse code formatter before any commit
+# to make the source look as it's supposed to look like in the repo.
+#
+# To install excecute following steps:
+#   - Copy this script to '.git/hooks'
+#   - set $ECLIPSE_HOME environment variable to your eclipse home dir (e.g. 'export ECLIPSE_HOME="/home/user/dev/eclipse"')
+#   - Finished (test with 'git commit')
+#
+# To run it manually call './src/git/hooks/pre-commit' from project root directory
+#
+###############################
+
+ 
+if [ -z $ECLIPSE_HOME ]; then
+    echo No ECLIPSE_HOME environment variable set. Please set and restart.
+    exit 1;
+fi
+
+STYLE_FILE=$PWD/src/eclipse/org.eclipse.jdt.core.prefs
+echo "Running pre-commit hook: run-eclipse-formatter---------------------"
+echo "Will run eclipse formatter, using: $STYLE_FILE"
+echo "Listing folders to run formatter on… "
+
+code_dirs=`find \`pwd\` -maxdepth 3 | grep 'src/'`
+for dir in $code_dirs; do
+   echo $dir;
+done;
+      
+echo "Launching eclipse code formatter…    "
+exec $ECLIPSE_HOME/eclipse \
+                    -nosplash \
+                    -application org.eclipse.jdt.core.JavaCodeFormatter \
+                    -verbose \
+                    -config $STYLE_FILE \
+                    $code_dirs
+ 
+echo "finished---------------------------------------------------------------"
