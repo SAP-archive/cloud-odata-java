@@ -69,6 +69,18 @@ public class EdmString extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return "'" + literal.replace("'", "''") + "'";
+    final StringBuilder uriLiteral = new StringBuilder("'");
+    final int len = literal.length();
+
+    for (int i = 0; i < len; i++) {
+      char c = literal.charAt(i);
+      if (c == '\'') {
+        uriLiteral.append("''");
+      } else {
+        uriLiteral.append(c);
+      }
+    }
+    uriLiteral.append("'");
+    return uriLiteral.toString();
   }
 }

@@ -304,6 +304,8 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void toUriLiteralString() throws Exception {
     assertEquals("'StringValue'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("StringValue"));
+    assertEquals("'String''Value'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("String'Value"));
+    assertEquals("'String''''''Value'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("String'''Value"));
   }
 
   @Test
