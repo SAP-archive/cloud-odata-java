@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.ref.jpa;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -13,7 +14,7 @@ public class Note {
 	public Note() {
 	}	
 	
-	public Note(Date creationTime, Date creationDate, String createdBy,
+	public Note(Calendar creationTime, Date creationDate, String createdBy,
 			String text) {
 		super();
 		this.creationTime = creationTime;
@@ -24,7 +25,7 @@ public class Note {
 
 	@Id
 	@Temporal(TemporalType.TIME)
-	private Date creationTime;
+	private Calendar creationTime;
 	
 	@Id
 	@Temporal(TemporalType.DATE)
@@ -43,11 +44,11 @@ public class Note {
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;	
 
-	public Date getCreationTime() {
+	public Calendar getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(Date creationTime) {
+	public void setCreationTime(Calendar creationTime) {
 		this.creationTime = creationTime;
 	}
 

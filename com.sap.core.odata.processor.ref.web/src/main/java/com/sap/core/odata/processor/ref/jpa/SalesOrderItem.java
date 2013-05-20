@@ -40,11 +40,6 @@ public class SalesOrderItem {
 	@JoinColumn(name = "Material_Id", referencedColumnName = "MATERIAL_ID", insertable = false, updatable = false)
 	@ManyToOne
 	private Material material;
-	/*
-	 * @JoinColumn(insertable = false,updatable = false)
-	 * 
-	 * @ManyToOne private Material material;
-	 */
 
 	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", insertable = false, updatable = false)
 	@ManyToOne

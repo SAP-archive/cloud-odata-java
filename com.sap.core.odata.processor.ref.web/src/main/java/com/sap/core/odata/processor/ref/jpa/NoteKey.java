@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.ref.jpa;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -10,7 +11,7 @@ public class NoteKey implements Serializable {
 		//No arg constructor
 	}	
 
-	public NoteKey(Date creationTime, Date creationDate, String createdBy) {
+	public NoteKey(Calendar creationTime, Date creationDate, String createdBy) {
 		super();
 		this.creationTime = creationTime;
 		this.creationDate = creationDate;
@@ -19,7 +20,7 @@ public class NoteKey implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Date creationTime;
+	private Calendar creationTime;
 	private Date creationDate;
 	private String createdBy;
 	
@@ -63,11 +64,11 @@ public class NoteKey implements Serializable {
 		return true;
 	}		
 	
-	public Date getCreationTime() {
+	public Calendar getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(Date creationTime) {
+	public void setCreationTime(Calendar creationTime) {
 		this.creationTime = creationTime;
 	}
 	

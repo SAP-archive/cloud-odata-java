@@ -5,7 +5,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLSelectSingleContextView;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
+import com.sap.core.odata.processor.core.jpa.ODataExpressionParser;
 
 public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder {
 

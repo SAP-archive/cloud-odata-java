@@ -76,6 +76,7 @@ public class DataGenerator {
 				}
 			}
 			setMaterialInStore();
+			entityManager.flush();
 			this.entityManager.getTransaction().commit();
 		}
 			

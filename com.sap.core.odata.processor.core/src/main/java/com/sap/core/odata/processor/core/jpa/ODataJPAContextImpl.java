@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.core.jpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -98,7 +99,8 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public EntityManager getEntityManager() {
 		if (em == null)
-			emf. createEntityManager();
+			em = emf.createEntityManager();
+		em.setFlushMode(FlushModeType.COMMIT);
 		return em;
 	}
 
