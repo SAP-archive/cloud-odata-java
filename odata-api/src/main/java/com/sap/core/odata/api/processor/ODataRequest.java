@@ -1,6 +1,8 @@
 package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.ODataHttpMethod;
@@ -21,5 +23,13 @@ public interface ODataRequest {
   PathInfo getPathInfo();
 
   ODataHttpMethod getMethod();
+
+  List<Locale> getAcceptableLanguages();
+
+  String getContentType();
+
+  List<String> getAcceptHeaders();
+
+  Map<String, String> getQueryParameters();
 
 }

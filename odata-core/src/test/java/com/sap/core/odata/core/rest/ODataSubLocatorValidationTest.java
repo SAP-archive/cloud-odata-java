@@ -60,7 +60,6 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
-import com.sap.core.odata.core.rest.ODataSubLocator.InitParameter;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.fit.BaseTest;
@@ -221,7 +220,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       final MultivaluedMap<String, String> queryParameters,
       final String requestContentType) throws Exception {
 
-    InitParameter param = locator.new InitParameter();
+    SubLocatorParameter param = new SubLocatorParameter();
 
     HttpHeaders httpHeaders = mock(HttpHeaders.class);
     final MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();

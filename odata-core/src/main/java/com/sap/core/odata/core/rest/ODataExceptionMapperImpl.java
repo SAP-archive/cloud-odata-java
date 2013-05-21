@@ -88,14 +88,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       }
 
       //Convert ODataResponse to JAXRS Response
-      return Util.convertResponse(oDataResponse);
+      return RestUtil.convertResponse(oDataResponse);
 
     } catch (Exception e) {
       //Exception mapper has to be robust thus we log the exception and just give back a generic error
       ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
           .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
-      return Util.convertResponse(response);
+      return RestUtil.convertResponse(response);
     }
   }
 

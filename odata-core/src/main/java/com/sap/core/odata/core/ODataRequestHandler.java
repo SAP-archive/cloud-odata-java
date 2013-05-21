@@ -1,8 +1,6 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
@@ -17,10 +15,6 @@ import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.PathSegment;
-import com.sap.core.odata.core.ContentNegotiator;
-import com.sap.core.odata.core.Dispatcher;
-import com.sap.core.odata.core.ODataContextImpl;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -41,26 +35,20 @@ public class ODataRequestHandler {
 
   private ODataContextImpl context;
 
-  private List<String> acceptHeaderContentTypes;
-
-  private ContentType requestContentTypeHeader;
-
-  private Map<String, String> queryParameter;
-
-  private List<Locale> acceptableLanguages;
 
   public ODataRequestHandler(final ODataServiceFactory factory) {
     super();
     serviceFactory = factory;
   }
 
-  public ODataResponse handleHttpMethod(final ODataRequest request) throws ODataException {
+  public ODataResponse handle(final ODataRequest request) throws ODataException {
     context = new ODataContextImpl();
 
     context.setRequest(request);
     context.setPathInfo(request.getPathInfo());
-
-    context.setAcceptableLanguages(acceptableLanguages);
+    context.setHttpMethod(request.getMethod().toString());
+ 
+    context.setAcceptableLanguages(request.getAcceptableLanguages());
     service = serviceFactory.createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
@@ -71,11 +59,11 @@ public class ODataRequestHandler {
     final String serverDataServiceVersion = getServerDataServiceVersion();
     validateDataServiceVersion(serverDataServiceVersion);
     final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
-    final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameter);
+    final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
 
-    final String requestContentType = (requestContentTypeHeader == null ? null : requestContentTypeHeader.toContentTypeString());
+    final String requestContentType = request.getContentType();
 
-    ODataResponse odataResponse = dispatcher.dispatch(request.getMethod(), uriInfo, request.getBody(), requestContentType, acceptHeaderContentTypes);
+    ODataResponse odataResponse = dispatcher.dispatch(request.getMethod(), uriInfo, request.getBody(), requestContentType, request.getAcceptHeaders());
 
     ODataHttpMethod method = request.getMethod();
     final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
@@ -129,36 +117,6 @@ public class ODataRequestHandler {
         throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(requestDataServiceVersion), e);
       }
     }
-  }
-
-  /**
-   * @param convertToSinglevaluedMap
-   */
-  public void setQueryParameters(final Map<String, String> queryParameter) {
-    this.queryParameter = queryParameter;
-  }
-
-  /**
-   * @param extractAcceptHeaders
-   */
-  public void setAcceptHeaderContentTypes(final List<String> acceptHeaderContentTypes) {
-    this.acceptHeaderContentTypes = acceptHeaderContentTypes;
-
-  }
-
-  /**
-   * @param extractRequestContentType
-   */
-  public void setRequestContentType(final ContentType requestContentTypeHeader) {
-    this.requestContentTypeHeader = requestContentTypeHeader;
-
-  }
-
-  /**
-   * @param acceptableLanguages
-   */
-  public void setAcceptableLanguages(final List<Locale> acceptableLanguages) {
-    this.acceptableLanguages = acceptableLanguages;
   }
 
 }

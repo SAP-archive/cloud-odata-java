@@ -23,6 +23,7 @@ public class ODataContextImpl implements ODataContext {
   private static final String SERVICE = "~service";
   private static final String PATH_INFO = "~pathInfo";
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
+  private static final String HTTP_METHOD = "~httpMethod";
 
   private final Map<String, Object> parameterTable = new HashMap<String, Object>();
 
@@ -195,6 +196,15 @@ public class ODataContextImpl implements ODataContext {
       final Locale wildcard = new Locale("*");
       this.acceptableLanguages.add(wildcard);
     }
+  }
+
+  public void setHttpMethod(final String httpMethod) {
+    setParameter(HTTP_METHOD, httpMethod);
+  }
+
+  @Override
+  public String getHttpMethod() {
+    return (String) getParameter(HTTP_METHOD);
   }
 
   public void setRequest(final ODataRequest request) {
