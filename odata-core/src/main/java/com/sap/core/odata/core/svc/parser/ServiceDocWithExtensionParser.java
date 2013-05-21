@@ -7,7 +7,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.sap.core.odata.api.edm.EdmAction;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
 public class ServiceDocWithExtensionParser {
@@ -158,7 +157,7 @@ public class ServiceDocWithExtensionParser {
     categories.setScheme(reader.getAttributeValue(null, ServiceDocConstants.SCHEME));
     categories.setHref(href);
     if (href == null) {
-      for (int i = 0; i < EdmAction.values().length; i++) {
+      for (int i = 0; i < Fixed.values().length; i++) {
         if (Fixed.values()[i].name().equalsIgnoreCase(fixed)) {
           categories.setFixed(Fixed.values()[i]);
         }
