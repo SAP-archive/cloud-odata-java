@@ -2,9 +2,14 @@ package com.sap.core.odata.core.svc.parser;
 
 import java.util.List;
 
+/**
+ * CategoriesImpl
+ * <p>The implementiation of the interface Categories
+ * @author SAP AG
+ */
 public class CategoriesImpl {
   private String href;
-  private String fixed;
+  private Fixed fixed;
   private String scheme;
   private List<CategoryImpl> categoryList;
 
@@ -12,7 +17,7 @@ public class CategoriesImpl {
     return href;
   }
 
-  public String getFixed() {
+  public Fixed getFixed() {
     return fixed;
   }
 
@@ -29,7 +34,7 @@ public class CategoriesImpl {
     return this;
   }
 
-  public CategoriesImpl setFixed(final String fixed) {
+  public CategoriesImpl setFixed(final Fixed fixed) {
     this.fixed = fixed;
     return this;
   }

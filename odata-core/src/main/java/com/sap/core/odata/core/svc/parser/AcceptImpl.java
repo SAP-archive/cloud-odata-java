@@ -1,11 +1,16 @@
 package com.sap.core.odata.core.svc.parser;
 
+/**
+ * AcceptImpl
+ * The implementation of the interface Accept
+ * @author SAP AG
+ */
 public class AcceptImpl {
-  private String text;
+  private String value;
   private CommonAttributesImpl commonAttributes;
 
   public String getText() {
-    return text;
+    return value;
   }
 
   public CommonAttributesImpl getCommonAttributes() {
@@ -13,7 +18,7 @@ public class AcceptImpl {
   }
 
   public AcceptImpl setText(final String text) {
-    this.text = text;
+    value = text;
     return this;
   }
 

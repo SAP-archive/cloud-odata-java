@@ -1,5 +1,10 @@
 package com.sap.core.odata.core.svc.parser;
 
+/**
+* ExtensionAttributeImpl
+* <p>The implementiation of the interface ExtensionAttribute
+* @author SAP AG
+*/
 public class ExtensionAttributeImpl {
   private String namespace;
   private String prefix;

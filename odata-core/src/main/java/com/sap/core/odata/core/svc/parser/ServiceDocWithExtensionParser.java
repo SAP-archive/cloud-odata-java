@@ -7,6 +7,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sap.core.odata.api.edm.EdmAction;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
 public class ServiceDocWithExtensionParser {
@@ -19,25 +20,31 @@ public class ServiceDocWithExtensionParser {
   public ServiceDokumentImpl readServiceDokument(final XMLStreamReader reader) throws EntityProviderException {
     ServiceDokumentImpl svcDocument = new ServiceDokumentImpl();
     List<WorkspaceImpl> workspaces = new ArrayList<WorkspaceImpl>();
+    List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
     CommonAttributesImpl attributes = new CommonAttributesImpl();
     try {
       while (reader.hasNext()
-          && !(reader.isEndElement() && "service".equals(reader.getLocalName()))) {
+          && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_SERVICE.equals(reader.getLocalName()))) {
         reader.next();
         if (reader.isStartElement()) {
           currentHandledStartTagName = reader.getLocalName();
-          if ("service".equals(currentHandledStartTagName)) {
+          if (ServiceDocConstants.APP_SERVICE.equals(currentHandledStartTagName)) {
             attributes = parseCommonAttribute(reader);
-          } else if ("workspace".equals(currentHandledStartTagName)) {
+          } else if (ServiceDocConstants.APP_WORKSPACE.equals(currentHandledStartTagName)) {
             workspaces.add(parseWorkspace(reader));
           } else {
-            // for extensions
+            ExtensionElementImpl extElement = parseExtensionElement(reader);
+            if (extElement != null) {
+              extElements.add(extElement);
+            }
           }
         }
       }
-
+      if (workspaces.isEmpty()) {
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Service element must contain at least one workspace element"));
+      }
       reader.close();
-      return svcDocument.setWorkspaces(workspaces).setCommonAttributes(attributes);
+      return svcDocument.setWorkspaces(workspaces).setCommonAttributes(attributes).setExtesionElements(extElements);
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -46,11 +53,11 @@ public class ServiceDocWithExtensionParser {
   private CommonAttributesImpl parseCommonAttribute(final XMLStreamReader reader) {
     CommonAttributesImpl attribute = new CommonAttributesImpl();
     List<ExtensionAttributeImpl> extAttributes = new ArrayList<ExtensionAttributeImpl>();
-    attribute.setBase(reader.getAttributeValue(null, "base"));
-    attribute.setLang(reader.getAttributeValue(null, "lang"));
+    attribute.setBase(reader.getAttributeValue(null, ServiceDocConstants.BASE));
+    attribute.setLang(reader.getAttributeValue(null, ServiceDocConstants.LANG));
     for (int i = 0; i < reader.getAttributeCount(); i++) {
-      if (!("base".equals(reader.getAttributeLocalName(i)) && XML_PREFIX.equals(reader.getAttributePrefix(i)))
-          || ("lang".equals(reader.getAttributeLocalName(i)) && XML_PREFIX.equals(reader.getAttributePrefix(i)))
+      if (!(ServiceDocConstants.BASE.equals(reader.getAttributeLocalName(i)) && XML_PREFIX.equals(reader.getAttributePrefix(i)))
+          || (ServiceDocConstants.LANG.equals(reader.getAttributeLocalName(i)) && XML_PREFIX.equals(reader.getAttributePrefix(i)))
           || ("local".equals(reader.getAttributeNamespace(i)) || DEFAULT_PREFIX.equals(reader.getAttributePrefix(i)))) {
         extAttributes.add(new ExtensionAttributeImpl()
             .setName(reader.getAttributeLocalName(i))
@@ -64,32 +71,35 @@ public class ServiceDocWithExtensionParser {
   }
 
   private WorkspaceImpl parseWorkspace(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, "workspace");
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_WORKSPACE);
 
     TitleImpl title = null;
     List<CollectionImpl> collections = new ArrayList<CollectionImpl>();
+    List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
     CommonAttributesImpl attributes = parseCommonAttribute(reader);
-    while (reader.hasNext() && !(reader.isEndElement() && "workspace".equals(reader.getLocalName()))) {
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_WORKSPACE.equals(reader.getLocalName()))) {
       reader.next();
       if (reader.isStartElement()) {
         currentHandledStartTagName = reader.getLocalName();
-        if ("collection".equals(currentHandledStartTagName)) {
+        if (ServiceDocConstants.APP_COLLECTION.equals(currentHandledStartTagName)) {
           collections.add(parseCollection(reader));
-        } else if ("title".equals(currentHandledStartTagName)) {
+        } else if (ServiceDocConstants.ATOM_TITLE.equals(currentHandledStartTagName)) {
           title = parseTitle(reader);
+        } else {
+          extElements.add(parseExtensionSansTitleElement(reader));
         }
       }
     }
     if (title == null) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Missing element title for workspace"));
     }
-    return new WorkspaceImpl().setTitle(title).setCollections(collections).setAttributes(attributes);
+    return new WorkspaceImpl().setTitle(title).setCollections(collections).setAttributes(attributes).setExtesionElements(extElements);
   }
 
   private CollectionImpl parseCollection(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, "collection");
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_COLLECTION);
     TitleImpl title = null;
-    String resourceIdentifier = reader.getAttributeValue(null, "href");
+    String resourceIdentifier = reader.getAttributeValue(null, ServiceDocConstants.HREF);
     CommonAttributesImpl attributes = parseCommonAttribute(reader);
     List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
     List<AcceptImpl> acceptList = new ArrayList<AcceptImpl>();
@@ -97,18 +107,18 @@ public class ServiceDocWithExtensionParser {
     if (resourceIdentifier == null) {
       throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent("Missing Attribute href"));
     }
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && "collection".equals(reader.getLocalName()))) {
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_COLLECTION.equals(reader.getLocalName()))) {
       reader.next();
       if (reader.isStartElement()) {
         currentHandledStartTagName = reader.getLocalName();
-        if ("title".equals(currentHandledStartTagName)) {
+        if (ServiceDocConstants.ATOM_TITLE.equals(currentHandledStartTagName)) {
           title = parseTitle(reader);
-        } else if ("accept".equals(currentHandledStartTagName)) {
+        } else if (ServiceDocConstants.APP_ACCEPT.equals(currentHandledStartTagName)) {
           acceptList.add(parseAccept(reader));
-        } else if ("categories".equals(currentHandledStartTagName)) {
+        } else if (ServiceDocConstants.APP_CATEGORIES.equals(currentHandledStartTagName)) {
           categories.add(parseCategories(reader));
         } else {
-          extElements.add(parseExtensionElement(reader));
+          extElements.add(parseExtensionSansTitleElement(reader));
         }
       }
     }
@@ -116,9 +126,9 @@ public class ServiceDocWithExtensionParser {
   }
 
   private TitleImpl parseTitle(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_ATOM, "title");
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_ATOM, ServiceDocConstants.ATOM_TITLE);
     String text = "";
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI()) && "title".equals(reader.getLocalName()))) {
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI()) && ServiceDocConstants.ATOM_TITLE.equals(reader.getLocalName()))) {
       if (reader.isCharacters()) {
         text += reader.getText();
       }
@@ -128,10 +138,10 @@ public class ServiceDocWithExtensionParser {
   }
 
   private AcceptImpl parseAccept(final XMLStreamReader reader) throws XMLStreamException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, "accept");
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_ACCEPT);
     CommonAttributesImpl commonAttributes = parseCommonAttribute(reader);
     String text = "";
-    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && "accept".equals(reader.getLocalName()))) {
+    while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_ACCEPT.equals(reader.getLocalName()))) {
       if (reader.isCharacters()) {
         text += reader.getText();
       }
@@ -140,25 +150,100 @@ public class ServiceDocWithExtensionParser {
     return new AcceptImpl().setCommonAttributes(commonAttributes).setText(text);
   }
 
-  private CategoriesImpl parseCategories(final XMLStreamReader reader) throws XMLStreamException {
-    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, "categories");
+  private CategoriesImpl parseCategories(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_APP, ServiceDocConstants.APP_CATEGORIES);
     CategoriesImpl categories = new CategoriesImpl();
-    String href = reader.getAttributeValue(null, "href");
-    if(href == null) {
-      categories.setFixed(reader.getAttributeValue(null, "fixed"));
+    String href = reader.getAttributeValue(null, ServiceDocConstants.HREF);
+    String fixed = reader.getAttributeValue(null, ServiceDocConstants.FIXED);
+    categories.setScheme(reader.getAttributeValue(null, ServiceDocConstants.SCHEME));
+    categories.setHref(href);
+    if (href == null) {
+      for (int i = 0; i < EdmAction.values().length; i++) {
+        if (Fixed.values()[i].name().equalsIgnoreCase(fixed)) {
+          categories.setFixed(Fixed.values()[i]);
+        }
+      }
+      if (categories.getFixed() == null) {
+        categories.setFixed(Fixed.NO);
+      }
+      List<CategoryImpl> categoriesList = new ArrayList<CategoryImpl>();
+      while (reader.hasNext() && !(reader.isEndElement() && ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI()) && ServiceDocConstants.APP_CATEGORIES.equals(reader.getLocalName()))) {
+        reader.next();
+        if (reader.isStartElement()) {
+          currentHandledStartTagName = reader.getLocalName();
+          if (ServiceDocConstants.ATOM_CATEGORY.equals(currentHandledStartTagName)) {
+            categoriesList.add(parseCategory(reader));
+          }
+        }
+      }
+      categories.setCategoryList(categoriesList);
+    }
+    if ((href != null && fixed != null && categories.getScheme() != null) ||
+        (href == null && fixed == null && categories.getScheme() == null)) {
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Attributes"));
     }
     return categories;
   }
 
-  private ExtensionElementImpl parseExtensionElement(final XMLStreamReader reader) {
+  private CategoryImpl parseCategory(final XMLStreamReader reader) throws XMLStreamException {
+    reader.require(XMLStreamConstants.START_ELEMENT, ATOM_NAMESPACE_ATOM, ServiceDocConstants.ATOM_CATEGORY);
+    CategoryImpl category = new CategoryImpl();
+    category.setScheme(reader.getAttributeValue(null, ServiceDocConstants.SCHEME));
+    category.setTerm(reader.getAttributeValue(null, ServiceDocConstants.TERM));
+    category.setLabel(reader.getAttributeValue(null, ServiceDocConstants.LABEL));
+    CommonAttributesImpl attributes = parseCommonAttribute(reader);
+    return category.setCommonAttribute(attributes);
+  }
+
+  private ExtensionElementImpl parseExtensionSansTitleElement(final XMLStreamReader reader) {
     ExtensionElementImpl extElement = new ExtensionElementImpl();
     if (!(ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI())
-    || ("titel".equals(reader.getLocalName()) || ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI())))) {
+    || (ServiceDocConstants.ATOM_TITLE.equals(reader.getLocalName()) || ATOM_NAMESPACE_ATOM.equals(reader.getNamespaceURI())))) {
       extElement.setName(reader.getLocalName());
       extElement.setNamespace(reader.getNamespaceURI());
       extElement.setPrefix(reader.getPrefix());
     }
     return extElement;
+  }
+
+  private ExtensionElementImpl parseExtensionElement(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
+    ExtensionElementImpl extElement = null;
+    if (!ATOM_NAMESPACE_APP.equals(reader.getNamespaceURI())) {
+      extElement = new ExtensionElementImpl();
+      List<ExtensionElementImpl> extensionElements = new ArrayList<ExtensionElementImpl>();
+      extElement.setName(reader.getLocalName());
+      extElement.setNamespace(reader.getNamespaceURI());
+      extElement.setPrefix(reader.getPrefix());
+      extElement.setAttributes(parseAttribute(reader));
+      while (reader.hasNext() && !(reader.isEndElement() && extElement.getName() != null && extElement.getName().equals(reader.getLocalName()))) {
+        reader.next();
+        if (reader.isCharacters()) {
+          extElement.setText(reader.getText());
+        } else if (reader.isStartElement()) {
+          extensionElements.add(parseExtensionElement(reader));
+        }
+      }
+      extElement.setElements(extensionElements);
+      if (extElement.getText() == null && extElement.getAttributes().isEmpty() && extElement.getElements().isEmpty()) {
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid extension element"));
+      }
+    }
+    return extElement;
+  }
+
+  private List<ExtensionAttributeImpl> parseAttribute(final XMLStreamReader reader) {
+    List<ExtensionAttributeImpl> extAttributes = new ArrayList<ExtensionAttributeImpl>();
+    for (int i = 0; i < reader.getAttributeCount(); i++) {
+      {
+        extAttributes.add(new ExtensionAttributeImpl()
+            .setName(reader.getAttributeLocalName(i))
+            .setNamespace(reader.getAttributeNamespace(i))
+            .setPrefix(reader.getAttributePrefix(i))
+            .setText(reader.getAttributeValue(i)));
+      }
+    }
+
+    return extAttributes;
   }
 
 }
