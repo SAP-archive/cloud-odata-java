@@ -2,7 +2,6 @@ package com.sap.core.odata.core.batch;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
 
 import org.junit.Test;
 
@@ -20,11 +19,6 @@ public class BatchRequestParserTest {
       parser.parseBatchRequest(in);
   }
   
-  @Test
-  public void test2(){
-    Scanner scanner = new Scanner("hallo, world").useDelimiter(",");
-    scanner.next("hallo");
-    scanner.next("(\\s)world");
-  }
+  
 
 }
