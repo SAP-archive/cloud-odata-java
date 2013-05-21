@@ -126,4 +126,16 @@ public class ContextTest extends AbstractBasicTest {
     final Map<String, String> header = ctx.getHttpRequestHeaders();
     assertEquals("de, en", header.get(HttpHeaders.CONTENT_LANGUAGE));
   }
+  
+  @Test
+  public void checkHttpMethod() throws ClientProtocolException, IOException, ODataException {
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
+    getHttpClient().execute(get);
+
+    final ODataContext ctx = getService().getProcessor().getContext();
+    assertNotNull(ctx);
+
+    final String httpMethod = ctx.getHttpMethod();
+    assertEquals("GET", httpMethod);
+  }
 }
