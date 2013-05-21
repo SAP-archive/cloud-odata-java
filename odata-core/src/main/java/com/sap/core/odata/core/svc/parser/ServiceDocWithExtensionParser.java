@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.svc.parser;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,12 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sap.core.odata.api.doc.ServiceDocument;
+import com.sap.core.odata.api.doc.ServiceDocumentParser;
+import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
-public class ServiceDocWithExtensionParser {
+public class ServiceDocWithExtensionParser implements ServiceDocumentParser {
   public static final String ATOM_NAMESPACE_APP = "http://www.w3.org/2007/app";
   public static final String ATOM_NAMESPACE_ATOM = "http://www.w3.org/2005/Atom";
   private String currentHandledStartTagName;
@@ -243,6 +247,15 @@ public class ServiceDocWithExtensionParser {
     }
 
     return extAttributes;
+  }
+
+  /* (non-Javadoc)
+   * @see com.sap.core.odata.api.doc.ServiceDocumentParser#parseXml(java.io.InputStream)
+   */
+  @Override
+  public ServiceDocument parseXml(InputStream in) throws ServiceDocumentParserException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

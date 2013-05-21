@@ -3,6 +3,7 @@ package com.sap.core.odata.core.rt;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.doc.ServiceDocumentParser;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -20,6 +21,7 @@ import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
+import com.sap.core.odata.core.svc.parser.ServiceDocWithExtensionParser;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 /**
