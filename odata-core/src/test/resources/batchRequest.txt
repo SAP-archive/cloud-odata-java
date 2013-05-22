@@ -1,5 +1,6 @@
-POST /service/$batch HTTP/1.1 
-Host: host 
+POST http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/$batch HTTP/1.1 
+Host: ldcigmd.wdf.sap.corp:50055
+Content-Length:1117
 Content-Type: multipart/mixed; boundary=batch_36522ad7-fc75-4b56-8c71-56071383e77b 
 
 --batch_36522ad7-fc75-4b56-8c71-56071383e77b

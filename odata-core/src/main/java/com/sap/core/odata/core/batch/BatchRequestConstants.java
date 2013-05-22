@@ -9,5 +9,7 @@ public class BatchRequestConstants {
 
   public static final String BINARY_ENCODING = "binary";
 
-  public static final String HTTP_CONTENT_TRANSFER_ENCODING = "Content_Transfer_Encoding";
+  public static final String HTTP_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
+
+  public static final String ACCEPT = "Accept";
 }
