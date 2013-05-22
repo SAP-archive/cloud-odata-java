@@ -35,9 +35,12 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  * @author SAP AG
  */
 public class ODataRequestHandlerTest extends BaseTest {
-  @Mock ODataServiceFactory mockFactory;
-  @Mock ODataService mockService;
-  @Mock ODataProcessor mockProcessor;
+  @Mock
+  ODataServiceFactory mockFactory;
+  @Mock
+  ODataService mockService;
+  @Mock
+  ODataProcessor mockProcessor;
 
   @Before
   public void initialize() throws Exception {
@@ -48,7 +51,7 @@ public class ODataRequestHandlerTest extends BaseTest {
     List<String> supportedContentTypes = Arrays.asList(ContentType.APPLICATION_ATOM_XML_CS_UTF_8.toContentTypeString());
     when(mockService.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(supportedContentTypes);
   }
-  
+
   @Test
   public void handleSimpleRequest() throws Exception {
     ServiceDocumentProcessor serviceDocumentProcessor = mock(ServiceDocumentProcessor.class);
@@ -58,10 +61,10 @@ public class ODataRequestHandlerTest extends BaseTest {
     when(serviceDocumentProcessor.readServiceDocument(uriInfo, contentType)).thenReturn(expectedResponse);
     when(mockService.getServiceDocumentProcessor()).thenReturn(serviceDocumentProcessor);
     ODataRequestHandler handler = new ODataRequestHandler(mockFactory);
-    
+
     ODataRequest request = mockDefaultRequest();
     ODataResponse response = handler.handle(request);
-    
+
     assertNotNull(response);
     assertEquals(expectedResponse.getStatus(), response.getStatus());
   }
@@ -74,7 +77,7 @@ public class ODataRequestHandlerTest extends BaseTest {
 
     PathInfo pathInfo = mock(PathInfo.class);
     when(request.getPathInfo()).thenReturn(pathInfo);
-    
+
     return request;
   }
 }

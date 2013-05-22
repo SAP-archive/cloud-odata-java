@@ -87,7 +87,7 @@ class RestUtil {
     if (content == null) {
       throw new ODataBadRequestException(ODataBadRequestException.COMMON);
     }
-  
+
     InputStream inputStream;
     if (content instanceof InputStream) {
       inputStream = (InputStream) content;
@@ -106,18 +106,18 @@ class RestUtil {
   public static List<String> extractAcceptHeaders(final SubLocatorParameter param) throws ODataBadRequestException {
     final List<MediaType> acceptableMediaTypes = param.getHttpHeaders().getAcceptableMediaTypes();
     final List<String> mediaTypes = new ArrayList<String>();
-  
+
     for (final MediaType mediaType : acceptableMediaTypes) {
       mediaTypes.add(mediaType.toString());
     }
-  
+
     return mediaTypes;
   }
 
   public static Map<String, String> extractRequestHeaders(final javax.ws.rs.core.HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
     Map<String, String> headerMap = new HashMap<String, String>();
-  
+
     for (final String key : headers.keySet()) {
       final String value = httpHeaders.getHeaderString(key);
       headerMap.put(key, value);
@@ -126,20 +126,20 @@ class RestUtil {
   }
 
   public static PathInfoImpl buildODataPathInfo(final SubLocatorParameter param) throws ODataException {
-  
+
     final PathInfoImpl pathInfo = splitPath(param);
     final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
     pathInfo.setServiceRoot(uri);
-  
+
     return pathInfo;
   }
 
   private static PathInfoImpl splitPath(final SubLocatorParameter param) throws ODataException {
     final PathInfoImpl pathInfo = new PathInfoImpl();
-  
+
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
-  
+
     if (param.getPathSplit() == 0) {
       precedingPathSegments = Collections.emptyList();
       pathSegments = param.getPathSegments();
@@ -147,16 +147,16 @@ class RestUtil {
       if (param.getPathSegments().size() < param.getPathSplit()) {
         throw new ODataBadRequestException(ODataBadRequestException.URLTOOSHORT);
       }
-  
+
       precedingPathSegments = param.getPathSegments().subList(0, param.getPathSplit());
       final int pathSegmentCount = param.getPathSegments().size();
       pathSegments = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
-  
+
     // Percent-decode only the preceding path segments.
     // The OData path segments are decoded during URI parsing.
     pathInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
-  
+
     List<PathSegment> odataSegments = new ArrayList<PathSegment>();
     for (final javax.ws.rs.core.PathSegment segment : pathSegments) {
       if (segment.getMatrixParameters() == null || segment.getMatrixParameters().isEmpty()) {
@@ -167,7 +167,7 @@ class RestUtil {
       }
     }
     pathInfo.setODataPathSegment(odataSegments);
-  
+
     return pathInfo;
   }
 
@@ -181,12 +181,12 @@ class RestUtil {
           uriBuilder = uriBuilder.matrixParam(key, v);
         }
       }
-  
+
       String uriString = uriBuilder.build().toString();
       if (!uriString.endsWith("/")) {
         uriString = uriString + "/";
       }
-  
+
       return new URI(uriString);
     } catch (final URISyntaxException e) {
       throw new ODataException(e);
@@ -204,12 +204,12 @@ class RestUtil {
 
   public static Map<String, String> convertToSinglevaluedMap(final MultivaluedMap<String, String> multi) {
     final Map<String, String> single = new HashMap<String, String>();
-  
+
     for (final String key : multi.keySet()) {
       final String value = multi.getFirst(key);
       single.put(key, value);
     }
-  
+
     return single;
   }
 

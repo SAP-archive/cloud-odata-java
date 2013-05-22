@@ -73,7 +73,6 @@ public class ODataRootLocator {
       }
     }
 
-
     if (servletRequest.getPathInfo() == null) {
       return handleRedirect();
     }
@@ -97,7 +96,6 @@ public class ODataRootLocator {
     if (pathSplitAsString != null) {
       pathSplit = Integer.parseInt(pathSplitAsString);
     }
-
 
     final SubLocatorParameter param = new SubLocatorParameter();
     param.setServiceFactory(serviceFactory);

@@ -101,9 +101,9 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handle(final ODataHttpMethod method) throws ODataException {
-   
-    request.setMethod(method);  // TODO skl refactor after JAX-RS elimination
-    
+
+    request.setMethod(method); // TODO skl refactor after JAX-RS elimination
+
     final ODataResponse odataResponse = requestHandler.handle(request);
     final Response response = RestUtil.convertResponse(odataResponse);
 
