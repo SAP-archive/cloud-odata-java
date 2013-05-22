@@ -3,7 +3,6 @@ package com.sap.core.odata.api.rt;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
-import com.sap.core.odata.api.doc.ServiceDocumentParser;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -73,7 +72,6 @@ public abstract class RuntimeDelegate {
 
     protected abstract EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException;
 
-    protected abstract ServiceDocumentParser createServiceDocumentParser();
   }
 
   /**

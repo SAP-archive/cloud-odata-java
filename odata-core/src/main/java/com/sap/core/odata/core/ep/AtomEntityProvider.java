@@ -31,10 +31,12 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.consumer.AtomServiceDocumentConsumer;
 import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
 import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.AtomFeedProducer;
@@ -483,5 +485,11 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readLinks(entitySet, content);
+  }
+
+  @Override
+  public ServiceDocument readServiceDocument(final InputStream serviceDocument) throws EntityProviderException {
+    AtomServiceDocumentConsumer serviceDocConsumer = new AtomServiceDocumentConsumer();
+    return serviceDocConsumer.parseXml(serviceDocument);
   }
 }

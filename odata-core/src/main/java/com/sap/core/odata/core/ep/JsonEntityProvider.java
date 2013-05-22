@@ -29,9 +29,11 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.consumer.JsonEntityConsumer;
+import com.sap.core.odata.core.ep.consumer.JsonServiceDocumentConsumer;
 import com.sap.core.odata.core.ep.producer.JsonCollectionEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
@@ -398,5 +400,11 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   @Override
   public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+  }
+
+  @Override
+  public ServiceDocument readServiceDocument(final InputStream serviceDocument) throws EntityProviderException {
+    JsonServiceDocumentConsumer serviceDocConsumer = new JsonServiceDocumentConsumer();
+    return serviceDocConsumer.parseJson(serviceDocument);
   }
 }

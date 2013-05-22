@@ -6,9 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.doc.ServiceDocument;
-import com.sap.core.odata.api.doc.AtomServiceDocument;
-import com.sap.core.odata.api.doc.ServiceDocumentParserException;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -19,6 +16,7 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 
 /**
  * <p>Entity Provider</p> 
@@ -309,22 +307,14 @@ public final class EntityProvider {
     ODataResponse writeErrorDocument(ODataErrorContext context);
 
     /**
-     * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link AtomServiceDocument}
-     * 
-     * @param serviceDocumentXml the given input stream
-     * @return ServiceDocument as {@link AtomServiceDocument}
-     * @throws ServiceDocumentParserException if reading of data (de-serialization) fails
-     */
-    AtomServiceDocument readServiceDocumentXml(InputStream serviceDocumentXml) throws ServiceDocumentParserException;
-    
-    /**
      * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
      * 
      * @param serviceDocument the given input stream
+     * @param contentType format of content in the given input stream
      * @return ServiceDocument as {@link ServiceDocument}
-     * @throws ServiceDocumentParserException if reading of data (de-serialization) fails
+     * @throws EntityProviderException  if reading of data (de-serialization) fails
      */
-    ServiceDocument readServiceDocument(InputStream serviceDocument/*, String contentType*/) throws ServiceDocumentParserException;
+    ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
   }
 
   /**
@@ -658,27 +648,17 @@ public final class EntityProvider {
   public static Edm readMetadata(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
     return createEntityProvider().readMetadata(metadataXml, validate);
   }
-  
-  /**
-   * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link AtomServiceDocument}
-   * 
-   * @param serviceDocumentXml the given input stream
-   * @return ServiceDocument as {@link AtomServiceDocument}
-   * @throws ServiceDocumentParserException if reading of data (de-serialization) fails
-   */
-  public static AtomServiceDocument readServiceDocumentXml(InputStream serviceDocumentXml) throws ServiceDocumentParserException{
-    return createEntityProvider().readServiceDocumentXml(serviceDocumentXml);
-  }
-  
+
   /**
    * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
    * 
    * @param serviceDocument the given input stream
+   * @param contentType format of content in the given input stream
    * @return ServiceDocument as {@link ServiceDocument}
-   * @throws ServiceDocumentParserException if reading of data (de-serialization) fails
+   * @throws EntityProviderException  if reading of data (de-serialization) fails
    */
-  public static ServiceDocument readServiceDocument(InputStream serviceDocument/*,  String contentType*/) throws ServiceDocumentParserException{
-    return createEntityProvider().readServiceDocument(serviceDocument/*, contentType*/);
+  public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
+    return createEntityProvider().readServiceDocument(serviceDocument, contentType);
   }
-  
+
 }
