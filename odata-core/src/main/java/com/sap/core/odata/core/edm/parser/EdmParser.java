@@ -744,7 +744,8 @@ public class EdmParser {
 
   private FullQualifiedName extractFQName(final String name)
       throws EntityProviderException {
-    String[] names = name.split("\\.");
+    // Looking for the last dot
+    String[] names = name.split("\\" + Edm.DELIMITER + "(?=[^\\" + Edm.DELIMITER + "]+$)");
     if (names.length != 2) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid type"));
     } else {
