@@ -667,6 +667,7 @@ public class UriParserTest extends BaseTest {
     assertEquals(UriType.URI1, result.getUriType());
     assertNotNull(result.getFilter());
     assertNotNull(result.getOrderBy());
+    assertEquals("EmployeeName desc", result.getOrderBy().getUriLiteral());
   }
 
   @Test

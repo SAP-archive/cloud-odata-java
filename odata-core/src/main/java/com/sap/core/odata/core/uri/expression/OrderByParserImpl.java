@@ -16,8 +16,8 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
   @Override
   public OrderByExpression parseOrderByString(final String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
-    OrderByExpressionImpl orderCollection = new OrderByExpressionImpl(curExpression);
     curExpression = orderByExpression;
+    OrderByExpressionImpl orderCollection = new OrderByExpressionImpl(curExpression);
 
     try
     {

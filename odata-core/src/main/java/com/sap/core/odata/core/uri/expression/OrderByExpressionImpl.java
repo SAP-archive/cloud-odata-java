@@ -61,7 +61,7 @@ public class OrderByExpressionImpl implements OrderByExpression {
 
   @Override
   public String getUriLiteral() {
-    return "";
+    return orderbyString;
   }
 
   @Override

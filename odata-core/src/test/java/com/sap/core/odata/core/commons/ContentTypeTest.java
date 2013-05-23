@@ -167,7 +167,7 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @SuppressWarnings("unused")
-  private void failContentTypeCreation(String contentType, Class<? extends Throwable> expectedExceptionClass) throws Throwable {
+  private void failContentTypeCreation(final String contentType, final Class<? extends Throwable> expectedExceptionClass) throws Throwable {
     try {
       ContentType mt = ContentType.create(contentType);
       Assert.fail("Expected exception class + " + expectedExceptionClass + " was not thrown for creation of content type based on '" +

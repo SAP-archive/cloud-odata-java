@@ -143,7 +143,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     String nextLink = null;
     if (data.size() > SERVER_PAGING_SIZE
         && uriInfo.getFilter() == null
-        && uriInfo.getOrderBy() == null
+        /*
+         * Take orderby into account of next link. 
+         * Actually there is no sorting implemented yet. 
+         */
         && uriInfo.getTop() == null
         && uriInfo.getExpand().isEmpty()
         && uriInfo.getSelect().isEmpty()) {
@@ -159,6 +162,10 @@ public class ListsProcessor extends ODataSingleProcessor {
           + entitySet.getName()
           + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
           + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT));
+      if (uriInfo.getOrderBy() != null) {
+        nextLink += "&$orderby=" + uriInfo.getOrderBy().getUriLiteral();
+      }
+
       while (data.size() > SERVER_PAGING_SIZE) {
         data.remove(SERVER_PAGING_SIZE);
       }
