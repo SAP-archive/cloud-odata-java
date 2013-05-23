@@ -11,8 +11,6 @@ import javax.persistence.Query;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
-import com.sap.core.odata.api.ep.EntityProvider;
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
@@ -126,7 +124,6 @@ public class JPAProcessorImpl implements JPAProcessor {
         .build();
     Query query = null;
     try {
-
       query = em.createQuery(jpqlStatement.toString());
       if (uriParserResultView.getSkip() != null)
         query.setFirstResult(uriParserResultView.getSkip());
@@ -139,13 +136,14 @@ public class JPAProcessorImpl implements JPAProcessor {
           query.setMaxResults(uriParserResultView.getTop());
         }
       }
+      return query.getResultList();
     } catch (IllegalArgumentException e) {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
-    }
-
-    return query.getResultList();
-
+    }  finally{
+    	em.close();
+    	this.oDataJPAContext.getEntityManagerFactory().close();
+    } 
   }
 
   /* Process Get Entity Request (Read) */
@@ -197,17 +195,17 @@ public class JPAProcessorImpl implements JPAProcessor {
     try {
 
       query = em.createQuery(jpqlStatement.toString());
+      List<?> resultList = query.getResultList();
+      if (resultList != null && resultList.size() == 1)// Expecting exactly one item with count
+        return Long.valueOf(resultList.get(0).toString());
     } catch (IllegalArgumentException e) {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
-    }
-    List<?> resultList = query.getResultList();
-    if (resultList != null && resultList.size() == 1)// Expecting exactly
-      // one item with
-      // count
-      return Long.valueOf(resultList.get(0).toString());
-    else
-      return 0;// Invalid value
+    } finally{
+    	em.close();
+    	this.oDataJPAContext.getEntityManagerFactory().close();
+    }    
+    return 0;// Invalid value
   }
 
   /* Process $count for Get Entity Request */
@@ -235,15 +233,18 @@ public class JPAProcessorImpl implements JPAProcessor {
     try {
 
       query = em.createQuery(jpqlStatement.toString());
+      List<?> resultList = query.getResultList();
+      if (resultList != null && resultList.size() == 1)
+        return Long.valueOf(resultList.get(0).toString());
     } catch (IllegalArgumentException e) {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
+    } finally{
+    	em.close();
+    	this.oDataJPAContext.getEntityManagerFactory().close();
     }
-    List<?> resultList = query.getResultList();
-    if (resultList != null && resultList.size() == 1)
-      return Long.valueOf(resultList.get(0).toString());
-    else
-      return 0;
+    
+    return 0;
   }
 
   /* Process Create Entity Request */
@@ -265,15 +266,16 @@ public class JPAProcessorImpl implements JPAProcessor {
       link.create(createView, content, requestedContentType, requestedContentType);
       em.persist(jpaEntity);
       if (em.contains(jpaEntity)) {
-        em.getTransaction().commit();
-        em.close();
+        em.getTransaction().commit();        
         return createObjectList;
       }
     } catch (Exception e) {
       em.getTransaction().rollback();
-      em.close();
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_CREATE_REQUEST, e);
+    } finally{
+    	em.close();
+    	this.oDataJPAContext.getEntityManagerFactory().close();
     }
     return null;
   }
@@ -311,6 +313,9 @@ public class JPAProcessorImpl implements JPAProcessor {
       em.getTransaction().rollback();
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_UPDATE_REQUEST, e);
+    } finally{
+    	em.close();
+    	this.oDataJPAContext.getEntityManagerFactory().close();
     }
     return updateObject;
   }
@@ -347,6 +352,9 @@ public class JPAProcessorImpl implements JPAProcessor {
         em.getTransaction().rollback();
         throw ODataJPARuntimeException.throwException(
             ODataJPARuntimeException.ERROR_JPQL_DELETE_REQUEST, e);
+      } finally{
+      	em.close();
+      	this.oDataJPAContext.getEntityManagerFactory().close();
       }
     }
     return selectedObject;
@@ -391,15 +399,16 @@ public class JPAProcessorImpl implements JPAProcessor {
       Query query = null;
       try {
         query = em.createQuery(selectJPQLStatement.toString());
+        if (!query.getResultList().isEmpty()) {
+            selectedObject = query.getResultList().get(0);
+          }
       } catch (IllegalArgumentException e) {
         throw ODataJPARuntimeException.throwException(
             ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
-      }
-
-      if (!query.getResultList().isEmpty()) {
-        selectedObject = query.getResultList().get(0);
-      }
-
+      } finally{
+        	em.close();
+        	this.oDataJPAContext.getEntityManagerFactory().close();
+      }      
     }
     return selectedObject;
   }
