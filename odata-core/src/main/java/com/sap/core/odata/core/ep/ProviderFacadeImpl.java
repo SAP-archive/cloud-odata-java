@@ -57,8 +57,9 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   /**
-   * @deprectade since 0.5.0
+   * @deprecated since 0.5.0
    */
+  @Deprecated
   @Override
   public ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
     return create(contentType).writeErrorDocument(status, errorCode, message, locale, innerError);

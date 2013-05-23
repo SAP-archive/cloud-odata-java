@@ -291,7 +291,7 @@ public class ContentType {
    * Otherwise if charset parameter is already set nothing is done.
    * 
    * @param defaultCharset
-   * @return
+   * @return ContentType
    */
   public ContentType receiveWithCharsetParameter(final String defaultCharset) {
     if (isContentTypeODataTextRelated()) {

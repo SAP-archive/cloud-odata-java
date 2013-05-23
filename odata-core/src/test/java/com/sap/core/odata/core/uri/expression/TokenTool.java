@@ -116,7 +116,7 @@ public class TokenTool
 
   /**
    * Verifies that all place holders in the message text definition of the thrown exception are provided with content
-   * @return
+   * @return TokenTool
    */
   public TokenTool aExMsgContentAllSet()
   {
@@ -151,7 +151,7 @@ public class TokenTool
 
   /**
    * Verifies that the message text of the thrown exception is not empty
-   * @return
+   * @return TokenTool
    */
   public TokenTool aExMsgNotEmpty()
   {

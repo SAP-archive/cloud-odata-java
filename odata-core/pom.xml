@@ -55,8 +55,6 @@
 						<Import-Package>
 							javax.ws.rs,
 							javax.ws.rs.*,
-							org.slf4j,
-							org.slf4j.*,
 							*
 						</Import-Package>
 						<Export-Package>

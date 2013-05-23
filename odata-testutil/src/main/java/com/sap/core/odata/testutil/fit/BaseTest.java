@@ -63,8 +63,7 @@ public abstract class BaseTest {
   /**
    * Disable logging.
    * <br /> 
-   * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
-   * {@link #after()}).
+   * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()}).
    */
   protected void disableLogging() {
     disableLogging(FitErrorCallback.class);
@@ -72,8 +71,7 @@ public abstract class BaseTest {
 
   /**
    * Disable logging for over handed classes.
-   * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
-   * {@link #after()}).
+   * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()}).
    * 
    * @param classes
    */
