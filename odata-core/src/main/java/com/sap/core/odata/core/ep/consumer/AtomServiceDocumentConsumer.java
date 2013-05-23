@@ -70,7 +70,7 @@ public class AtomServiceDocumentConsumer {
       serviceDocument.setEntitySetsInfo(atomInfo.getEntitySetsInfo());
       return serviceDocument;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid service document"));
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid service document"), e);
     }
   }
 
@@ -283,7 +283,7 @@ public class AtomServiceDocumentConsumer {
       try {
         streamReader = factory.createXMLStreamReader(in);
       } catch (XMLStreamException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("XML Exception"));
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("XML Exception"), e);
       }
       return streamReader;
     } else {
