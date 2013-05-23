@@ -160,10 +160,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       // switch to 501 here for not-allowed exceptions thrown directly from
       // JAX-RS implementations.
       context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
+      context.setMessage("The request dispatcher does not allow the HTTP method used for the request.");
+      context.setLocale(Locale.ENGLISH);
+    } else {
+      context.setMessage(toHandleException.getMessage());
+      context.setLocale(DEFAULT_RESPONSE_LOCALE);
     }
     context.setErrorCode(null);
-    context.setMessage(toHandleException.getMessage());
-    context.setLocale(DEFAULT_RESPONSE_LOCALE);
     context.setException(toHandleException);
     return context;
   }

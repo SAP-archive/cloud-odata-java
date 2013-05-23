@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -307,6 +308,19 @@ public class ODataExceptionMapperImplTest extends BaseTest {
 
     // verify
     verifyResponse(response, exceptionMessage, HttpStatusCodes.INTERNAL_SERVER_ERROR);
+  }
+
+  @Test
+  public void testNotAllowedJaxRsException() throws Exception {
+    // prepare
+    String message = "The request dispatcher does not allow the HTTP method used for the request.";
+    Exception exception = new NotAllowedException(Response.status(Response.Status.METHOD_NOT_ALLOWED).header(HttpHeaders.ALLOW, "GET").build());
+
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+
+    // verify
+    verifyResponse(response, message, HttpStatusCodes.NOT_IMPLEMENTED);
   }
 
   @Test
