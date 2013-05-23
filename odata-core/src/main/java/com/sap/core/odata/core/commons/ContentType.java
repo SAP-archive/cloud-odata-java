@@ -27,6 +27,7 @@ public class ContentType {
     ATOM, XML, JSON, CUSTOM
   }
 
+  private static final char WHITESPACE_CHAR = ' ';
   private static final String PARAMETER_SEPARATOR = ";";
   private static final String TYPE_SUBTYPE_SEPARATOR = "/";
   private static final String MEDIA_TYPE_WILDCARD = "*";
@@ -79,8 +80,8 @@ public class ContentType {
       throw new IllegalArgumentException("Illegal combination of WILDCARD type with NONE WILDCARD subtype.");
     }
     this.odataFormat = odataFormat;
-    this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
-    this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
+    this.type = validateType(type);
+    this.subtype = validateType(subtype);
 
     if (parameters == null) {
       this.parameters = Collections.emptyMap();
@@ -94,6 +95,16 @@ public class ContentType {
       this.parameters.putAll(parameters);
       this.parameters.remove(PARAMETER_Q);
     }
+  }
+
+  private String validateType(final String type) {
+    if (type == null) {
+      return MEDIA_TYPE_WILDCARD;
+    }
+    if (type.charAt(0) == WHITESPACE_CHAR || type.charAt(type.length() - 1) == WHITESPACE_CHAR) {
+      throw new IllegalArgumentException("Illegal leading/trailing whitespace found for type '" + type + "'.");
+    }
+    return type;
   }
 
   /**

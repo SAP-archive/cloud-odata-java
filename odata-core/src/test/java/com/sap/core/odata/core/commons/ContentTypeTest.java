@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,6 +52,10 @@ public class ContentTypeTest extends BaseTest {
     assertTrue(ContentType.isParseable("text/plain"));
     assertTrue(ContentType.isParseable("application/atom+xml; charset=UTF-8"));
 
+    // see: https://jtrack/browse/ODATAFORSAP-65
+    assertFalse(ContentType.isParseable("application/  atom+xml; charset=UTF-8"));
+    assertFalse(ContentType.isParseable("application   /atom+xml; charset=UTF-8"));
+    //
     assertFalse(ContentType.isParseable("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertFalse(ContentType.isParseable(null));
@@ -62,6 +67,10 @@ public class ContentTypeTest extends BaseTest {
     assertNotNull(ContentType.parse("text/plain"));
     assertNotNull(ContentType.parse("application/atom+xml; charset=UTF-8"));
 
+    // see: https://jtrack/browse/ODATAFORSAP-65
+    assertFalse(ContentType.isParseable("application/  atom+xml; charset=UTF-8"));
+    assertFalse(ContentType.isParseable("application   /atom+xml; charset=UTF-8"));
+    //
     assertNull(ContentType.parse("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertNull(ContentType.parse(null));
@@ -137,6 +146,38 @@ public class ContentTypeTest extends BaseTest {
   @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardTypeSingleFormat() {
     ContentType mt = ContentType.create("*/subtype");
+  }
+
+  /**
+   * See: https://jtrack/browse/ODATAFORSAP-65
+   * and: 
+   * <p>
+   * RFC 2616:
+   * The type, subtype, and parameter attribute names are case-insensitive. Parameter values might or might not be case-sensitive,
+   * depending on the semantics of the parameter name. Linear white space (LWS) MUST NOT be used between the type and subtype, 
+   * nor between an attribute and its value.
+   * </p>
+   * @throws Throwable 
+   */
+  @Test
+  public void testContentTypeCreationInvalidWithSpaces() throws Throwable {
+    failContentTypeCreation("app/  space", IllegalArgumentException.class);
+    failContentTypeCreation("app    /space", IllegalArgumentException.class);
+    failContentTypeCreation("app    /   space", IllegalArgumentException.class);
+  }
+
+  @SuppressWarnings("unused")
+  private void failContentTypeCreation(String contentType, Class<? extends Throwable> expectedExceptionClass) throws Throwable {
+    try {
+      ContentType mt = ContentType.create(contentType);
+      Assert.fail("Expected exception class + " + expectedExceptionClass + " was not thrown for creation of content type based on '" +
+          contentType + "'.");
+    } catch (Throwable e) {
+      if (e.getClass() == AssertionError.class) {
+        throw e;
+      }
+      assertEquals(expectedExceptionClass, e.getClass());
+    }
   }
 
   @Test
