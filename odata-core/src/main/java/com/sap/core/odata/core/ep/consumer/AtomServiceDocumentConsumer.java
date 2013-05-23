@@ -11,7 +11,14 @@ import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.servicedocument.Accept;
+import com.sap.core.odata.api.servicedocument.Categories;
+import com.sap.core.odata.api.servicedocument.Category;
+import com.sap.core.odata.api.servicedocument.Collection;
+import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
+import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Fixed;
+import com.sap.core.odata.api.servicedocument.Workspace;
 import com.sap.core.odata.core.ep.util.FormatXml;
 import com.sap.core.odata.core.servicedocument.AcceptImpl;
 import com.sap.core.odata.core.servicedocument.AtomInfoImpl;
@@ -32,8 +39,8 @@ public class AtomServiceDocumentConsumer {
   public ServiceDocumentImpl readServiceDokument(final XMLStreamReader reader) throws EntityProviderException {
     AtomInfoImpl atomInfo = new AtomInfoImpl();
     ServiceDocumentImpl serviceDocument = new ServiceDocumentImpl();
-    List<WorkspaceImpl> workspaces = new ArrayList<WorkspaceImpl>();
-    List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
+    List<Workspace> workspaces = new ArrayList<Workspace>();
+    List<ExtensionElement> extElements = new ArrayList<ExtensionElement>();
     CommonAttributesImpl attributes = new CommonAttributesImpl();
     try {
       while (reader.hasNext()
@@ -69,7 +76,7 @@ public class AtomServiceDocumentConsumer {
 
   private CommonAttributesImpl parseCommonAttribute(final XMLStreamReader reader) {
     CommonAttributesImpl attribute = new CommonAttributesImpl();
-    List<ExtensionAttributeImpl> extAttributes = new ArrayList<ExtensionAttributeImpl>();
+    List<ExtensionAttribute> extAttributes = new ArrayList<ExtensionAttribute>();
     attribute.setBase(reader.getAttributeValue(null, FormatXml.XML_BASE));
     attribute.setLang(reader.getAttributeValue(null, FormatXml.XML_LANG));
     for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -91,8 +98,8 @@ public class AtomServiceDocumentConsumer {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_APP_2007, FormatXml.APP_WORKSPACE);
 
     TitleImpl title = null;
-    List<CollectionImpl> collections = new ArrayList<CollectionImpl>();
-    List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
+    List<Collection> collections = new ArrayList<Collection>();
+    List<ExtensionElement> extElements = new ArrayList<ExtensionElement>();
     CommonAttributesImpl attributes = parseCommonAttribute(reader);
     while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_APP_2007.equals(reader.getNamespaceURI()) && FormatXml.APP_WORKSPACE.equals(reader.getLocalName()))) {
       reader.next();
@@ -118,9 +125,9 @@ public class AtomServiceDocumentConsumer {
     TitleImpl title = null;
     String resourceIdentifier = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
     CommonAttributesImpl attributes = parseCommonAttribute(reader);
-    List<ExtensionElementImpl> extElements = new ArrayList<ExtensionElementImpl>();
-    List<AcceptImpl> acceptList = new ArrayList<AcceptImpl>();
-    List<CategoriesImpl> categories = new ArrayList<CategoriesImpl>();
+    List<ExtensionElement> extElements = new ArrayList<ExtensionElement>();
+    List<Accept> acceptList = new ArrayList<Accept>();
+    List<Categories> categories = new ArrayList<Categories>();
     if (resourceIdentifier == null) {
       throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent("href"));
     }
@@ -183,7 +190,7 @@ public class AtomServiceDocumentConsumer {
       if (categories.getFixed() == null) {
         categories.setFixed(Fixed.NO);
       }
-      List<CategoryImpl> categoriesList = new ArrayList<CategoryImpl>();
+      List<Category> categoriesList = new ArrayList<Category>();
       while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_APP_2007.equals(reader.getNamespaceURI()) && FormatXml.APP_CATEGORIES.equals(reader.getLocalName()))) {
         reader.next();
         if (reader.isStartElement()) {
@@ -230,7 +237,7 @@ public class AtomServiceDocumentConsumer {
   }
 
   private ExtensionElementImpl parseElement(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
-    List<ExtensionElementImpl> extensionElements = new ArrayList<ExtensionElementImpl>();
+    List<ExtensionElement> extensionElements = new ArrayList<ExtensionElement>();
     ExtensionElementImpl extElement = new ExtensionElementImpl().setName(reader.getLocalName()).setNamespace(reader.getNamespaceURI()).setPrefix(reader.getPrefix());
     extElement.setAttributes(parseAttribute(reader));
     while (reader.hasNext() && !(reader.isEndElement() && extElement.getName() != null && extElement.getName().equals(reader.getLocalName()))) {
@@ -248,8 +255,8 @@ public class AtomServiceDocumentConsumer {
     return extElement;
   }
 
-  private List<ExtensionAttributeImpl> parseAttribute(final XMLStreamReader reader) {
-    List<ExtensionAttributeImpl> extAttributes = new ArrayList<ExtensionAttributeImpl>();
+  private List<ExtensionAttribute> parseAttribute(final XMLStreamReader reader) {
+    List<ExtensionAttribute> extAttributes = new ArrayList<ExtensionAttribute>();
     for (int i = 0; i < reader.getAttributeCount(); i++) {
       {
         extAttributes.add(new ExtensionAttributeImpl()

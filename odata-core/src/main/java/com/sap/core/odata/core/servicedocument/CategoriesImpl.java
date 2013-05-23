@@ -6,47 +6,30 @@ import com.sap.core.odata.api.servicedocument.Categories;
 import com.sap.core.odata.api.servicedocument.Category;
 import com.sap.core.odata.api.servicedocument.Fixed;
 
-/**
- * CategoriesImpl
- * <p>The implementiation of the interface Categories
- * @author SAP AG
- */
 public class CategoriesImpl implements Categories {
   private String href;
   private Fixed fixed;
   private String scheme;
-  private List<CategoryImpl> categoryList;
+  private List<Category> categoryList;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getHref() {
     return href;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public Fixed getFixed() {
     return fixed;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getScheme() {
     return scheme;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<Category> getCategoryList() {
-    return (List<Category>) (List<? extends Category>) categoryList;
+    return categoryList;
   }
 
   public CategoriesImpl setHref(final String href) {
@@ -64,7 +47,7 @@ public class CategoriesImpl implements Categories {
     return this;
   }
 
-  public CategoriesImpl setCategoryList(final List<CategoryImpl> categoryList) {
+  public CategoriesImpl setCategoryList(final List<Category> categoryList) {
     this.categoryList = categoryList;
     return this;
   }

@@ -2,11 +2,6 @@ package com.sap.core.odata.core.servicedocument;
 
 import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
 
-/**
-* ExtensionAttributeImpl
-* <p>The implementiation of the interface ExtensionAttribute
-* @author SAP AG
-*/
 public class ExtensionAttributeImpl implements ExtensionAttribute {
   private String namespace;
   private String prefix;
@@ -14,33 +9,21 @@ public class ExtensionAttributeImpl implements ExtensionAttribute {
   private String text;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getNamespace() {
     return namespace;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getPrefix() {
     return prefix;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getName() {
     return name;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getText() {
     return text;
   }

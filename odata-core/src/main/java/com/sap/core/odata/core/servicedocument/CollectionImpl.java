@@ -9,65 +9,42 @@ import com.sap.core.odata.api.servicedocument.CommonAttributes;
 import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Title;
 
-/**
- * CollectionImpl
- * <p>The implementiation of the interface Collection
- * @author SAP AG
- */
 public class CollectionImpl implements Collection {
   private Title title;
   private String href;
-  private List<AcceptImpl> acceptElements;
-  private List<CategoriesImpl> categories;
+  private List<Accept> acceptElements;
+  private List<Categories> categories;
   private CommonAttributes attributes;
-  private List<ExtensionElementImpl> extensionElements;
+  private List<ExtensionElement> extensionElements;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public CommonAttributes getCommonAttributes() {
     return attributes;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public Title getTitle() {
     return title;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getHref() {
     return href;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<Accept> getAcceptElements() {
-    return (List<Accept>) (List<? extends Accept>) acceptElements;
+    return acceptElements;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<Categories> getCategories() {
-    return (List<Categories>) (List<? extends Categories>) categories;
+    return categories;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<ExtensionElement> getExtesionElements() {
-    return (List<ExtensionElement>) (List<? extends ExtensionElement>) extensionElements;
+    return extensionElements;
   }
 
   public CollectionImpl setTitle(final Title title) {
@@ -80,12 +57,12 @@ public class CollectionImpl implements Collection {
     return this;
   }
 
-  public CollectionImpl setAcceptElements(final List<AcceptImpl> acceptElements) {
+  public CollectionImpl setAcceptElements(final List<Accept> acceptElements) {
     this.acceptElements = acceptElements;
     return this;
   }
 
-  public CollectionImpl setCategories(final List<CategoriesImpl> categories) {
+  public CollectionImpl setCategories(final List<Categories> categories) {
     this.categories = categories;
     return this;
   }
@@ -95,7 +72,7 @@ public class CollectionImpl implements Collection {
     return this;
   }
 
-  public CollectionImpl setExtesionElements(final List<ExtensionElementImpl> elements) {
+  public CollectionImpl setExtesionElements(final List<ExtensionElement> elements) {
     extensionElements = elements;
     return this;
   }

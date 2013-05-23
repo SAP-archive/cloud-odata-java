@@ -3,11 +3,6 @@ package com.sap.core.odata.core.servicedocument;
 import com.sap.core.odata.api.servicedocument.Category;
 import com.sap.core.odata.api.servicedocument.CommonAttributes;
 
-/**
- * CategoryImpl
- * <p>The implementiation of the interface Category
- * @author SAP AG
- */
 public class CategoryImpl implements Category {
   private String scheme;
   private String term;
@@ -15,33 +10,21 @@ public class CategoryImpl implements Category {
   private String label;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getScheme() {
     return scheme;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getTerm() {
     return term;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public CommonAttributes getCommonAttributes() {
     return commonAttributes;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getLabel() {
     return label;
   }

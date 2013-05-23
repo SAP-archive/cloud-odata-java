@@ -18,17 +18,11 @@ public class ServiceDocumentImpl implements ServiceDocument {
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<EdmEntitySetInfo> getEntitySetsInfo() throws EntityProviderException {
     return entitySets;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public AtomInfo getAtomInfo() {
     return atomInfo;
   }

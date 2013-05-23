@@ -16,15 +16,10 @@ import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Workspace;
 import com.sap.core.odata.core.edm.provider.EdmEntitySetInfoImplProv;
 
-/**
- * ServiceDokumentImpl
- * <p>The implementiation of the interface ServiceDocument
- * @author SAP AG
- */
 public class AtomInfoImpl implements AtomInfo {
-  private List<WorkspaceImpl> workspaces;
+  private List<Workspace> workspaces;
   private CommonAttributes attributes;
-  private List<ExtensionElementImpl> extensionElements;
+  private List<ExtensionElement> extensionElements;
 
   @Override
   public CommonAttributes getCommonAttributes() {
@@ -33,15 +28,15 @@ public class AtomInfoImpl implements AtomInfo {
 
   @Override
   public List<Workspace> getWorkspaces() {
-    return (List<Workspace>) (List<? extends Workspace>) workspaces;
+    return workspaces;
   }
 
   @Override
   public List<ExtensionElement> getExtesionElements() {
-    return (List<ExtensionElement>) (List<? extends ExtensionElement>) extensionElements;
+    return extensionElements;
   }
 
-  public AtomInfoImpl setWorkspaces(final List<WorkspaceImpl> workspaces) {
+  public AtomInfoImpl setWorkspaces(final List<Workspace> workspaces) {
     this.workspaces = workspaces;
     return this;
   }
@@ -51,7 +46,7 @@ public class AtomInfoImpl implements AtomInfo {
     return this;
   }
 
-  public AtomInfoImpl setExtesionElements(final List<ExtensionElementImpl> elements) {
+  public AtomInfoImpl setExtesionElements(final List<ExtensionElement> elements) {
     extensionElements = elements;
     return this;
   }

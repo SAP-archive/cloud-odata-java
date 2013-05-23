@@ -8,47 +8,30 @@ import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Title;
 import com.sap.core.odata.api.servicedocument.Workspace;
 
-/**
- * WorkspaceImpl
- * <p>The implementiation of the interface Workspace
- * @author SAP AG
- */
 public class WorkspaceImpl implements Workspace {
   private Title title;
-  private List<CollectionImpl> collections;
+  private List<Collection> collections;
   private CommonAttributes attributes;
-  private List<ExtensionElementImpl> extensionElements;
+  private List<ExtensionElement> extensionElements;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public Title getTitle() {
     return title;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<Collection> getCollections() {
-    return (List<Collection>) (List<? extends Collection>) collections;
+    return collections;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public CommonAttributes getCommonAttributes() {
     return attributes;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<ExtensionElement> getExtesionElements() {
-    return (List<ExtensionElement>) (List<? extends ExtensionElement>) extensionElements;
+    return extensionElements;
   }
 
   public WorkspaceImpl setTitle(final Title title) {
@@ -56,7 +39,7 @@ public class WorkspaceImpl implements Workspace {
     return this;
   }
 
-  public WorkspaceImpl setCollections(final List<CollectionImpl> collections) {
+  public WorkspaceImpl setCollections(final List<Collection> collections) {
     this.collections = collections;
     return this;
   }
@@ -66,7 +49,7 @@ public class WorkspaceImpl implements Workspace {
     return this;
   }
 
-  public WorkspaceImpl setExtesionElements(final List<ExtensionElementImpl> elements) {
+  public WorkspaceImpl setExtesionElements(final List<ExtensionElement> elements) {
     extensionElements = elements;
     return this;
   }

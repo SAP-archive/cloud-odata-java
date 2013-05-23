@@ -5,65 +5,42 @@ import java.util.List;
 import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
 import com.sap.core.odata.api.servicedocument.ExtensionElement;
 
-/**
-* ExtensionElementImpl
-* <p>The implementiation of the interface ExtensionElement
-* @author SAP AG
-*/
 public class ExtensionElementImpl implements ExtensionElement {
   private String namespace;
   private String prefix;
   private String name;
   private String text;
-  private List<ExtensionElementImpl> anyElements;
-  private List<ExtensionAttributeImpl> attributes;
+  private List<ExtensionElement> anyElements;
+  private List<ExtensionAttribute> attributes;
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getNamespace() {
     return namespace;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getPrefix() {
     return prefix;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getName() {
     return name;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public String getText() {
     return text;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<ExtensionElement> getElements() {
-    return (List<ExtensionElement>) (List<? extends ExtensionElement>) anyElements;
+    return anyElements;
   }
 
   @Override
-  /**
-   * {@inherit}
-   */
   public List<ExtensionAttribute> getAttributes() {
-    return (List<ExtensionAttribute>) (List<? extends ExtensionAttribute>) attributes;
+    return attributes;
   }
 
   public ExtensionElementImpl setNamespace(final String namespace) {
@@ -87,12 +64,12 @@ public class ExtensionElementImpl implements ExtensionElement {
 
   }
 
-  public ExtensionElementImpl setElements(final List<ExtensionElementImpl> anyElements) {
+  public ExtensionElementImpl setElements(final List<ExtensionElement> anyElements) {
     this.anyElements = anyElements;
     return this;
   }
 
-  public ExtensionElementImpl setAttributes(final List<ExtensionAttributeImpl> attributes) {
+  public ExtensionElementImpl setAttributes(final List<ExtensionAttribute> attributes) {
     this.attributes = attributes;
     return this;
   }
