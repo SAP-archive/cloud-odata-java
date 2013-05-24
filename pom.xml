@@ -103,7 +103,7 @@
 		<xmlunit.version>1.3</xmlunit.version>
 
 		<version.eclipselink>2.1.2</version.eclipselink>
-		<version.javax.persistence>2.0.3</version.javax.persistence>
+		<version.javax.persistence>2.0.5</version.javax.persistence>
 	</properties>
 
 	<modules>
