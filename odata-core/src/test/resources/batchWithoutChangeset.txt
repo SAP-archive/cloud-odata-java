@@ -1,0 +1,26 @@
+POST /service/$batch HTTP/1.1
+Host: host
+Accept-Language:en-US,en;q=0.8
+MaxDataServiceVersion: 2.0
+Content-Length:568
+Content-Type:multipart;boundary=batch_1740-bb84-2f7f
+
+--batch_1740-bb84-2f7f
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET Employees('1')/EmployeeName HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+
+
+--batch_1740-bb84-2f7f
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET http://localhost/sap/bc/odata/Employees('2')/EmployeeName HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+
+
+--batch_1740-bb84-2f7f--

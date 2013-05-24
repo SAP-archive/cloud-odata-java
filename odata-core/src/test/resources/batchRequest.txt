@@ -4,14 +4,14 @@ Content-Length:1117
 Content-Type: multipart/mixed; boundary=batch_36522ad7-fc75-4b56-8c71-56071383e77b 
 
 --batch_36522ad7-fc75-4b56-8c71-56071383e77b
-Content-Type: application/http 
+Content-Type: application/http
 Content-Transfer-Encoding:binary
 
 GET /service/Customers('ALFKI') HTTP/1.1
-Host: host
+
 
 --batch_36522ad7-fc75-4b56-8c71-56071383e77b 
-Content-Type: multipart/mixed; boundary=changeset_77162fcd-b8da-41ac-a9f8-9357efbbd621 
+Content-Type: multipart/mixed; boundary=changeset_77162fcd-b8da-41ac-a9f8-9357efbbd621
 Content-Length: ###       
 
 --changeset_77162fcd-b8da-41ac-a9f8-9357efbbd621 
@@ -24,6 +24,7 @@ Content-Type: application/atom+xml;type=entry
 Content-Length: ### 
 
 <AtomPub representation of a new Customer> 
+
 
 --changeset_77162fcd-b8da-41ac-a9f8-9357efbbd621 
 Content-Type: application/http 
@@ -45,5 +46,6 @@ Content-Transfer-Encoding:binary
 
 GET service/Products HTTP/1.1 
 Host: host 
+
 
 --batch_36522ad7-fc75-4b56-8c71-56071383e77b--

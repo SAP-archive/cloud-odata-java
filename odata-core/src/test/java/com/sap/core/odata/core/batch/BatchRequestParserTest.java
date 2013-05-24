@@ -3,6 +3,7 @@ package com.sap.core.odata.core.batch;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,6 +30,9 @@ public class BatchRequestParserTest {
       if (object instanceof ODataRequest) {
         ODataRequest retrieveRequest = (ODataRequest) object;
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
+        if (retrieveRequest.getAcceptableLanguages() != null) {
+          assertEquals(3, retrieveRequest.getAcceptableLanguages().size());
+        }
       } else {
         @SuppressWarnings("unchecked")
         List<Object> list = (List<Object>) object;
@@ -39,7 +43,8 @@ public class BatchRequestParserTest {
             assertEquals("100000", request.getHeaderValue("Content-Length"));
             assertEquals("application/json; odata=verbose", request.getContentType());
             assertEquals(3, request.getAcceptHeaders().size());
-            assertEquals("*/*;q=0.1", request.getAcceptHeaders().get(2));
+            assertEquals("*/*", request.getAcceptHeaders().get(2));
+            assertEquals("application/atomsvc+xml", request.getAcceptHeaders().get(0));
           }
         }
       }
@@ -57,4 +62,258 @@ public class BatchRequestParserTest {
     BatchRequestParser parser = new BatchRequestParser();
     assertNotNull(parser.parse(in));
   }
+
+  @Test(expected = ODataException.class)
+  public void testBatchWithInvalidContentType() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart;boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testBatchWithoutBoundaryParameter() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testBoundaryWithoutQuota() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb:84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb:84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb:84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testWrongBoundaryString() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb:84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  // Nachfragen ob es ein Fehler ist
+  @Test(expected = ODataException.class)
+  public void testMimeHeaderContentType() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: text/plain" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  // Nachfragen ob es ein Fehler ist
+  @Test(expected = ODataException.class)
+  public void testMimeHeaderEncoding() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: 8bit" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testInvalidMethodForBatch() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "POST Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testNoMethod() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testNoBoundaryString() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testInvalidMethodForChangeset() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_8194-cf13-1f56" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56" + "\n"
+        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94dd" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
+        + "Content-Type: application/json;odata=verbose" + "\n"
+        + "MaxDataServiceVersion: 2.0" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testInvalidChangeSetBoundary() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_8194-cf13-1f56" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56" + "\n"
+        + "Content-Type: multipart/mixed;boundary=changeset_f980-1cb6-94dd" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94d" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "POST Employees('2') HTTP/1.1" + "\n"
+        + "Content-Type: application/json;odata=verbose" + "\n"
+        + "MaxDataServiceVersion: 2.0" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testNoCloseDelimiter() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testNoCloseDelimiter2() throws ODataException {
+    String batch = "POST /service/$batch HTTP/1.1" + "\n"
+        + "Content-Type:multipart/mixed; boundary=batch_1740-bb84-2f7f" + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser();
+    parser.parse(in);
+  }
+
+  String request = "POST /service/$batch HTTP/1.1" + "\n"
+      + "Content-Type:multipart/mixed; boundary=batch_8194-cf13-1f56" + "\n"
+      + "\n"
+      + "--batch_8194-cf13-1f56" + "\n"
+      + "Content-Type: multipart/mixed;boundary=changeset_f980-1cb6-94dd" + "\n"
+      + "\n"
+      + "--changeset_f980-1cb6-94d" + "\n"
+      + "Content-Type: application/http" + "\n"
+      + "Content-Transfer-Encoding: binary" + "\n"
+      + "\n"
+      + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
+      + "Content-Length: 100000"
+      + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + "\n"
+      + "DataServiceVersion: 1.0" + "\n"
+      + "Content-Type: application/json;odata=verbose" + "\n"
+      + "MaxDataServiceVersion: 2.0" + "\n"
+      + "\n"
+      + "{\"EmployeeName\":\"Frederic Fall MODIFIED\"}" + "\n"
+      + "\n"
+      + "--batch_8194-cf13-1f56--";
 }
