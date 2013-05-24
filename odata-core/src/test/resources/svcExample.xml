@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <app:service xml:lang="en"
-	xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/"
+	xml:base="http://localhost/odata/TEST_APPLICATION/"
 	xmlns:app="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom"
 	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
-	xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	xmlns:sap="http://www.sap.com/Data">
 	<app:workspace>
 		<atom:title type="text">Data</atom:title>
 		<app:collection sap:content-version="1" href="Teams">
@@ -52,7 +52,7 @@
 		</app:collection>
 	</app:workspace>
 	<atom:link rel="self"
-		href="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/" />
+		href="http://localhost/odata/TEST_APPLICATION/" />
 	<atom:link rel="latest-version"
-		href="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/" />
+		href="http://localhost/odata/TEST_APPLICATION/" />
 </app:service>

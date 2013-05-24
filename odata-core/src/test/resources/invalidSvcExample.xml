@@ -1,55 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <app:service xml:lang="en"
-	xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/"
+	xml:base="http://localhost/odata/TEST_APPLICATION/"
 	xmlns:app="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
-	xmlns:sap="http://www.sap.com/Protocols/SAPData">
-		<app:collection sap:content-version="1" href="Teams">
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+		<app:collection href="Teams">
 			<atom:title type="text">Teams</atom:title>
-			<sap:member-title>Team</sap:member-title>
 		</app:collection>
-		<app:collection sap:content-version="1" href="Employees">
+		<app:collection href="Employees">
 			<atom:title type="text">Employees</atom:title>
-			<sap:member-title>Worker</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1"
-			href="Employees_Deltalink">
-			<atom:title type="text">Employees_Deltalink</atom:title>
-			<sap:member-title>Worker_Deltalink</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1" href="MassData">
-			<atom:title type="text">MassData</atom:title>
-			<sap:member-title>MassDataEntity</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1"
-			href="TypeOneEntityCollection">
-			<atom:title type="text">TypeOneEntityCollection</atom:title>
-			<sap:member-title>TypeOneEntity</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1" href="ErrorCases">
-			<atom:title type="text">ErrorCases</atom:title>
-			<sap:member-title>ErrorCase</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1"
-			href="Annotation_Documentation_Collection">
-			<atom:title type="text">Annotation_Documentation_Collection</atom:title>
-			<sap:member-title>Annotation_Documentation_Entity</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1"
-			href="EdmTypesCollection">
-			<atom:title type="text">EdmTypesCollection</atom:title>
-			<sap:member-title>EdmTypes</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1" href="Managers">
-			<atom:title type="text">Managers</atom:title>
-			<sap:member-title>Manager</sap:member-title>
-		</app:collection>
-		<app:collection sap:content-version="1" href="ManagerNonDDICs">
-			<atom:title type="text">ManagerNonDDICs</atom:title>
-			<sap:member-title>ManagerNonDDIC</sap:member-title>
 		</app:collection>
 	<atom:link rel="self"
-		href="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/" />
+		href="http://localhost/odata/TEST_APPLICATION/" />
 	<atom:link rel="latest-version"
-		href="http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/" />
+		href="http://localhost/odata/TEST_APPLICATION/" />
 </app:service>

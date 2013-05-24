@@ -27,7 +27,7 @@ import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.api.servicedocument.Workspace;
 
 public class AtomServiceDocumentConsumerTest {
-  private static final String NAMESPACE_SAP = "http://www.sap.com/Protocols/SAPData";
+  private static final String NAMESPACE_SAP = "http://www.sap.com/Data";
   private static final String PREFIX_SAP = "sap";
 
   @Test
@@ -75,7 +75,7 @@ public class AtomServiceDocumentConsumerTest {
       assertEquals("atom", extElement.getPrefix());
       assertEquals(2, extElement.getAttributes().size());
       assertEquals("rel", extElement.getAttributes().get(0).getName());
-      assertEquals("http://ldcigmd.wdf.sap.corp:50055/sap/opu/odata/IWBEP/TEA_TEST_APPLICATION/", extElement.getAttributes().get(1).getText());
+      assertEquals("http://localhost/odata/TEST_APPLICATION/", extElement.getAttributes().get(1).getText());
       assertEquals("href", extElement.getAttributes().get(1).getName());
     }
 
@@ -204,7 +204,7 @@ public class AtomServiceDocumentConsumerTest {
               assertEquals("Travelagency", extElement.getText());
             } else if ("collectionLayout".equals(extElement.getName())) {
               assertEquals("gp", extElement.getPrefix());
-              assertEquals("http://www.sap.com/Protocols/SAPData/GenericPlayer", extElement.getNamespace());
+              assertEquals("http://www.sap.com/Data/GP", extElement.getNamespace());
               assertNotNull(extElement.getAttributes());
               assertEquals(2, extElement.getAttributes().size());
               assertEquals("display-order", extElement.getAttributes().get(0).getName());
