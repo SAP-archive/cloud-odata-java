@@ -208,7 +208,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private ContentType extractRequestContentType(final InitParameter param) throws ODataUnsupportedMediaTypeException {
+  private ContentType extractRequestContentType(final InitParameter param) throws ODataUnsupportedMediaTypeException, ODataBadRequestException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     if (requestMediaType == null) {
       return null;
@@ -223,7 +223,11 @@ public final class ODataSubLocator implements ODataLocator {
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(param.getHttpHeaders().getRequestHeader(HttpHeaders.CONTENT_TYPE).get(0)));
     } else {
       try {
-        return ContentType.create(requestMediaType.toString());
+        final String contentType = param.getHttpHeaders().getHeaderString(HttpHeaders.CONTENT_TYPE);
+        if (ContentType.isParseable(contentType)) {
+          return ContentType.create(contentType);
+        }
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.CONTENT_TYPE, contentType));
       } catch (IllegalArgumentException e) {
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestMediaType.toString()), e);
       }
@@ -267,6 +271,13 @@ public final class ODataSubLocator implements ODataLocator {
   private List<String> extractAcceptHeaders(final InitParameter param) throws ODataBadRequestException {
     final List<MediaType> acceptableMediaTypes = param.getHttpHeaders().getAcceptableMediaTypes();
     final List<String> mediaTypes = new ArrayList<String>();
+
+    List<String> acceptHeaders = param.getHttpHeaders().getRequestHeader(HttpHeaders.ACCEPT);
+    for (String acceptValue : acceptHeaders) {
+      if (!ContentType.isParseable(acceptValue)) {
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.ACCEPT, acceptValue));
+      }
+    }
 
     for (final MediaType mediaType : acceptableMediaTypes) {
       mediaTypes.add(mediaType.toString());

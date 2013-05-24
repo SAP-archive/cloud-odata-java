@@ -230,6 +230,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     if (requestContentType != null) {
       mediaType = mock(MediaType.class);
       when(mediaType.toString()).thenReturn(requestContentType);
+      when(httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE)).thenReturn(requestContentType);
     }
     when(httpHeaders.getMediaType()).thenReturn(mediaType);
     param.setHttpHeaders(httpHeaders);
@@ -442,6 +443,15 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown fot method '" + method + "' and uriType '" + uriType + "'.");
     } catch (ODataUnsupportedMediaTypeException e) {
+      assertNotNull(e);
+    }
+  }
+
+  private void invalidRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
+    try {
+      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+      fail("Expected ODataException not thrown");
+    } catch (ODataBadRequestException e) {
       assertNotNull(e);
     }
   }
@@ -660,7 +670,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void invalidRequestContentType() throws Exception {
-    unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
+    invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
 
   @Test
