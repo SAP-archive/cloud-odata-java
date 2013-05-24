@@ -167,15 +167,12 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @SuppressWarnings("unused")
-  private void failContentTypeCreation(final String contentType, final Class<? extends Throwable> expectedExceptionClass) throws Throwable {
+  private void failContentTypeCreation(final String contentType, final Class<? extends Throwable> expectedExceptionClass) throws Exception {
     try {
       ContentType mt = ContentType.create(contentType);
-      Assert.fail("Expected exception class + " + expectedExceptionClass + " was not thrown for creation of content type based on '" +
-          contentType + "'.");
-    } catch (Throwable e) {
-      if (e.getClass() == AssertionError.class) {
-        throw e;
-      }
+      Assert.fail("Expected exception class " + expectedExceptionClass +
+          " was not thrown for creation of content type based on '" + contentType + "'.");
+    } catch (Exception e) {
       assertEquals(expectedExceptionClass, e.getClass());
     }
   }

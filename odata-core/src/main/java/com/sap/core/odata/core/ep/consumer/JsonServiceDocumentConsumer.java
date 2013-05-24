@@ -47,7 +47,7 @@ public class JsonServiceDocumentConsumer {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The structure of the service document is not valid"));
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The structure of the service document is not valid"), e);
     } catch (final EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final ODataException e) {
