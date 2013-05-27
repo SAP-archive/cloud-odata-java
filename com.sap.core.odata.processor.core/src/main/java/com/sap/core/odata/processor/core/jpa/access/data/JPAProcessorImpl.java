@@ -141,8 +141,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     }  finally{
-    	em.close();
-    	this.oDataJPAContext.getEntityManagerFactory().close();
+    	em.close();    	
     } 
   }
 
@@ -202,8 +201,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     } finally{
-    	em.close();
-    	this.oDataJPAContext.getEntityManagerFactory().close();
+    	em.close();    	
     }    
     return 0;// Invalid value
   }
@@ -240,8 +238,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     } finally{
-    	em.close();
-    	this.oDataJPAContext.getEntityManagerFactory().close();
+    	em.close();    	
     }
     
     return 0;
@@ -274,8 +271,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_CREATE_REQUEST, e);
     } finally{
-    	em.close();
-    	this.oDataJPAContext.getEntityManagerFactory().close();
+    	em.close();    	
     }
     return null;
   }
@@ -314,8 +310,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_UPDATE_REQUEST, e);
     } finally{
-    	em.close();
-    	this.oDataJPAContext.getEntityManagerFactory().close();
+    	em.close();    	
     }
     return updateObject;
   }
@@ -353,8 +348,7 @@ public class JPAProcessorImpl implements JPAProcessor {
         throw ODataJPARuntimeException.throwException(
             ODataJPARuntimeException.ERROR_JPQL_DELETE_REQUEST, e);
       } finally{
-      	em.close();
-      	this.oDataJPAContext.getEntityManagerFactory().close();
+      	em.close();      	
       }
     }
     return selectedObject;
@@ -406,8 +400,7 @@ public class JPAProcessorImpl implements JPAProcessor {
         throw ODataJPARuntimeException.throwException(
             ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
       } finally{
-        	em.close();
-        	this.oDataJPAContext.getEntityManagerFactory().close();
+        	em.close();        	
       }      
     }
     return selectedObject;
