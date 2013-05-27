@@ -49,7 +49,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   private boolean isExplicitlySelected = false;
   private boolean isExpanded = false;
   private final List<EdmProperty> properties = new ArrayList<EdmProperty>();
-  private final HashMap<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
+  private final Map<String, ExpandSelectTreeNodeImpl> links = new HashMap<String, ExpandSelectTreeNodeImpl>();
 
   @Override
   public boolean isAll() {
@@ -61,13 +61,18 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     return properties;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Map<String, ExpandSelectTreeNode> getLinks() {
-    return Collections.unmodifiableMap(links);
+    return (Map<String, ExpandSelectTreeNode>) ((Map<String, ? extends ExpandSelectTreeNode>) Collections.unmodifiableMap(links));
   }
 
-  public void putLinkNode(final String name, final ExpandSelectTreeNode node) {
+  public void putLink(final String name, final ExpandSelectTreeNodeImpl node) {
     links.put(name, node);
+  }
+
+  public void removeLink(final String name) {
+    links.remove(name);
   }
 
   public boolean isExplicitlySelected() {
@@ -119,8 +124,8 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
         propertiesString += "\"" + property.getName() + "\"";
       }
 
-      for (Map.Entry<String, ExpandSelectTreeNode> entry : links.entrySet()) {
-        final String nodeString = entry.getValue() == null ? null : ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
+      for (Map.Entry<String, ExpandSelectTreeNodeImpl> entry : links.entrySet()) {
+        final String nodeString = entry.getValue() == null ? null : entry.getValue().toJsonString();
         if (!linksString.isEmpty()) {
           linksString += ",";
         }

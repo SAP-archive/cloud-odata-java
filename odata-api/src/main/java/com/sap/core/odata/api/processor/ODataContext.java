@@ -67,6 +67,13 @@ public interface ODataContext {
   List<RuntimeMeasurement> getRuntimeMeasurements();
 
   /**
+   * Get the Http Method of the request
+   * 
+   * @return Http Method as {@link String}
+   */
+  String getHttpMethod();
+
+  /**
    * Set parameter
    * 
    * @param name of parameter (name is used as key, existing values are overwritten)

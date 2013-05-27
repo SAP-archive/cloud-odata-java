@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.sap.core.odata.core.edm;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +37,11 @@ public class EdmDateTime extends AbstractSimpleType {
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
+  private static final SimpleDateFormat DATE_FORMAT;
+  static {
+    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+  }
 
   public static EdmDateTime getInstance() {
     return instance;
@@ -152,27 +156,22 @@ public class EdmDateTime extends AbstractSimpleType {
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    Calendar dateTimeValue = Calendar.getInstance();
-    dateTimeValue.clear();
+    long timeInMillis;
     if (value instanceof Date) {
-      dateTimeValue.setTime((Date) value);
+      timeInMillis = ((Date) value).getTime();
     } else if (value instanceof Calendar) {
-      dateTimeValue.setTime(((Calendar) value).getTime());
+      timeInMillis = ((Calendar) value).getTimeInMillis();
     } else if (value instanceof Long) {
-      dateTimeValue.setTimeInMillis((Long) value);
+      timeInMillis = ((Long) value).longValue();
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
     if (literalKind == EdmLiteralKind.JSON) {
-      return "/Date(" + dateTimeValue.getTimeInMillis() + ")/";
+      return "/Date(" + timeInMillis + ")/";
     }
 
-    final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-    SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();
-    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-    dateFormat.applyPattern(pattern);
-    String result = dateFormat.format(dateTimeValue.getTime());
+    String result = DATE_FORMAT.format(timeInMillis);
 
     if (facets == null || facets.getPrecision() == null) {
       while (result.endsWith("0")) {

@@ -22,11 +22,15 @@ import java.util.List;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 
+/**
+ * @author SAP AG
+ */
 public class PathInfoImpl implements PathInfo {
 
   private List<PathSegment> precedingPathSegment = Collections.emptyList();
   private List<PathSegment> odataPathSegment = Collections.emptyList();
   private URI serviceRoot;
+  private URI requestUri;
 
   public void setODataPathSegment(final List<PathSegment> odataPathSegement) {
     odataPathSegment = odataPathSegement;
@@ -53,5 +57,14 @@ public class PathInfoImpl implements PathInfo {
   @Override
   public URI getServiceRoot() {
     return serviceRoot;
+  }
+
+  @Override
+  public URI getRequestUri() {
+    return requestUri;
+  }
+
+  public void setRequestUri(final URI requestUri) {
+    this.requestUri = requestUri;
   }
 }

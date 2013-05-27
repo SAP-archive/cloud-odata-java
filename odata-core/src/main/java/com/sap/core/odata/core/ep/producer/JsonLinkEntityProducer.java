@@ -34,13 +34,13 @@ public class JsonLinkEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public JsonLinkEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
-    final String uri = properties.getServiceRoot().toASCIIString()
+    final String uri = (properties.getServiceRoot() == null ? "" : properties.getServiceRoot().toASCIIString())
         + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
     try {
       jsonStreamWriter.beginObject();

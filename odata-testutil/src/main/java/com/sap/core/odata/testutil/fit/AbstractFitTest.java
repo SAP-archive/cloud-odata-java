@@ -25,6 +25,7 @@ import org.junit.Before;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutil.TestUtilRuntimeException;
+import com.sap.core.odata.testutil.server.ServerRuntimeException;
 import com.sap.core.odata.testutil.server.TestServer;
 
 /**
@@ -70,7 +71,7 @@ public abstract class AbstractFitTest extends BaseTest {
   public void after() {
     try {
       server.stopServer();
-    } catch (final Exception e) {
+    } catch (final ServerRuntimeException e) {
       throw new TestUtilRuntimeException(e);
     }
   }
