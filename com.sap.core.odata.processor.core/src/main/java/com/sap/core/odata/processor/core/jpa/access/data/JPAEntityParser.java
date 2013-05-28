@@ -74,12 +74,14 @@ public final class JPAEntityParser {
           for (int itr = 0; itr < nameParts.length; itr++) {
             method = propertyVal.getClass().getMethod(
                 nameParts[itr], (Class<?>[]) null);
+            method.setAccessible(true);
             propertyVal = method.invoke(propertyVal);
           }
           edmEntity.put(property.getName(), propertyVal);
         } else {
           method = jpaEntity.getClass().getMethod(methodName,
               (Class<?>[]) null);
+          method.setAccessible(true);
           propertyValue = method.invoke(jpaEntity);
           key = property.getName();
           if (property.getType().getKind()
@@ -164,6 +166,7 @@ public final class JPAEntityParser {
         Object propertyValue = null;
 
         if (method != null) {
+        	getters.get(key).setAccessible(true);
           propertyValue = getters.get(key).invoke(jpaEntity);
         }
 
@@ -185,6 +188,7 @@ public final class JPAEntityParser {
           for (int i = 0; i < nameParts.length; i++) {
             method = propertyValue.getClass().getMethod(
                 nameParts[i], (Class<?>[]) null);
+            method.setAccessible(true);
             propertyValue = method.invoke(propertyValue);
           }
           edmEntity.put(key, propertyValue);
@@ -235,6 +239,7 @@ public final class JPAEntityParser {
               navigationProperty.getMapping(), ACCESS_MODIFIER_GET);
           Method getterMethod = jpaEntity.getClass()
               .getDeclaredMethod(methodName, (Class<?>[]) null);
+          getterMethod.setAccessible(true);
           result = getterMethod.invoke(jpaEntity);
           navigationMap.put(navigationProperty.getName(), result);
         }

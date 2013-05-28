@@ -100,8 +100,14 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	public EntityManager getEntityManager() {
 		if (em == null)
 			em = emf.createEntityManager();
+		try{
 		em.setFlushMode(FlushModeType.COMMIT);
-		return em;
+		}
+		catch(Exception e){
+			// Do nothing
+		}
+		finally{
+		return em;}
 	}
 
 	@Override

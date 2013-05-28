@@ -14,7 +14,6 @@ public class JPAReferenceServiceFactory extends ODataJPAServiceFactory {
   public ODataJPAContext initializeODataJPAContext()
       throws ODataJPARuntimeException {
     ODataJPAContext oDataJPAContext = this.getODataJPAContext();
-    System.out.println("EMF - "+JPAEntityManagerFactory.getEntityManagerFactory(PUNIT_NAME).hashCode());
     oDataJPAContext.setEntityManagerFactory(JPAEntityManagerFactory.getEntityManagerFactory(PUNIT_NAME));
     oDataJPAContext.setPersistenceUnitName(PUNIT_NAME);
     oDataJPAContext.setJPAEdmMappingModel(MAPPING_MODEL);

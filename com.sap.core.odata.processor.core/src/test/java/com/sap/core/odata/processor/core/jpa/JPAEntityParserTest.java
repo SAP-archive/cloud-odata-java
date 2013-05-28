@@ -327,12 +327,11 @@ public class JPAEntityParserTest {
       /*
        * Case 1 - Property having No mapping
        */
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { "Field1", null };
+      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
+      Object[] params = {"Field1", null,"get"};
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
-
       String name = (String) getGetterName.invoke(resultParser,
           params);
 
@@ -365,10 +364,10 @@ public class JPAEntityParserTest {
       /*
        * Case 1 - Property having No mapping and no name
        */
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { null, null };
+      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
+      Object[] params = { null, null,null };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
 
       String name = (String) getGetterName.invoke(resultParser,
@@ -410,10 +409,10 @@ public class JPAEntityParserTest {
     EasyMock.replay(edmMapping);
     try {
 
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { "myField", edmMapping };
+      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
+      Object[] params = { "myField", edmMapping,"get" };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
 
       String name = (String) getGetterName.invoke(resultParser,
@@ -450,7 +449,7 @@ public class JPAEntityParserTest {
 
     } catch (NoSuchMethodException e) {
       assertEquals(
-          "com.sap.core.odata.processor.core.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
+          "com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
           e.getMessage());
     } catch (SecurityException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -497,7 +496,7 @@ public class JPAEntityParserTest {
       }
     } catch (NoSuchMethodException e) {
       assertEquals(
-          "com.sap.core.odata.processor.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
+          "com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser.getGetters(java.lang.Object, com.sap.core.odata.api.edm.EdmStructuralType)",
           e.getMessage());
     } catch (SecurityException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
