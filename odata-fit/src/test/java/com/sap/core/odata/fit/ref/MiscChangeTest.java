@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 
 /**
  * Tests employing the reference scenario that use neither XML nor JSON

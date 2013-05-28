@@ -18,7 +18,6 @@ import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.rest.ODataSubLocator.InitParameter;
 
 /**
  * Default OData root locator responsible to handle the whole path and delegate all calls to a sub locator:<p>
@@ -74,8 +73,6 @@ public class ODataRootLocator {
       }
     }
 
-    final ODataSubLocator odataLocator = new ODataSubLocator();
-
     if (servletRequest.getPathInfo() == null) {
       return handleRedirect();
     }
@@ -92,7 +89,6 @@ public class ODataRootLocator {
     } else {
       factoryClass = Class.forName(factoryClassName, true, cl);
     }
-
     ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
 
     int pathSplit = 0;
@@ -101,7 +97,7 @@ public class ODataRootLocator {
       pathSplit = Integer.parseInt(pathSplitAsString);
     }
 
-    final InitParameter param = odataLocator.new InitParameter();
+    final SubLocatorParameter param = new SubLocatorParameter();
     param.setServiceFactory(serviceFactory);
     param.setPathSegments(pathSegments);
     param.setHttpHeaders(httpHeaders);
@@ -110,6 +106,7 @@ public class ODataRootLocator {
     param.setServletRequest(servletRequest);
     param.setPathSplit(pathSplit);
 
+    final ODataSubLocator odataLocator = new ODataSubLocator();
     odataLocator.initialize(param);
 
     return odataLocator;

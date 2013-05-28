@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -29,7 +30,6 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 
