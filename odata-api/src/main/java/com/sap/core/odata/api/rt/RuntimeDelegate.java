@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.rt;
 
+import java.io.InputStream;
+
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -7,6 +9,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.UriParser;
@@ -66,6 +69,9 @@ public abstract class RuntimeDelegate {
     protected abstract EntityProviderInterface createEntityProvider();
 
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
+
+    protected abstract EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException;
+
   }
 
   /**
@@ -127,6 +133,16 @@ public abstract class RuntimeDelegate {
    */
   public static ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
+  }
+
+  /**
+   * Creates and returns an edm provider. 
+   * @param metadataXml a metadata xml input stream (means the metadata document)
+   * @param validate true if semantic checks for metadata input stream shall be done
+   * @return an instance of EdmProvider
+   */
+  public static EdmProvider createEdmProvider(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
+    return RuntimeDelegate.getInstance().createEdmProvider(metadataXml, validate);
   }
 
   private static class RuntimeDelegateException extends RuntimeException {

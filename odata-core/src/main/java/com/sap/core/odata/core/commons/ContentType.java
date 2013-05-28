@@ -27,6 +27,7 @@ public class ContentType {
     ATOM, XML, JSON, CUSTOM
   }
 
+  private static final char WHITESPACE_CHAR = ' ';
   private static final String PARAMETER_SEPARATOR = ";";
   private static final String TYPE_SUBTYPE_SEPARATOR = "/";
   private static final String MEDIA_TYPE_WILDCARD = "*";
@@ -79,8 +80,8 @@ public class ContentType {
       throw new IllegalArgumentException("Illegal combination of WILDCARD type with NONE WILDCARD subtype.");
     }
     this.odataFormat = odataFormat;
-    this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
-    this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
+    this.type = validateType(type);
+    this.subtype = validateType(subtype);
 
     if (parameters == null) {
       this.parameters = Collections.emptyMap();
@@ -96,17 +97,26 @@ public class ContentType {
     }
   }
 
+  private String validateType(final String type) {
+    if (type == null) {
+      return MEDIA_TYPE_WILDCARD;
+    }
+    if (type.charAt(0) == WHITESPACE_CHAR || type.charAt(type.length() - 1) == WHITESPACE_CHAR) {
+      throw new IllegalArgumentException("Illegal leading/trailing whitespace found for type '" + type + "'.");
+    }
+    return type;
+  }
+
   /**
-   * Validates if given <code>format</code> is parseable and can be used as input for {@link #create(String)} method.
-   * 
+   * Validates if given <code>format</code> is parseable and can be used as input for
+   * {@link #create(String)} method.
    * @param format to be validated string
    * @return <code>true</code> if format is parseable otherwise <code>false</code>
    */
   public static boolean isParseable(final String format) {
     try {
-      ContentType ct = ContentType.create(format);
-      return ct != null;
-    } catch (Exception e) {
+      return ContentType.create(format) != null;
+    } catch (IllegalArgumentException e) {
       return false;
     }
   }
@@ -207,10 +217,11 @@ public class ContentType {
   }
 
   /**
-   * Parse given input string (<code>format</code>) and return created {@link ContentType} if input was valid 
-   * or return <code>NULL</code> if input was not parseable.
+   * Parses the given input string (<code>format</code>) and returns created
+   * {@link ContentType} if input was valid or return <code>NULL</code> if
+   * input was not parseable.
    * 
-   * For definition of the supported format see {@link #create(String)}
+   * For the definition of the supported format see {@link #create(String)}.
    * 
    * @param format a string in format as defined in <code>RFC 2616 section 3.7</code>
    * @return a new <code>ContentType</code> object
@@ -218,7 +229,7 @@ public class ContentType {
   public static ContentType parse(final String format) {
     try {
       return ContentType.create(format);
-    } catch (Exception e) {
+    } catch (IllegalArgumentException e) {
       return null;
     }
   }
@@ -291,7 +302,7 @@ public class ContentType {
    * Otherwise if charset parameter is already set nothing is done.
    * 
    * @param defaultCharset
-   * @return
+   * @return ContentType
    */
   public ContentType receiveWithCharsetParameter(final String defaultCharset) {
     if (isContentTypeODataTextRelated()) {

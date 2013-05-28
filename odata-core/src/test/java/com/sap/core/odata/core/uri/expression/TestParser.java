@@ -35,6 +35,9 @@ import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class TestParser extends TestBase {
 
   @Test

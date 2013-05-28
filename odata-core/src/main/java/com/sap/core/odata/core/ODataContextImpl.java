@@ -210,5 +210,4 @@ public class ODataContextImpl implements ODataContext {
   public void setRequest(final ODataRequest request) {
     setParameter(ODATA_REQUEST, request);
   }
-
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sap="http://www.sap.com/Data">
+	<workspace>
+	 	<atom:title>Main Site</atom:title>
+		<collection href="http://example.org/blog/main">
+			<atom:title>My Blog Entries</atom:title>
+			<categories href="http://example.com/cats/forMain.cats" />
+		</collection>
+		<collection href="http://example.org/blog/pic">
+			<atom:title>Pictures</atom:title>
+			<accept>image/png</accept>
+			<accept>image/jpeg</accept>
+			<accept>image/gif</accept>
+		</collection>
+	</workspace>
+	<workspace>
+		<atom:title>Sidebar Blog</atom:title>
+		<collection href="http://example.org/sidebar/list">
+			<atom:title>Remaindered Links</atom:title>
+			<accept>application/atom+xml;type=entry</accept>
+			<categories fixed="yes">
+				<atom:category scheme="http://example.org/extra-cats/"
+					term="joke" />
+				<atom:category scheme="http://example.org/extra-cats/"
+					term="serious" />
+			</categories>
+		</collection>
+	</workspace>
+	<sap:extension>
+		<sap:extension2 attr="attributeValue"/>
+		<sap:extension3>value</sap:extension3>
+		<sap:extension4 attr="attributeValue">text</sap:extension4>
+	</sap:extension>
+</service>

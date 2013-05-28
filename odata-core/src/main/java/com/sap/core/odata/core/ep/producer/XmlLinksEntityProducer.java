@@ -21,7 +21,7 @@ public class XmlLinksEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public XmlLinksEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {

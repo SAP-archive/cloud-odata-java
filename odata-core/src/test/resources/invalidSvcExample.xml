@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app:service xml:lang="en"
+	xml:base="http://localhost/odata/TEST_APPLICATION/"
+	xmlns:app="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+		<app:collection href="Teams">
+			<atom:title type="text">Teams</atom:title>
+		</app:collection>
+		<app:collection href="Employees">
+			<atom:title type="text">Employees</atom:title>
+		</app:collection>
+	<atom:link rel="self"
+		href="http://localhost/odata/TEST_APPLICATION/" />
+	<atom:link rel="latest-version"
+		href="http://localhost/odata/TEST_APPLICATION/" />
+</app:service>

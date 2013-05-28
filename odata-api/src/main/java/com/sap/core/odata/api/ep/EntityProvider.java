@@ -16,6 +16,7 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 
 /**
  * <p>Entity Provider</p> 
@@ -304,6 +305,16 @@ public final class EntityProvider {
      * @return            an {@link ODataResponse} containing the serialized error message
      */
     ODataResponse writeErrorDocument(ODataErrorContext context);
+
+    /**
+     * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
+     * 
+     * @param serviceDocument the given input stream
+     * @param contentType format of content in the given input stream
+     * @return ServiceDocument as {@link ServiceDocument}
+     * @throws EntityProviderException  if reading of data (de-serialization) fails
+     */
+    ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
   }
 
   /**
@@ -629,12 +640,25 @@ public final class EntityProvider {
   /**
    * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
    * 
-   * @param inputStream the given input stream
+   * @param metadataXml a metadata xml input stream (means the metadata document)
    * @param validate has to be true if metadata should be validated 
    * @return Edm as {@link Edm}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
-    return createEntityProvider().readMetadata(inputStream, validate);
+  public static Edm readMetadata(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
+    return createEntityProvider().readMetadata(metadataXml, validate);
   }
+
+  /**
+   * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
+   * 
+   * @param serviceDocument the given input stream
+   * @param contentType format of content in the given input stream
+   * @return ServiceDocument as {@link ServiceDocument}
+   * @throws EntityProviderException  if reading of data (de-serialization) fails
+   */
+  public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
+    return createEntityProvider().readServiceDocument(serviceDocument, contentType);
+  }
+
 }

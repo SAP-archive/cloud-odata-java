@@ -33,6 +33,10 @@ public class FormatXml {
   public static final String APP_SERVICE = "service";
   public static final String APP_WORKSPACE = "workspace";
   public static final String APP_COLLECTION = "collection";
+  public static final String APP_ACCEPT = "accept";
+  public static final String APP_CATEGORIES = "categories";
+  public static final String APP_CATEGORIES_FIXED = "fixed";
+  public static final String APP_CATEGORIES_SCHEME = "scheme";
 
   public static final String ATOM_FEED = "feed";
   public static final String ATOM_ENTRY = "entry";
@@ -60,6 +64,7 @@ public class FormatXml {
   public static final String ATOM_CATEGORY = "category";
   public static final String ATOM_CATEGORY_TERM = "term";
   public static final String ATOM_CATEGORY_SCHEME = "scheme";
+  public static final String ATOM_CATEGORY_LABEL = "label";
   public static final String ATOM_CONTENT = "content";
   public static final String ATOM_NULL = "null";
   public static final String ATOM_VALUE_TRUE = "true";

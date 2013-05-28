@@ -52,7 +52,7 @@ public class AtomEntryEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public AtomEntryEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data, final boolean isRootElement, final boolean isFeedPart) throws EntityProviderException {
@@ -101,7 +101,11 @@ public class AtomEntryEntityProducer {
       writer.writeEndElement();
 
       writer.flush();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (URISyntaxException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -258,7 +262,9 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_REL, "edit");
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityType().getName());
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -395,7 +401,9 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }

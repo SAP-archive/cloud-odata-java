@@ -124,7 +124,7 @@ public class ParserTool {
    * 
    * @param expected
    *            Expected Exception class
-   * @return
+   * @return ParserTool
    */
   public ParserTool aExType(final Class<? extends Exception> expected) {
     String info = "GetExceptionType(" + expression + ")-->";
@@ -177,7 +177,7 @@ public class ParserTool {
    * Verifies that all place holders in the message text definition of the
    * thrown exception are provided with content
    * 
-   * @return
+   * @return ParserTool
    */
   public ParserTool aExMsgContentAllSet() {
     String info = "aExMessageTextNoEmptyTag(" + expression + ")-->";
@@ -208,7 +208,7 @@ public class ParserTool {
   /**
    * Verifies that the message text of the thrown exception is not empty
    * 
-   * @return
+   * @return ParserTool
    */
   public ParserTool aExMsgNotEmpty() {
     String info = "aExTextNotEmpty(" + expression + ")-->";

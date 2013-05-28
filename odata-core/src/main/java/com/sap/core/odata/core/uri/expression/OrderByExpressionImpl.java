@@ -12,67 +12,60 @@ import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 
+/**
+ * @author SAP AG
+ */
 public class OrderByExpressionImpl implements OrderByExpression {
   private String orderbyString;
 
   List<OrderExpression> orders;
 
-  public OrderByExpressionImpl(final String orderbyString)
-  {
+  public OrderByExpressionImpl(final String orderbyString) {
     this.orderbyString = orderbyString;
     orders = new ArrayList<OrderExpression>();
   }
 
   @Override
-  public String getExpressionString()
-  {
+  public String getExpressionString() {
     return orderbyString;
   }
 
   @Override
-  public List<OrderExpression> getOrders()
-  {
+  public List<OrderExpression> getOrders() {
     return orders;
   }
 
   @Override
-  public int getOrdersCount()
-  {
+  public int getOrdersCount() {
     return orders.size();
   }
 
-  public void addOrder(final OrderExpression orderNode)
-  {
+  public void addOrder(final OrderExpression orderNode) {
     orders.add(orderNode);
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.ORDERBY;
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return null;
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     return this;
   }
 
   @Override
-  public String getUriLiteral()
-  {
-    return "";
+  public String getUriLiteral() {
+    return orderbyString;
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     ArrayList<Object> retParameters = new ArrayList<Object>();
     for (OrderExpression order : orders)
     {

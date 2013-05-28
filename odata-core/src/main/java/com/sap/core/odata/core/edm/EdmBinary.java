@@ -48,8 +48,12 @@ public class EdmBinary extends AbstractSimpleType {
   private static boolean validateMaxLength(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     return facets == null || facets.getMaxLength() == null ? true :
         literalKind == EdmLiteralKind.URI ?
-            facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8) :
-            facets.getMaxLength() * 4 >= value.length() * 3;
+            // In URI representation, each byte is represented as two hexadecimal digits;
+            // additionally, we have to account for the prefix and the surrounding "'"s.
+            facets.getMaxLength() >= (value.length() - (value.startsWith("X") ? 3 : 8)) / 2
+            :
+            // In default representation, every three bytes are represented as four base-64 characters.
+            facets.getMaxLength() >= value.length() * 3 / 4;
   }
 
   @Override

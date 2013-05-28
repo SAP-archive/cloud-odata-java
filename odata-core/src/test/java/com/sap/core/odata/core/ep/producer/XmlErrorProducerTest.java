@@ -83,7 +83,15 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     String message = null;
     Locale locale = null;
     String innerError = null;
-    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ODataErrorContext ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+
+    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     String errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
 
@@ -91,7 +99,16 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     message = "a";
     locale = Locale.GERMAN;
     innerError = "a";
-    response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+    ctx.setInnerError(innerError);
+
+    response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
 
@@ -99,7 +116,16 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     message = "a";
     locale = Locale.GERMAN;
     innerError = null;
-    response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+    ctx.setInnerError(innerError);
+
+    response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
   }

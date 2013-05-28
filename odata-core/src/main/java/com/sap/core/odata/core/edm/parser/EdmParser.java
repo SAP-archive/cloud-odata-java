@@ -181,7 +181,7 @@ public class EdmParser {
         returnType.setMultiplicity(EdmMultiplicity.MANY);
         returnTypeString = returnTypeString.substring(returnTypeString.indexOf("(") + 1, returnTypeString.length() - 1);
         if (function.getEntitySet() == null) {
-          //				throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE,"Missing attribute \"EntitySet\"");
+          //				throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent("EntitySet");
         }
       }
       FullQualifiedName fqName = extractFQName(returnTypeString);
@@ -561,59 +561,77 @@ public class EdmParser {
   }
 
   private Facets readFacets(final XMLStreamReader reader) throws XMLStreamException {
-
-    Facets facets = new Facets();
     String isNullable = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_NULLABLE);
-    if (isNullable != null) {
-      facets.setNullable("true".equalsIgnoreCase(isNullable));
-    }
     String maxLength = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_MAX_LENGTH);
-    if (maxLength != null) {
-      facets.setMaxLength(Integer.parseInt(maxLength));
-    }
     String precision = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_PRECISION);
-    if (precision != null) {
-      facets.setPrecision(Integer.parseInt(precision));
-    }
     String scale = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_SCALE);
-    if (scale != null) {
-      facets.setScale(Integer.parseInt(scale));
-    }
     String isFixedLength = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_FIXED_LENGTH);
-    if (isFixedLength != null) {
-      facets.setFixedLength("true".equalsIgnoreCase(isFixedLength));
-    }
     String isUnicode = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_UNICODE);
-    if (isUnicode != null) {
-      facets.setUnicode("true".equalsIgnoreCase(isUnicode));
-    }
-    for (int i = 0; i < EdmConcurrencyMode.values().length; i++) {
-      if (EdmConcurrencyMode.values()[i].name().equalsIgnoreCase(reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_CONCURRENCY_MODE))) {
-        facets.setConcurrencyMode(EdmConcurrencyMode.values()[i]);
+    String concurrencyMode = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_CONCURRENCY_MODE);
+    String defaultValue = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_DEFAULT_VALUE);
+    String collation = reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_COLLATION);
+    if (isNullable != null || maxLength != null || precision != null || scale != null || isFixedLength != null || isUnicode != null
+        || concurrencyMode != null || defaultValue != null || collation != null) {
+      Facets facets = new Facets();
+      if (isNullable != null) {
+        facets.setNullable("true".equalsIgnoreCase(isNullable));
       }
+      if (maxLength != null) {
+        if (EdmParserConstants.EDM_PROPERTY_MAX_LENGTH_MAX_VALUE.equals(maxLength)) {
+          facets.setMaxLength(Integer.MAX_VALUE);
+        } else {
+          facets.setMaxLength(Integer.parseInt(maxLength));
+        }
+      }
+      if (precision != null) {
+        facets.setPrecision(Integer.parseInt(precision));
+      }
+      if (scale != null) {
+        facets.setScale(Integer.parseInt(scale));
+      }
+      if (isFixedLength != null) {
+        facets.setFixedLength("true".equalsIgnoreCase(isFixedLength));
+      }
+      if (isUnicode != null) {
+        facets.setUnicode("true".equalsIgnoreCase(isUnicode));
+      }
+      for (int i = 0; i < EdmConcurrencyMode.values().length; i++) {
+        if (EdmConcurrencyMode.values()[i].name().equalsIgnoreCase(concurrencyMode)) {
+          facets.setConcurrencyMode(EdmConcurrencyMode.values()[i]);
+        }
+      }
+      facets.setDefaultValue(defaultValue);
+      facets.setCollation(collation);
+      return facets;
+    } else {
+      return null;
     }
-    facets.setDefaultValue(reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_DEFAULT_VALUE));
-    facets.setCollation(reader.getAttributeValue(null, EdmParserConstants.EDM_PROPERTY_COLLATION));
-
-    return facets;
   }
 
   private CustomizableFeedMappings readCustomizableFeedMappings(final XMLStreamReader reader) {
-    CustomizableFeedMappings feedMapping = new CustomizableFeedMappings();
-    feedMapping.setFcTargetPath(reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_TARGET_PATH));
-    feedMapping.setFcSourcePath(reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_SOURCE_PATH));
-    feedMapping.setFcNsUri(reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_NS_URI));
-    feedMapping.setFcNsPrefix(reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_PREFIX));
+    String targetPath = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_TARGET_PATH);
+    String sourcePath = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_SOURCE_PATH);
+    String nsUri = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_NS_URI);
+    String nsPrefix = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_PREFIX);
     String keepInContent = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_KEEP_IN_CONTENT);
-    if (keepInContent != null) {
-      feedMapping.setFcKeepInContent("true".equals(keepInContent));
-    }
-    for (int i = 0; i < EdmContentKind.values().length; i++) {
-      if (EdmContentKind.values()[i].name().equalsIgnoreCase(reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_CONTENT_KIND))) {
-        feedMapping.setFcContentKind(EdmContentKind.values()[i]);
+    String contentKind = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, EdmParserConstants.M_FC_CONTENT_KIND);
+
+    if (targetPath != null || sourcePath != null || nsUri != null || nsPrefix != null || keepInContent != null || contentKind != null) {
+      CustomizableFeedMappings feedMapping = new CustomizableFeedMappings();
+      if (keepInContent != null) {
+        feedMapping.setFcKeepInContent("true".equals(keepInContent));
       }
+      for (int i = 0; i < EdmContentKind.values().length; i++) {
+        if (EdmContentKind.values()[i].name().equalsIgnoreCase(contentKind)) {
+          feedMapping.setFcContentKind(EdmContentKind.values()[i]);
+        }
+      }
+      feedMapping.setFcTargetPath(targetPath).setFcSourcePath(sourcePath).setFcNsUri(nsUri).setFcNsPrefix(nsPrefix);
+      return feedMapping;
+    } else {
+      return null;
     }
-    return feedMapping;
+
   }
 
   private AssociationEnd readAssociationEnd(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
@@ -696,6 +714,9 @@ public class EdmParser {
             setPrefix(reader.getAttributePrefix(i)).setNamespace(reader.getAttributeNamespace(i)).setText(reader.getAttributeValue(i)));
       }
     }
+    if (annotationAttributes.isEmpty()) {
+      return null;
+    }
     return annotationAttributes;
   }
 
@@ -723,7 +744,8 @@ public class EdmParser {
 
   private FullQualifiedName extractFQName(final String name)
       throws EntityProviderException {
-    String[] names = name.split("\\.");
+    // Looking for the last dot
+    String[] names = name.split("\\" + Edm.DELIMITER + "(?=[^\\" + Edm.DELIMITER + "]+$)");
     if (names.length != 2) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid type"));
     } else {

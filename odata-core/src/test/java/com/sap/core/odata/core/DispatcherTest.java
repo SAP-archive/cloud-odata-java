@@ -55,6 +55,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class DispatcherTest extends BaseTest {
 
+  @SuppressWarnings("unchecked")
   public static ODataService getMockService() throws ODataException {
     ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
     when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -427,6 +428,7 @@ public class DispatcherTest extends BaseTest {
     negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
   }
 
+  @SuppressWarnings("unchecked")
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
 

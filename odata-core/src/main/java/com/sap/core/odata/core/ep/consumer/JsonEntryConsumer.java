@@ -2,6 +2,7 @@ package com.sap.core.odata.core.ep.consumer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
@@ -61,10 +62,17 @@ public class JsonEntryConsumer {
         readEntryContent();
       }
       reader.endObject();
+
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
+      }
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (IllegalStateException e) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
 
     return entryResult;
@@ -107,11 +115,17 @@ public class JsonEntryConsumer {
 
   private void readMetadata() throws IOException, EdmException, EntityProviderException {
     String name = null;
+    String value = null;
     reader.beginObject();
     while (reader.hasNext()) {
       name = reader.nextName();
-      String value = reader.nextString();
 
+      if (FormatJson.PROPERTIES.equals(name)) {
+        reader.skipValue();
+        continue;
+      }
+
+      value = reader.nextString();
       if (FormatJson.ID.equals(name)) {
         entryMetadata.setId(value);
       } else if (FormatJson.URI.equals(name)) {
@@ -180,9 +194,6 @@ public class JsonEntryConsumer {
         EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
         EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet);
         EntityProviderReadProperties inlineReadProperties;
-        ExpandSelectTreeNodeImpl expandSelectTreeNodeImpl = new ExpandSelectTreeNodeImpl();
-        expandSelectTreeNodeImpl.setAllExplicitly();
-        expandSelectTree.putLink(navigationPropertyName, expandSelectTreeNodeImpl);
         OnReadInlineContent callback = readProperties.getCallback();
         try {
           if (callback == null) {
@@ -195,6 +206,7 @@ public class JsonEntryConsumer {
           if (navigationProperty.getMultiplicity() == EdmMultiplicity.ONE) {
             JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
             ODataEntry entry = inlineConsumer.readInlineEntry(name);
+            updateExpandSelectTree(navigationPropertyName, entry);
             if (callback == null) {
               properties.put(navigationPropertyName, entry);
               entryResult.setContainsInlineEntry(true);
@@ -204,7 +216,8 @@ public class JsonEntryConsumer {
             }
           } else {
             JsonFeedConsumer inlineConsumer = new JsonFeedConsumer(reader, inlineEia, inlineReadProperties);
-            ODataFeed feed = inlineConsumer.readInlineFeed(name);
+            ODataFeed feed = inlineConsumer.readStartedInlineFeed(name);
+            updateExpandSelectTree(navigationPropertyName, feed);
             if (callback == null) {
               properties.put(navigationPropertyName, feed);
               entryResult.setContainsInlineEntry(true);
@@ -223,9 +236,6 @@ public class JsonEntryConsumer {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
       final EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navigationProperty);
       final EntityInfoAggregator inlineInfo = EntityInfoAggregator.create(inlineEntitySet);
-      ExpandSelectTreeNodeImpl expandSelectTreeNodeImpl = new ExpandSelectTreeNodeImpl();
-      expandSelectTreeNodeImpl.setAllExplicitly();
-      expandSelectTree.putLink(navigationPropertyName, expandSelectTreeNodeImpl);
       OnReadInlineContent callback = readProperties.getCallback();
       EntityProviderReadProperties inlineReadProperties;
       if (callback == null) {
@@ -237,7 +247,8 @@ public class JsonEntryConsumer {
           throw new EntityProviderException(EntityProviderException.COMMON, e);
         }
       }
-      ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readFeedStandalone();
+      ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readInlineFeedStandalone();
+      updateExpandSelectTree(navigationPropertyName, feed);
       if (callback == null) {
         properties.put(navigationPropertyName, feed);
         entryResult.setContainsInlineEntry(true);
@@ -250,6 +261,25 @@ public class JsonEntryConsumer {
         }
       }
     }
+  }
+
+  private void updateExpandSelectTree(final String navigationPropertyName, final ODataFeed feed) {
+    List<ODataEntry> entries = feed.getEntries();
+    if (entries.size() > 0) {
+      updateExpandSelectTree(navigationPropertyName, entries.get(0));
+    } else {
+      expandSelectTree.setExpanded();
+      expandSelectTree.setExplicitlySelected();
+      expandSelectTree.putLink(navigationPropertyName, new ExpandSelectTreeNodeImpl());
+    }
+
+  }
+
+  private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {
+    expandSelectTree.setExpanded();
+    expandSelectTree.setExplicitlySelected();
+    //TODO: CA get rid of cast
+    expandSelectTree.putLink(navigationPropertyName, (ExpandSelectTreeNodeImpl) entry.getExpandSelectTree());
   }
 
   private ODataEntry readInlineEntry(final String name) throws EdmException, EntityProviderException, IOException {

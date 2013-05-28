@@ -304,6 +304,8 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void toUriLiteralString() throws Exception {
     assertEquals("'StringValue'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("StringValue"));
+    assertEquals("'String''Value'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("String'Value"));
+    assertEquals("'String''''''Value'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("String'''Value"));
   }
 
   @Test
@@ -427,6 +429,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(6)));
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.JSON, getMaxLengthFacets(6)));
     assertEquals("binary'AABBCCDDEEFF'", instance.valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(6)));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE)));
+    assertEquals("binary'AABBCCDDEEFF'", instance.valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(Integer.MAX_VALUE)));
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(null)));
 
     assertEquals("qg==", instance.valueToString(new Byte[] { new Byte((byte) 170) }, EdmLiteralKind.DEFAULT, null));
@@ -747,6 +751,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(true)));
     assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(null)));
     assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(4)));
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE)));
     assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null)));
 
     expectErrorInValueToString(instance, "schräg", EdmLiteralKind.DEFAULT, getUnicodeFacets(false), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
@@ -856,6 +861,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.JSON, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("binary'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
+    assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
+    assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.JSON, getMaxLengthFacets(null), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(null), byte[].class)));
@@ -1264,6 +1271,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("text", instance.valueOfString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(true), String.class));
     assertEquals("text", instance.valueOfString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(null), String.class));
     assertEquals("text", instance.valueOfString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(4), String.class));
+    assertEquals("text", instance.valueOfString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE), String.class));
     assertEquals("text", instance.valueOfString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null), String.class));
 
     expectErrorInValueOfString(instance, "schräg", EdmLiteralKind.DEFAULT, getUnicodeFacets(false), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);

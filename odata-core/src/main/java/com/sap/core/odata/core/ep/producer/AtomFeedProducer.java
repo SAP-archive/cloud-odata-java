@@ -29,7 +29,7 @@ public class AtomFeedProducer {
   private final EntityProviderWriteProperties properties;
 
   public AtomFeedProducer(final EntityProviderWriteProperties properties) {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data, final boolean isInline) throws EntityProviderException {
@@ -80,13 +80,13 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendInlineCount(final XMLStreamWriter writer, final int inlinecount) throws EntityProviderException {
-    if (inlinecount < 0) {
+  private void appendInlineCount(final XMLStreamWriter writer, final Integer inlineCount) throws EntityProviderException {
+    if (inlineCount == null || inlineCount < 0) {
       throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID);
     }
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
-      writer.writeCharacters(String.valueOf(inlinecount));
+      writer.writeCharacters(String.valueOf(inlineCount));
       writer.writeEndElement();
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

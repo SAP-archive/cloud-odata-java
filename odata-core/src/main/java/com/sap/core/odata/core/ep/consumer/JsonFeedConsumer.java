@@ -26,7 +26,6 @@ public class JsonFeedConsumer {
   private EntityProviderReadProperties readProperties;
   private List<ODataEntry> entries = new ArrayList<ODataEntry>();
   private FeedMetadataImpl feedMetadata = new FeedMetadataImpl();
-  private boolean dPresent = false;
   private boolean resultsArrayPresent = false;
 
   public JsonFeedConsumer(final JsonReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties) {
@@ -37,34 +36,44 @@ public class JsonFeedConsumer {
 
   public ODataFeed readFeedStandalone() throws EntityProviderException {
     try {
-      if (reader.peek() == JsonToken.BEGIN_ARRAY) {
-        readArrayContent();
-      } else {
-        reader.beginObject();
-        final String nextName = reader.nextName();
-        if (FormatJson.D.equals(nextName)) {
-          if (dPresent) {
-            //TODO: Messagetext
-            throw new EntityProviderException(EntityProviderException.COMMON);
-          } else {
-            dPresent = true;
-            readFeedStandalone();
-          }
-        } else {
-          handleName(nextName);
-          readFeedContent();
-        }
+      readFeed();
 
-        reader.endObject();
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
       }
+
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
     return new ODataFeedImpl(entries, feedMetadata);
+  }
+
+  private void readFeed() throws IOException, EdmException, EntityProviderException {
+    if (reader.peek() == JsonToken.BEGIN_ARRAY) {
+      readArrayContent();
+    } else {
+      reader.beginObject();
+      final String nextName = reader.nextName();
+      if (FormatJson.D.equals(nextName)) {
+        if (reader.peek() == JsonToken.BEGIN_ARRAY) {
+          readArrayContent();
+        } else {
+          reader.beginObject();
+          readFeedContent();
+          reader.endObject();
+        }
+      } else {
+        handleName(nextName);
+        readFeedContent();
+      }
+
+      reader.endObject();
+    }
   }
 
   private void readFeedContent() throws IOException, EdmException, EntityProviderException {
@@ -125,11 +134,16 @@ public class JsonFeedConsumer {
     reader.endArray();
   }
 
-  protected ODataFeed readInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
+  protected ODataFeed readStartedInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
     handleName(name);
     //consume the rest of the entry content
     readFeedContent();
+    return new ODataFeedImpl(entries, feedMetadata);
+  }
+
+  protected ODataFeed readInlineFeedStandalone() throws EdmException, EntityProviderException, IOException {
+    readFeed();
     return new ODataFeedImpl(entries, feedMetadata);
   }
 

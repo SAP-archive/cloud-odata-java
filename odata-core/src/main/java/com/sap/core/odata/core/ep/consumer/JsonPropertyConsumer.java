@@ -39,9 +39,17 @@ public class JsonPropertyConsumer {
       } else {
         handleName(reader, typeMappings, entityPropertyInfo, result, nextName);
       }
+      reader.endObject();
+
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
+      }
 
       return result;
-    } catch (IOException e) {
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+    } catch (final IllegalStateException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }
@@ -57,16 +65,12 @@ public class JsonPropertyConsumer {
 
   protected Object readPropertyValue(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
     try {
-      Object value = null;
-      if (entityPropertyInfo.isComplex()) {
-        value = readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping);
-      } else {
-        value = readSimpleProperty(reader, entityPropertyInfo, typeMapping);
-      }
-      return value;
-    } catch (EdmException e) {
+      return entityPropertyInfo.isComplex() ?
+          readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping) :
+          readSimpleProperty(reader, entityPropertyInfo, typeMapping);
+    } catch (final EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }

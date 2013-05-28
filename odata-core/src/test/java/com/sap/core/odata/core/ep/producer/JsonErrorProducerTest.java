@@ -11,6 +11,7 @@ import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -38,7 +39,14 @@ public class JsonErrorProducerTest {
 
   // helper method
   private void testSerializeJSON(final String errorCode, final String message, final Locale locale) throws Exception {
-    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(HttpContentType.APPLICATION_JSON, HttpStatusCodes.INTERNAL_SERVER_ERROR, errorCode, message, locale, null);
+    ODataErrorContext ctx = new ODataErrorContext();
+    ctx.setContentType(HttpContentType.APPLICATION_JSON);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+
+    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     assertEquals(HttpContentType.APPLICATION_JSON, response.getContentHeader());
     assertEquals(ODataServiceVersion.V10, response.getHeader(ODataHttpHeaders.DATASERVICEVERSION));
     final String jsonErrorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());

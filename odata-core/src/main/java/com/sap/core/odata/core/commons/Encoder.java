@@ -1,8 +1,6 @@
 package com.sap.core.odata.core.commons;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Encodes a Java String (in its internal UTF-16 encoding) into its
@@ -22,17 +20,7 @@ public class Encoder {
    * @return the encoded String
    */
   public static String encode(final String value) {
-    Encoder encoder = new Encoder(ODATA_UNENCODED, null);
     return encoder.encodeInternal(value);
-  }
-
-  /** characters to remain unencoded in addition to {@link #UNRESERVED} */
-  private final String unencoded;
-  private final Map<Character, String> map;
-
-  private Encoder(final String unencoded, final Map<Character, String> map) {
-    this.unencoded = unencoded == null ? "" : unencoded;
-    this.map = map == null ? Collections.<Character, String> emptyMap() : map;
   }
 
   // OData has special handling for "'", so we allow that to remain unencoded.
@@ -94,6 +82,15 @@ public class Encoder {
       "%F8", "%F9", "%FA", "%FB", "%FC", "%FD", "%FE", "%FF"
   };
 
+  private static final Encoder encoder = new Encoder(ODATA_UNENCODED);
+
+  /** characters to remain unencoded in addition to {@link #UNRESERVED} */
+  private final String unencoded;
+
+  private Encoder(final String unencoded) {
+    this.unencoded = unencoded == null ? "" : unencoded;
+  }
+
   /**
    * <p>Returns the percent-encoded UTF-8 representation of a String.</p>
    * <p>In order to avoid producing percent-encoded CESU-8 (as described in
@@ -115,9 +112,7 @@ public class Encoder {
     try {
       for (byte utf8Byte : input.getBytes("UTF-8")) {
         final char character = (char) utf8Byte;
-        if (map.containsKey(character)) {
-          resultStr.append(map.get(character));
-        } else if (isUnreserved(character)) {
+        if (isUnreserved(character)) {
           resultStr.append(character);
         } else if (isUnencoded(character)) {
           resultStr.append(character);
@@ -135,7 +130,7 @@ public class Encoder {
     return resultStr.toString();
   }
 
-  private boolean isUnreserved(final char character) {
+  private static boolean isUnreserved(final char character) {
     return 'A' <= character && character <= 'Z' // case A..Z
         || 'a' <= character && character <= 'z' // case a..z
         || '0' <= character && character <= '9' // case 0..9

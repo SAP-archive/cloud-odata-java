@@ -294,7 +294,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
      * Set header with name to given value without any sort of checking or validation of value.
      * @param name
      * @param value
-     * @return
+     * @return FitTestBuilder
      */
     public FitTestBuilder header(final String name, final String value) {
       test.request.headers.put(name, value);
@@ -304,7 +304,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     /**
      * Set the accept header if value is not <code>NULL</code> and has a <code>length > 0</code>
      * @param value
-     * @return
+     * @return FitTestBuilder
      */
     public FitTestBuilder acceptHeader(final String value) {
       if (value != null && value.length() > 0) {
@@ -316,7 +316,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     /**
      * Set the accept header if value is not <code>NULL</code> and has a <code>length > 0</code>
      * @param value
-     * @return
+     * @return FitTestBuilder
      */
     public FitTestBuilder contentTypeHeader(final String value) {
       if (value != null && value.length() > 0) {

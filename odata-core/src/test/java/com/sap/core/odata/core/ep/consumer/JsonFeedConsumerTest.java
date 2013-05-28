@@ -113,6 +113,17 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getNextLink());
   }
 
+  @Test(expected = EntityProviderException.class)
+  public void invalidDoubleClosingBrackets() throws Exception {
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    String content = "{\"d\":{\"results\":[]}}}";
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    xec.readFeed(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
   @Test
   public void emptyFeed() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
