@@ -38,6 +38,9 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
     ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
         jpaEntities, uriParserResultView, contentType, oDataJPAContext);
 
+    /*if(oDataJPAContext.getEntityManager().isOpen())
+    	oDataJPAContext.getEntityManager().close();*/
+    
     return oDataResponse;
   }
 
@@ -180,4 +183,16 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
     
     return ODataResponse.newBuilder().build();
   }
+
+@Override
+public ODataResponse updateEntityLink(PutMergePatchUriInfo uriParserResultView,
+		InputStream content, String requestContentType, String contentType)
+		throws ODataException {
+	
+	this.jpaProcessor.process(uriParserResultView, content, requestContentType, contentType);
+    
+    return ODataResponse.newBuilder().build();
+}
+  
+  
 }

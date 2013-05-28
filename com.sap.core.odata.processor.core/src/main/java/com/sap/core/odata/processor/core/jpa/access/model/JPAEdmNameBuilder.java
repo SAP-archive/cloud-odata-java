@@ -68,12 +68,12 @@ public class JPAEdmNameBuilder {
 					.mapJPAEntityType(jpaEntityName);
 
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
-		mapping.setJPAType(view.getJPAEntityType().getClass());
+		mapping.setJPAType(view.getJPAEntityType().getJavaType());
 
 		if (edmEntityTypeName == null)
 			edmEntityTypeName = jpaEntityName;
-		else
-			edmEntityType.setMapping(((Mapping) mapping)
+		//Setting the mapping object
+		edmEntityType.setMapping(((Mapping) mapping)
 					.setInternalName(jpaEntityName));
 
 		edmEntityType.setName(edmEntityTypeName);

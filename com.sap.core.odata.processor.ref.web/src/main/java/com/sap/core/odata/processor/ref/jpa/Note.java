@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "T_NOTE")
-@IdClass(value = NoteKey.class)
+//@IdClass(value = NoteKey.class)
 public class Note {
 	
 	public Note() {
@@ -17,20 +17,20 @@ public class Note {
 	public Note(Calendar creationTime, Date creationDate, String createdBy,
 			String text) {
 		super();
-		this.creationTime = creationTime;
-		this.creationDate = creationDate;
+//		this.creationTime = creationTime;
+//		this.creationDate = creationDate;
 		this.createdBy = createdBy;
 		this.text = text;
 	}
 
-	@Id
-	@Temporal(TemporalType.TIME)
-	private Calendar creationTime;
-	
-	@Id
-	@Temporal(TemporalType.DATE)
-	private Date creationDate;
-	
+//	@Id
+//	@Temporal(TemporalType.TIME)
+//	private Calendar creationTime;
+//	
+//	@Id
+//	@Temporal(TemporalType.DATE)
+//	private Date creationDate;
+//	
 	@Id
 	private String createdBy;
 
@@ -40,29 +40,30 @@ public class Note {
 	@Column(name = "SO_ID")
 	private long soId;
 	
-	@JoinColumn(name = "SO_ID",referencedColumnName = "SO_ID",insertable = false,updatable = false)
-	@ManyToOne
+	
+	/*@JoinColumn(name = "SO_ID",referencedColumnName = "SO_ID",insertable = false,updatable = false)*/
+	@OneToOne
 	private SalesOrderHeader salesOrderHeader;	
 
-	public Calendar getCreationTime() {
-		return creationTime;
-	}
+//	public Calendar getCreationTime() {
+//		return creationTime;
+//	}
+//
+//	public void setCreationTime(Calendar creationTime) {
+//		this.creationTime = creationTime;
+//	}
 
-	public void setCreationTime(Calendar creationTime) {
-		this.creationTime = creationTime;
-	}
-
-	public Date getCreationDate() {
-		long dbTime = creationDate.getTime();
-		Date originalDate = new Date(dbTime + TimeZone.getDefault().getOffset(dbTime));
-		return originalDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		long originalTime = creationDate.getTime();
-		Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
-		this.creationDate = newDate;
-	}
+//	public Date getCreationDate() {
+//		long dbTime = creationDate.getTime();
+//		Date originalDate = new Date(dbTime + TimeZone.getDefault().getOffset(dbTime));
+//		return originalDate;
+//	}
+//
+//	public void setCreationDate(Date creationDate) {
+//		long originalTime = creationDate.getTime();
+//		Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
+//		this.creationDate = newDate;
+//	}
 	
 	public String getCreatedBy() {
 		return createdBy;
