@@ -38,9 +38,6 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
     ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
         jpaEntities, uriParserResultView, contentType, oDataJPAContext);
 
-    /*if(oDataJPAContext.getEntityManager().isOpen())
-    	oDataJPAContext.getEntityManager().close();*/
-    
     return oDataResponse;
   }
 

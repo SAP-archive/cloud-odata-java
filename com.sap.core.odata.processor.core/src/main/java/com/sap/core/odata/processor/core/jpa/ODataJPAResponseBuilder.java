@@ -262,7 +262,7 @@ public final class ODataJPAResponseBuilder {
     if (deletedObject == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.status(HttpStatusCodes.OK).build();
   }
 
   /* Response for Function Import Single Result */
