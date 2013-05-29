@@ -107,6 +107,31 @@ public class JsonEntityConsumer {
     }
   }
 
+  public String readLink(final EdmEntitySet entitySet, Object content) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonLinkConsumer().readLink(reader, entitySet);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
+        }
+      }
+    }
+  }
+
   private JsonReader createJsonReader(final Object content) throws EntityProviderException, UnsupportedEncodingException {
 
     if (content == null) {

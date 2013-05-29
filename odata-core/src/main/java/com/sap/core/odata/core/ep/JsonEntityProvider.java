@@ -393,12 +393,12 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public String readLink(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+  public String readLink(final EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    return new JsonEntityConsumer().readLink(entitySet, content);
   }
 
   @Override
-  public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
+  public List<String> readLinks(final EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
   }
 
