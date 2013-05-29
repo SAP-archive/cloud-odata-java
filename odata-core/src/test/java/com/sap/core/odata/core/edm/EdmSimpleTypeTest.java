@@ -861,6 +861,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.JSON, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("binary'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
+    assertTrue(Arrays.equals(new byte[] { 42 }, instance.valueOfString("Kg==", EdmLiteralKind.DEFAULT, getMaxLengthFacets(1), byte[].class)));
+    assertTrue(Arrays.equals(new byte[] { 1, 2 }, instance.valueOfString("AQI=", EdmLiteralKind.JSON, getMaxLengthFacets(2), byte[].class)));
+    assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM\r\n3e7/\r\n", EdmLiteralKind.DEFAULT, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null), byte[].class)));

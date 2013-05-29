@@ -53,7 +53,22 @@ public class EdmBinary extends AbstractSimpleType {
             facets.getMaxLength() >= (value.length() - (value.startsWith("X") ? 3 : 8)) / 2
             :
             // In default representation, every three bytes are represented as four base-64 characters.
-            facets.getMaxLength() >= value.length() * 3 / 4;
+            // Additionally, there could be up to two padding "=" characters if the number of bytes is
+            // not a multiple of three, and there could be carriage return/line feed combinations.
+            facets.getMaxLength() >= value.length() * 3 / 4 - (value.endsWith("==") ? 2 : value.endsWith("=") ? 1 : 0) - crlfLength(value);
+  }
+
+  private static int crlfLength(final String value) {
+    int result = 0;
+    int index = 0;
+    while (index >= 0) {
+      index = value.indexOf("\r\n", index);
+      if (index > 0) {
+        result++;
+        index++;
+      }
+    }
+    return result * 2;
   }
 
   @Override
