@@ -18,6 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -31,7 +32,10 @@ import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.Decoder;
 
-class RestUtil {
+/**
+ * @author SAP AG
+ */
+public class RestUtil {
   public static Response convertResponse(final ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
 
@@ -126,16 +130,16 @@ class RestUtil {
   }
 
   public static PathInfoImpl buildODataPathInfo(final SubLocatorParameter param) throws ODataException {
-
-    final PathInfoImpl pathInfo = splitPath(param);
-    final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
-    pathInfo.setServiceRoot(uri);
+    final UriInfo uriInfo = param.getUriInfo();
+    PathInfoImpl pathInfo = splitPath(param);
+    pathInfo.setServiceRoot(buildBaseUri(uriInfo, pathInfo.getPrecedingSegments()));
+    pathInfo.setRequestUri(uriInfo.getRequestUri());
 
     return pathInfo;
   }
 
   private static PathInfoImpl splitPath(final SubLocatorParameter param) throws ODataException {
-    final PathInfoImpl pathInfo = new PathInfoImpl();
+    PathInfoImpl pathInfo = new PathInfoImpl();
 
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;

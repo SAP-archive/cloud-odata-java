@@ -80,11 +80,11 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
           oDataResponse = callback.handleError(errorContext);
         } catch (ODataApplicationException e) {
           errorContext = extractInformationForApplicationException(e);
-          oDataResponse = convertContextToODataResponse(errorContext);
+          oDataResponse = new ProviderFacadeImpl().writeErrorDocument(errorContext);
         }
 
       } else {
-        oDataResponse = convertContextToODataResponse(errorContext);
+        oDataResponse = new ProviderFacadeImpl().writeErrorDocument(errorContext);
       }
 
       //Convert ODataResponse to JAXRS Response
@@ -195,10 +195,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       }
     }
     return context;
-  }
-
-  private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
   }
 
   private Exception extractException(final Exception exception) {
