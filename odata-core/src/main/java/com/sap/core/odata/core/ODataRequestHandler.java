@@ -114,7 +114,7 @@ public class ODataRequestHandler {
     return serverDataServiceVersion;
   }
 
-  private void validateDataServiceVersion(final String serverDataServiceVersion, String requestDataServiceVersion) throws ODataException {
+  private void validateDataServiceVersion(final String serverDataServiceVersion, final String requestDataServiceVersion) throws ODataException {
 
     if (requestDataServiceVersion != null) {
       try {

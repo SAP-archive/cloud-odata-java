@@ -103,19 +103,19 @@ public class ODataRequestImpl implements ODataRequest {
     return pathInfo;
   }
 
-  public void setQueryParameters(Map<String, String> queryParameters) {
+  public void setQueryParameters(final Map<String, String> queryParameters) {
     this.queryParameters = queryParameters;
   }
 
-  public void setAcceptHeaders(List<String> acceptHeaders) {
+  public void setAcceptHeaders(final List<String> acceptHeaders) {
     this.acceptHeaders = acceptHeaders;
   }
 
-  public void setContentType(ContentType contentType) {
+  public void setContentType(final ContentType contentType) {
     this.contentType = contentType;
   }
 
-  public void setAcceptableLanguages(List<Locale> acceptableLanguages) {
+  public void setAcceptableLanguages(final List<Locale> acceptableLanguages) {
     this.acceptableLanguages = acceptableLanguages;
   }
 

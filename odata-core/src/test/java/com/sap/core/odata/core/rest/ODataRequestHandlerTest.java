@@ -11,8 +11,8 @@ import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.sap.core.odata.api.ODataService;
@@ -27,7 +27,6 @@ import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.core.ODataRequestHandler;
-import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
@@ -45,19 +44,19 @@ public class ODataRequestHandlerTest extends BaseTest {
   @Before
   public void initialize() throws Exception {
     MockitoAnnotations.initMocks(this);
-    when(mockFactory.createService(Mockito.any(ODataContext.class))).thenReturn(mockService);
+    when(mockFactory.createService(Matchers.any(ODataContext.class))).thenReturn(mockService);
 
     when(mockService.getProcessor()).thenReturn(mockProcessor);
     List<String> supportedContentTypes = Arrays.asList(ContentType.APPLICATION_ATOM_XML_CS_UTF_8.toContentTypeString());
-    when(mockService.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(supportedContentTypes);
+    when(mockService.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(supportedContentTypes);
   }
 
   @Test
   public void handleSimpleRequest() throws Exception {
     ServiceDocumentProcessor serviceDocumentProcessor = mock(ServiceDocumentProcessor.class);
-    GetServiceDocumentUriInfo uriInfo = Mockito.any(GetServiceDocumentUriInfo.class);
-    String contentType = Mockito.anyString();// "application/atom+xml";
-    ODataResponse expectedResponse = ODataResponseImpl.newBuilder().status(HttpStatusCodes.OK).build();
+    GetServiceDocumentUriInfo uriInfo = Matchers.any(GetServiceDocumentUriInfo.class);
+    String contentType = Matchers.anyString();// "application/atom+xml";
+    ODataResponse expectedResponse = ODataResponse.newBuilder().status(HttpStatusCodes.OK).build();
     when(serviceDocumentProcessor.readServiceDocument(uriInfo, contentType)).thenReturn(expectedResponse);
     when(mockService.getServiceDocumentProcessor()).thenReturn(serviceDocumentProcessor);
     ODataRequestHandler handler = new ODataRequestHandler(mockFactory);
