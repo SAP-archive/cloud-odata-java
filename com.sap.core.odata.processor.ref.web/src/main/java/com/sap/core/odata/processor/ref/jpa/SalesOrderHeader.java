@@ -45,11 +45,11 @@ public class SalesOrderHeader {
 	@Embedded
 	private Address buyerAddress;
 	
-//	@Embedded
-//	private DummyComplexAttributeForExclusion dummyComplexAttributeForExclusion;
-	
 //	@Column(name = "DUMMY_ATTRIBUTE",length = 10)
 //	private String dummyAttributeForExclusion;
+//	
+//	@Embedded
+//	private DummyComplexAttributeForExclusion dummyComplexAttributeForExclusion;
 
 	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
@@ -161,20 +161,20 @@ public class SalesOrderHeader {
 		this.notes = notes;
 	}
 
-//	public DummyComplexAttributeForExclusion getDummyComplexForExclusion() {
-//		return dummyComplexAttributeForExclusion;
-//	}
-//
-//	public void setDummyComplexForExclusion(
-//			DummyComplexAttributeForExclusion dummyComplexAttributeForExclusion) {
-//		this.dummyComplexAttributeForExclusion = dummyComplexAttributeForExclusion;
-//	}
-//
 //	public String getDummyAttributeForExclusion() {
 //		return dummyAttributeForExclusion;
 //	}
 //
 //	public void setDummyAttributeForExclusion(String dummyAttributeForExclusion) {
 //		this.dummyAttributeForExclusion = dummyAttributeForExclusion;
-//	}		
+//	}
+//
+//	public DummyComplexAttributeForExclusion getDummyComplexAttributeForExclusion() {
+//		return dummyComplexAttributeForExclusion;
+//	}
+//
+//	public void setDummyComplexAttributeForExclusion(
+//			DummyComplexAttributeForExclusion dummyComplexAttributeForExclusion) {
+//		this.dummyComplexAttributeForExclusion = dummyComplexAttributeForExclusion;
+//	}
 }
