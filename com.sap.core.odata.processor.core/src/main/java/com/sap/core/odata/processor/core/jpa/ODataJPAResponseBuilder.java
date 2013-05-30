@@ -251,7 +251,7 @@ public final class ODataJPAResponseBuilder {
       ODataNotFoundException {
     if (updatedObject == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    return ODataResponse.status(HttpStatusCodes.ACCEPTED).build();
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   /* Response for Delete Entity */
