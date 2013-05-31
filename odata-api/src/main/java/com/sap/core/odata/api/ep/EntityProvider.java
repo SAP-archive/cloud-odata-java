@@ -255,13 +255,14 @@ public final class EntityProvider {
     String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
     /**
-     * Read (de-serialize) all links from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
-     * 
+     * Read (de-serialize) all links from <code>content</code> (as {@link InputStream})
+     * in specified format (given as <code>contentType</code>) based on <code>entity data model</code>
+     * (given as {@link EdmEntitySet}) and provide the link as List of Strings.
+     *
      * @param contentType format of content in the given input stream.
      * @param entitySet entity data model for entity property to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @return links as list of strings
+     * @return links as List of Strings
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
@@ -613,13 +614,14 @@ public final class EntityProvider {
   }
 
   /**
-   * Read (de-serialize) a link from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-   * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
-   * 
+   * Read (de-serialize) a link collection from <code>content</code> (as {@link InputStream})
+   * in specified format (given as <code>contentType</code>) based on <code>entity data model</code>
+   * (given as {@link EdmEntitySet}) and provide the links as List of Strings.
+   *
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @return link as string
+   * @return links as List of Strings
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
   public static List<String> readLinks(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {

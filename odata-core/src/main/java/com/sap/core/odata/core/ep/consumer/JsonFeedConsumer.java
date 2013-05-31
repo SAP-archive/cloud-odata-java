@@ -94,21 +94,7 @@ public class JsonFeedConsumer {
       readArrayContent();
 
     } else if (FormatJson.COUNT.equals(nextName)) {
-      if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
-        int inlineCount;
-        try {
-          inlineCount = reader.nextInt();
-        } catch (final NumberFormatException e) {
-          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
-        }
-        if (inlineCount >= 0) {
-          feedMetadata.setInlineCount(inlineCount);
-        } else {
-          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
-        }
-      } else {
-        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
-      }
+      readInlineCount(reader, feedMetadata);
 
     } else if (FormatJson.NEXT.equals(nextName)) {
       if (reader.peek() == JsonToken.STRING && feedMetadata.getNextLink() == null) {
@@ -132,6 +118,24 @@ public class JsonFeedConsumer {
       entries.add(entry);
     }
     reader.endArray();
+  }
+
+  protected static void readInlineCount(JsonReader reader, FeedMetadataImpl feedMetadata) throws IOException, EntityProviderException {
+    if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
+      int inlineCount;
+      try {
+        inlineCount = reader.nextInt();
+      } catch (final NumberFormatException e) {
+        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
+      }
+      if (inlineCount >= 0) {
+        feedMetadata.setInlineCount(inlineCount);
+      } else {
+        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
+      }
+    } else {
+      throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
+    }
   }
 
   protected ODataFeed readStartedInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {

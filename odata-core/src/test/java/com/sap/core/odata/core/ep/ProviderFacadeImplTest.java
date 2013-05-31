@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,9 +117,11 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void readLinks() {
-    fail("Not yet implemented");
+  public void readLinks() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream content = new ByteArrayInputStream("{\"d\":{\"__count\":\"42\",\"results\":[{\"uri\":\"http://somelink\"}]}}".getBytes("UTF-8"));
+    final List<String> result = new ProviderFacadeImpl().readLinks(HttpContentType.APPLICATION_JSON, entitySet, content);
+    assertEquals(Arrays.asList("http://somelink"), result);
   }
 
   @Test

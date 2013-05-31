@@ -11,7 +11,6 @@ import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -22,7 +21,6 @@ import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
 
 /**
- * 
  * @author SAP AG
  */
 public class ODataRequestHandler {
@@ -36,12 +34,11 @@ public class ODataRequestHandler {
   }
 
   /**
-   * Handles the {@link ODataRequest} in a way that it results in a corresponding {@link ODataResponse}.
-   * 
-   * This includes building of the {@link ODataContext}, delegation of uri parsing and dispatching of the request internally.
-   * 
-   * @param request the incoming request.
-   * @return the corresponding result.
+   * <p>Handles the {@link ODataRequest} in a way that it results in a corresponding {@link ODataResponse}.</p>
+   * <p>This includes building of the {@link com.sap.core.odata.api.processor.ODataContext ODataContext},
+   * delegation of URI parsing and dispatching of the request internally.</p>
+   * @param request the incoming request
+   * @return the corresponding result
    * @throws ODataException
    */
   public ODataResponse handle(final ODataRequest request) throws ODataException {
