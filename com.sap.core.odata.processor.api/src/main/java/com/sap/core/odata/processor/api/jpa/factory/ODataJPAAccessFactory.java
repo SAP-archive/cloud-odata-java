@@ -40,48 +40,48 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
  * @see com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory
  */
 public interface ODataJPAAccessFactory {
-  /**
-   * The method creates an OData JPA Processor. The processor handles runtime
-   * behavior of an OData service.
-   * 
-   * @param oDataJPAContext
-   *            an instance of type
-   *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}.
-   *            The context should be initialized properly and cannot be null.
-   * @return An implementation of OData JPA Processor.
-   */
-  public ODataSingleProcessor createODataProcessor(
-      ODataJPAContext oDataJPAContext);
+	/**
+	 * The method creates an OData JPA Processor. The processor handles runtime
+	 * behavior of an OData service.
+	 * 
+	 * @param oDataJPAContext
+	 *            an instance of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}.
+	 *            The context should be initialized properly and cannot be null.
+	 * @return An implementation of OData JPA Processor.
+	 */
+	public ODataSingleProcessor createODataProcessor(
+			ODataJPAContext oDataJPAContext);
 
-  /**
-   * 
-   * @param oDataJPAContext
-   *            an instance of type
-   *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}.
-   *            The context should be initialized properly and cannot be null.
-   * @return An implementation of JPA EdmProvider. EdmProvider handles
-   *         meta-data.
-   */
-  public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext);
+	/**
+	 * 
+	 * @param oDataJPAContext
+	 *            an instance of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}.
+	 *            The context should be initialized properly and cannot be null.
+	 * @return An implementation of JPA EdmProvider. EdmProvider handles
+	 *         meta-data.
+	 */
+	public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext);
 
-  /**
-   * The method creates an instance of OData JPA Context. An empty instance is
-   * returned.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
-   */
-  public ODataJPAContext createODataJPAContext();
+	/**
+	 * The method creates an instance of OData JPA Context. An empty instance is
+	 * returned.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
+	 */
+	public ODataJPAContext createODataJPAContext();
 
-  /**
-   * The method creates an instance of message service for loading language
-   * dependent message text.
-   * 
-   * @param locale
-   *            is the language in which the message service should load
-   *            message texts.
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService}
-   */
-  public ODataJPAMessageService getODataJPAMessageService(Locale locale);
+	/**
+	 * The method creates an instance of message service for loading language
+	 * dependent message text.
+	 * 
+	 * @param locale
+	 *            is the language in which the message service should load
+	 *            message texts.
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService}
+	 */
+	public ODataJPAMessageService getODataJPAMessageService(Locale locale);
 }

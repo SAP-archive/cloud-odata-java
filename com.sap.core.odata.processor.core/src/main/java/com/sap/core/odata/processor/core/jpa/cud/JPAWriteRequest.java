@@ -36,149 +36,144 @@ import com.sap.core.odata.processor.core.jpa.access.model.EdmTypeConvertor;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
 public class JPAWriteRequest {
-  protected HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
-  protected HashMap<String, Object> jpaComplexObjectMap = null;
-  protected HashMap<String, HashMap<String, String>> jpaEmbeddableKeyMap = null;
-  protected HashMap<String, Class<?>> jpaEmbeddableKeyObjectMap = null;
+	protected HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
+	protected HashMap<String, Object> jpaComplexObjectMap = null;
+	protected HashMap<String, HashMap<String, String>> jpaEmbeddableKeyMap = null;
+	protected HashMap<String, Class<?>> jpaEmbeddableKeyObjectMap = null;
+	
+	public JPAWriteRequest(){
+		jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
+		jpaComplexObjectMap = new HashMap<String, Object>();
+	}
+	
+	protected HashMap<String, Method> getSetters(Object jpaEntity,
+			EdmStructuralType structuralType, boolean isCreate) throws ODataJPARuntimeException {
 
-  public JPAWriteRequest() {
-    jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
-    jpaComplexObjectMap = new HashMap<String, Object>();
-  }
+		HashMap<String, Method> setters = new HashMap<String, Method>();
+		HashMap<String, String> embeddableKey = new HashMap<String, String>();
+		try {
+			for (String propertyName : structuralType.getPropertyNames()) {
 
-  protected HashMap<String, Method> getSetters(final Object jpaEntity,
-      final EdmStructuralType structuralType, final boolean isCreate) throws ODataJPARuntimeException {
+				EdmProperty property = (EdmProperty) structuralType
+						.getProperty(propertyName);
+				Class<?> propertyClass = null;
+				try {					
+					if(property.getMapping() != null && ((JPAEdmMappingImpl)property.getMapping()).getJPAType() != null){
+						propertyClass = ((JPAEdmMappingImpl)property.getMapping()).getJPAType();
+						if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
+							try {
+								if(((JPAEdmMappingImpl)property.getMapping()).getInternalName() != null)
+									jpaComplexObjectMap.put(((JPAEdmMappingImpl)property.getMapping()).getInternalName(), propertyClass.newInstance());
+								else 								
+									jpaComplexObjectMap.put(propertyName, propertyClass.newInstance());
+							} catch (InstantiationException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							} catch (IllegalAccessException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							}
+						}
+					} else 
+						propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
+				} catch (ODataJPAModelException e) {
+					throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+				}
+				String name = getSetterName(property);
+				String[] nameParts = name.split("\\.");
+				if (nameParts.length > 1) {
+					if(isCreate){
+						jpaEmbeddableKeyObjectMap.put(propertyName, propertyClass);
+						embeddableKey.put(propertyName, name);
+					}
+				} else
+					setters.put(
+							propertyName,
+							jpaEntity.getClass().getMethod(name,propertyClass));
+			}
+		} catch (NoSuchMethodException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		} catch (SecurityException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		}
 
-    HashMap<String, Method> setters = new HashMap<String, Method>();
-    HashMap<String, String> embeddableKey = new HashMap<String, String>();
-    try {
-      for (String propertyName : structuralType.getPropertyNames()) {
+		if (isCreate && !embeddableKey.isEmpty()) {
+			jpaEmbeddableKeyMap.put(jpaEntity.getClass().getName(),
+					embeddableKey);
+		}
+		return setters;
+	}
+	
+	private String getSetterName(EdmProperty property)
+			throws ODataJPARuntimeException {
+		EdmMapping mapping = null;
+		String name = null;
+		try {
+			mapping = property.getMapping();
+			if (mapping == null || mapping.getInternalName() == null)
+				name = property.getName();
+			else {
+				name = mapping.getInternalName();
+			}
 
-        EdmProperty property = (EdmProperty) structuralType
-            .getProperty(propertyName);
-        Class<?> propertyClass = null;
-        try {
-          if (property.getMapping() != null && ((JPAEdmMappingImpl) property.getMapping()).getJPAType() != null) {
-            propertyClass = ((JPAEdmMappingImpl) property.getMapping()).getJPAType();
-            if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
-              try {
-                if (((JPAEdmMappingImpl) property.getMapping()).getInternalName() != null) {
-                  jpaComplexObjectMap.put(((JPAEdmMappingImpl) property.getMapping()).getInternalName(), propertyClass.newInstance());
-                } else {
-                  jpaComplexObjectMap.put(propertyName, propertyClass.newInstance());
-                }
-              } catch (InstantiationException e) {
-                throw ODataJPARuntimeException
-                    .throwException(ODataJPARuntimeException.GENERAL
-                        .addContent(e.getMessage()), e);
-              } catch (IllegalAccessException e) {
-                throw ODataJPARuntimeException
-                    .throwException(ODataJPARuntimeException.GENERAL
-                        .addContent(e.getMessage()), e);
-              }
-            }
-          } else {
-            propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
-          }
-        } catch (ODataJPAModelException e) {
-          throw ODataJPARuntimeException
-              .throwException(ODataJPARuntimeException.GENERAL
-                  .addContent(e.getMessage()), e);
-        }
-        String name = getSetterName(property);
-        String[] nameParts = name.split("\\.");
-        if (nameParts.length > 1) {
-          if (isCreate) {
-            jpaEmbeddableKeyObjectMap.put(propertyName, propertyClass);
-            embeddableKey.put(propertyName, name);
-          }
-        } else {
-          setters.put(
-              propertyName,
-              jpaEntity.getClass().getMethod(name, propertyClass));
-        }
-      }
-    } catch (NoSuchMethodException e) {
-      throw ODataJPARuntimeException
-          .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
-    } catch (SecurityException e) {
-      throw ODataJPARuntimeException
-          .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
-    } catch (EdmException e) {
-      throw ODataJPARuntimeException
-          .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
-    }
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		}
 
-    if (isCreate && !embeddableKey.isEmpty()) {
-      jpaEmbeddableKeyMap.put(jpaEntity.getClass().getName(),
-          embeddableKey);
-    }
-    return setters;
-  }
+		String[] nameParts = name.split("\\.");		//$NON-NLS-1$
+		StringBuilder builder = new StringBuilder();
 
-  private String getSetterName(final EdmProperty property)
-      throws ODataJPARuntimeException {
-    EdmMapping mapping = null;
-    String name = null;
-    try {
-      mapping = property.getMapping();
-      if (mapping == null || mapping.getInternalName() == null) {
-        name = property.getName();
-      } else {
-        name = mapping.getInternalName();
-      }
+		if (nameParts.length == 1) {
+			if (name != null) {
+				char c = Character.toUpperCase(name.charAt(0));
 
-    } catch (EdmException e) {
-      throw ODataJPARuntimeException
-          .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
-    }
+				builder.append("set").append(c).append(name.substring(1))	//$NON-NLS-1$
+						.toString();
+			}
+		} else if (nameParts.length > 1) {
 
-    String[] nameParts = name.split("\\."); //$NON-NLS-1$
-    StringBuilder builder = new StringBuilder();
+			for (int i = 0; i < nameParts.length; i++) {
+				name = nameParts[i];
+				char c = Character.toUpperCase(name.charAt(0));
+				if (i == 0)
+					builder.append("set").append(c).append(name.substring(1)); 	//$NON-NLS-1$
+				else
+					builder.append(".").append("set").append(c)	//$NON-NLS-1$ //$NON-NLS-2$
+							.append(name.substring(1));
+			}
+		} else {
+			return null;
+		}
 
-    if (nameParts.length == 1) {
-      if (name != null) {
-        char c = Character.toUpperCase(name.charAt(0));
+		if (builder.length() > 0)
+			return builder.toString();
+		else
+			return null;
 
-        builder.append("set").append(c).append(name.substring(1)) //$NON-NLS-1$
-            .toString();
-      }
-    } else if (nameParts.length > 1) {
-
-      for (int i = 0; i < nameParts.length; i++) {
-        name = nameParts[i];
-        char c = Character.toUpperCase(name.charAt(0));
-        if (i == 0) {
-          builder.append("set").append(c).append(name.substring(1)); //$NON-NLS-1$
-        } else {
-          builder.append(".").append("set").append(c) //$NON-NLS-1$ //$NON-NLS-2$
-              .append(name.substring(1));
-        }
-      }
-    } else {
-      return null;
-    }
-
-    if (builder.length() > 0) {
-      return builder.toString();
-    } else {
-      return null;
-    }
-
-  }
-
-  protected ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge) throws ODataBadRequestException {
-    ODataEntry entryValues;
-    try {
-      EntityProviderReadProperties entityProviderProperties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
-      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, entityProviderProperties);
-    } catch (EntityProviderException e) {
-      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
-    }
-    return entryValues;
-  }
+	}
+	
+	protected ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge) throws ODataBadRequestException {
+	    ODataEntry entryValues;
+	    try {
+	    	EntityProviderReadProperties entityProviderProperties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+	      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, entityProviderProperties);
+	    } catch (EntityProviderException e) {
+	      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+	    }
+	    return entryValues;
+	  }		
 }

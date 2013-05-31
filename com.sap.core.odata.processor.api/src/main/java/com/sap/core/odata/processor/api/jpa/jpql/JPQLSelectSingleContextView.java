@@ -31,20 +31,20 @@ import com.sap.core.odata.api.uri.KeyPredicate;
  * 
  */
 public interface JPQLSelectSingleContextView extends JPQLContextView {
-  /**
-   * The method returns a JPQL SELECT clause. The SELECT clause is built from
-   * $select OData system Query option.
-   * 
-   * @return a String representing a SELECT clause in JPQL
-   */
-  public String getSelectExpression();
+	/**
+	 * The method returns a JPQL SELECT clause. The SELECT clause is built from
+	 * $select OData system Query option.
+	 * 
+	 * @return a String representing a SELECT clause in JPQL
+	 */
+	public String getSelectExpression();
 
-  /**
-   * The method returns the list of key predicates that can be used for
-   * constructing the WHERE clause in JPQL statements. The OData entity key
-   * predicates are thus converted into JPA entity keys.
-   * 
-   * @return a list of key predicates
-   */
-  public List<KeyPredicate> getKeyPredicates();
+	/**
+	 * The method returns the list of key predicates that can be used for
+	 * constructing the WHERE clause in JPQL statements. The OData entity key
+	 * predicates are thus converted into JPA entity keys.
+	 * 
+	 * @return a list of key predicates
+	 */
+	public List<KeyPredicate> getKeyPredicates();
 }

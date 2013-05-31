@@ -24,28 +24,28 @@ package com.sap.core.odata.processor.api.jpa.jpql;
  * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType
  */
 public interface JPQLContextView {
-  /**
-   * The method returns a JPA entity name for which the JPQL context is
-   * relevant.
-   * 
-   * @return JPA entity name
-   */
-  public String getJPAEntityName();
+	/**
+	 * The method returns a JPA entity name for which the JPQL context is
+	 * relevant.
+	 * 
+	 * @return JPA entity name
+	 */
+	public String getJPAEntityName();
 
-  /**
-   * The method returns a JPA entity alias name for which the JPQL context is
-   * relevant.
-   * 
-   * @return JPA entity alias name
-   */
+	/**
+	 * The method returns a JPA entity alias name for which the JPQL context is
+	 * relevant.
+	 * 
+	 * @return JPA entity alias name
+	 */
 
-  public String getJPAEntityAlias();
+	public String getJPAEntityAlias();
 
-  /**
-   * The method returns a JPQL context type
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType}
-   */
-  public JPQLContextType getType();
+	/**
+	 * The method returns a JPQL context type
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType}
+	 */
+	public JPQLContextType getType();
 }

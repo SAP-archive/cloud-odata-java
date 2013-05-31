@@ -32,91 +32,90 @@ import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 
 public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
-  private static final String BUNDLE_NAME = "jpaprocessor_msg"; //$NON-NLS-1$
-  private static final Map<Locale, ODataJPAMessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, ODataJPAMessageService>();
-  private static final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
-  private final ResourceBundle resourceBundle;
-  private final Locale lanLocale;
+	private static final String BUNDLE_NAME = "jpaprocessor_msg"; //$NON-NLS-1$
+	private static final Map<Locale, ODataJPAMessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, ODataJPAMessageService>();
+	private static final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
+	private final ResourceBundle resourceBundle;
+	private final Locale lanLocale;	
 
-  @Override
-  public String getLocalizedMessage(final MessageReference context, final Throwable exception) {
+	@Override
+	public String getLocalizedMessage(MessageReference context,Throwable exception) {
 
-    Object[] contentAsArray = context.getContent().toArray(new Object[0]);
+		Object[] contentAsArray = context.getContent().toArray(new Object[0]);
+		
+		if(contentAsArray.length==0 && exception!=null) {
+			contentAsArray = new Object[2];
+			contentAsArray[0] = exception.getStackTrace()[1].getClassName();
+			contentAsArray[1] = exception.getMessage();
+		}
+		String value = null;
+		String key = context.getKey();
 
-    if (contentAsArray.length == 0 && exception != null) {
-      contentAsArray = new Object[2];
-      contentAsArray[0] = exception.getStackTrace()[1].getClassName();
-      contentAsArray[1] = exception.getMessage();
-    }
-    String value = null;
-    String key = context.getKey();
+		try {
+			value = getMessage(key);
+			StringBuilder builder = new StringBuilder();
+			Formatter f = null;
+			if (lanLocale == null)
+				f = new Formatter();
+			else
+				f = new Formatter(builder, lanLocale);
+			f.format(value, contentAsArray);
+			f.close();
+			return builder.toString();
 
-    try {
-      value = getMessage(key);
-      StringBuilder builder = new StringBuilder();
-      Formatter f = null;
-      if (lanLocale == null) {
-        f = new Formatter();
-      } else {
-        f = new Formatter(builder, lanLocale);
-      }
-      f.format(value, contentAsArray);
-      f.close();
-      return builder.toString();
+		} catch (MissingResourceException e) {
+			return "Missing message for key '" + key + "'!";
+		} catch (MissingFormatArgumentException e) {
+			return "Missing replacement for place holder in value '" + value
+					+ "' for following arguments '"
+					+ Arrays.toString(contentAsArray) + "'!";
+		}
+	}
 
-    } catch (MissingResourceException e) {
-      return "Missing message for key '" + key + "'!";
-    } catch (MissingFormatArgumentException e) {
-      return "Missing replacement for place holder in value '" + value
-          + "' for following arguments '"
-          + Arrays.toString(contentAsArray) + "'!";
-    }
-  }
+	private ODataJPAMessageServiceDefault(ResourceBundle resourceBundle,
+			Locale locale) {
+		this.resourceBundle = resourceBundle;
+		lanLocale = locale;
+	}
 
-  private ODataJPAMessageServiceDefault(final ResourceBundle resourceBundle,
-      final Locale locale) {
-    this.resourceBundle = resourceBundle;
-    lanLocale = locale;
-  }
+	public static ODataJPAMessageService getInstance(Locale locale) {
+		
+		Locale acceptedLocale = Locale.ENGLISH;
+		if((ODataJPAContextImpl.getContextInThreadLocal()!=null)&&(ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages()!=null)) {
+			
+			List<Locale> acceptedLanguages = ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages();			
+			
+			Iterator<Locale> itr = acceptedLanguages.iterator();
+	
+			while(itr.hasNext()) {
+		
+				Locale tempLocale = itr.next();
+				if(ResourceBundle.getBundle(BUNDLE_NAME, tempLocale).getLocale().equals(tempLocale)) {
+					acceptedLocale = tempLocale;
+					break;
+				}
+			}
+		}				
+		
+		ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE
+				.get(acceptedLocale);
+		if (messagesInstance == null) {
+			ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, acceptedLocale);
+			
+			if (resourceBundle != null) {
+				messagesInstance = new ODataJPAMessageServiceDefault(
+						resourceBundle, acceptedLocale);
+				LOCALE_2_MESSAGE_SERVICE.put(acceptedLocale, messagesInstance);
+			} else if (defaultResourceBundle != null) {
+				messagesInstance = new ODataJPAMessageServiceDefault(
+						defaultResourceBundle, null);
+			}
 
-  public static ODataJPAMessageService getInstance(final Locale locale) {
+		}
+		return messagesInstance;
+	}
 
-    Locale acceptedLocale = Locale.ENGLISH;
-    if ((ODataJPAContextImpl.getContextInThreadLocal() != null) && (ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages() != null)) {
-
-      List<Locale> acceptedLanguages = ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages();
-
-      Iterator<Locale> itr = acceptedLanguages.iterator();
-
-      while (itr.hasNext()) {
-
-        Locale tempLocale = itr.next();
-        if (ResourceBundle.getBundle(BUNDLE_NAME, tempLocale).getLocale().equals(tempLocale)) {
-          acceptedLocale = tempLocale;
-          break;
-        }
-      }
-    }
-
-    ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE
-        .get(acceptedLocale);
-    if (messagesInstance == null) {
-      ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, acceptedLocale);
-
-      if (resourceBundle != null) {
-        messagesInstance = new ODataJPAMessageServiceDefault(
-            resourceBundle, acceptedLocale);
-        LOCALE_2_MESSAGE_SERVICE.put(acceptedLocale, messagesInstance);
-      } else if (defaultResourceBundle != null) {
-        messagesInstance = new ODataJPAMessageServiceDefault(
-            defaultResourceBundle, null);
-      }
-
-    }
-    return messagesInstance;
-  }
-
-  private String getMessage(final String key) {
-    return resourceBundle.getString(key);
-  }
+	private String getMessage(String key) {
+		return resourceBundle.getString(key);
+	}	
 }

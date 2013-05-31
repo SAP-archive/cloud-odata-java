@@ -26,37 +26,36 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 
 public class JPAEdmModel extends JPAEdmBaseViewImpl implements JPAEdmModelView {
 
-  protected JPAEdmSchemaView schemaView;
+	protected JPAEdmSchemaView schemaView;
+	public JPAEdmModel(Metamodel metaModel, String pUnitName) {
+		super(metaModel,pUnitName);
+	}
+	
+	public JPAEdmModel(ODataJPAContext ctx){
+		super(ctx);
+	}
 
-  public JPAEdmModel(final Metamodel metaModel, final String pUnitName) {
-    super(metaModel, pUnitName);
-  }
+	@Override
+	public JPAEdmSchemaView getEdmSchemaView( ){
+		return schemaView;
+	}
+	
+	@Override
+	public JPAEdmBuilder getBuilder( ){
+		if (this.builder == null)
+			this.builder = new JPAEdmModelBuilder();
+		
+		return builder;
+	}
+	
 
-  public JPAEdmModel(final ODataJPAContext ctx) {
-    super(ctx);
-  }
+	private class JPAEdmModelBuilder implements JPAEdmBuilder{
 
-  @Override
-  public JPAEdmSchemaView getEdmSchemaView() {
-    return schemaView;
-  }
-
-  @Override
-  public JPAEdmBuilder getBuilder() {
-    if (builder == null) {
-      builder = new JPAEdmModelBuilder();
-    }
-
-    return builder;
-  }
-
-  private class JPAEdmModelBuilder implements JPAEdmBuilder {
-
-    @Override
-    public void build() throws ODataJPAModelException, ODataJPARuntimeException {
-      schemaView = new JPAEdmSchema(JPAEdmModel.this);
-      schemaView.getBuilder().build();
-    }
-
-  }
+		@Override
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+			schemaView = new JPAEdmSchema(JPAEdmModel.this);
+			schemaView.getBuilder().build();
+		}
+		
+	}
 }

@@ -60,9 +60,13 @@ public class ODataJPARuntimeException extends ODataJPAException {
       ODataJPARuntimeException.class, "ERROR_JPQL_UNIQUE_CONSTRAINT");
   public static final MessageReference ERROR_JPQL_INTEGRITY_CONSTRAINT = createMessageReference(
       ODataJPARuntimeException.class, "ERROR_JPQL_INTEGRITY_CONSTRAINT");
+  public static final MessageReference RELATIONSHIP_INVALID = createMessageReference(
+      ODataJPARuntimeException.class, "RELATIONSHIP_INVALID");
+  public static final MessageReference RESOURCE_X_NOT_FOUND = createMessageReference(
+      ODataJPARuntimeException.class, "RESOURCE_X_NOT_FOUND");
 
-  private ODataJPARuntimeException(final String localizedMessage, final Throwable e,
-      final MessageReference msgRef) {
+  private ODataJPARuntimeException(String localizedMessage, Throwable e,
+      MessageReference msgRef) {
     super(localizedMessage, e, msgRef);
   }
 
@@ -80,7 +84,7 @@ public class ODataJPARuntimeException extends ODataJPAException {
    * @throws ODataJPARuntimeException
    */
   public static ODataJPARuntimeException throwException(
-      final MessageReference messageReference, final Throwable e) {
+      MessageReference messageReference, Throwable e) {
     ODataJPAMessageService messageService;
     messageService = ODataJPAFactory.createFactory()
         .getODataJPAAccessFactory()

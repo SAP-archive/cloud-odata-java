@@ -17,7 +17,6 @@ package com.sap.core.odata.processor.api.jpa.model.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,37 +48,37 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "JPAEntityTypesMapType", propOrder = { "jpaEntityType" })
 public class JPAEntityTypesMapType {
 
-  @XmlElement(name = "JPAEntityType")
-  protected List<JPAEntityTypeMapType> jpaEntityType;
+	@XmlElement(name = "JPAEntityType")
+	protected List<JPAEntityTypeMapType> jpaEntityType;
 
-  /**
-   * Gets the value of the jpaEntityType property.
-   * 
-   * <p>
-   * This accessor method returns a reference to the live list, not a
-   * snapshot. Therefore any modification you make to the returned list will
-   * be present inside the JAXB object. This is why there is not a
-   * <CODE>set</CODE> method for the jpaEntityType property.
-   * 
-   * <p>
-   * For example, to add a new item, do as follows:
-   * 
-   * <pre>
-   * getJPAEntityType().add(newItem);
-   * </pre>
-   * 
-   * 
-   * <p>
-   * Objects of the following type(s) are allowed in the list
-   * {@link JPAEntityTypeMapType }
-   * 
-   * 
-   */
-  public List<JPAEntityTypeMapType> getJPAEntityType() {
-    if (jpaEntityType == null) {
-      jpaEntityType = new ArrayList<JPAEntityTypeMapType>();
-    }
-    return jpaEntityType;
-  }
+	/**
+	 * Gets the value of the jpaEntityType property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the jpaEntityType property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getJPAEntityType().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link JPAEntityTypeMapType }
+	 * 
+	 * 
+	 */
+	public List<JPAEntityTypeMapType> getJPAEntityType() {
+		if (jpaEntityType == null) {
+			jpaEntityType = new ArrayList<JPAEntityTypeMapType>();
+		}
+		return this.jpaEntityType;
+	}
 
 }

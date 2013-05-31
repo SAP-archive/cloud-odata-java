@@ -30,83 +30,81 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
-    JPAEdmEntitySetView {
+		JPAEdmEntitySetView {
 
-  private EntitySet currentEntitySet = null;
-  private List<EntitySet> consistentEntitySetList = null;
-  private JPAEdmEntityTypeView entityTypeView = null;
-  private JPAEdmSchemaView schemaView;
+	private EntitySet currentEntitySet = null;
+	private List<EntitySet> consistentEntitySetList = null;
+	private JPAEdmEntityTypeView entityTypeView = null;
+	private JPAEdmSchemaView schemaView;
 
-  public JPAEdmEntitySet(final JPAEdmSchemaView view) {
-    super(view);
-    schemaView = view;
-  }
+	public JPAEdmEntitySet(JPAEdmSchemaView view) {
+		super(view);
+		this.schemaView = view;
+	}
 
-  @Override
-  public JPAEdmBuilder getBuilder() {
-    if (builder == null) {
-      builder = new JPAEdmEntitySetBuilder();
-    }
+	@Override
+	public JPAEdmBuilder getBuilder() {
+		if (this.builder == null)
+			this.builder = new JPAEdmEntitySetBuilder();
+		
+		return builder;
+	}
 
-    return builder;
-  }
+	@Override
+	public EntitySet getEdmEntitySet() {
+		return currentEntitySet;
+	}
 
-  @Override
-  public EntitySet getEdmEntitySet() {
-    return currentEntitySet;
-  }
+	@Override
+	public List<EntitySet> getConsistentEdmEntitySetList() {
+		return consistentEntitySetList;
+	}
 
-  @Override
-  public List<EntitySet> getConsistentEdmEntitySetList() {
-    return consistentEntitySetList;
-  }
+	@Override
+	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
+		return entityTypeView;
+	}
 
-  @Override
-  public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
-    return entityTypeView;
-  }
+	@Override
+	public void clean() {
+		this.currentEntitySet = null;
+		this.consistentEntitySetList = null;
+		this.entityTypeView = null;
+		this.isConsistent = false;
+	}
 
-  @Override
-  public void clean() {
-    currentEntitySet = null;
-    consistentEntitySetList = null;
-    entityTypeView = null;
-    isConsistent = false;
-  }
+	private class JPAEdmEntitySetBuilder implements JPAEdmBuilder {
 
-  private class JPAEdmEntitySetBuilder implements JPAEdmBuilder {
+		@Override
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
-    @Override
-    public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+			if (consistentEntitySetList == null)
+				consistentEntitySetList = new ArrayList<EntitySet>();
 
-      if (consistentEntitySetList == null) {
-        consistentEntitySetList = new ArrayList<EntitySet>();
-      }
+			entityTypeView = new JPAEdmEntityType(schemaView);
+			entityTypeView.getBuilder().build();
 
-      entityTypeView = new JPAEdmEntityType(schemaView);
-      entityTypeView.getBuilder().build();
+			if (entityTypeView.isConsistent() && entityTypeView.getConsistentEdmEntityTypes() != null ) {
 
-      if (entityTypeView.isConsistent() && entityTypeView.getConsistentEdmEntityTypes() != null) {
+				String nameSpace = schemaView.getEdmSchema().getNamespace();
+				for (EntityType entityType : entityTypeView
+						.getConsistentEdmEntityTypes()) {
 
-        String nameSpace = schemaView.getEdmSchema().getNamespace();
-        for (EntityType entityType : entityTypeView
-            .getConsistentEdmEntityTypes()) {
+					currentEntitySet = new EntitySet();
+					currentEntitySet.setEntityType(new FullQualifiedName(
+							nameSpace, entityType.getName()));
+					JPAEdmNameBuilder.build(JPAEdmEntitySet.this,entityTypeView);
+					consistentEntitySetList.add(currentEntitySet);
 
-          currentEntitySet = new EntitySet();
-          currentEntitySet.setEntityType(new FullQualifiedName(
-              nameSpace, entityType.getName()));
-          JPAEdmNameBuilder.build(JPAEdmEntitySet.this, entityTypeView);
-          consistentEntitySetList.add(currentEntitySet);
+				}
+				isConsistent = true;
+			} else {
+				isConsistent = false;
+				return;
+			}
 
-        }
-        isConsistent = true;
-      } else {
-        isConsistent = false;
-        return;
-      }
+		}
 
-    }
-
-  }
+	}
 
 }

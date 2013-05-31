@@ -36,37 +36,37 @@ import com.sap.core.odata.api.edm.provider.EntityContainer;
  * 
  */
 public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
-  /**
-   * The method returns the EDM entity container that is currently being
-   * processed.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.api.edm.provider.EntityContainer}
-   */
-  public EntityContainer getEdmEntityContainer();
+	/**
+	 * The method returns the EDM entity container that is currently being
+	 * processed.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.EntityContainer}
+	 */
+	public EntityContainer getEdmEntityContainer();
 
-  /**
-   * The method returns a list of consistent EDM entity containers
-   * 
-   * @return a list of consistent EDM entity containers
-   */
-  public List<EntityContainer> getConsistentEdmEntityContainerList();
+	/**
+	 * The method returns a list of consistent EDM entity containers
+	 * 
+	 * @return a list of consistent EDM entity containers
+	 */
+	public List<EntityContainer> getConsistentEdmEntityContainerList();
 
-  /**
-   * The method returns the JPA EDM entity set view that is currently being
-   * processed.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView}
-   */
-  public JPAEdmEntitySetView getJPAEdmEntitySetView();
+	/**
+	 * The method returns the JPA EDM entity set view that is currently being
+	 * processed.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView}
+	 */
+	public JPAEdmEntitySetView getJPAEdmEntitySetView();
 
-  /**
-   * The method returns the JPA EDM association set view that is currently
-   * being processed.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView}
-   */
-  public JPAEdmAssociationSetView getEdmAssociationSetView();
+	/**
+	 * The method returns the JPA EDM association set view that is currently
+	 * being processed.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView}
+	 */
+	public JPAEdmAssociationSetView getEdmAssociationSetView();
 }

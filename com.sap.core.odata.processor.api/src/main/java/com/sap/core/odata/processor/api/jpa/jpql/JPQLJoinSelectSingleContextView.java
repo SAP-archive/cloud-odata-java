@@ -31,14 +31,14 @@ import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
  * 
  */
 public interface JPQLJoinSelectSingleContextView extends
-    JPQLSelectSingleContextView {
+		JPQLSelectSingleContextView {
 
-  /**
-   * The method returns a list of JPA Join Clauses. The returned list of
-   * values can be used for building JPQL Statements with Join clauses.
-   * 
-   * @return a list of
-   *         {@link com.sap.core.odata.processor.api.jpa.access.JPAJoinClause}
-   */
-  public abstract List<JPAJoinClause> getJPAJoinClauses();
+	/**
+	 * The method returns a list of JPA Join Clauses. The returned list of
+	 * values can be used for building JPQL Statements with Join clauses.
+	 * 
+	 * @return a list of
+	 *         {@link com.sap.core.odata.processor.api.jpa.access.JPAJoinClause}
+	 */
+	public abstract List<JPAJoinClause> getJPAJoinClauses();
 }

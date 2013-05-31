@@ -27,139 +27,144 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
+	
+	private JPAEdmAssociationSetTest objJPAEdmAssociationSetTest;
+	private JPAEdmAssociationSet objJPAEdmAssociationSet;
+	
+	
+	@Before
+	public void setUp() {
+		objJPAEdmAssociationSetTest = new JPAEdmAssociationSetTest();
+		objJPAEdmAssociationSet = new JPAEdmAssociationSet(objJPAEdmAssociationSetTest);
+		try {
+			objJPAEdmAssociationSet.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		
+	}
 
-  private JPAEdmAssociationSetTest objJPAEdmAssociationSetTest;
-  private JPAEdmAssociationSet objJPAEdmAssociationSet;
+	@Test
+	public void testGetBuilder() {
+		assertNotNull(objJPAEdmAssociationSet.getBuilder());
+	}
 
-  @Before
-  public void setUp() {
-    objJPAEdmAssociationSetTest = new JPAEdmAssociationSetTest();
-    objJPAEdmAssociationSet = new JPAEdmAssociationSet(objJPAEdmAssociationSetTest);
-    try {
-      objJPAEdmAssociationSet.getBuilder().build();
-    } catch (ODataJPAModelException e) {
-      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-    } catch (ODataJPARuntimeException e) {
-      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-    }
+	@Test
+	public void testGetConsistentEdmAssociationSetList() {
+		assertNotNull(objJPAEdmAssociationSet.getConsistentEdmAssociationSetList());
+	}
 
-  }
+	@Test
+	public void testGetEdmAssociationSet() {
+		assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet());
+	}
 
-  @Test
-  public void testGetBuilder() {
-    assertNotNull(objJPAEdmAssociationSet.getBuilder());
-  }
+	@Test
+	public void testGetEdmAssociation() {
+		assertNotNull(objJPAEdmAssociationSet.getEdmAssociation());
+	}
 
-  @Test
-  public void testGetConsistentEdmAssociationSetList() {
-    assertNotNull(objJPAEdmAssociationSet.getConsistentEdmAssociationSetList());
-  }
+	@Test
+	public void testIsConsistent() {
+		assertTrue(objJPAEdmAssociationSet.isConsistent());
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmAssociationSet.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmAssociationSet.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
+	}
 
-  @Test
-  public void testGetEdmAssociationSet() {
-    assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet());
-  }
+	@Override
+	public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
+		return this;
+	}
 
-  @Test
-  public void testGetEdmAssociation() {
-    assertNotNull(objJPAEdmAssociationSet.getEdmAssociation());
-  }
+	@Override
+	public JPAEdmEntitySetView getJPAEdmEntitySetView() {
+		return this;
+	}
 
-  @Test
-  public void testIsConsistent() {
-    assertTrue(objJPAEdmAssociationSet.isConsistent());
-  }
+	@Override
+	public JPAEdmAssociationView getJPAEdmAssociationView() {
+		return this;
+	}
 
-  @Test
-  public void testGetBuilderIdempotent() {
-    JPAEdmBuilder builder1 = objJPAEdmAssociationSet.getBuilder();
-    JPAEdmBuilder builder2 = objJPAEdmAssociationSet.getBuilder();
+	@Override
+	public AssociationSet getEdmAssociationSet() {
+		AssociationSet associationSet = new AssociationSet();
+		associationSet.setEnd1(new AssociationSetEnd());
+		associationSet.setEnd2(new AssociationSetEnd());
+		
+		return associationSet;
+	}
 
-    assertEquals(builder1.hashCode(), builder2.hashCode());
-  }
+	@Override
+	public List<Association> getConsistentEdmAssociationList() {
+		return getEdmAssociationListLocal();
+	}
+	
+	
+	@Override
+	public List<AssociationSet> getConsistentEdmAssociationSetList() {
+		
+		List<AssociationSet> associationSetList = new ArrayList<AssociationSet>();
+		associationSetList.add(getEdmAssociationSet());
+		associationSetList.add(getEdmAssociationSet());
+		
+		return associationSetList;
+	}
 
-  @Override
-  public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
-    return this;
-  }
+	@Override
+	public List<EntitySet> getConsistentEdmEntitySetList() {
+		return getEntitySetListLocal();
+	}
+	
+	@Override
+	public boolean isConsistent() {
+		return true;
+	}
+	
+	@Override
+	public Schema getEdmSchema() {
+		Schema schema = new Schema();
+		schema.setNamespace("salesordereprocessing");
+		return schema;
+	}
 
-  @Override
-  public JPAEdmEntitySetView getJPAEdmEntitySetView() {
-    return this;
-  }
+	private List<EntitySet> getEntitySetListLocal() {
+		List<EntitySet> entitySetList = new ArrayList<EntitySet>();
+		
+		EntitySet entitySet = new EntitySet();
+		entitySet.setName("SalesOrderHeader");
+		entitySet.setEntityType(new FullQualifiedName("salesorderprocessing", "SOID"));
+		
+		EntitySet entitySet2 = new EntitySet();
+		entitySet2.setName("SalesOrderItem");
+		entitySet2.setEntityType(new FullQualifiedName("salesorderprocessing", "SOID"));
+		
+		entitySetList.add(entitySet);
+		entitySetList.add(entitySet2);
+		return entitySetList;
+	}
 
-  @Override
-  public JPAEdmAssociationView getJPAEdmAssociationView() {
-    return this;
-  }
-
-  @Override
-  public AssociationSet getEdmAssociationSet() {
-    AssociationSet associationSet = new AssociationSet();
-    associationSet.setEnd1(new AssociationSetEnd());
-    associationSet.setEnd2(new AssociationSetEnd());
-
-    return associationSet;
-  }
-
-  @Override
-  public List<Association> getConsistentEdmAssociationList() {
-    return getEdmAssociationListLocal();
-  }
-
-  @Override
-  public List<AssociationSet> getConsistentEdmAssociationSetList() {
-
-    List<AssociationSet> associationSetList = new ArrayList<AssociationSet>();
-    associationSetList.add(getEdmAssociationSet());
-    associationSetList.add(getEdmAssociationSet());
-
-    return associationSetList;
-  }
-
-  @Override
-  public List<EntitySet> getConsistentEdmEntitySetList() {
-    return getEntitySetListLocal();
-  }
-
-  @Override
-  public boolean isConsistent() {
-    return true;
-  }
-
-  @Override
-  public Schema getEdmSchema() {
-    Schema schema = new Schema();
-    schema.setNamespace("salesordereprocessing");
-    return schema;
-  }
-
-  private List<EntitySet> getEntitySetListLocal() {
-    List<EntitySet> entitySetList = new ArrayList<EntitySet>();
-
-    EntitySet entitySet = new EntitySet();
-    entitySet.setName("SalesOrderHeader");
-    entitySet.setEntityType(new FullQualifiedName("salesorderprocessing", "SOID"));
-
-    EntitySet entitySet2 = new EntitySet();
-    entitySet2.setName("SalesOrderItem");
-    entitySet2.setEntityType(new FullQualifiedName("salesorderprocessing", "SOID"));
-
-    entitySetList.add(entitySet);
-    entitySetList.add(entitySet2);
-    return entitySetList;
-  }
-
-  private List<Association> getEdmAssociationListLocal() {
-    List<Association> associationList = new ArrayList<Association>();
-
-    Association association = new Association();
-    association.setName("Assoc_SalesOrderHeader_SalesOrderItem");
-    association.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "String")).setRole("SalesOrderHeader"));
-    association.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem")).setRole("SalesOrderItem"));
-
-    associationList.add(association);
-    return associationList;
-  }
+	private List<Association> getEdmAssociationListLocal() {
+		List<Association> associationList = new ArrayList<Association>();
+		
+		Association association = new Association();
+		association.setName("Assoc_SalesOrderHeader_SalesOrderItem");
+		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "String")).setRole("SalesOrderHeader"));
+		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem")).setRole("SalesOrderItem"));
+		
+		associationList.add(association);
+		return associationList;
+	}
+	
+	
+	
 
 }

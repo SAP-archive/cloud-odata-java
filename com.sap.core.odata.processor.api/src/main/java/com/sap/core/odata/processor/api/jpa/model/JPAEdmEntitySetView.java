@@ -35,29 +35,29 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
  * 
  */
 public interface JPAEdmEntitySetView extends JPAEdmBaseView {
-  /**
-   * The method returns an EDM entity set that is currently being processed.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.api.edm.provider.EntitySet}
-   */
-  public EntitySet getEdmEntitySet();
+	/**
+	 * The method returns an EDM entity set that is currently being processed.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.EntitySet}
+	 */
+	public EntitySet getEdmEntitySet();
 
-  /**
-   * The method returns a list of consistent EDM entity sets.
-   * 
-   * @return a list of EDM entity sets
-   */
-  public List<EntitySet> getConsistentEdmEntitySetList();
+	/**
+	 * The method returns a list of consistent EDM entity sets.
+	 * 
+	 * @return a list of EDM entity sets
+	 */
+	public List<EntitySet> getConsistentEdmEntitySetList();
 
-  /**
-   * The method returns a JPA EDM entity type view that is currently being
-   * processed. JPA EDM entity set view is built from JPA EDM entity type
-   * view.
-   * 
-   * @return an instance of type
-   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView}
-   */
-  public JPAEdmEntityTypeView getJPAEdmEntityTypeView();
+	/**
+	 * The method returns a JPA EDM entity type view that is currently being
+	 * processed. JPA EDM entity set view is built from JPA EDM entity type
+	 * view.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView}
+	 */
+	public JPAEdmEntityTypeView getJPAEdmEntityTypeView();
 
 }

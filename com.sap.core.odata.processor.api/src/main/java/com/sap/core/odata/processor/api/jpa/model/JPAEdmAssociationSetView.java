@@ -38,29 +38,29 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
  */
 public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 
-  /**
-   * The method returns a consistent list of association sets. An association
-   * set is set to be consistent only if all its mandatory properties can be
-   * completely built from a Java Persistence Relationship.
-   * 
-   * @return a consistent list of {@link com.sap.core.odata.api.edm.provider.AssociationSet}
-   * 
-   */
-  List<AssociationSet> getConsistentEdmAssociationSetList();
+	/**
+	 * The method returns a consistent list of association sets. An association
+	 * set is set to be consistent only if all its mandatory properties can be
+	 * completely built from a Java Persistence Relationship.
+	 * 
+	 * @return a consistent list of {@link com.sap.core.odata.api.edm.provider.AssociationSet}
+	 * 
+	 */
+	List<AssociationSet> getConsistentEdmAssociationSetList();
 
-  /**
-   * The method returns an association set that is currently being processed.
-   * 
-   * @return an instance of type {@link com.sap.core.odata.api.edm.provider.AssociationSet}
-   */
-  AssociationSet getEdmAssociationSet();
+	/**
+	 * The method returns an association set that is currently being processed.
+	 * 
+	 * @return an instance of type {@link com.sap.core.odata.api.edm.provider.AssociationSet}
+	 */
+	AssociationSet getEdmAssociationSet();
 
-  /**
-   * The method returns an association from which the association set is
-   * currently being processed.
-   * 
-   * @return an instance of type {@link com.sap.core.odata.api.edm.provider.Association}
-   */
-  Association getEdmAssociation();
+	/**
+	 * The method returns an association from which the association set is
+	 * currently being processed.
+	 * 
+	 * @return an instance of type {@link com.sap.core.odata.api.edm.provider.Association}
+	 */
+	Association getEdmAssociation();
 
 }
