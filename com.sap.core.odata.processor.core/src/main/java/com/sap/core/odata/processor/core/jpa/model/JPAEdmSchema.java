@@ -37,190 +37,196 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
-		JPAEdmSchemaView {
+    JPAEdmSchemaView {
 
-	private Schema schema;
-	private JPAEdmComplexTypeView complexTypeView;
-	private JPAEdmEntityContainerView entityContainerView;
-	private JPAEdmAssociationView associationView = null;
-	private List<String> nonKeyComplexList = null;
-	private HashMap<Class<?>, String[]> customOperations = null;
+  private Schema schema;
+  private JPAEdmComplexTypeView complexTypeView;
+  private JPAEdmEntityContainerView entityContainerView;
+  private JPAEdmAssociationView associationView = null;
+  private List<String> nonKeyComplexList = null;
+  private HashMap<Class<?>, String[]> customOperations = null;
 
-	public JPAEdmSchema(JPAEdmModelView modelView) {
-		super(modelView);
-		if (nonKeyComplexList == null) {
-			nonKeyComplexList = new ArrayList<String>();
-		}
-	}
+  public JPAEdmSchema(final JPAEdmModelView modelView) {
+    super(modelView);
+    if (nonKeyComplexList == null) {
+      nonKeyComplexList = new ArrayList<String>();
+    }
+  }
 
-	@Override
-	public List<String> getNonKeyComplexTypeList() {
-		return nonKeyComplexList;
-	}
+  @Override
+  public List<String> getNonKeyComplexTypeList() {
+    return nonKeyComplexList;
+  }
 
-	@Override
-	public void addNonKeyComplexName(String complexTypeName) {
-		nonKeyComplexList.add(complexTypeName);
-	}
+  @Override
+  public void addNonKeyComplexName(final String complexTypeName) {
+    nonKeyComplexList.add(complexTypeName);
+  }
 
-	@Override
-	public Schema getEdmSchema() {
-		return this.schema;
-	}
+  @Override
+  public Schema getEdmSchema() {
+    return schema;
+  }
 
-	@Override
-	public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
-		return entityContainerView;
-	}
+  @Override
+  public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
+    return entityContainerView;
+  }
 
-	@Override
-	public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
-		return complexTypeView;
-	}
+  @Override
+  public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
+    return complexTypeView;
+  }
 
-	@Override
-	public JPAEdmBuilder getBuilder() {
-		if (this.builder == null)
-			this.builder = new JPAEdmSchemaBuilder();
+  @Override
+  public JPAEdmBuilder getBuilder() {
+    if (builder == null) {
+      builder = new JPAEdmSchemaBuilder();
+    }
 
-		return builder;
-	}
+    return builder;
+  }
 
-	@Override
-	public void clean() {
-		super.clean();
-		schema = null;
-	}
+  @Override
+  public void clean() {
+    super.clean();
+    schema = null;
+  }
 
-	private class JPAEdmSchemaBuilder implements JPAEdmBuilder {
-		/*
-		 * 
-		 * Each call to build method creates a new EDM Schema. The newly created
-		 * schema is built with Entity Containers, associations, Complex Types
-		 * and Entity Types.
-		 * 
-		 * ************************************************************ Build
-		 * EDM Schema - STEPS
-		 * ************************************************************ 1) Build
-		 * Name for EDM Schema 2) Build EDM Complex Types from JPA Embeddable
-		 * Types 3) Add EDM Complex Types to EDM Schema 4) Build EDM Entity
-		 * Container 5) Add EDM Entity Container to EDM Schema 6) Fetch Built
-		 * EDM Entity Types from EDM Entity Container 7) Add EDM Entity Types to
-		 * EDM Schema 8) Fetch Built EDM Association Sets from EDM Entity
-		 * Container 9) Fetch Built EDM Associations from EDM Association Set
-		 * 10) Add EDM Association to EDM Schema
-		 * ************************************************************ Build
-		 * EDM Schema - STEPS
-		 * ************************************************************
-		 */
-		@Override
-		public void build() throws ODataJPAModelException,
-				ODataJPARuntimeException {
+  private class JPAEdmSchemaBuilder implements JPAEdmBuilder {
+    /*
+     * 
+     * Each call to build method creates a new EDM Schema. The newly created
+     * schema is built with Entity Containers, associations, Complex Types
+     * and Entity Types.
+     * 
+     * ************************************************************ Build
+     * EDM Schema - STEPS
+     * ************************************************************ 1) Build
+     * Name for EDM Schema 2) Build EDM Complex Types from JPA Embeddable
+     * Types 3) Add EDM Complex Types to EDM Schema 4) Build EDM Entity
+     * Container 5) Add EDM Entity Container to EDM Schema 6) Fetch Built
+     * EDM Entity Types from EDM Entity Container 7) Add EDM Entity Types to
+     * EDM Schema 8) Fetch Built EDM Association Sets from EDM Entity
+     * Container 9) Fetch Built EDM Associations from EDM Association Set
+     * 10) Add EDM Association to EDM Schema
+     * ************************************************************ Build
+     * EDM Schema - STEPS
+     * ************************************************************
+     */
+    @Override
+    public void build() throws ODataJPAModelException,
+        ODataJPARuntimeException {
 
-			schema = new Schema();
-			JPAEdmNameBuilder.build(JPAEdmSchema.this);
+      schema = new Schema();
+      JPAEdmNameBuilder.build(JPAEdmSchema.this);
 
-			associationView = new JPAEdmAssociation(JPAEdmSchema.this);
+      associationView = new JPAEdmAssociation(JPAEdmSchema.this);
 
-			complexTypeView = new JPAEdmComplexType(JPAEdmSchema.this);
-			complexTypeView.getBuilder().build();
+      complexTypeView = new JPAEdmComplexType(JPAEdmSchema.this);
+      complexTypeView.getBuilder().build();
 
-			if (JPAEdmSchema.this.getJPAEdmExtension() != null) {
-				JPAEdmSchema.this.getJPAEdmExtension()
-						.extend(JPAEdmSchema.this);
-			}
+      if (getJPAEdmExtension() != null) {
+        getJPAEdmExtension()
+            .extend(JPAEdmSchema.this);
+      }
 
-			entityContainerView = new JPAEdmEntityContainer(JPAEdmSchema.this);
-			entityContainerView.getBuilder().build();
-			schema.setEntityContainers(entityContainerView
-					.getConsistentEdmEntityContainerList());
+      entityContainerView = new JPAEdmEntityContainer(JPAEdmSchema.this);
+      entityContainerView.getBuilder().build();
+      schema.setEntityContainers(entityContainerView
+          .getConsistentEdmEntityContainerList());
 
-			JPAEdmEntitySetView entitySetView = entityContainerView
-					.getJPAEdmEntitySetView();
-			if (entitySetView.isConsistent()
-					&& entitySetView.getJPAEdmEntityTypeView() != null) {
-				JPAEdmEntityTypeView entityTypeView = entitySetView
-						.getJPAEdmEntityTypeView();
-				if (entityTypeView.isConsistent()
-						&& !entityTypeView.getConsistentEdmEntityTypes()
-								.isEmpty())
-					schema.setEntityTypes(entityTypeView
-							.getConsistentEdmEntityTypes());
-			}
-			if (complexTypeView.isConsistent()) {
-				List<ComplexType> complexTypes = complexTypeView
-						.getConsistentEdmComplexTypes();
-				List<ComplexType> existingComplexTypes = new ArrayList<ComplexType>();
-				for (ComplexType complexType : complexTypes) {
-					if (complexType != null && nonKeyComplexList.contains(complexType.getName())) {//null check for exclude
-						existingComplexTypes.add(complexType);
-					}
-				}
-				if (!existingComplexTypes.isEmpty())
-					schema.setComplexTypes(existingComplexTypes);
-			}
+      JPAEdmEntitySetView entitySetView = entityContainerView
+          .getJPAEdmEntitySetView();
+      if (entitySetView.isConsistent()
+          && entitySetView.getJPAEdmEntityTypeView() != null) {
+        JPAEdmEntityTypeView entityTypeView = entitySetView
+            .getJPAEdmEntityTypeView();
+        if (entityTypeView.isConsistent()
+            && !entityTypeView.getConsistentEdmEntityTypes()
+                .isEmpty()) {
+          schema.setEntityTypes(entityTypeView
+              .getConsistentEdmEntityTypes());
+        }
+      }
+      if (complexTypeView.isConsistent()) {
+        List<ComplexType> complexTypes = complexTypeView
+            .getConsistentEdmComplexTypes();
+        List<ComplexType> existingComplexTypes = new ArrayList<ComplexType>();
+        for (ComplexType complexType : complexTypes) {
+          if (complexType != null && nonKeyComplexList.contains(complexType.getName())) {//null check for exclude
+            existingComplexTypes.add(complexType);
+          }
+        }
+        if (!existingComplexTypes.isEmpty()) {
+          schema.setComplexTypes(existingComplexTypes);
+        }
+      }
 
-			List<String> existingAssociationList = new ArrayList<String>();
-			if (associationView.isConsistent()
-					&& !associationView.getConsistentEdmAssociationList()
-							.isEmpty()) {
+      List<String> existingAssociationList = new ArrayList<String>();
+      if (associationView.isConsistent()
+          && !associationView.getConsistentEdmAssociationList()
+              .isEmpty()) {
 
-				List<Association> consistentAssociationList = associationView
-						.getConsistentEdmAssociationList();
-				schema.setAssociations(consistentAssociationList);
-				for (Association association : consistentAssociationList)
-					existingAssociationList.add(association.getName());
+        List<Association> consistentAssociationList = associationView
+            .getConsistentEdmAssociationList();
+        schema.setAssociations(consistentAssociationList);
+        for (Association association : consistentAssociationList) {
+          existingAssociationList.add(association.getName());
+        }
 
-			}
-			List<EntityType> entityTypes = entityContainerView
-					.getJPAEdmEntitySetView().getJPAEdmEntityTypeView()
-					.getConsistentEdmEntityTypes();
-			List<NavigationProperty> navigationProperties;
-			if (entityTypes != null && !entityTypes.isEmpty()) {
-				for (EntityType entityType : entityTypes) {
+      }
+      List<EntityType> entityTypes = entityContainerView
+          .getJPAEdmEntitySetView().getJPAEdmEntityTypeView()
+          .getConsistentEdmEntityTypes();
+      List<NavigationProperty> navigationProperties;
+      if (entityTypes != null && !entityTypes.isEmpty()) {
+        for (EntityType entityType : entityTypes) {
 
-					List<NavigationProperty> consistentNavigationProperties = null;
-					navigationProperties = entityType.getNavigationProperties();
-					if (navigationProperties != null) {
-						consistentNavigationProperties = new ArrayList<NavigationProperty>();
-						for (NavigationProperty navigationProperty : navigationProperties) {
-							if (existingAssociationList
-									.contains(navigationProperty
-											.getRelationship().getName())) {
-								consistentNavigationProperties
-										.add(navigationProperty);
-							}
-						}
-						if (consistentNavigationProperties.isEmpty())
-							entityType.setNavigationProperties(null);
-						else
-							entityType
-									.setNavigationProperties(consistentNavigationProperties);
-					}
+          List<NavigationProperty> consistentNavigationProperties = null;
+          navigationProperties = entityType.getNavigationProperties();
+          if (navigationProperties != null) {
+            consistentNavigationProperties = new ArrayList<NavigationProperty>();
+            for (NavigationProperty navigationProperty : navigationProperties) {
+              if (existingAssociationList
+                  .contains(navigationProperty
+                      .getRelationship().getName())) {
+                consistentNavigationProperties
+                    .add(navigationProperty);
+              }
+            }
+            if (consistentNavigationProperties.isEmpty()) {
+              entityType.setNavigationProperties(null);
+            } else {
+              entityType
+                  .setNavigationProperties(consistentNavigationProperties);
+            }
+          }
 
-				}
-			}
+        }
+      }
 
-		}
+    }
 
-	}
+  }
 
-	@Override
-	public final JPAEdmAssociationView getJPAEdmAssociationView() {
-		return this.associationView;
-	}
+  @Override
+  public final JPAEdmAssociationView getJPAEdmAssociationView() {
+    return associationView;
+  }
 
-	@Override
-	public void registerOperations(Class<?> customClass, String[] methodNames) {
-		if (customOperations == null)
-			customOperations = new HashMap<Class<?>, String[]>();
+  @Override
+  public void registerOperations(final Class<?> customClass, final String[] methodNames) {
+    if (customOperations == null) {
+      customOperations = new HashMap<Class<?>, String[]>();
+    }
 
-		customOperations.put(customClass, methodNames);
+    customOperations.put(customClass, methodNames);
 
-	}
+  }
 
-	@Override
-	public HashMap<Class<?>, String[]> getRegisteredOperations() {
-		return customOperations;
-	}
+  @Override
+  public HashMap<Class<?>, String[]> getRegisteredOperations() {
+    return customOperations;
+  }
 }

@@ -58,10 +58,11 @@ public class ODataJPAEdmProvider extends EdmProvider {
     functionImports = new HashMap<String, FunctionImport>();
   }
 
-  public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
-    if (oDataJPAContext == null)
+  public ODataJPAEdmProvider(final ODataJPAContext oDataJPAContext) {
+    if (oDataJPAContext == null) {
       throw new IllegalArgumentException(
           ODataJPAException.ODATA_JPACTX_NULL);
+    }
     entityTypes = new HashMap<String, EntityType>();
     entityContainerInfos = new HashMap<String, EntityContainerInfo>();
     complexTypes = new HashMap<String, ComplexType>();
@@ -75,21 +76,21 @@ public class ODataJPAEdmProvider extends EdmProvider {
     return oDataJPAContext;
   }
 
-  public void setODataJPAContext(ODataJPAContext jpaContext) {
-    this.oDataJPAContext = jpaContext;
+  public void setODataJPAContext(final ODataJPAContext jpaContext) {
+    oDataJPAContext = jpaContext;
   }
 
   @Override
-  public EntityContainerInfo getEntityContainerInfo(String name)
+  public EntityContainerInfo getEntityContainerInfo(final String name)
       throws ODataException {
 
-    if (entityContainerInfos.containsKey(name))
+    if (entityContainerInfos.containsKey(name)) {
       return entityContainerInfos.get(name);
+    } else {
 
-    else {
-
-      if (schemas == null)
+      if (schemas == null) {
         getSchemas();
+      }
 
       for (EntityContainer container : schemas.get(0)
           .getEntityContainers()) {
@@ -105,16 +106,17 @@ public class ODataJPAEdmProvider extends EdmProvider {
   }
 
   @Override
-  public EntityType getEntityType(FullQualifiedName edmFQName)
+  public EntityType getEntityType(final FullQualifiedName edmFQName)
       throws ODataException {
 
     String strEdmFQName = edmFQName.toString();
 
     if (edmFQName != null) {
-      if (edmFQName != null && entityTypes.containsKey(strEdmFQName))
+      if (edmFQName != null && entityTypes.containsKey(strEdmFQName)) {
         return entityTypes.get(strEdmFQName);
-      else if (schemas == null)
+      } else if (schemas == null) {
         getSchemas();
+      }
 
       if (edmFQName != null) {
 
@@ -139,17 +141,18 @@ public class ODataJPAEdmProvider extends EdmProvider {
   }
 
   @Override
-  public ComplexType getComplexType(FullQualifiedName edmFQName)
+  public ComplexType getComplexType(final FullQualifiedName edmFQName)
       throws ODataException {
     ComplexType returnCT = null;
     if (edmFQName != null) {
       if (edmFQName != null
-          && complexTypes.containsKey(edmFQName.toString()))
+          && complexTypes.containsKey(edmFQName.toString())) {
         return complexTypes.get(edmFQName.toString());
-      else if (schemas == null)
+      } else if (schemas == null) {
         getSchemas();
+      }
 
-      if (edmFQName != null)
+      if (edmFQName != null) {
         for (Schema schema : schemas) {
           if (schema.getNamespace().equals(edmFQName.getNamespace())) {
             for (ComplexType ct : schema.getComplexTypes()) {
@@ -160,6 +163,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
             }
           }
         }
+      }
 
     }
 
@@ -167,16 +171,17 @@ public class ODataJPAEdmProvider extends EdmProvider {
   }
 
   @Override
-  public Association getAssociation(FullQualifiedName edmFQName)
+  public Association getAssociation(final FullQualifiedName edmFQName)
       throws ODataException {
     if (edmFQName != null) {
       if (edmFQName != null
-          && associations.containsKey(edmFQName.toString()))
+          && associations.containsKey(edmFQName.toString())) {
         return associations.get(edmFQName.toString());
-      else if (schemas == null)
+      } else if (schemas == null) {
         getSchemas();
+      }
 
-      if (edmFQName != null)
+      if (edmFQName != null) {
         for (Schema schema : schemas) {
           if (schema.getNamespace().equals(edmFQName.getNamespace())) {
             for (Association association : schema.getAssociations()) {
@@ -189,6 +194,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
             }
           }
         }
+      }
 
     }
     throw ODataJPAModelException.throwException(
@@ -197,38 +203,42 @@ public class ODataJPAEdmProvider extends EdmProvider {
   }
 
   @Override
-  public EntitySet getEntitySet(String entityContainer, String name)
+  public EntitySet getEntitySet(final String entityContainer, final String name)
       throws ODataException {
 
     EntitySet returnedSet = null;
     EntityContainer container = null;
-    if (!entityContainerInfos.containsKey(entityContainer))
+    if (!entityContainerInfos.containsKey(entityContainer)) {
       container = (EntityContainer) getEntityContainerInfo(entityContainer);
-    else
+    } else {
       container = (EntityContainer) entityContainerInfos
           .get(entityContainer);
+    }
 
-    if (container != null && name != null)
-      for (EntitySet es : container.getEntitySets())
+    if (container != null && name != null) {
+      for (EntitySet es : container.getEntitySets()) {
         if (name.equals(es.getName())) {
-      returnedSet = es;
-      break;
+          returnedSet = es;
+          break;
+        }
+      }
     }
 
     return returnedSet;
   }
 
   @Override
-  public AssociationSet getAssociationSet(String entityContainer,
-      FullQualifiedName association, String sourceEntitySetName,
-      String sourceEntitySetRole) throws ODataException {
+  public AssociationSet getAssociationSet(final String entityContainer,
+      final FullQualifiedName association, final String sourceEntitySetName,
+      final String sourceEntitySetRole) throws ODataException {
 
     EntityContainer container = null;
-    if (!entityContainerInfos.containsKey(entityContainer))
+    if (!entityContainerInfos.containsKey(entityContainer)) {
       container = (EntityContainer) getEntityContainerInfo(entityContainer);
-    else
+    } else {
       container = (EntityContainer) entityContainerInfos
           .get(entityContainer);
+    }
 
     if (container != null && association != null) {
       for (AssociationSet as : container.getAssociationSets()) {
@@ -253,26 +263,30 @@ public class ODataJPAEdmProvider extends EdmProvider {
   }
 
   @Override
-  public FunctionImport getFunctionImport(String entityContainer, String name)
+  public FunctionImport getFunctionImport(final String entityContainer, final String name)
       throws ODataException {
 
-    if (functionImports.containsKey(name))
+    if (functionImports.containsKey(name)) {
       return functionImports.get(name);
+    }
 
     FunctionImport returnFI = null;
     EntityContainer container = null;
-    if (!entityContainerInfos.containsKey(entityContainer))
+    if (!entityContainerInfos.containsKey(entityContainer)) {
       container = (EntityContainer) getEntityContainerInfo(entityContainer);
-    else
+    } else {
       container = (EntityContainer) entityContainerInfos
           .get(entityContainer);
+    }
 
-    if (container != null && name != null)
-      for (FunctionImport fi : container.getFunctionImports())
+    if (container != null && name != null) {
+      for (FunctionImport fi : container.getFunctionImports()) {
         if (name.equals(fi.getName())) {
           functionImports.put(name, fi);
           returnFI = fi;
         }
+      }
+    }
     return returnFI;
   }
 

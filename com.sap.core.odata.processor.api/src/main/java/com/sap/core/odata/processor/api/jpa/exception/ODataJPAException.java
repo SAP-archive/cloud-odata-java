@@ -29,39 +29,39 @@ import com.sap.core.odata.api.exception.ODataException;
  * 
  */
 public abstract class ODataJPAException extends ODataException {
-	
-	protected MessageReference messageReference;
-	
-	public static final String ODATA_JPACTX_NULL = "OData JPA Context cannot be null";
 
-	private static final long serialVersionUID = -6884673558124441214L;
-	protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+  protected MessageReference messageReference;
 
-	protected ODataJPAException(String localizedMessage, Throwable e, MessageReference msgRef) {
-		super(localizedMessage, e);
-		messageReference = msgRef;
-	}
+  public static final String ODATA_JPACTX_NULL = "OData JPA Context cannot be null";
 
-	/**
-	 * The method creates a Reference to Message Object
-	 * {@link com.sap.core.odata.api.exception.MessageReference} . The message
-	 * text key is derived out of parameters clazz.messageReferenceKey.
-	 * 
-	 * @param clazz
-	 *            is name of the class extending
-	 *            {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPAException}
-	 * @param messageReferenceKey
-	 *            is the key of the message
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.exception.MessageReference}
-	 */
-	protected static MessageReference createMessageReference(
-			Class<? extends ODataJPAException> clazz, String messageReferenceKey) {
-		return MessageReference.create(clazz, messageReferenceKey);
-	}
-	
-	public MessageReference getMessageReference( ){
-		return messageReference;
-	}
+  private static final long serialVersionUID = -6884673558124441214L;
+  protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
+  protected ODataJPAException(final String localizedMessage, final Throwable e, final MessageReference msgRef) {
+    super(localizedMessage, e);
+    messageReference = msgRef;
+  }
+
+  /**
+   * The method creates a Reference to Message Object
+   * {@link com.sap.core.odata.api.exception.MessageReference} . The message
+   * text key is derived out of parameters clazz.messageReferenceKey.
+   * 
+   * @param clazz
+   *            is name of the class extending
+   *            {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPAException}
+   * @param messageReferenceKey
+   *            is the key of the message
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.exception.MessageReference}
+   */
+  protected static MessageReference createMessageReference(
+      final Class<? extends ODataJPAException> clazz, final String messageReferenceKey) {
+    return MessageReference.create(clazz, messageReferenceKey);
+  }
+
+  public MessageReference getMessageReference() {
+    return messageReference;
+  }
 
 }

@@ -52,189 +52,192 @@ import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
 
 public class ODataJPAFactoryImpl extends ODataJPAFactory {
 
-	public JPQLBuilderFactory getJPQLBuilderFactory() {
-		return JPQLBuilderFactoryImpl.create();
-	};
+  @Override
+  public JPQLBuilderFactory getJPQLBuilderFactory() {
+    return JPQLBuilderFactoryImpl.create();
+  };
 
-	public JPAAccessFactory getJPAAccessFactory() {
-		return JPAAccessFactoryImpl.create();
-	};
+  @Override
+  public JPAAccessFactory getJPAAccessFactory() {
+    return JPAAccessFactoryImpl.create();
+  };
 
-	public ODataJPAAccessFactory getODataJPAAccessFactory() {
-		return ODataJPAAccessFactoryImpl.create();
-	};
+  @Override
+  public ODataJPAAccessFactory getODataJPAAccessFactory() {
+    return ODataJPAAccessFactoryImpl.create();
+  };
 
-	private static class JPQLBuilderFactoryImpl implements JPQLBuilderFactory {
+  private static class JPQLBuilderFactoryImpl implements JPQLBuilderFactory {
 
-		private static JPQLBuilderFactoryImpl factory = null;
+    private static JPQLBuilderFactoryImpl factory = null;
 
-		private JPQLBuilderFactoryImpl() {
-		}
+    private JPQLBuilderFactoryImpl() {}
 
-		@Override
-		public JPQLStatementBuilder getStatementBuilder(JPQLContextView context) {
-			JPQLStatementBuilder builder = null;
-			switch (context.getType()) {
-			case SELECT:
-			case SELECT_COUNT: // for $count, Same as select
-				builder = new JPQLSelectStatementBuilder(context);
-				break;
-			case SELECT_SINGLE:
-				builder = new JPQLSelectSingleStatementBuilder(context);
-				break;
-			case JOIN:
-			case JOIN_COUNT: // for $count, Same as join
-				builder = new JPQLJoinStatementBuilder(context);
-				break;
-			case JOIN_SINGLE:
-				builder = new JPQLJoinSelectSingleStatementBuilder(context);
-			default:
-				break;
-			}
+    @Override
+    public JPQLStatementBuilder getStatementBuilder(final JPQLContextView context) {
+      JPQLStatementBuilder builder = null;
+      switch (context.getType()) {
+      case SELECT:
+      case SELECT_COUNT: // for $count, Same as select
+        builder = new JPQLSelectStatementBuilder(context);
+        break;
+      case SELECT_SINGLE:
+        builder = new JPQLSelectSingleStatementBuilder(context);
+        break;
+      case JOIN:
+      case JOIN_COUNT: // for $count, Same as join
+        builder = new JPQLJoinStatementBuilder(context);
+        break;
+      case JOIN_SINGLE:
+        builder = new JPQLJoinSelectSingleStatementBuilder(context);
+      default:
+        break;
+      }
 
-			return builder;
-		}
+      return builder;
+    }
 
-		@Override
-		public JPQLContextBuilder getContextBuilder(JPQLContextType contextType) {
-			JPQLContextBuilder contextBuilder = null;
+    @Override
+    public JPQLContextBuilder getContextBuilder(final JPQLContextType contextType) {
+      JPQLContextBuilder contextBuilder = null;
 
-			switch (contextType) {
-			case SELECT:
-				JPQLSelectContext selectContext = new JPQLSelectContext(false);
-				contextBuilder = selectContext.new JPQLSelectContextBuilder();
-				break;
-			case SELECT_SINGLE:
-				JPQLSelectSingleContext singleSelectContext = new JPQLSelectSingleContext();
-				contextBuilder = singleSelectContext.new JPQLSelectSingleContextBuilder();
-				break;
-			case JOIN:
-				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(
-						false);
-				contextBuilder = joinContext.new JPQLJoinContextBuilder();
-				break;
-			case JOIN_SINGLE:
-				JPQLJoinSelectSingleContext joinSingleContext = new JPQLJoinSelectSingleContext();
-				contextBuilder = joinSingleContext.new JPQLJoinSelectSingleContextBuilder();
-				break;
-			case SELECT_COUNT:
-				JPQLSelectContext selectCountContext = new JPQLSelectContext(
-						true);
-				contextBuilder = selectCountContext.new JPQLSelectContextBuilder();
-				break;
-			case JOIN_COUNT:
-				JPQLJoinSelectContext joinCountContext = new JPQLJoinSelectContext(
-						true);
-				contextBuilder = joinCountContext.new JPQLJoinContextBuilder();
-			default:
-				break;
-			}
+      switch (contextType) {
+      case SELECT:
+        JPQLSelectContext selectContext = new JPQLSelectContext(false);
+        contextBuilder = selectContext.new JPQLSelectContextBuilder();
+        break;
+      case SELECT_SINGLE:
+        JPQLSelectSingleContext singleSelectContext = new JPQLSelectSingleContext();
+        contextBuilder = singleSelectContext.new JPQLSelectSingleContextBuilder();
+        break;
+      case JOIN:
+        JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(
+            false);
+        contextBuilder = joinContext.new JPQLJoinContextBuilder();
+        break;
+      case JOIN_SINGLE:
+        JPQLJoinSelectSingleContext joinSingleContext = new JPQLJoinSelectSingleContext();
+        contextBuilder = joinSingleContext.new JPQLJoinSelectSingleContextBuilder();
+        break;
+      case SELECT_COUNT:
+        JPQLSelectContext selectCountContext = new JPQLSelectContext(
+            true);
+        contextBuilder = selectCountContext.new JPQLSelectContextBuilder();
+        break;
+      case JOIN_COUNT:
+        JPQLJoinSelectContext joinCountContext = new JPQLJoinSelectContext(
+            true);
+        contextBuilder = joinCountContext.new JPQLJoinContextBuilder();
+      default:
+        break;
+      }
 
-			return contextBuilder;
-		}
+      return contextBuilder;
+    }
 
-		private static JPQLBuilderFactory create() {
-			if (factory == null)
-				return new JPQLBuilderFactoryImpl();
-			else
-				return factory;
-		}
+    private static JPQLBuilderFactory create() {
+      if (factory == null) {
+        return new JPQLBuilderFactoryImpl();
+      } else {
+        return factory;
+      }
+    }
 
-		@Override
-		public JPAMethodContextBuilder getJPAMethodContextBuilder(
-				JPQLContextType contextType) {
+    @Override
+    public JPAMethodContextBuilder getJPAMethodContextBuilder(
+        final JPQLContextType contextType) {
 
-			JPAMethodContextBuilder contextBuilder = null;
-			switch (contextType) {
-			case FUNCTION:
-				JPAFunctionContext methodConext = new JPAFunctionContext();
-				contextBuilder = methodConext.new JPAFunctionContextBuilder();
+      JPAMethodContextBuilder contextBuilder = null;
+      switch (contextType) {
+      case FUNCTION:
+        JPAFunctionContext methodConext = new JPAFunctionContext();
+        contextBuilder = methodConext.new JPAFunctionContextBuilder();
 
-				break;
-			default:
-				break;
-			}
-			return contextBuilder;
-		}
+        break;
+      default:
+        break;
+      }
+      return contextBuilder;
+    }
 
-	}
+  }
 
-	private static class ODataJPAAccessFactoryImpl implements
-			ODataJPAAccessFactory {
+  private static class ODataJPAAccessFactoryImpl implements
+      ODataJPAAccessFactory {
 
-		private static ODataJPAAccessFactoryImpl factory = null;
+    private static ODataJPAAccessFactoryImpl factory = null;
 
-		private ODataJPAAccessFactoryImpl() {
-		}
+    private ODataJPAAccessFactoryImpl() {}
 
-		@Override
-		public ODataSingleProcessor createODataProcessor(
-				ODataJPAContext oDataJPAContext) {
-			return new ODataJPAProcessorDefault(oDataJPAContext);
-		}
+    @Override
+    public ODataSingleProcessor createODataProcessor(
+        final ODataJPAContext oDataJPAContext) {
+      return new ODataJPAProcessorDefault(oDataJPAContext);
+    }
 
-		@Override
-		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) {
-			return new ODataJPAEdmProvider(oDataJPAContext);
-		}
+    @Override
+    public EdmProvider createJPAEdmProvider(final ODataJPAContext oDataJPAContext) {
+      return new ODataJPAEdmProvider(oDataJPAContext);
+    }
 
-		@Override
-		public ODataJPAContext createODataJPAContext() {
-			return new ODataJPAContextImpl();
-		}
+    @Override
+    public ODataJPAContext createODataJPAContext() {
+      return new ODataJPAContextImpl();
+    }
 
-		private static ODataJPAAccessFactoryImpl create() {
-			if (factory == null)
-				return new ODataJPAAccessFactoryImpl();
-			else
-				return factory;
-		}
+    private static ODataJPAAccessFactoryImpl create() {
+      if (factory == null) {
+        return new ODataJPAAccessFactoryImpl();
+      } else {
+        return factory;
+      }
+    }
 
-		@Override
-		public ODataJPAMessageService getODataJPAMessageService(Locale locale) {
-			return ODataJPAMessageServiceDefault.getInstance(locale);
-		}
+    @Override
+    public ODataJPAMessageService getODataJPAMessageService(final Locale locale) {
+      return ODataJPAMessageServiceDefault.getInstance(locale);
+    }
 
-	}
+  }
 
-	private static class JPAAccessFactoryImpl implements JPAAccessFactory {
+  private static class JPAAccessFactoryImpl implements JPAAccessFactory {
 
-		private static JPAAccessFactoryImpl factory = null;
+    private static JPAAccessFactoryImpl factory = null;
 
-		private JPAAccessFactoryImpl() {
-		}
+    private JPAAccessFactoryImpl() {}
 
-		@Override
-		public JPAEdmModelView getJPAEdmModelView(
-				ODataJPAContext oDataJPAContext) {
-			JPAEdmModelView view = null;
+    @Override
+    public JPAEdmModelView getJPAEdmModelView(
+        final ODataJPAContext oDataJPAContext) {
+      JPAEdmModelView view = null;
 
-			view = new JPAEdmModel(oDataJPAContext);
-			return view;
-		}
+      view = new JPAEdmModel(oDataJPAContext);
+      return view;
+    }
 
-		@Override
-		public JPAProcessor getJPAProcessor(ODataJPAContext oDataJPAContext) {
-			JPAProcessor jpaProcessor = new JPAProcessorImpl(oDataJPAContext);
+    @Override
+    public JPAProcessor getJPAProcessor(final ODataJPAContext oDataJPAContext) {
+      JPAProcessor jpaProcessor = new JPAProcessorImpl(oDataJPAContext);
 
-			return jpaProcessor;
-		}
+      return jpaProcessor;
+    }
 
-		private static JPAAccessFactoryImpl create() {
-			if (factory == null)
-				return new JPAAccessFactoryImpl();
-			else
-				return factory;
-		}
+    private static JPAAccessFactoryImpl create() {
+      if (factory == null) {
+        return new JPAAccessFactoryImpl();
+      } else {
+        return factory;
+      }
+    }
 
-		@Override
-		public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess(
-				ODataJPAContext oDataJPAContext) {
-			JPAEdmMappingModelAccess mappingModelAccess = new JPAEdmMappingModelService(
-					oDataJPAContext);
+    @Override
+    public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess(
+        final ODataJPAContext oDataJPAContext) {
+      JPAEdmMappingModelAccess mappingModelAccess = new JPAEdmMappingModelService(
+          oDataJPAContext);
 
-			return mappingModelAccess;
-		}
+      return mappingModelAccess;
+    }
 
-	}
+  }
 }

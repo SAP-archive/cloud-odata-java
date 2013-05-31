@@ -56,113 +56,113 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class JPAEmbeddableTypeMapType {
 
-    @XmlElement(name = "EDMComplexType")
-    protected String edmComplexType;
-    @XmlElement(name = "JPAAttributes", required = true)
-    protected JPAAttributeMapType jpaAttributes;
-    @XmlAttribute(name = "name", required = true)
-    protected String name;
-    @XmlAttribute(name = "exclude")
-    protected Boolean exclude;
+  @XmlElement(name = "EDMComplexType")
+  protected String edmComplexType;
+  @XmlElement(name = "JPAAttributes", required = true)
+  protected JPAAttributeMapType jpaAttributes;
+  @XmlAttribute(name = "name", required = true)
+  protected String name;
+  @XmlAttribute(name = "exclude")
+  protected Boolean exclude;
 
-    /**
-     * Gets the value of the edmComplexType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEDMComplexType() {
-        return edmComplexType;
-    }
+  /**
+   * Gets the value of the edmComplexType property.
+   * 
+   * @return
+   *     possible object is
+   *     {@link String }
+   *     
+   */
+  public String getEDMComplexType() {
+    return edmComplexType;
+  }
 
-    /**
-     * Sets the value of the edmComplexType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEDMComplexType(String value) {
-        this.edmComplexType = value;
-    }
+  /**
+   * Sets the value of the edmComplexType property.
+   * 
+   * @param value
+   *     allowed object is
+   *     {@link String }
+   *     
+   */
+  public void setEDMComplexType(final String value) {
+    edmComplexType = value;
+  }
 
-    /**
-     * Gets the value of the jpaAttributes property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JPAAttributeMapType }
-     *     
-     */
-    public JPAAttributeMapType getJPAAttributes() {
-        return jpaAttributes;
-    }
+  /**
+   * Gets the value of the jpaAttributes property.
+   * 
+   * @return
+   *     possible object is
+   *     {@link JPAAttributeMapType }
+   *     
+   */
+  public JPAAttributeMapType getJPAAttributes() {
+    return jpaAttributes;
+  }
 
-    /**
-     * Sets the value of the jpaAttributes property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link JPAAttributeMapType }
-     *     
-     */
-    public void setJPAAttributes(JPAAttributeMapType value) {
-        this.jpaAttributes = value;
-    }
+  /**
+   * Sets the value of the jpaAttributes property.
+   * 
+   * @param value
+   *     allowed object is
+   *     {@link JPAAttributeMapType }
+   *     
+   */
+  public void setJPAAttributes(final JPAAttributeMapType value) {
+    jpaAttributes = value;
+  }
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * Gets the value of the name property.
+   * 
+   * @return
+   *     possible object is
+   *     {@link String }
+   *     
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+  /**
+   * Sets the value of the name property.
+   * 
+   * @param value
+   *     allowed object is
+   *     {@link String }
+   *     
+   */
+  public void setName(final String value) {
+    name = value;
+  }
 
-    /**
-     * Gets the value of the exclude property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isExclude() {
-        if (exclude == null) {
-            return false;
-        } else {
-            return exclude;
-        }
+  /**
+   * Gets the value of the exclude property.
+   * 
+   * @return
+   *     possible object is
+   *     {@link Boolean }
+   *     
+   */
+  public boolean isExclude() {
+    if (exclude == null) {
+      return false;
+    } else {
+      return exclude;
     }
+  }
 
-    /**
-     * Sets the value of the exclude property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setExclude(Boolean value) {
-        this.exclude = value;
-    }
+  /**
+   * Sets the value of the exclude property.
+   * 
+   * @param value
+   *     allowed object is
+   *     {@link Boolean }
+   *     
+   */
+  public void setExclude(final Boolean value) {
+    exclude = value;
+  }
 
 }

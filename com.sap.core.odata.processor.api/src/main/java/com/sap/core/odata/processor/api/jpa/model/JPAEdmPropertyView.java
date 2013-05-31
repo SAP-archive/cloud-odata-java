@@ -47,60 +47,60 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
  * 
  */
 public interface JPAEdmPropertyView extends JPAEdmBaseView {
-	/**
-	 * The method returns a simple EDM property.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.SimpleProperty}
-	 */
-	SimpleProperty getEdmSimpleProperty();
+  /**
+   * The method returns a simple EDM property.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.SimpleProperty}
+   */
+  SimpleProperty getEdmSimpleProperty();
 
-	/**
-	 * The method returns a JPA EDM key view.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView}
-	 */
-	JPAEdmKeyView getJPAEdmKeyView();
+  /**
+   * The method returns a JPA EDM key view.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView}
+   */
+  JPAEdmKeyView getJPAEdmKeyView();
 
-	/**
-	 * The method returns a list of Properties for the given Entity Type.
-	 * 
-	 * @return a list of {@link com.sap.core.odata.api.edm.provider.Property}
-	 */
-	List<Property> getEdmPropertyList();
+  /**
+   * The method returns a list of Properties for the given Entity Type.
+   * 
+   * @return a list of {@link com.sap.core.odata.api.edm.provider.Property}
+   */
+  List<Property> getEdmPropertyList();
 
-	/**
-	 * The method returns a JPA Attribute for the given JPA entity type.
-	 * 
-	 * @return an instance of type {@link javax.persistence.metamodel.Attribute
-	 *         <?, ?>}
-	 */
-	Attribute<?, ?> getJPAAttribute();
+  /**
+   * The method returns a JPA Attribute for the given JPA entity type.
+   * 
+   * @return an instance of type {@link javax.persistence.metamodel.Attribute
+   *         <?, ?>}
+   */
+  Attribute<?, ?> getJPAAttribute();
 
-	/**
-	 * The method returns a JPA EDM navigation property view.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView}
-	 */
-	JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView();
+  /**
+   * The method returns a JPA EDM navigation property view.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView}
+   */
+  JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView();
 
-	/**
-	 * The method returns a JPA EDM Entity Type view that holds the property
-	 * view.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView}
-	 */
-	JPAEdmEntityTypeView getJPAEdmEntityTypeView();
-	
-	/**
-	 * The method returns a JPA EDM Complex Type view that holds the property
-	 * view.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
-	 */
-	JPAEdmComplexTypeView getJPAEdmComplexTypeView();
+  /**
+   * The method returns a JPA EDM Entity Type view that holds the property
+   * view.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView}
+   */
+  JPAEdmEntityTypeView getJPAEdmEntityTypeView();
+
+  /**
+   * The method returns a JPA EDM Complex Type view that holds the property
+   * view.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
+   */
+  JPAEdmComplexTypeView getJPAEdmComplexTypeView();
 }

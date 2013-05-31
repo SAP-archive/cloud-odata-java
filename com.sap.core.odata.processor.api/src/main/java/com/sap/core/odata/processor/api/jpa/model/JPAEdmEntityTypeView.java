@@ -37,39 +37,39 @@ import com.sap.core.odata.api.edm.provider.EntityType;
  * 
  */
 public interface JPAEdmEntityTypeView extends JPAEdmBaseView {
-	/**
-	 * The method returns an EDM entity currently being processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.EntityType}
-	 */
-	public EntityType getEdmEntityType();
+  /**
+   * The method returns an EDM entity currently being processed.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.EntityType}
+   */
+  public EntityType getEdmEntityType();
 
-	/**
-	 * The method returns java persistence Entity type currently being
-	 * processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link javax.persistence.metamodel.EntityType}
-	 */
-	public javax.persistence.metamodel.EntityType<?> getJPAEntityType();
+  /**
+   * The method returns java persistence Entity type currently being
+   * processed.
+   * 
+   * @return an instance of type
+   *         {@link javax.persistence.metamodel.EntityType}
+   */
+  public javax.persistence.metamodel.EntityType<?> getJPAEntityType();
 
-	/**
-	 * The method returns a consistent list of EDM entity types for a given java
-	 * persistence meta model.
-	 * 
-	 * @return a list of {@link com.sap.core.odata.api.edm.provider.EntityType}
-	 */
-	public List<EntityType> getConsistentEdmEntityTypes();
+  /**
+   * The method returns a consistent list of EDM entity types for a given java
+   * persistence meta model.
+   * 
+   * @return a list of {@link com.sap.core.odata.api.edm.provider.EntityType}
+   */
+  public List<EntityType> getConsistentEdmEntityTypes();
 
-	/**
-	 * The method searches in the consistent list of EDM entity types for the
-	 * given EDM entity type's name.
-	 * 
-	 * @param jpaEntityTypeName
-	 *            is the name of EDM entity type
-	 * @return a reference to EDM entity type if found else null
-	 */
-	public EntityType searchEdmEntityType(String jpaEntityTypeName);
+  /**
+   * The method searches in the consistent list of EDM entity types for the
+   * given EDM entity type's name.
+   * 
+   * @param jpaEntityTypeName
+   *            is the name of EDM entity type
+   * @return a reference to EDM entity type if found else null
+   */
+  public EntityType searchEdmEntityType(String jpaEntityTypeName);
 
 }
