@@ -11,9 +11,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 
 import com.sap.core.odata.api.commons.ODataHttpMethod;
+import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.core.ODataContextImpl;
+import com.sap.core.odata.core.ODataExceptionWrapper;
 import com.sap.core.odata.core.ODataRequestHandler;
 import com.sap.core.odata.core.ODataRequestImpl;
 
@@ -76,12 +79,22 @@ public final class ODataSubLocator implements ODataLocator {
       } else if (HttpMethod.OPTIONS.equals(xHttpMethod)) {
         response = handleOptions();
       } else {
-        // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
-        // 501 (Not Implemented) if the method is unrecognized [...] by the origin server."
-        throw new ODataNotImplementedException(ODataNotImplementedException.TUNNELING);
+        response = returnNotImplementedResponse(ODataNotImplementedException.TUNNELING);
       }
     }
     return response;
+  }
+
+  private Response returnNotImplementedResponse(final MessageReference messageReference) {
+    // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
+    // 501 (Not Implemented) if the method is unrecognized [...] by the origin server."
+    ODataContextImpl context = new ODataContextImpl();
+    context.setRequest(request);
+    context.setAcceptableLanguages(request.getAcceptableLanguages());
+    context.setPathInfo(request.getPathInfo());
+    ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(context, request.getQueryParameters(), request.getAcceptHeaders());
+    ODataResponse response = exceptionWrapper.wrapInExceptionResponse(new ODataNotImplementedException(messageReference));
+    return RestUtil.convertResponse(response);
   }
 
   @OPTIONS
@@ -89,7 +102,7 @@ public final class ODataSubLocator implements ODataLocator {
     // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
     // 501 (Not Implemented) if the method is unrecognized or not implemented
     // by the origin server."
-    throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
+    return returnNotImplementedResponse(ODataNotImplementedException.COMMON);
   }
 
   @HEAD
@@ -97,7 +110,7 @@ public final class ODataSubLocator implements ODataLocator {
     // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
     // 501 (Not Implemented) if the method is unrecognized or not implemented
     // by the origin server."
-    throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
+    return returnNotImplementedResponse(ODataNotImplementedException.COMMON);
   }
 
   private Response handle(final ODataHttpMethod method) throws ODataException {
@@ -123,7 +136,5 @@ public final class ODataSubLocator implements ODataLocator {
     request.setAcceptHeaders(RestUtil.extractAcceptHeaders(param));
     request.setContentType(RestUtil.extractRequestContentType(param));
     request.setAcceptableLanguages(param.getHttpHeaders().getAcceptableLanguages());
-
   }
-
 }

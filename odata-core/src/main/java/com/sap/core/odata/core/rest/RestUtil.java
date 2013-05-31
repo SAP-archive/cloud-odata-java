@@ -43,11 +43,6 @@ public class RestUtil {
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
     }
 
-    final String eTag = odataResponse.getETag();
-    if (eTag != null) {
-      responseBuilder.header(HttpHeaders.ETAG, eTag);
-    }
-
     return responseBuilder.build();
   }
 

@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataRequest;
@@ -21,11 +22,12 @@ public class ODataContextImpl implements ODataContext {
   private static final String ODATA_REQUEST = "~odataRequest";
   private static final String DEBUG_MODE = "~debugMode";
   private static final String SERVICE = "~service";
+  private static final String SERVICE_FACTORY = "~serviceFactory";
   private static final String PATH_INFO = "~pathInfo";
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
   private static final String HTTP_METHOD = "~httpMethod";
 
-  private final Map<String, Object> parameterTable = new HashMap<String, Object>();
+  private Map<String, Object> parameterTable = new HashMap<String, Object>();
 
   private List<Locale> acceptableLanguages;
 
@@ -46,10 +48,7 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public boolean isInDebugMode() {
-    if (getParameter(DEBUG_MODE) != null) {
-      return (Boolean) getParameter(DEBUG_MODE);
-    }
-    return false;
+    return getParameter(DEBUG_MODE) != null && (Boolean) getParameter(DEBUG_MODE);
   }
 
   @Override
@@ -75,6 +74,15 @@ public class ODataContextImpl implements ODataContext {
     return (PathInfo) getParameter(PATH_INFO);
   }
 
+  public void setServiceFactory(final ODataServiceFactory serviceFactory) {
+    setParameter(SERVICE_FACTORY, serviceFactory);
+  }
+
+  @Override
+  public ODataServiceFactory getServiceFactory() {
+    return (ODataServiceFactory) getParameter(SERVICE_FACTORY);
+  }
+
   @Override
   public int startRuntimeMeasurement(final String className, final String methodName) {
     if (isInDebugMode()) {
@@ -83,8 +91,7 @@ public class ODataContextImpl implements ODataContext {
       measurement.setClassName(className);
       measurement.setMethodName(methodName);
 
-      @SuppressWarnings("unchecked")
-      List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
       if (runtimeMeasurements == null) {
         runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
         setParameter(RUNTIME_MEASUREMENTS, runtimeMeasurements);
@@ -92,18 +99,16 @@ public class ODataContextImpl implements ODataContext {
       runtimeMeasurements.add(measurement);
 
       return runtimeMeasurements.size() - 1;
+    } else {
+      return 0;
     }
-
-    return 0;
   }
 
   @Override
   public void stopRuntimeMeasurement(final int handle) {
     if (isInDebugMode()) {
-      @SuppressWarnings("unchecked")
-      final List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
-
-      if ((runtimeMeasurements != null) && (handle >= 0) && (handle < runtimeMeasurements.size())) {
+      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
+      if (runtimeMeasurements != null && handle >= 0 && handle < runtimeMeasurements.size()) {
         runtimeMeasurements.get(handle).setTimeStopped(System.nanoTime());
       }
     }
@@ -116,29 +121,14 @@ public class ODataContextImpl implements ODataContext {
   }
 
   protected class RuntimeMeasurementImpl implements RuntimeMeasurement {
-    private long timeStarted;
-    private long timeStopped;
     private String className;
     private String methodName;
+    private long timeStarted;
+    private long timeStopped;
 
     @Override
-    public long getTimeStarted() {
-      return timeStarted;
-    }
-
-    @Override
-    public void setTimeStarted(final long time_start) {
-      timeStarted = time_start;
-    }
-
-    @Override
-    public long getTimeStopped() {
-      return timeStopped;
-    }
-
-    @Override
-    public void setTimeStopped(final long time_stop) {
-      timeStopped = time_stop;
+    public void setClassName(final String className) {
+      this.className = className;
     }
 
     @Override
@@ -147,8 +137,8 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setClassName(final String className) {
-      this.className = className;
+    public void setMethodName(final String methodName) {
+      this.methodName = methodName;
     }
 
     @Override
@@ -157,8 +147,23 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setMethodName(final String methodName) {
-      this.methodName = methodName;
+    public void setTimeStarted(final long start) {
+      timeStarted = start;
+    }
+
+    @Override
+    public long getTimeStarted() {
+      return timeStarted;
+    }
+
+    @Override
+    public void setTimeStopped(final long stop) {
+      timeStopped = stop;
+    }
+
+    @Override
+    public long getTimeStopped() {
+      return timeStopped;
     }
 
     @Override
