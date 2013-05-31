@@ -330,7 +330,7 @@ public class JPACreateRequestTest {
 		EntryMetadataImpl entryMetadata = new EntryMetadataImpl();
 		entryMetadata.setId("http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/SalesOrders(5L)");
 		ExpandSelectTreeNodeImpl  expandSelectTree = new ExpandSelectTreeNodeImpl();
-		expandSelectTree.putLinkNode("SalesOrderLineItemDetails", new ExpandSelectTreeNodeImpl());
+		expandSelectTree.putLink("SalesOrderLineItemDetails", new ExpandSelectTreeNodeImpl());
 		expandSelectTree.setExpanded();
 		expandSelectTree.setAllExplicitly();
 		data1.put("id", 1);
