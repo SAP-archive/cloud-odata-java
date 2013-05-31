@@ -23,16 +23,14 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * The default name for EDM entity type is derived from JPA entity type name.
- * This can be overriden using JPAEntityTypeMapType.
+ * 				The default name for EDM
+ * 				entity type is derived from JPA entity type name. This can be
+ * 				overriden using JPAEntityTypeMapType.
+ * 			
  * 
+ * <p>Java class for JPAEntityTypeMapType complex type.
  * 
- * <p>
- * Java class for JPAEntityTypeMapType complex type.
- * 
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="JPAEntityTypeMapType">
@@ -45,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="JPARelationships" type="{http://www.sap.com/core/odata/processor/api/jpa/model/mapping}JPARelationshipMapType"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="exclude" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -53,124 +52,173 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "JPAEntityTypeMapType", propOrder = { "edmEntityType",
-		"edmEntitySet", "jpaAttributes", "jpaRelationships" })
+@XmlType(name = "JPAEntityTypeMapType", propOrder = {
+    "edmEntityType",
+    "edmEntitySet",
+    "jpaAttributes",
+    "jpaRelationships"
+})
 public class JPAEntityTypeMapType {
 
-	@XmlElement(name = "EDMEntityType")
-	protected String edmEntityType;
-	@XmlElement(name = "EDMEntitySet")
-	protected String edmEntitySet;
-	@XmlElement(name = "JPAAttributes", required = true)
-	protected JPAAttributeMapType jpaAttributes;
-	@XmlElement(name = "JPARelationships", required = true)
-	protected JPARelationshipMapType jpaRelationships;
-	@XmlAttribute(name = "name", required = true)
-	protected String name;
+    @XmlElement(name = "EDMEntityType")
+    protected String edmEntityType;
+    @XmlElement(name = "EDMEntitySet")
+    protected String edmEntitySet;
+    @XmlElement(name = "JPAAttributes", required = true)
+    protected JPAAttributeMapType jpaAttributes;
+    @XmlElement(name = "JPARelationships", required = true)
+    protected JPARelationshipMapType jpaRelationships;
+    @XmlAttribute(name = "name", required = true)
+    protected String name;
+    @XmlAttribute(name = "exclude")
+    protected Boolean exclude;
 
-	/**
-	 * Gets the value of the edmEntityType property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEDMEntityType() {
-		return edmEntityType;
-	}
+    /**
+     * Gets the value of the edmEntityType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getEDMEntityType() {
+        return edmEntityType;
+    }
 
-	/**
-	 * Sets the value of the edmEntityType property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setEDMEntityType(String value) {
-		this.edmEntityType = value;
-	}
+    /**
+     * Sets the value of the edmEntityType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setEDMEntityType(String value) {
+        this.edmEntityType = value;
+    }
 
-	/**
-	 * Gets the value of the edmEntitySet property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEDMEntitySet() {
-		return edmEntitySet;
-	}
+    /**
+     * Gets the value of the edmEntitySet property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getEDMEntitySet() {
+        return edmEntitySet;
+    }
 
-	/**
-	 * Sets the value of the edmEntitySet property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setEDMEntitySet(String value) {
-		this.edmEntitySet = value;
-	}
+    /**
+     * Sets the value of the edmEntitySet property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setEDMEntitySet(String value) {
+        this.edmEntitySet = value;
+    }
 
-	/**
-	 * Gets the value of the jpaAttributes property.
-	 * 
-	 * @return possible object is {@link JPAAttributeMapType }
-	 * 
-	 */
-	public JPAAttributeMapType getJPAAttributes() {
-		return jpaAttributes;
-	}
+    /**
+     * Gets the value of the jpaAttributes property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link JPAAttributeMapType }
+     *     
+     */
+    public JPAAttributeMapType getJPAAttributes() {
+        return jpaAttributes;
+    }
 
-	/**
-	 * Sets the value of the jpaAttributes property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link JPAAttributeMapType }
-	 * 
-	 */
-	public void setJPAAttributes(JPAAttributeMapType value) {
-		this.jpaAttributes = value;
-	}
+    /**
+     * Sets the value of the jpaAttributes property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link JPAAttributeMapType }
+     *     
+     */
+    public void setJPAAttributes(JPAAttributeMapType value) {
+        this.jpaAttributes = value;
+    }
 
-	/**
-	 * Gets the value of the jpaRelationships property.
-	 * 
-	 * @return possible object is {@link JPARelationshipMapType }
-	 * 
-	 */
-	public JPARelationshipMapType getJPARelationships() {
-		return jpaRelationships;
-	}
+    /**
+     * Gets the value of the jpaRelationships property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link JPARelationshipMapType }
+     *     
+     */
+    public JPARelationshipMapType getJPARelationships() {
+        return jpaRelationships;
+    }
 
-	/**
-	 * Sets the value of the jpaRelationships property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link JPARelationshipMapType }
-	 * 
-	 */
-	public void setJPARelationships(JPARelationshipMapType value) {
-		this.jpaRelationships = value;
-	}
+    /**
+     * Sets the value of the jpaRelationships property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link JPARelationshipMapType }
+     *     
+     */
+    public void setJPARelationships(JPARelationshipMapType value) {
+        this.jpaRelationships = value;
+    }
 
-	/**
-	 * Gets the value of the name property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Sets the value of the name property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setName(String value) {
-		this.name = value;
-	}
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the exclude property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public boolean isExclude() {
+        if (exclude == null) {
+            return false;
+        } else {
+            return exclude;
+        }
+    }
+
+    /**
+     * Sets the value of the exclude property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setExclude(Boolean value) {
+        this.exclude = value;
+    }
 
 }

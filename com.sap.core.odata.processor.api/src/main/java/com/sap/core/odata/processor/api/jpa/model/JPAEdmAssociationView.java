@@ -73,7 +73,7 @@ public interface JPAEdmAssociationView extends JPAEdmBaseView {
 	 *            of type
 	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}
 	 */
-	public void addJPAEdmAssociationView(JPAEdmAssociationView associationView);
+	public void addJPAEdmAssociationView(JPAEdmAssociationView associationView, JPAEdmAssociationEndView associationEndView);
 
 	/**
 	 * The method searches for an Association in its container against the
@@ -112,4 +112,22 @@ public interface JPAEdmAssociationView extends JPAEdmBaseView {
 	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView}
 	 */
 	public JPAEdmReferentialConstraintView getJPAEdmReferentialConstraintView();
+
+	/**
+	 * The method searches for the number of associations with similar endpoints in its container against the
+	 * search parameter <b>view</b> of type
+	 * {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}.
+	 * 
+	 * The Association in the container <b>view</b> is searched against the
+	 * consistent list of Association stored in this container.
+	 * 
+	 * @param view
+	 *            of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}
+	 * @return {@link com.sap.core.odata.api.edm.provider.Association} if found
+	 *         in the container
+	 */
+	int getNumberOfAssociationsWithSimilarEndPoints(JPAEdmAssociationEndView view);
+	
+	
 }

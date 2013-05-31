@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
@@ -96,6 +97,11 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 			for (javax.persistence.metamodel.EntityType<?> jpaEntityType : jpaEntityTypes) {
 				currentEdmEntityType = new EntityType();
 				currentJPAEntityType = jpaEntityType;
+				
+				// Check for need to Exclude
+				if(isExcluded(JPAEdmEntityType.this))
+					continue;
+				
 				JPAEdmNameBuilder.build(JPAEdmEntityType.this);
 
 				JPAEdmPropertyView propertyView = new JPAEdmProperty(schemaView);
@@ -123,6 +129,17 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 						currentEdmEntityType);
 			}
 
+		}
+
+		private boolean isExcluded(JPAEdmEntityType jpaEdmEntityType) {
+			JPAEdmMappingModelAccess mappingModelAccess = jpaEdmEntityType
+					.getJPAEdmMappingModelAccess();
+			if (mappingModelAccess != null
+					&& mappingModelAccess.isMappingModelExists()
+					&& mappingModelAccess.checkExclusionOfJPAEntityType(jpaEdmEntityType.getJPAEntityType().getName())){
+				return true;
+			}
+			return false;
 		}
 
 	}

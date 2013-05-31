@@ -142,7 +142,7 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 
 	// The inner class which gives us an replica of the jpa attribute
 	@SuppressWarnings("hiding")
-	private class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
+	public class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
 
 		@SuppressWarnings("unchecked")
 		@Override

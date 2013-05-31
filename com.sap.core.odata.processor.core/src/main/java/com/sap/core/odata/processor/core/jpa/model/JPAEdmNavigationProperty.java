@@ -34,12 +34,14 @@ public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 	private NavigationProperty currentNavigationProperty = null;
 	private JPAEdmPropertyView propertyView = null;
 	private List<NavigationProperty> consistentNavigationProperties = null;
+	private int count;
 
 	public JPAEdmNavigationProperty(JPAEdmAssociationView associationView,
-			JPAEdmPropertyView propertyView) {
+			JPAEdmPropertyView propertyView,int countNumber) {
 		super(associationView);
 		this.associationView = associationView;
 		this.propertyView = propertyView;
+		count = countNumber;
 		if(consistentNavigationProperties == null)
 		{
 			consistentNavigationProperties = new ArrayList<NavigationProperty>();
@@ -67,7 +69,7 @@ public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 
 			currentNavigationProperty = new NavigationProperty();
 			JPAEdmNameBuilder.build(associationView, propertyView,
-					JPAEdmNavigationProperty.this);
+					JPAEdmNavigationProperty.this,count);
 			consistentNavigationProperties.add(currentNavigationProperty);
 		}
 
