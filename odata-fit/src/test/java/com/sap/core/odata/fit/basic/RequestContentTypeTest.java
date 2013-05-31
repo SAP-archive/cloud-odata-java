@@ -137,7 +137,7 @@ public class RequestContentTypeTest extends AbstractBasicTest {
     final HttpResponse response = getHttpClient().execute(post);
     assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatusLine().getStatusCode());
   }
-  
+
   @Test
   public void contentTypeAndSubtypeIllegal() throws Exception {
     HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "Rooms"));

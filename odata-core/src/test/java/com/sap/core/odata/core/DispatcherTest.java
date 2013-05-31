@@ -410,22 +410,22 @@ public class DispatcherTest extends BaseTest {
 
   @Test
   public void contentNegotiationDefaultCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", true);
   }
 
   @Test
   public void contentNegotiationSupportedCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", true);
   }
 
   @SuppressWarnings("unchecked")

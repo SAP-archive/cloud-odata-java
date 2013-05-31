@@ -183,7 +183,7 @@ public class BasicHttpTest extends AbstractBasicTest {
   public void unknownMethod() throws Exception {
     HttpSomethingUnsupported request = new HttpSomethingUnsupported(getEndpoint() + "aaa/bbb/ccc");
     final HttpResponse response = getHttpClient().execute(request);
-    assertEquals(HttpStatusCodes.NOT_IMPLEMENTED.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -244,6 +244,6 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void tunneledUnknownMethodOverride() throws Exception {
-    tunnelPost("X-HTTP-Method-Override", "xxx", HttpStatusCodes.NOT_IMPLEMENTED);
+    tunnelPost("X-HTTP-Method-Override", "xxx", HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 }

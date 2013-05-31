@@ -602,7 +602,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Manager\"]", xmlString);
     assertXpathExists("/a:entry/a:link[@rel='" + rel + "']", xmlString);
-    assertXpathExists("/a:entry/a:link[@type='application/atom+xml; type=entry']", xmlString);
+    assertXpathExists("/a:entry/a:link[@type='application/atom+xml;type=entry']", xmlString);
     assertXpathExists("/a:entry/a:link[@title='ne_Manager']", xmlString);
   }
 

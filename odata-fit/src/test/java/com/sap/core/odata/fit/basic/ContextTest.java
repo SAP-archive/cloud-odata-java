@@ -67,7 +67,7 @@ public class ContextTest extends AbstractBasicTest {
     assertNotNull(ctx);
     assertEquals(getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
-  
+
   @Test
   public void checkServiceFactoryIsSet() throws ClientProtocolException, IOException, ODataException {
     executeGetRequest("");
@@ -76,7 +76,7 @@ public class ContextTest extends AbstractBasicTest {
     assertNotNull(ctx);
     assertNotNull(ctx.getServiceFactory());
   }
-  
+
   @Test
   public void checkServiceIsSet() throws ClientProtocolException, IOException, ODataException {
     executeGetRequest("");

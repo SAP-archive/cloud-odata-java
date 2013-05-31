@@ -517,7 +517,7 @@ public class ContentType {
     for (String key : parameters.keySet()) {
       if (isParameterAllowed(key)) {
         String value = parameters.get(key);
-        sb.append("; ").append(key).append("=").append(value);
+        sb.append(";").append(key).append("=").append(value);
       }
     }
     return sb.toString();

@@ -119,7 +119,10 @@ public class RestUtil {
 
     for (final String key : headers.keySet()) {
       final String value = httpHeaders.getHeaderString(key);
-      headerMap.put(key, value);
+
+      if (value != null && !"".equals(value)) {
+        headerMap.put(key, value);
+      }
     }
     return headerMap;
   }

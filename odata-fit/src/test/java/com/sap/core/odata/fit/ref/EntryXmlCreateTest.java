@@ -25,7 +25,7 @@ public class EntryXmlCreateTest extends AbstractRefXmlTest {
     assertNotNull(content);
 
     HttpResponse response = postUri("Rooms", content, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
 
     assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     checkEtag(response, "W/\"2\"");

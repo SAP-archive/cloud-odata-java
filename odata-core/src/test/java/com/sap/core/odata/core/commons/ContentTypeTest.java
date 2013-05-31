@@ -82,7 +82,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
-    assertEquals("application/atom+xml; charset=utf-8; type=entry", mt.toString());
+    assertEquals("application/atom+xml;charset=utf-8;type=entry", mt.toString());
     assertEquals(ODataFormat.ATOM, mt.getODataFormat());
     assertEquals(2, mt.getParameters().size());
     assertEquals("entry", mt.getParameters().get("type"));
@@ -108,7 +108,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml; charset=utf-8", mt.toString());
+    assertEquals("application/xml;charset=utf-8", mt.toString());
     assertEquals(ODataFormat.XML, mt.getODataFormat());
     assertEquals(1, mt.getParameters().size());
     assertEquals(ContentType.create(ContentType.APPLICATION_XML, "charset", "utf-8"), mt);
@@ -120,7 +120,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
     assertEquals(1, mt.getParameters().size());
     assertEquals(ContentType.create(ContentType.APPLICATION_JSON, "charset", "utf-8"), mt);
@@ -298,7 +298,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType third = types.get(2);
     assertEquals("application", third.getType());
     assertEquals("json", third.getSubtype());
-    assertEquals("application/json; key=value", third.toString());
+    assertEquals("application/json;key=value", third.toString());
     assertEquals("value", third.getParameters().get("key"));
     assertEquals(ODataFormat.JSON, third.getODataFormat());
   }
@@ -318,7 +318,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -331,7 +331,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml; charset=iso-8859-1", mt.toString());
+    assertEquals("application/xml;charset=iso-8859-1", mt.toString());
     assertEquals("iso-8859-1", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.XML, mt.getODataFormat());
   }
@@ -344,7 +344,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -357,7 +357,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -370,7 +370,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("subtype", mt.getSubtype());
     assertEquals(1, mt.getParameters().size());
     assertEquals("value", mt.getParameters().get("key"));
-    assertEquals("type/subtype; key=value", mt.toString());
+    assertEquals("type/subtype;key=value", mt.toString());
   }
 
   //  private Map<String, String> addParameter(String key, String value) {
@@ -397,7 +397,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(2, mt.getParameters().size());
     assertEquals("value1", mt.getParameters().get("key1"));
     assertEquals("value2", mt.getParameters().get("key2"));
-    assertEquals("type/subtype; key1=value1; key2=value2", mt.toString());
+    assertEquals("type/subtype;key1=value1;key2=value2", mt.toString());
   }
 
   @Test

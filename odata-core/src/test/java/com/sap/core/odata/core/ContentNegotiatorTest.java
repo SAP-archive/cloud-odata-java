@@ -97,7 +97,7 @@ public class ContentNegotiatorTest {
   @Test(expected = ODataNotAcceptableException.class)
   public void contentNegotiationCharsetNotSupported() throws Exception {
     negotiateContentType(
-        contentTypes("text/plain; charset=iso-8859-1"),
+        contentTypes("text/plain;charset=iso-8859-1"),
         contentTypes("sup/111", "sup/222"),
         "sup/222");
   }
@@ -105,29 +105,29 @@ public class ContentNegotiatorTest {
   @Test
   public void contentNegotiationWithODataVerbose() throws Exception {
     negotiateContentType(
-        contentTypes("text/plain; q=0.5", "application/json;odata=verbose;q=0.2", "*/*"),
-        contentTypes("application/json; charset=utf-8", "sup/222"),
-        "application/json; charset=utf-8");
+        contentTypes("text/plain;q=0.5", "application/json;odata=verbose;q=0.2", "*/*"),
+        contentTypes("application/json;charset=utf-8", "sup/222"),
+        "application/json;charset=utf-8");
   }
 
   @Test
   public void contentNegotiationDefaultCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", true);
   }
 
   @Test
   public void contentNegotiationSupportedCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml;charset=utf-8", true);
   }
 
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)

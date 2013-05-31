@@ -41,7 +41,7 @@ public class BatchRequestParserTest {
             ODataRequest request = (ODataRequest) obj2;
             assertEquals(ODataHttpMethod.PUT, request.getMethod());
             assertEquals("100000", request.getHeaderValue("Content-Length"));
-            assertEquals("application/json; odata=verbose", request.getContentType());
+            assertEquals("application/json;odata=verbose", request.getContentType());
             assertEquals(3, request.getAcceptHeaders().size());
             assertEquals("*/*", request.getAcceptHeaders().get(2));
             assertEquals("application/atomsvc+xml", request.getAcceptHeaders().get(0));

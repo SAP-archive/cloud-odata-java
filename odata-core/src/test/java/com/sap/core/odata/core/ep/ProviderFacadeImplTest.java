@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -205,6 +206,15 @@ public class ProviderFacadeImplTest {
     assertEquals("foo", StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
+  @Test
+  public void writeBinaryNoContent() throws Exception {
+    final ODataResponse result = new ProviderFacadeImpl().writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, null);
+    assertNull(result.getEntity());
+    assertNull(result.getContentHeader());
+    assertEquals(HttpStatusCodes.NO_CONTENT,result.getStatus());
+  }
+
+  
   @Test
   @Ignore
   public void writeFunctionImport() {

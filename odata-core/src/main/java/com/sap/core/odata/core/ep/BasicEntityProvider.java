@@ -19,6 +19,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -191,9 +192,11 @@ public class BasicEntityProvider {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (data != null) {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      builder.contentHeader(mimeType);
       builder.entity(bais);
+    } else {
+      builder.status(HttpStatusCodes.NO_CONTENT);
     }
-    builder.contentHeader(mimeType);
     return builder.build();
   }
 

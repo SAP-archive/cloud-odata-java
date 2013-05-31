@@ -30,7 +30,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         .replace("Team 1", "Team X")
         .replaceAll("<link.+?/>", "");
     HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertXpathEvaluatesTo("Team X", "/atom:entry/atom:content/m:properties/d:Name", getBody(response));
@@ -60,7 +60,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         + "        type=\"" + HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8 + "\"/>" + "\n"
         + "</entry>";
     response = postUri("Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     checkEtag(response, "W/\"2\"");
     assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Seats", getBody(response));
@@ -74,7 +74,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
     final String updateBody = "<invalidXml></invalid>";
     final HttpResponse postResult = postUri("Employees", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(postResult, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(postResult, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(postResult));
 
     final String requestBodyAfter = getBody(callUri("Employees('7')"));
@@ -84,7 +84,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   @Test
   public void createMediaResourceUriType1() throws Exception {
     HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
@@ -93,7 +93,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     assertEquals("plain text", getBody(response));
 
     response = postUri("Container2.Photos", "dummy", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Container2.Photos(Id=5,Type='application%2Foctet-stream')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     checkEtag(response, "W/\"5\"");
     assertXpathEvaluatesTo("Photo 5", "/atom:entry/m:properties/d:Name", getBody(response));
@@ -155,7 +155,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         + "</atom:entry>";
 
     HttpResponse response = postUri("Buildings", buildingWithRooms, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Buildings('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     final String body = getBody(response);
     assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Id", body);
