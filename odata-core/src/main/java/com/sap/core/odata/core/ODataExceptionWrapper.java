@@ -56,8 +56,9 @@ public class ODataExceptionWrapper {
     contentType = getContentType(queryParameters, acceptHeaderContentTypes).toContentTypeString();
     messageLocale = MessageService.getSupportedLocale(getLanguages(context), DEFAULT_RESPONSE_LOCALE);
     httpRequestHeaders = new HashMap<String, List<String>>();
-    for (Entry<String, String> entry : context.getHttpRequestHeaders().entrySet())
+    for (Entry<String, String> entry : context.getHttpRequestHeaders().entrySet()) {
       httpRequestHeaders.put(entry.getKey(), Arrays.asList(entry.getValue()));
+    }
     try {
       requestUri = context.getPathInfo().getRequestUri();
       callback = getErrorHandlerCallbackFromContext(context);

@@ -24,7 +24,7 @@ public class JsonLinkConsumer {
    * @return link as string object
    * @throws EntityProviderException
    */
-  public String readLink(JsonReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public String readLink(final JsonReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     // TODO: message texts
     try {
       String result;
@@ -35,13 +35,15 @@ public class JsonLinkConsumer {
         reader.beginObject();
         nextName = reader.nextName();
       }
-      if (FormatJson.URI.equals(nextName) && reader.peek() == JsonToken.STRING)
+      if (FormatJson.URI.equals(nextName) && reader.peek() == JsonToken.STRING) {
         result = reader.nextString();
-      else
+      } else {
         throw new EntityProviderException(EntityProviderException.COMMON);
+      }
       reader.endObject();
-      if (wrapped)
+      if (wrapped) {
         reader.endObject();
+      }
 
       reader.peek(); // to assert end of structure or document
 
@@ -62,7 +64,7 @@ public class JsonLinkConsumer {
    * @return links as List of Strings
    * @throws EntityProviderException
    */
-  public List<String> readLinks(JsonReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public List<String> readLinks(final JsonReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     List<String> links = null;
     int openedObjects = 0;
 
@@ -89,17 +91,21 @@ public class JsonLinkConsumer {
         JsonFeedConsumer.readInlineCount(reader, feedMetadata);
         nextName = reader.nextName();
       }
-      if (FormatJson.RESULTS.equals(nextName))
+      if (FormatJson.RESULTS.equals(nextName)) {
         links = readLinksArray(reader);
-      else
+      } else {
         throw new EntityProviderException(EntityProviderException.COMMON);
-      if (reader.hasNext() && reader.peek() == JsonToken.NAME)
-        if (FormatJson.COUNT.equals(reader.nextName()))
+      }
+      if (reader.hasNext() && reader.peek() == JsonToken.NAME) {
+        if (FormatJson.COUNT.equals(reader.nextName())) {
           JsonFeedConsumer.readInlineCount(reader, feedMetadata);
-        else
+        } else {
           throw new EntityProviderException(EntityProviderException.COMMON);
-      for (; openedObjects > 0; openedObjects--)
+        }
+      }
+      for (; openedObjects > 0; openedObjects--) {
         reader.endObject();
+      }
 
       reader.peek(); // to assert end of document
     } catch (final IOException e) {
@@ -111,16 +117,17 @@ public class JsonLinkConsumer {
     return links;
   }
 
-  private List<String> readLinksArray(JsonReader reader) throws IOException, EntityProviderException {
+  private List<String> readLinksArray(final JsonReader reader) throws IOException, EntityProviderException {
     List<String> links = new ArrayList<String>();
 
     reader.beginArray();
     while (reader.hasNext()) {
       reader.beginObject();
-      if (FormatJson.URI.equals(reader.nextName()) && reader.peek() == JsonToken.STRING)
+      if (FormatJson.URI.equals(reader.nextName()) && reader.peek() == JsonToken.STRING) {
         links.add(reader.nextString());
-      else
+      } else {
         throw new EntityProviderException(EntityProviderException.COMMON);
+      }
       reader.endObject();
     }
     reader.endArray();

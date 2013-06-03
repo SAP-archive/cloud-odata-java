@@ -108,7 +108,7 @@ public class JsonEntityConsumer {
     }
   }
 
-  public String readLink(final EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     JsonReader reader = null;
     EntityProviderException cachedException = null;
 
@@ -133,7 +133,7 @@ public class JsonEntityConsumer {
     }
   }
 
-  public List<String> readLinks(final EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     JsonReader reader = null;
     EntityProviderException cachedException = null;
 

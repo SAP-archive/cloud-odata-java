@@ -120,7 +120,7 @@ public class JsonFeedConsumer {
     reader.endArray();
   }
 
-  protected static void readInlineCount(JsonReader reader, FeedMetadataImpl feedMetadata) throws IOException, EntityProviderException {
+  protected static void readInlineCount(final JsonReader reader, final FeedMetadataImpl feedMetadata) throws IOException, EntityProviderException {
     if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
       int inlineCount;
       try {

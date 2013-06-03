@@ -206,7 +206,7 @@ public class Tokenizer {
       String token = matcher.group(1);
       curPosition = curPosition + token.length();
       tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
-      isMethod =  true;
+      isMethod = true;
     }
     return isMethod;
   }
@@ -223,8 +223,8 @@ public class Tokenizer {
     return isMath;
   }
 
-  private boolean checkForBinary(final int oldPosition, final String rem_expr) { 
-   boolean isBinary = false;
+  private boolean checkForBinary(final int oldPosition, final String rem_expr) {
+    boolean isBinary = false;
     Matcher matcher1 = AND_SUB.matcher(rem_expr);
     if (matcher1.find()) {
       String token = matcher1.group(1);
@@ -246,7 +246,7 @@ public class Tokenizer {
       curPosition = curPosition + token.length();
       curCharacter = expression.charAt(curPosition); //"should  be '
       readLiteral(curCharacter, token);
-      isPrefix =  true;
+      isPrefix = true;
     }
     return isPrefix;
   }
