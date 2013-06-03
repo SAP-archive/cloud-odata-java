@@ -22,9 +22,7 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException, curExpression);
     }
 
-    boolean weiter = false;
-
-    while (weiter == false) {
+    while (true) {
       CommonExpression node = null;
       try {
         CommonExpression nodeLeft = readElement(null);
@@ -50,8 +48,6 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
         token = tokenList.lookToken();
       } else if (token.getKind() == TokenKind.COMMA) {
         orderNode.setSortOrder(SortOrder.asc);
-        //tokenList.next();
-        //token = tokenList.lookToken();
       } else {
         // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 1
         throw FilterParserExceptionImpl.createINVALID_SORT_ORDER(token, curExpression);
@@ -61,7 +57,6 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 
       //ls_token may be a ',' or  empty.
       if (token == null) {
-        weiter = true;
         break;
       } else if (token.getKind() == TokenKind.COMMA) {
         Token oldToken = token;
@@ -72,8 +67,8 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
           // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 2
           throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken, curExpression);
         }
-      } else //e.g. in case $orderby=String asc a
-      {
+      } else { //e.g. in case $orderby=String asc a
+
         throw FilterParserExceptionImpl.createCOMMA_OR_END_EXPECTED_AT_POS(token, curExpression);
       }
 

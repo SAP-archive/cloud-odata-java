@@ -63,7 +63,7 @@ public class FilterParserImpl implements FilterParser {
     CommonExpression node = null;
     curExpression = filterExpression;
     try {
-      // Throws TokenizerException and FilterParserException. FilterParserException is catch somewhere above 
+      // Throws TokenizerException and FilterParserException. FilterParserException is caught somewhere above 
       tokenList = new Tokenizer(filterExpression).tokenize();
       if (!tokenList.hasTokens()) {
         return new FilterExpressionImpl(filterExpression);
