@@ -16,7 +16,10 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
 
   @Override
   public boolean equals(final Object obj) {
-    return this == obj || getClass().equals(obj.getClass());
+    if (obj == null) {
+      return false;
+    }
+    return this == obj || getClass() == obj.getClass();
   }
 
   @Override
