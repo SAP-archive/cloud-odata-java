@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+	xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+	xmlns:at="http://purl.org/atompub/tombstones/1.0" xml:base="http://host:80/service/">
+	<id>http://host:80/service/Rooms</id>
+	<title type="text">Rooms</title>
+	<updated>2013-05-31T13:52:05.263+02:00</updated>
+	<author>
+		<name />
+	</author>
+	<link href="Rooms" rel="self" title="Rooms" />
+	<entry m:etag="W/&quot;3&quot;">
+		<id>http://host:80/service/Rooms('1')</id>
+		<title type="text">Rooms</title>
+		<updated>2013-05-31T13:52:05.263+02:00</updated>
+		<category term="RefScenario.Room"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Rooms('1')" rel="edit" title="Room" />
+		<link href="Rooms('1')/nr_Employees"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees"
+			title="nr_Employees" type="application/atom+xml; type=feed" />
+		<link href="Rooms('1')/nr_Building"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building"
+			title="nr_Building" type="application/atom+xml; type=entry" />
+		<content type="application/xml">
+			<m:properties>
+				<d:Id>1</d:Id>
+				<d:Name>Neu Schwanstein1</d:Name>
+				<d:Seats>20</d:Seats>
+				<d:Version>3</d:Version>
+			</m:properties>
+		</content>
+	</entry>
+	<entry m:etag="W/&quot;3&quot;">
+		<id>http://host:80/service/Rooms('2')</id>
+		<title type="text">Rooms</title>
+		<updated>2013-05-31T13:52:05.265+02:00</updated>
+		<category term="RefScenario.Room"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Rooms('2')" rel="edit" title="Room" />
+		<link href="Rooms('2')/nr_Employees"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees"
+			title="nr_Employees" type="application/atom+xml; type=feed" />
+		<link href="Rooms('2')/nr_Building"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building"
+			title="nr_Building" type="application/atom+xml; type=entry" />
+		<content type="application/xml">
+			<m:properties>
+				<d:Id>2</d:Id>
+				<d:Name>Neu Schwanstein2</d:Name>
+				<d:Seats>20</d:Seats>
+				<d:Version>3</d:Version>
+			</m:properties>
+		</content>
+	</entry>
+	<entry m:etag="W/&quot;3&quot;">
+		<id>http://host:80/service/Rooms('3')</id>
+		<title type="text">Rooms</title>
+		<updated>2013-05-31T13:52:05.268+02:00</updated>
+		<category term="RefScenario.Room"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Rooms('3')" rel="edit" title="Room" />
+		<link href="Rooms('3')/nr_Employees"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees"
+			title="nr_Employees" type="application/atom+xml; type=feed" />
+		<link href="Rooms('3')/nr_Building"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building"
+			title="nr_Building" type="application/atom+xml; type=entry" />
+		<content type="application/xml">
+			<m:properties>
+				<d:Id>3</d:Id>
+				<d:Name>Neu Schwanstein3</d:Name>
+				<d:Seats>20</d:Seats>
+				<d:Version>3</d:Version>
+			</m:properties>
+		</content>
+	</entry>
+	<entry m:etag="W/&quot;3&quot;">
+		<id>http://host:80/service/Rooms('4')</id>
+		<title type="text">Rooms</title>
+		<updated>2013-05-31T13:52:05.27+02:00</updated>
+		<category term="RefScenario.Room"
+			scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+		<link href="Rooms('4')" rel="edit" title="Room" />
+		<link href="Rooms('4')/nr_Employees"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees"
+			title="nr_Employees" type="application/atom+xml; type=feed" />
+		<link href="Rooms('4')/nr_Building"
+			rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building"
+			title="nr_Building" type="application/atom+xml; type=entry" />
+		<content type="application/xml">
+			<m:properties>
+				<d:Id>4</d:Id>
+				<d:Name>Neu Schwanstein4</d:Name>
+				<d:Seats>20</d:Seats>
+				<d:Version>3</d:Version>
+			</m:properties>
+		</content>
+	</entry>
+	<at:deleted-entry ref="http://host:80/service/Rooms('2')"
+		when="2013-05-31T13:52:05.272+02:00" />
+	<at:deleted-entry ref="http://host:80/service/Rooms('4')"
+		when="2013-05-31T13:52:05.273+02:00" />
+</feed>

@@ -19,6 +19,7 @@ import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatXml;
+import com.sap.core.odata.core.myextensions.TombstoneCallback;
 
 /**
  * Serializes an ATOM feed.
@@ -40,6 +41,7 @@ public class AtomFeedProducer {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
+        appendAtomTombstoneNamespace(writer);
       }
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
 
@@ -51,7 +53,7 @@ public class AtomFeedProducer {
       }
 
       appendEntries(writer, eia, data);
-
+      appendDeletedEntries(writer, eia);
       if (properties.getNextLink() != null) {
         appendNextLink(writer, properties.getNextLink());
       }
@@ -61,6 +63,23 @@ public class AtomFeedProducer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
+
+  //---------------------------- TOMBSTONES -----------------------------//
+  private void appendAtomTombstoneNamespace(final XMLStreamWriter writer) throws EntityProviderException {
+    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey("deleted-entry")) {
+      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get("deleted-entry");
+      callback.writeNamespace(writer);
+    }
+  }
+
+  private void appendDeletedEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia) throws EntityProviderException {
+    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey("deleted-entry")) {
+      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get("deleted-entry");
+      callback.write(writer, eia, properties);
+    }
+  }
+
+  //--------------------------------------------------------------------//
 
   private void appendNextLink(final XMLStreamWriter writer, final String nextLink) throws EntityProviderException {
     try {
