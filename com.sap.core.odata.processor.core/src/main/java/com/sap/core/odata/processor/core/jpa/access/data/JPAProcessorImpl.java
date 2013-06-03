@@ -407,7 +407,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       final InputStream content, final String requestContentType, final String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException {
     JPALink link = new JPALink(oDataJPAContext);
-    link.create(putUriInfo, content, requestContentType, contentType);
+    link.update(putUriInfo, content, requestContentType, contentType);
     link.save();
 
   }
