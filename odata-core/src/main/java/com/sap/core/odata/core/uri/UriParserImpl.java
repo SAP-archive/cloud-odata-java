@@ -778,13 +778,12 @@ public class UriParserImpl extends UriParser {
 
   private static UriSyntaxException convertEdmLiteralException(final EdmLiteralException e) {
     final MessageReference messageReference = e.getMessageReference();
-    final String key = messageReference.getKey();
 
-    if (key == EdmLiteralException.LITERALFORMAT.getKey()) {
+    if (EdmLiteralException.LITERALFORMAT.equals(messageReference)) {
       return new UriSyntaxException(UriSyntaxException.LITERALFORMAT.addContent(messageReference.getContent()), e);
-    } else if (key == EdmLiteralException.NOTEXT.getKey()) {
+    } else if (EdmLiteralException.NOTEXT.equals(messageReference)) {
       return new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(messageReference.getContent()), e);
-    } else if (key == EdmLiteralException.UNKNOWNLITERAL.getKey()) {
+    } else if (EdmLiteralException.UNKNOWNLITERAL.equals(messageReference)) {
       return new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(messageReference.getContent()), e);
     } else {
       return new UriSyntaxException(ODataBadRequestException.COMMON, e);
