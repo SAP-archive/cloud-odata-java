@@ -352,6 +352,9 @@ public class ContentType {
    */
   @Override
   public boolean equals(final Object obj) {
+    if (obj == null) {
+      return false;
+    }
     Boolean compatible = isEqualWithoutParameters(obj);
 
     if (compatible == null) {
