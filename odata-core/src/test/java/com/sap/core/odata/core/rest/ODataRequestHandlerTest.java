@@ -42,6 +42,7 @@ public class ODataRequestHandlerTest extends BaseTest {
   @Mock
   ODataProcessor mockProcessor;
 
+  @SuppressWarnings("unchecked")
   @Before
   public void initialize() throws Exception {
     MockitoAnnotations.initMocks(this);

@@ -16,11 +16,6 @@ public enum MethodOperator {
     stringRespresentation = syntax;
   }
 
-  private MethodOperator(final String syntax, final String stringRespresentation) {
-    this.syntax = syntax;
-    this.stringRespresentation = stringRespresentation;
-  }
-
   /** 
    * @return Operators name for usage in in text
    */

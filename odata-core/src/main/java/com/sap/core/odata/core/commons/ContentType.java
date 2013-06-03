@@ -67,10 +67,6 @@ public class ContentType {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
 
-  private ContentType(final String type, final String subtype, final Map<String, String> parameters) {
-    this(type, subtype, mapToODataFormat(subtype), parameters);
-  }
-
   private ContentType(final String type, final String subtype, final ODataFormat odataFormat) {
     this(type, subtype, odataFormat, null);
   }
