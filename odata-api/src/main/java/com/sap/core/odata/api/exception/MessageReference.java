@@ -129,6 +129,10 @@ public abstract class MessageReference {
     return result;
   }
 
+  /**
+   * {@link MessageReference}s are equal if their message keys have the same value.
+   * @return <code>true</code> if both instances are equal, otherwise <code>false</code>.
+   */
   @Override
   public boolean equals(final Object obj) {
     if (this == obj) {
