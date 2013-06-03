@@ -25,7 +25,7 @@ public final class ODataEntityParser {
 
   private ODataJPAContext context;
 
-  public ODataEntityParser(ODataJPAContext context) {
+  public ODataEntityParser(final ODataJPAContext context) {
     this.context = context;
   }
 
@@ -56,7 +56,7 @@ public final class ODataEntityParser {
     return uriInfo;
   }
 
-  public final UriInfo parseLink(EdmEntitySet entitySet, InputStream content, String contentType)
+  public final UriInfo parseLink(final EdmEntitySet entitySet, final InputStream content, final String contentType)
       throws ODataJPARuntimeException {
 
     String uriString = null;
@@ -96,7 +96,7 @@ public final class ODataEntityParser {
 
   }
 
-  public List<UriInfo> parseLinks(EdmEntitySet entitySet, InputStream content, String contentType)
+  public List<UriInfo> parseLinks(final EdmEntitySet entitySet, final InputStream content, final String contentType)
       throws ODataJPARuntimeException {
 
     List<String> uriList = new ArrayList<String>();

@@ -36,8 +36,9 @@ public final class JPAEntityParser {
   };
 
   public static final JPAEntityParser create() {
-    if (jpaEntityParser == null)
+    if (jpaEntityParser == null) {
       jpaEntityParser = new JPAEntityParser();
+    }
     return jpaEntityParser;
   }
 
@@ -53,7 +54,7 @@ public final class JPAEntityParser {
    */
 
   public final HashMap<String, Object> parse2EdmPropertyValueMap(
-      Object jpaEntity, List<EdmProperty> selectPropertyList)
+      final Object jpaEntity, final List<EdmProperty> selectPropertyList)
       throws ODataJPARuntimeException {
     HashMap<String, Object> edmEntity = new HashMap<String, Object>();
     String methodName = null;
@@ -71,9 +72,9 @@ public final class JPAEntityParser {
         if (nameParts.length > 1) {
           Object propertyVal = new Object();
           propertyVal = jpaEntity;
-          for (int itr = 0; itr < nameParts.length; itr++) {
+          for (String namePart : nameParts) {
             method = propertyVal.getClass().getMethod(
-                nameParts[itr], (Class<?>[]) null);
+                namePart, (Class<?>[]) null);
             method.setAccessible(true);
             propertyVal = method.invoke(propertyVal);
           }
@@ -138,17 +139,19 @@ public final class JPAEntityParser {
    * @throws ODataJPARuntimeException
    */
   public final HashMap<String, Object> parse2EdmPropertyValueMap(
-      Object jpaEntity, EdmStructuralType structuralType)
+      final Object jpaEntity, final EdmStructuralType structuralType)
       throws ODataJPARuntimeException {
 
-    if (jpaEntity == null || structuralType == null)
+    if (jpaEntity == null || structuralType == null) {
       return null;
+    }
 
     String jpaEntityAccessKey = jpaEntity.getClass().getName();
 
-    if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey))
+    if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey)) {
       jpaEntityAccessMap.put(jpaEntityAccessKey,
           getAccessModifier(jpaEntity, structuralType, ACCESS_MODIFIER_GET));
+    }
 
     HashMap<String, Object> edmEntity = new HashMap<String, Object>();
     HashMap<String, Method> getters = jpaEntityAccessMap
@@ -166,7 +169,7 @@ public final class JPAEntityParser {
         Object propertyValue = null;
 
         if (method != null) {
-        	getters.get(key).setAccessible(true);
+          getters.get(key).setAccessible(true);
           propertyValue = getters.get(key).invoke(jpaEntity);
         }
 
@@ -185,9 +188,9 @@ public final class JPAEntityParser {
           String[] nameParts = name.split("\\.");
           Object propertyValue = jpaEntity;
           Method method = null;
-          for (int i = 0; i < nameParts.length; i++) {
+          for (String namePart : nameParts) {
             method = propertyValue.getClass().getMethod(
-                nameParts[i], (Class<?>[]) null);
+                namePart, (Class<?>[]) null);
             method.setAccessible(true);
             propertyValue = method.invoke(propertyValue);
           }
@@ -225,7 +228,7 @@ public final class JPAEntityParser {
   // This method appends the associated entities as a java list to an expanded
   // map of a source entity
   public final HashMap<String, Object> parse2EdmNavigationValueMap(
-      Object jpaEntity, List<EdmNavigationProperty> navigationPropertyList)
+      final Object jpaEntity, final List<EdmNavigationProperty> navigationPropertyList)
       throws ODataJPARuntimeException {
     Object result = null;
     String methodName = null;
@@ -272,8 +275,8 @@ public final class JPAEntityParser {
     return navigationMap;
   }
 
-  public HashMap<String, Method> getAccessModifier(Object jpaEntity,
-      EdmStructuralType structuralType, String accessModifier) throws ODataJPARuntimeException {
+  public HashMap<String, Method> getAccessModifier(final Object jpaEntity,
+      final EdmStructuralType structuralType, final String accessModifier) throws ODataJPARuntimeException {
 
     HashMap<String, Method> accessModifierMap = new HashMap<String, Method>();
     HashMap<String, String> embeddableKey = new HashMap<String, String>();
@@ -288,11 +291,12 @@ public final class JPAEntityParser {
         String[] nameParts = name.split("\\.");
         if (nameParts.length > 1) {
           embeddableKey.put(propertyName, name);
-        } else
+        } else {
           accessModifierMap.put(
               propertyName,
               jpaEntity.getClass().getMethod(name,
                   (Class<?>[]) null));
+        }
       }
     } catch (NoSuchMethodException e) {
       throw ODataJPARuntimeException
@@ -315,18 +319,19 @@ public final class JPAEntityParser {
     return accessModifierMap;
   }
 
-  private static String getAccessModifierName(String propertyName, EdmMapping mapping, String accessModifier)
+  private static String getAccessModifierName(final String propertyName, final EdmMapping mapping, final String accessModifier)
       throws ODataJPARuntimeException {
     String name = null;
     StringBuilder builder = new StringBuilder();
     String[] nameParts = {};
-    if (mapping == null || mapping.getInternalName() == null)
+    if (mapping == null || mapping.getInternalName() == null) {
       name = propertyName;
-    else {
+    } else {
       name = mapping.getInternalName();
     }
-    if (name != null)
+    if (name != null) {
       nameParts = name.split("\\.");
+    }
     if (nameParts.length == 1) {
       if (name != null) {
         char c = Character.toUpperCase(name.charAt(0));
@@ -339,24 +344,26 @@ public final class JPAEntityParser {
       for (int i = 0; i < nameParts.length; i++) {
         name = nameParts[i];
         char c = Character.toUpperCase(name.charAt(0));
-        if (i == 0)
+        if (i == 0) {
           builder.append(accessModifier).append(c).append(name.substring(1));
-        else
+        } else {
           builder.append(".").append(accessModifier).append(c)
               .append(name.substring(1));
+        }
       }
     } else {
       return null;
     }
 
-    if (builder.length() > 0)
+    if (builder.length() > 0) {
       return builder.toString();
-    else
+    } else {
       return null;
+    }
 
   }
 
-  public Method getAccessModifier(Object jpaEntity, EdmNavigationProperty navigationProperty, String accessModifier)
+  public Method getAccessModifier(final Object jpaEntity, final EdmNavigationProperty navigationProperty, final String accessModifier)
       throws ODataJPARuntimeException {
 
     try {

@@ -24,6 +24,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -47,9 +48,9 @@ import com.sap.core.odata.processor.core.jpa.access.data.JPAExpandCallBack;
 public final class ODataJPAResponseBuilder {
 
   /* Response for Read Entity Set */
-  public static <T> ODataResponse build(List<T> jpaEntities,
-      GetEntitySetUriInfo resultsView, String contentType,
-      ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
+  public static <T> ODataResponse build(final List<T> jpaEntities,
+      final GetEntitySetUriInfo resultsView, final String contentType,
+      final ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
 
     EdmEntityType edmEntityType = null;
     ODataResponse odataResponse = null;
@@ -113,14 +114,15 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for Read Entity */
-  public static ODataResponse build(Object jpaEntity,
-      GetEntityUriInfo resultsView, String contentType,
-      ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+  public static ODataResponse build(final Object jpaEntity,
+      final GetEntityUriInfo resultsView, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
       ODataNotFoundException {
 
     List<ArrayList<NavigationPropertySegment>> expandList = null;
-    if (jpaEntity == null)
+    if (jpaEntity == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
     EdmEntityType edmEntityType = null;
     ODataResponse odataResponse = null;
 
@@ -137,9 +139,10 @@ public final class ODataJPAResponseBuilder {
                 jpaEntity,
                 buildSelectItemList(selectedItems, resultsView
                     .getTargetEntitySet().getEntityType()));
-      } else
+      } else {
         edmPropertyValueMap = jpaResultParser
             .parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
+      }
 
       expandList = resultsView.getExpand();
       if (expandList != null && expandList.size() != 0)
@@ -172,8 +175,8 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for $count */
-  public static ODataResponse build(long jpaEntityCount,
-      ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+  public static ODataResponse build(final long jpaEntityCount,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
 
     ODataResponse odataResponse = null;
     try {
@@ -190,13 +193,14 @@ public final class ODataJPAResponseBuilder {
 
   /* Response for Create Entity */
   @SuppressWarnings("unchecked")
-  public static ODataResponse build(List<Object> createdObjectList,
-      PostUriInfo uriInfo, String contentType,
-      ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+  public static ODataResponse build(final List<Object> createdObjectList,
+      final PostUriInfo uriInfo, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
       ODataNotFoundException {
 
-    if (createdObjectList == null || createdObjectList.size() == 0 || createdObjectList.get(0) == null)
+    if (createdObjectList == null || createdObjectList.size() == 0 || createdObjectList.get(0) == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
 
     EdmEntityType edmEntityType = null;
     ODataResponse odataResponse = null;
@@ -246,17 +250,18 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for Update Entity */
-  public static ODataResponse build(Object updatedObject,
-      PutMergePatchUriInfo putUriInfo) throws ODataJPARuntimeException,
+  public static ODataResponse build(final Object updatedObject,
+      final PutMergePatchUriInfo putUriInfo) throws ODataJPARuntimeException,
       ODataNotFoundException {
-    if (updatedObject == null)
+    if (updatedObject == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   /* Response for Delete Entity */
-  public static ODataResponse build(Object deletedObject,
-      DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException,
+  public static ODataResponse build(final Object deletedObject,
+      final DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException,
       ODataNotFoundException {
 
     if (deletedObject == null) {
@@ -266,8 +271,8 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for Function Import Single Result */
-  public static ODataResponse build(Object result,
-      GetFunctionImportUriInfo resultsView)
+  public static ODataResponse build(final Object result,
+      final GetFunctionImportUriInfo resultsView)
       throws ODataJPARuntimeException {
 
     try {
@@ -284,8 +289,9 @@ public final class ODataJPAResponseBuilder {
         response = EntityProvider.writeText(value);
 
         return ODataResponse.fromResponse(response).build();
-      } else
-        throw new ODataNotFoundException(ODataNotFoundException.COMMON);
+      } else {
+        throw new ODataNotFoundException(ODataHttpException.COMMON);
+      }
     } catch (EdmException e) {
       throw ODataJPARuntimeException
           .throwException(ODataJPARuntimeException.GENERAL
@@ -301,9 +307,9 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for Function Import Multiple Result */
-  public static ODataResponse build(List<Object> resultList,
-      GetFunctionImportUriInfo resultsView, String contentType,
-      ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
+  public static ODataResponse build(final List<Object> resultList,
+      final GetFunctionImportUriInfo resultsView, final String contentType,
+      final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException,
       ODataNotFoundException {
 
     ODataResponse odataResponse = null;
@@ -371,19 +377,21 @@ public final class ODataJPAResponseBuilder {
             ODataJPARuntimeException.INNER_EXCEPTION, e);
       }
 
-    } else
-      throw new ODataNotFoundException(ODataNotFoundException.COMMON);
+    } else {
+      throw new ODataNotFoundException(ODataHttpException.COMMON);
+    }
 
     return odataResponse;
   }
 
   /* Response for Read Entity Link */
-  public static ODataResponse build(Object jpaEntity,
-      GetEntityLinkUriInfo resultsView, String contentType, ODataJPAContext oDataJPAContext)
+  public static ODataResponse build(final Object jpaEntity,
+      final GetEntityLinkUriInfo resultsView, final String contentType, final ODataJPAContext oDataJPAContext)
       throws ODataNotFoundException, ODataJPARuntimeException {
 
-    if (jpaEntity == null)
+    if (jpaEntity == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    }
     EdmEntityType edmEntityType = null;
     ODataResponse odataResponse = null;
 
@@ -417,9 +425,9 @@ public final class ODataJPAResponseBuilder {
   }
 
   /* Response for Read Entity Links */
-  public static <T> ODataResponse build(List<T> jpaEntities,
-      GetEntitySetLinksUriInfo resultsView, String contentType,
-      ODataJPAContext oDataJPAContext)
+  public static <T> ODataResponse build(final List<T> jpaEntities,
+      final GetEntitySetLinksUriInfo resultsView, final String contentType,
+      final ODataJPAContext oDataJPAContext)
       throws ODataJPARuntimeException {
     EdmEntityType edmEntityType = null;
     ODataResponse odataResponse = null;
@@ -471,8 +479,8 @@ public final class ODataJPAResponseBuilder {
    * be registered here
    */
   private static EntityProviderWriteProperties getEntityProviderProperties(
-      ODataJPAContext odataJPAContext, GetEntitySetUriInfo resultsView,
-      List<Map<String, Object>> edmEntityList)
+      final ODataJPAContext odataJPAContext, final GetEntitySetUriInfo resultsView,
+      final List<Map<String, Object>> edmEntityList)
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
     Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
@@ -502,7 +510,7 @@ public final class ODataJPAResponseBuilder {
   }
 
   private static EntityProviderWriteProperties getEntityProviderProperties(
-      ODataJPAContext odataJPAContext, GetEntityUriInfo resultsView)
+      final ODataJPAContext odataJPAContext, final GetEntityUriInfo resultsView)
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
     ExpandSelectTreeNode expandSelectTree = null;
@@ -526,7 +534,7 @@ public final class ODataJPAResponseBuilder {
   }
 
   private static EntityProviderWriteProperties getEntityProviderPropertiesforPost(
-      ODataJPAContext odataJPAContext, PostUriInfo resultsView, List<ArrayList<NavigationPropertySegment>> expandList)
+      final ODataJPAContext odataJPAContext, final PostUriInfo resultsView, final List<ArrayList<NavigationPropertySegment>> expandList)
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
     ExpandSelectTreeNode expandSelectTree = null;
@@ -549,7 +557,7 @@ public final class ODataJPAResponseBuilder {
     return entityFeedPropertiesBuilder.build();
   }
 
-  private static List<ArrayList<NavigationPropertySegment>> getExpandList(Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap) {
+  private static List<ArrayList<NavigationPropertySegment>> getExpandList(final Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap) {
     List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
     ArrayList<NavigationPropertySegment> navigationPropertySegmentList = new ArrayList<NavigationPropertySegment>();
     for (Map.Entry<EdmNavigationProperty, EdmEntitySet> entry : navPropEntitySetMap.entrySet()) {
@@ -574,12 +582,13 @@ public final class ODataJPAResponseBuilder {
   }
 
   private static List<EdmProperty> buildSelectItemList(
-      List<SelectItem> selectItems, EdmEntityType entity) throws ODataJPARuntimeException {
+      final List<SelectItem> selectItems, final EdmEntityType entity) throws ODataJPARuntimeException {
     boolean flag = false;
     List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
     try {
-      for (SelectItem selectItem : selectItems)
+      for (SelectItem selectItem : selectItems) {
         selectPropertyList.add(selectItem.getProperty());
+      }
       for (EdmProperty keyProperty : entity.getKeyProperties()) {
         flag = true;
         for (SelectItem selectedItem : selectItems) {
@@ -588,8 +597,9 @@ public final class ODataJPAResponseBuilder {
             break;
           }
         }
-        if (flag == true)
+        if (flag == true) {
           selectPropertyList.add(keyProperty);
+        }
       }
 
     } catch (EdmException e) {
@@ -601,11 +611,12 @@ public final class ODataJPAResponseBuilder {
   }
 
   private static List<EdmNavigationProperty> constructListofNavProperty(
-      List<ArrayList<NavigationPropertySegment>> expandList) {
+      final List<ArrayList<NavigationPropertySegment>> expandList) {
     List<EdmNavigationProperty> navigationPropertyList = new ArrayList<EdmNavigationProperty>();
-    for (ArrayList<NavigationPropertySegment> navpropSegment : expandList)
+    for (ArrayList<NavigationPropertySegment> navpropSegment : expandList) {
       navigationPropertyList.add(navpropSegment.get(0)
           .getNavigationProperty());
+    }
     return navigationPropertyList;
   }
 

@@ -18,159 +18,161 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
-		JPAEdmAssociationEndView {
+    JPAEdmAssociationEndView {
 
-	private JPAEdmEntityTypeView entityTypeView = null;
-	private JPAEdmPropertyView propertyView = null;
-	private AssociationEnd currentAssociationEnd1 = null;
-	private AssociationEnd currentAssociationEnd2 = null;
-	private String columnName;
-	private String referencedColumnName;
-	private String mappedBy;
-	private String ownerPropertyName;
+  private JPAEdmEntityTypeView entityTypeView = null;
+  private JPAEdmPropertyView propertyView = null;
+  private AssociationEnd currentAssociationEnd1 = null;
+  private AssociationEnd currentAssociationEnd2 = null;
+  private String columnName;
+  private String referencedColumnName;
+  private String mappedBy;
+  private String ownerPropertyName;
 
-	public JPAEdmAssociationEnd(JPAEdmEntityTypeView entityTypeView,
-			JPAEdmPropertyView propertyView) {
-		super(entityTypeView);
-		this.entityTypeView = entityTypeView;
-		this.propertyView = propertyView;
-	}
+  public JPAEdmAssociationEnd(final JPAEdmEntityTypeView entityTypeView,
+      final JPAEdmPropertyView propertyView) {
+    super(entityTypeView);
+    this.entityTypeView = entityTypeView;
+    this.propertyView = propertyView;
+  }
 
-	@Override
-	public JPAEdmBuilder getBuilder() {
-		if (this.builder == null)
-			this.builder = new JPAEdmAssociationEndBuilder();
-		
-		return builder;
-	}
+  @Override
+  public JPAEdmBuilder getBuilder() {
+    if (builder == null) {
+      builder = new JPAEdmAssociationEndBuilder();
+    }
 
-	@Override
-	public AssociationEnd getEdmAssociationEnd1() {
-		return this.currentAssociationEnd1;
-	}
+    return builder;
+  }
 
-	@Override
-	public AssociationEnd getEdmAssociationEnd2() {
-		return currentAssociationEnd2;
-	}
+  @Override
+  public AssociationEnd getEdmAssociationEnd1() {
+    return currentAssociationEnd1;
+  }
 
-	private class JPAEdmAssociationEndBuilder implements JPAEdmBuilder {
+  @Override
+  public AssociationEnd getEdmAssociationEnd2() {
+    return currentAssociationEnd2;
+  }
 
-		@Override
-		public void build() throws ODataJPAModelException {
-			
-			JoinColumn joinColumn = null;
-			
-			currentAssociationEnd1 = new AssociationEnd();
-			currentAssociationEnd2 = new AssociationEnd();
+  private class JPAEdmAssociationEndBuilder implements JPAEdmBuilder {
 
-			JPAEdmNameBuilder.build(JPAEdmAssociationEnd.this, entityTypeView,
-					propertyView);
+    @Override
+    public void build() throws ODataJPAModelException {
 
-			currentAssociationEnd1.setRole(currentAssociationEnd1.getType()
-					.getName());
-			currentAssociationEnd2.setRole(currentAssociationEnd2.getType()
-					.getName());
+      JoinColumn joinColumn = null;
 
-			setEdmMultiplicity(propertyView.getJPAAttribute()
-					.getPersistentAttributeType());
-			
-			AnnotatedElement annotatedElement = (AnnotatedElement) propertyView.getJPAAttribute()
-					.getJavaMember();
-			if(annotatedElement != null){
-				 joinColumn = annotatedElement.getAnnotation(JoinColumn.class);
-				if(joinColumn != null){
-					columnName = joinColumn.name();
-					referencedColumnName = joinColumn.referencedColumnName();
-				}
-				
-			}
-			ownerPropertyName = propertyView.getJPAAttribute().getName();
-			
-		}
+      currentAssociationEnd1 = new AssociationEnd();
+      currentAssociationEnd2 = new AssociationEnd();
 
-		private void setEdmMultiplicity(PersistentAttributeType type) {
-			AnnotatedElement annotatedElement = (AnnotatedElement) propertyView.getJPAAttribute()
-					.getJavaMember();
-			switch (type) {
-			case ONE_TO_MANY:
-				currentAssociationEnd1.setMultiplicity(EdmMultiplicity.ONE);
-				currentAssociationEnd2.setMultiplicity(EdmMultiplicity.MANY);
-				if(annotatedElement != null){
-					OneToMany reln = annotatedElement.getAnnotation(OneToMany.class);
-					if(reln != null){
-						mappedBy = reln.mappedBy();
-					}
-				}
-				break;
-			case MANY_TO_MANY:
-				currentAssociationEnd1.setMultiplicity(EdmMultiplicity.MANY);
-				currentAssociationEnd2.setMultiplicity(EdmMultiplicity.MANY);
-				if(annotatedElement != null){
-					ManyToMany reln = annotatedElement.getAnnotation(ManyToMany.class);
-					if(reln != null){
-						mappedBy = reln.mappedBy();
-					}
-				}
-				break;
-			case MANY_TO_ONE:
-				currentAssociationEnd1.setMultiplicity(EdmMultiplicity.MANY);
-				currentAssociationEnd2.setMultiplicity(EdmMultiplicity.ONE);
-				break;
-			case ONE_TO_ONE:
-				currentAssociationEnd1.setMultiplicity(EdmMultiplicity.ONE);
-				currentAssociationEnd2.setMultiplicity(EdmMultiplicity.ONE);
-				if(annotatedElement != null){
-					OneToOne reln = annotatedElement.getAnnotation(OneToOne.class);
-					if(reln != null){
-						mappedBy = reln.mappedBy();
-					}
-				}
-				break;
-			default:
-				break;
-			}
-		}
-	}
+      JPAEdmNameBuilder.build(JPAEdmAssociationEnd.this, entityTypeView,
+          propertyView);
 
-	@Override
-	public boolean compare(AssociationEnd end1, AssociationEnd end2) {
-		if ((end1.getType().equals(currentAssociationEnd1.getType())
-				&& end2.getType().equals(currentAssociationEnd2.getType())
-				&& end1.getMultiplicity().equals(
-						currentAssociationEnd1.getMultiplicity()) && end2
-				.getMultiplicity().equals(
-						currentAssociationEnd2.getMultiplicity()))
-				|| (end1.getType().equals(currentAssociationEnd2.getType())
-						&& end2.getType().equals(
-								currentAssociationEnd1.getType())
-						&& end1.getMultiplicity().equals(
-								currentAssociationEnd2.getMultiplicity()) && end2
-						.getMultiplicity().equals(
-								currentAssociationEnd1.getMultiplicity())))
-			return true;
+      currentAssociationEnd1.setRole(currentAssociationEnd1.getType()
+          .getName());
+      currentAssociationEnd2.setRole(currentAssociationEnd2.getType()
+          .getName());
 
-		return false;
-	}
+      setEdmMultiplicity(propertyView.getJPAAttribute()
+          .getPersistentAttributeType());
 
-	@Override
-	public String getJoinColumnName() {
-		return this.columnName;
-	}
+      AnnotatedElement annotatedElement = (AnnotatedElement) propertyView.getJPAAttribute()
+          .getJavaMember();
+      if (annotatedElement != null) {
+        joinColumn = annotatedElement.getAnnotation(JoinColumn.class);
+        if (joinColumn != null) {
+          columnName = joinColumn.name();
+          referencedColumnName = joinColumn.referencedColumnName();
+        }
 
-	@Override
-	public String getJoinColumnReferenceColumnName() {
-		return this.referencedColumnName;
-	}
+      }
+      ownerPropertyName = propertyView.getJPAAttribute().getName();
 
-	@Override
-	public String getMappedByName() {
-		return this.mappedBy;
-	}
+    }
 
-	@Override
-	public String getOwningPropertyName() {
-		return this.ownerPropertyName;
-	}
-	
+    private void setEdmMultiplicity(final PersistentAttributeType type) {
+      AnnotatedElement annotatedElement = (AnnotatedElement) propertyView.getJPAAttribute()
+          .getJavaMember();
+      switch (type) {
+      case ONE_TO_MANY:
+        currentAssociationEnd1.setMultiplicity(EdmMultiplicity.ONE);
+        currentAssociationEnd2.setMultiplicity(EdmMultiplicity.MANY);
+        if (annotatedElement != null) {
+          OneToMany reln = annotatedElement.getAnnotation(OneToMany.class);
+          if (reln != null) {
+            mappedBy = reln.mappedBy();
+          }
+        }
+        break;
+      case MANY_TO_MANY:
+        currentAssociationEnd1.setMultiplicity(EdmMultiplicity.MANY);
+        currentAssociationEnd2.setMultiplicity(EdmMultiplicity.MANY);
+        if (annotatedElement != null) {
+          ManyToMany reln = annotatedElement.getAnnotation(ManyToMany.class);
+          if (reln != null) {
+            mappedBy = reln.mappedBy();
+          }
+        }
+        break;
+      case MANY_TO_ONE:
+        currentAssociationEnd1.setMultiplicity(EdmMultiplicity.MANY);
+        currentAssociationEnd2.setMultiplicity(EdmMultiplicity.ONE);
+        break;
+      case ONE_TO_ONE:
+        currentAssociationEnd1.setMultiplicity(EdmMultiplicity.ONE);
+        currentAssociationEnd2.setMultiplicity(EdmMultiplicity.ONE);
+        if (annotatedElement != null) {
+          OneToOne reln = annotatedElement.getAnnotation(OneToOne.class);
+          if (reln != null) {
+            mappedBy = reln.mappedBy();
+          }
+        }
+        break;
+      default:
+        break;
+      }
+    }
+  }
+
+  @Override
+  public boolean compare(final AssociationEnd end1, final AssociationEnd end2) {
+    if ((end1.getType().equals(currentAssociationEnd1.getType())
+        && end2.getType().equals(currentAssociationEnd2.getType())
+        && end1.getMultiplicity().equals(
+            currentAssociationEnd1.getMultiplicity()) && end2
+        .getMultiplicity().equals(
+            currentAssociationEnd2.getMultiplicity()))
+        || (end1.getType().equals(currentAssociationEnd2.getType())
+            && end2.getType().equals(
+                currentAssociationEnd1.getType())
+            && end1.getMultiplicity().equals(
+                currentAssociationEnd2.getMultiplicity()) && end2
+            .getMultiplicity().equals(
+                currentAssociationEnd1.getMultiplicity()))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  public String getJoinColumnName() {
+    return columnName;
+  }
+
+  @Override
+  public String getJoinColumnReferenceColumnName() {
+    return referencedColumnName;
+  }
+
+  @Override
+  public String getMappedByName() {
+    return mappedBy;
+  }
+
+  @Override
+  public String getOwningPropertyName() {
+    return ownerPropertyName;
+  }
+
 }

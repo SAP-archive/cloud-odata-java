@@ -38,13 +38,13 @@ public class JPACreateRequest extends JPAWriteRequest {
     jpaEmbeddableKeyObjectMap = new HashMap<String, Class<?>>();
   }
 
-  public JPACreateRequest(Metamodel metamodel) {
+  public JPACreateRequest(final Metamodel metamodel) {
     this();
     this.metamodel = metamodel;
   }
 
   @SuppressWarnings("unchecked")
-  public <T> List<T> process(PostUriInfo postUriInfo, InputStream content, String requestContentType) throws ODataJPARuntimeException {
+  public <T> List<T> process(final PostUriInfo postUriInfo, final InputStream content, final String requestContentType) throws ODataJPARuntimeException {
     final EdmEntitySet entitySet = postUriInfo.getTargetEntitySet();
     EdmEntityType entityType = null;
     try {
@@ -68,7 +68,7 @@ public class JPACreateRequest extends JPAWriteRequest {
               .addContent(e1.getMessage()), e1);
     }
     Object jpaEntity = null;
-    Set<EntityType<?>> entityTypeSet = this.metamodel.getEntities();
+    Set<EntityType<?>> entityTypeSet = metamodel.getEntities();
     String currentEntityName = null;
     for (EntityType<?> entityTypeTemp : entityTypeSet) {
       if (entityTypeTemp.getJavaType().getName().endsWith("." + entityName)) {
@@ -116,17 +116,19 @@ public class JPACreateRequest extends JPAWriteRequest {
 
   @SuppressWarnings("unchecked")
   public final Object parse2JPAEntityValueMap(
-      Object jpaEntity, EdmStructuralType edmEntityType, Map<String, Object> propertyValueMap, String entityName)
+      final Object jpaEntity, final EdmStructuralType edmEntityType, final Map<String, Object> propertyValueMap, final String entityName)
       throws ODataJPARuntimeException {
 
-    if (jpaEntity == null || edmEntityType == null || propertyValueMap == null || propertyValueMap.size() == 0)
+    if (jpaEntity == null || edmEntityType == null || propertyValueMap == null || propertyValueMap.size() == 0) {
       return null;
+    }
 
     String jpaEntityAccessKey = jpaEntity.getClass().getName();
 
-    if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey))
+    if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey)) {
       jpaEntityAccessMap.put(jpaEntityAccessKey,
           getSetters(jpaEntity, edmEntityType, true));
+    }
 
     HashMap<String, Method> setters = jpaEntityAccessMap
         .get(jpaEntityAccessKey);
@@ -145,7 +147,9 @@ public class JPACreateRequest extends JPAWriteRequest {
         }
         Method method = setters.get(key);
         Object propertyValue = propertyValueMap.get(key);
-        if (propertyValue == null) continue;
+        if (propertyValue == null) {
+          continue;
+        }
         if (propertyValue instanceof java.util.GregorianCalendar) {
           propertyValue = ((java.util.GregorianCalendar) propertyValue).getTime();
         }
@@ -156,8 +160,9 @@ public class JPACreateRequest extends JPAWriteRequest {
             parse2JPAEntityValueMap(complexObject, ((EdmComplexType) property.getType()),
                 (Map<String, Object>) propertyValue, propertyName);
             setters.get(key).invoke(jpaEntity, complexObject);
-          } else
+          } else {
             setters.get(key).invoke(jpaEntity, propertyValue);
+          }
         }
       }
 
@@ -226,7 +231,7 @@ public class JPACreateRequest extends JPAWriteRequest {
     return jpaEntity;
   }
 
-  private void populateEmbeddableKey(Object embeddableKeyObject, String key, String setterName, Map<String, Object> propertyValueMap) throws ODataJPARuntimeException {
+  private void populateEmbeddableKey(final Object embeddableKeyObject, final String key, final String setterName, final Map<String, Object> propertyValueMap) throws ODataJPARuntimeException {
     Class<?> propertyClass = jpaEmbeddableKeyObjectMap.get(key);
     Method method = null;
     try {
@@ -257,8 +262,10 @@ public class JPACreateRequest extends JPAWriteRequest {
     }
   }
 
-  private <T> Map<EdmNavigationProperty, EdmEntitySet> createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, String jpaEntityName) throws ODataException {
-    if (jpaEntity == null) return null;
+  private <T> Map<EdmNavigationProperty, EdmEntitySet> createInlinedEntities(final T jpaEntity, final EdmEntitySet entitySet, final ODataEntry entryValues, final String jpaEntityName) throws ODataException {
+    if (jpaEntity == null) {
+      return null;
+    }
     Map<String, Object> relatedPropertyValueMap = new HashMap<String, Object>();
     Map<String, Class<?>> relatedClassMap = new HashMap<String, Class<?>>();
     Map<EdmNavigationProperty, EdmEntitySet> navPropEntitySetMap = new HashMap<EdmNavigationProperty, EdmEntitySet>();
@@ -292,7 +299,7 @@ public class JPACreateRequest extends JPAWriteRequest {
           }
 
           Object relatedData = null;
-          Set<EntityType<?>> entityTypeSet = this.metamodel.getEntities();
+          Set<EntityType<?>> entityTypeSet = metamodel.getEntities();
           String currentEntityName = null;
           for (EntityType<?> entityTypeTemp : entityTypeSet) {
             if (entityTypeTemp.getJavaType().getName().endsWith("." + entityName)) {
@@ -314,12 +321,13 @@ public class JPACreateRequest extends JPAWriteRequest {
           }
           if (relatedValues != null && relatedEntitySet != null) {
             relatedDataList.add(relatedData);
-            if (navPropEntitySetMap.get(navigationProperty) == null)
+            if (navPropEntitySetMap.get(navigationProperty) == null) {
               navPropEntitySetMap.put(navigationProperty, relatedEntitySet);
+            }
             parse2JPAEntityValueMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), currentEntityName);
-          }
-          else
+          } else {
             continue;
+          }
           createInlinedEntities(relatedData, relatedEntitySet, relatedValues, currentEntityName);
         }
       }
@@ -331,21 +339,25 @@ public class JPACreateRequest extends JPAWriteRequest {
 
   @SuppressWarnings("unchecked")
   private void setNavigationProperties(
-      Object jpaEntity, EdmEntitySet entitySet, Map<String, Object> propertyValueMap, String entityName, Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException {
-    if (jpaEntity == null || entitySet == null || propertyValueMap == null || propertyValueMap.size() == 0)
+      final Object jpaEntity, final EdmEntitySet entitySet, final Map<String, Object> propertyValueMap, final String entityName, final Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException {
+    if (jpaEntity == null || entitySet == null || propertyValueMap == null || propertyValueMap.size() == 0) {
       return;
+    }
     List<HashMap<?, ?>> mapList = getSettersForNavigationProperties(jpaEntity, entitySet, relatedClassMap);
     HashMap<String, Method> setters = (HashMap<String, Method>) mapList.get(0);
     HashMap<String, EdmMultiplicity> multiplicityMap = (HashMap<String, EdmMultiplicity>) mapList.get(1);
     for (String key : setters.keySet()) {
       Method method = setters.get(key);
       List<Object> propertyValue = (List<Object>) propertyValueMap.get(key);
-      if (propertyValue == null || propertyValue.size() == 0) continue;
+      if (propertyValue == null || propertyValue.size() == 0) {
+        continue;
+      }
       try {
         if (multiplicityMap.get(key) == EdmMultiplicity.MANY) {
           method.invoke(jpaEntity, propertyValue);
-        } else
+        } else {
           method.invoke(jpaEntity, propertyValue.get(0));
+        }
       } catch (IllegalAccessException e) {
         throw ODataJPARuntimeException
             .throwException(ODataJPARuntimeException.GENERAL
@@ -363,7 +375,7 @@ public class JPACreateRequest extends JPAWriteRequest {
 
   }
 
-  private List<HashMap<?, ?>> getSettersForNavigationProperties(Object jpaEntity, EdmEntitySet edmEntitySet, Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException {
+  private List<HashMap<?, ?>> getSettersForNavigationProperties(final Object jpaEntity, final EdmEntitySet edmEntitySet, final Map<String, Class<?>> relatedClassMap) throws ODataJPARuntimeException {
     List<HashMap<?, ?>> mapList = new ArrayList<HashMap<?, ?>>();
     HashMap<String, Method> setters = new HashMap<String, Method>();
     HashMap<String, EdmMultiplicity> multiplicityMap = new HashMap<String, EdmMultiplicity>();
@@ -400,7 +412,9 @@ public class JPACreateRequest extends JPAWriteRequest {
           multiplicityMap.put(entityName, EdmMultiplicity.MANY);
         } else {
           propertyClass = relatedClassMap.get(entityName);
-          if (propertyClass == null) continue;
+          if (propertyClass == null) {
+            continue;
+          }
           multiplicityMap.put(entityName, EdmMultiplicity.ONE);
         }
         try {
@@ -427,17 +441,18 @@ public class JPACreateRequest extends JPAWriteRequest {
     return mapList;
   }
 
-  private String getSetterName(String navigationPropertyName)
+  private String getSetterName(final String navigationPropertyName)
       throws ODataJPARuntimeException {
     StringBuilder builder = new StringBuilder();
     char c = Character.toUpperCase(navigationPropertyName.charAt(0));
 
     builder.append("set").append(c).append(navigationPropertyName.substring(1)) //$NON-NLS-1$
         .toString();
-    if (builder.length() > 0)
+    if (builder.length() > 0) {
       return builder.toString();
-    else
+    } else {
       return null;
+    }
 
   }
 }

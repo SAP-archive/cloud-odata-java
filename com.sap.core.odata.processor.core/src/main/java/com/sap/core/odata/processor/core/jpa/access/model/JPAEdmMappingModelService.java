@@ -18,205 +18,229 @@ import com.sap.core.odata.processor.api.jpa.model.mapping.JPARelationshipMapType
 
 public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 
-	boolean mappingModelExists = true;
-	private JPAEdmMappingModel mappingModel;
-	private String mappingModelName;
+  boolean mappingModelExists = true;
+  private JPAEdmMappingModel mappingModel;
+  private String mappingModelName;
 
-	public JPAEdmMappingModelService(ODataJPAContext ctx) {
-		mappingModelName = ctx.getJPAEdmMappingModel();
-		if (mappingModelName == null) {
-			mappingModelExists = false;
-		}
-	}
+  public JPAEdmMappingModelService(final ODataJPAContext ctx) {
+    mappingModelName = ctx.getJPAEdmMappingModel();
+    if (mappingModelName == null) {
+      mappingModelExists = false;
+    }
+  }
 
-	@Override
-	public void loadMappingModel() {
+  @Override
+  public void loadMappingModel() {
 
-		if (mappingModelExists) {
-			JAXBContext context;
-			try {
-				context = JAXBContext.newInstance(JPAEdmMappingModel.class);
+    if (mappingModelExists) {
+      JAXBContext context;
+      try {
+        context = JAXBContext.newInstance(JPAEdmMappingModel.class);
 
-				Unmarshaller unmarshaller = context.createUnmarshaller();
-				InputStream is = loadMappingModelInputStream();
-				if (is == null) {
-					mappingModelExists = false;
-					return;
-				}
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        InputStream is = loadMappingModelInputStream();
+        if (is == null) {
+          mappingModelExists = false;
+          return;
+        }
 
-				mappingModel = (JPAEdmMappingModel) unmarshaller.unmarshal(is);
+        mappingModel = (JPAEdmMappingModel) unmarshaller.unmarshal(is);
 
-				if (mappingModel != null)
-					mappingModelExists = true;
+        if (mappingModel != null) {
+          mappingModelExists = true;
+        }
 
-			} catch (JAXBException e) {
-				mappingModelExists = false;
-				ODataJPAModelException.throwException(
-						ODataJPAModelException.GENERAL, e);
-			}
-		}
-	}
+      } catch (JAXBException e) {
+        mappingModelExists = false;
+        ODataJPAModelException.throwException(
+            ODataJPAModelException.GENERAL, e);
+      }
+    }
+  }
 
-	@Override
-	public boolean isMappingModelExists() {
-		return mappingModelExists;
-	}
+  @Override
+  public boolean isMappingModelExists() {
+    return mappingModelExists;
+  }
 
-	@Override
-	public JPAEdmMappingModel getJPAEdmMappingModel() {
-		return mappingModel;
-	}
+  @Override
+  public JPAEdmMappingModel getJPAEdmMappingModel() {
+    return mappingModel;
+  }
 
-	@Override
-	public String mapJPAPersistenceUnit(String persistenceUnitName) {
+  @Override
+  public String mapJPAPersistenceUnit(final String persistenceUnitName) {
 
-		JPAPersistenceUnitMapType persistenceUnit = mappingModel
-				.getPersistenceUnit();
-		if (persistenceUnit.getName().equals(persistenceUnitName))
-			return persistenceUnit.getEDMSchemaNamespace();
+    JPAPersistenceUnitMapType persistenceUnit = mappingModel
+        .getPersistenceUnit();
+    if (persistenceUnit.getName().equals(persistenceUnitName)) {
+      return persistenceUnit.getEDMSchemaNamespace();
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public String mapJPAEntityType(String jpaEntityTypeName) {
+  @Override
+  public String mapJPAEntityType(final String jpaEntityTypeName) {
 
-		JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (jpaEntityTypeMap != null)
-			return jpaEntityTypeMap.getEDMEntityType();
-		else
-			return null;
-	}
+    JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (jpaEntityTypeMap != null) {
+      return jpaEntityTypeMap.getEDMEntityType();
+    } else {
+      return null;
+    }
+  }
 
-	@Override
-	public String mapJPAEntitySet(String jpaEntityTypeName) {
-		JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (jpaEntityTypeMap != null)
-			return jpaEntityTypeMap.getEDMEntitySet();
-		else
-			return null;
-	}
+  @Override
+  public String mapJPAEntitySet(final String jpaEntityTypeName) {
+    JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (jpaEntityTypeMap != null) {
+      return jpaEntityTypeMap.getEDMEntitySet();
+    } else {
+      return null;
+    }
+  }
 
-	@Override
-	public String mapJPAAttribute(String jpaEntityTypeName,
-			String jpaAttributeName) {
-		JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (jpaEntityTypeMap != null
-				&& jpaEntityTypeMap.getJPAAttributes() != null)// Extra Null check for
-																// fixing attributes
-																// removal issue
-																// from mapping
-			for (JPAAttribute jpaAttribute : jpaEntityTypeMap
-					.getJPAAttributes().getJPAAttribute())
-				if (jpaAttribute.getName().equals(jpaAttributeName))
-					return jpaAttribute.getValue();
+  @Override
+  public String mapJPAAttribute(final String jpaEntityTypeName,
+      final String jpaAttributeName) {
+    JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (jpaEntityTypeMap != null
+        && jpaEntityTypeMap.getJPAAttributes() != null) {
+      // fixing attributes
+      // removal issue
+      // from mapping
+      for (JPAAttribute jpaAttribute : jpaEntityTypeMap
+          .getJPAAttributes().getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.getValue();
+        }
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public String mapJPARelationship(String jpaEntityTypeName,
-			String jpaRelationshipName) {
-		JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (jpaEntityTypeMap != null)
-			for (JPARelationship jpaRealtionship : jpaEntityTypeMap
-					.getJPARelationships().getJPARelationship())
-				if (jpaRealtionship.getName().equals(jpaRelationshipName))
-					return jpaRealtionship.getValue();
+  @Override
+  public String mapJPARelationship(final String jpaEntityTypeName,
+      final String jpaRelationshipName) {
+    JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (jpaEntityTypeMap != null) {
+      for (JPARelationship jpaRealtionship : jpaEntityTypeMap
+          .getJPARelationships().getJPARelationship()) {
+        if (jpaRealtionship.getName().equals(jpaRelationshipName)) {
+          return jpaRealtionship.getValue();
+        }
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public String mapJPAEmbeddableType(String jpaEmbeddableTypeName) {
-		JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (jpaEmbeddableType != null)
-			return jpaEmbeddableType.getEDMComplexType();
-		else
-			return null;
-	}
+  @Override
+  public String mapJPAEmbeddableType(final String jpaEmbeddableTypeName) {
+    JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (jpaEmbeddableType != null) {
+      return jpaEmbeddableType.getEDMComplexType();
+    } else {
+      return null;
+    }
+  }
 
-	@Override
-	public String mapJPAEmbeddableTypeAttribute(String jpaEmbeddableTypeName,
-			String jpaAttributeName) {
-		JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (jpaEmbeddableType != null && jpaEmbeddableType.getJPAAttributes() != null)
-			for (JPAAttribute jpaAttribute : jpaEmbeddableType
-					.getJPAAttributes().getJPAAttribute())
-				if (jpaAttribute.getName().equals(jpaAttributeName))
-					return jpaAttribute.getValue();
-		return null;
-	}
+  @Override
+  public String mapJPAEmbeddableTypeAttribute(final String jpaEmbeddableTypeName,
+      final String jpaAttributeName) {
+    JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (jpaEmbeddableType != null && jpaEmbeddableType.getJPAAttributes() != null) {
+      for (JPAAttribute jpaAttribute : jpaEmbeddableType
+          .getJPAAttributes().getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.getValue();
+        }
+      }
+    }
+    return null;
+  }
 
-	private JPAEntityTypeMapType searchJPAEntityTypeMapType(
-			String jpaEntityTypeName) {
-		for (JPAEntityTypeMapType jpaEntityType : mappingModel
-				.getPersistenceUnit().getJPAEntityTypes().getJPAEntityType())
-			if (jpaEntityType.getName().equals(jpaEntityTypeName))
-				return jpaEntityType;
+  private JPAEntityTypeMapType searchJPAEntityTypeMapType(
+      final String jpaEntityTypeName) {
+    for (JPAEntityTypeMapType jpaEntityType : mappingModel
+        .getPersistenceUnit().getJPAEntityTypes().getJPAEntityType()) {
+      if (jpaEntityType.getName().equals(jpaEntityTypeName)) {
+        return jpaEntityType;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	private JPAEmbeddableTypeMapType searchJPAEmbeddableTypeMapType(
-			String jpaEmbeddableTypeName) {
-		for (JPAEmbeddableTypeMapType jpaEmbeddableType : mappingModel
-				.getPersistenceUnit().getJPAEmbeddableTypes()
-				.getJPAEmbeddableType())
-			if (jpaEmbeddableType.getName().equals(jpaEmbeddableTypeName))
-				return jpaEmbeddableType;
+  private JPAEmbeddableTypeMapType searchJPAEmbeddableTypeMapType(
+      final String jpaEmbeddableTypeName) {
+    for (JPAEmbeddableTypeMapType jpaEmbeddableType : mappingModel
+        .getPersistenceUnit().getJPAEmbeddableTypes()
+        .getJPAEmbeddableType()) {
+      if (jpaEmbeddableType.getName().equals(jpaEmbeddableTypeName)) {
+        return jpaEmbeddableType;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	protected InputStream loadMappingModelInputStream() {
-		InputStream is = JPAEdmMappingModelService.class.getClassLoader()
-				.getResourceAsStream("../../" + mappingModelName);
+  protected InputStream loadMappingModelInputStream() {
+    InputStream is = JPAEdmMappingModelService.class.getClassLoader()
+        .getResourceAsStream("../../" + mappingModelName);
 
-		return is;
+    return is;
 
-	}
+  }
 
-	@Override
-	public boolean checkExclusionOfJPAEntityType(String jpaEntityTypeName) {
-		JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (type != null)
-			return type.isExclude();
-		return false;
-	}
+  @Override
+  public boolean checkExclusionOfJPAEntityType(final String jpaEntityTypeName) {
+    JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (type != null) {
+      return type.isExclude();
+    }
+    return false;
+  }
 
-	@Override
-	public boolean checkExclusionOfJPAAttributeType(String jpaEntityTypeName,
-			String jpaAttributeName) {
-		JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
-		if (type != null && type.getJPAAttributes() !=null) {
-			for (JPAAttribute jpaAttribute : type.getJPAAttributes()
-					.getJPAAttribute())
-				if (jpaAttribute.getName().equals(jpaAttributeName))
-					return jpaAttribute.isExclude();
-		}
-		return false;
-	}
+  @Override
+  public boolean checkExclusionOfJPAAttributeType(final String jpaEntityTypeName,
+      final String jpaAttributeName) {
+    JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (type != null && type.getJPAAttributes() != null) {
+      for (JPAAttribute jpaAttribute : type.getJPAAttributes()
+          .getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.isExclude();
+        }
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public boolean checkExclusionOfJPAEmbeddableType(
-			String jpaEmbeddableTypeName) {
-		JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (type != null)
-			return type.isExclude();
-		return false;
-	}
+  @Override
+  public boolean checkExclusionOfJPAEmbeddableType(
+      final String jpaEmbeddableTypeName) {
+    JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (type != null) {
+      return type.isExclude();
+    }
+    return false;
+  }
 
-	@Override
-	public boolean checkExclusionOfJPAEmbeddableAttributeType(
-			String jpaEmbeddableTypeName, String jpaAttributeName) {
-		JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-		if (type != null && type.getJPAAttributes() != null) {
-			for (JPAAttribute jpaAttribute : type.getJPAAttributes()
-					.getJPAAttribute())
-				if (jpaAttribute.getName().equals(jpaAttributeName))
-					return jpaAttribute.isExclude();
-		}
-		return false;
-	}
+  @Override
+  public boolean checkExclusionOfJPAEmbeddableAttributeType(
+      final String jpaEmbeddableTypeName, final String jpaAttributeName) {
+    JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (type != null && type.getJPAAttributes() != null) {
+      for (JPAAttribute jpaAttribute : type.getJPAAttributes()
+          .getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.isExclude();
+        }
+      }
+    }
+    return false;
+  }
 }

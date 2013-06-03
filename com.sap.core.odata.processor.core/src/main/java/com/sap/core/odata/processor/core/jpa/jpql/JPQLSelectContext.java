@@ -15,139 +15,137 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLSelectContextView;
 import com.sap.core.odata.processor.core.jpa.ODataExpressionParser;
 
 public class JPQLSelectContext extends JPQLContext implements
-		JPQLSelectContextView {
+    JPQLSelectContextView {
 
+  protected String selectExpression;
+  protected HashMap<String, String> orderByCollection;
+  protected String whereCondition;
 
-	protected String selectExpression;
-	protected HashMap<String, String> orderByCollection;
-	protected String whereCondition;
+  protected boolean isCountOnly = false;//Support for $count
 
-	protected boolean isCountOnly = false;//Support for $count
-	
-	public JPQLSelectContext(boolean isCountOnly){
-		this.isCountOnly = isCountOnly; 
-	}
+  public JPQLSelectContext(final boolean isCountOnly) {
+    this.isCountOnly = isCountOnly;
+  }
 
-	protected final void setOrderByCollection(
-			HashMap<String, String> orderByCollection) {
-		this.orderByCollection = orderByCollection;
-	}
+  protected final void setOrderByCollection(
+      final HashMap<String, String> orderByCollection) {
+    this.orderByCollection = orderByCollection;
+  }
 
-	protected final void setWhereExpression(String filterExpression) {
-		this.whereCondition = filterExpression;
-	}
-	
-	protected final void setSelectExpression(String selectExpression) {
-		this.selectExpression = selectExpression;
-	}
+  protected final void setWhereExpression(final String filterExpression) {
+    whereCondition = filterExpression;
+  }
 
-	@Override
-	public String getSelectExpression() {
-		return selectExpression;
-	}
-	
-	@Override
-	public HashMap<String, String> getOrderByCollection() {
-		return this.orderByCollection;
-	}
+  protected final void setSelectExpression(final String selectExpression) {
+    this.selectExpression = selectExpression;
+  }
 
-	@Override
-	public String getWhereExpression() {
-		return this.whereCondition;
-	}
+  @Override
+  public String getSelectExpression() {
+    return selectExpression;
+  }
 
-	public class JPQLSelectContextBuilder
-			extends
-			com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder {
+  @Override
+  public HashMap<String, String> getOrderByCollection() {
+    return orderByCollection;
+  }
 
-		protected GetEntitySetUriInfo entitySetView;
+  @Override
+  public String getWhereExpression() {
+    return whereCondition;
+  }
 
-		@Override
-		public JPQLContext build() throws ODataJPAModelException,
-				ODataJPARuntimeException {
-			if (entitySetView != null) {
+  public class JPQLSelectContextBuilder
+      extends
+      com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder {
 
-				try {
+    protected GetEntitySetUriInfo entitySetView;
 
-					if(JPQLSelectContext.this.isCountOnly)
-						JPQLSelectContext.this.setType(JPQLContextType.SELECT_COUNT);
-					else
-						JPQLSelectContext.this.setType(JPQLContextType.SELECT);
-					EdmEntityType entityType = entitySetView
-							.getTargetEntitySet().getEntityType();
-					EdmMapping mapping = entityType.getMapping();
-					if(mapping != null)
-						JPQLSelectContext.this.setJPAEntityName(mapping.getInternalName());
-					else
-						JPQLSelectContext.this.setJPAEntityName(entityType.getName());
-					
-					JPQLSelectContext.this.setJPAEntityAlias(generateJPAEntityAlias());
+    @Override
+    public JPQLContext build() throws ODataJPAModelException,
+        ODataJPARuntimeException {
+      if (entitySetView != null) {
 
-					JPQLSelectContext.this
-							.setOrderByCollection(generateOrderByFileds());
+        try {
 
-					JPQLSelectContext.this
-							.setSelectExpression(generateSelectExpression());
+          if (isCountOnly) {
+            setType(JPQLContextType.SELECT_COUNT);
+          } else {
+            setType(JPQLContextType.SELECT);
+          }
+          EdmEntityType entityType = entitySetView
+              .getTargetEntitySet().getEntityType();
+          EdmMapping mapping = entityType.getMapping();
+          if (mapping != null) {
+            setJPAEntityName(mapping.getInternalName());
+          } else {
+            setJPAEntityName(entityType.getName());
+          }
 
-					JPQLSelectContext.this
-							.setWhereExpression(generateWhereExpression());
-				} catch (ODataException e) {
-					throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.INNER_EXCEPTION, e);
-				}
-			}
+          setJPAEntityAlias(generateJPAEntityAlias());
 
-			return JPQLSelectContext.this;
+          setOrderByCollection(generateOrderByFileds());
 
-		}
+          setSelectExpression(generateSelectExpression());
 
-		@Override
-		protected void setResultsView(Object resultsView) {
-			if (resultsView instanceof GetEntitySetUriInfo) {
-				this.entitySetView = (GetEntitySetUriInfo) resultsView;
-			}
+          setWhereExpression(generateWhereExpression());
+        } catch (ODataException e) {
+          throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.INNER_EXCEPTION, e);
+        }
+      }
 
-		}
-		
-		/*
-		 * Generate Select Clause 
-		 */
-		protected String generateSelectExpression() throws EdmException {
-			return getJPAEntityAlias();			
-		}
+      return JPQLSelectContext.this;
 
-		/*
-		 * Generate Order By Clause Fields
-		 */
-		protected HashMap<String, String> generateOrderByFileds()
-				throws ODataJPARuntimeException, EdmException {
+    }
 
-			if (entitySetView.getOrderBy() != null) {
+    @Override
+    protected void setResultsView(final Object resultsView) {
+      if (resultsView instanceof GetEntitySetUriInfo) {
+        entitySetView = (GetEntitySetUriInfo) resultsView;
+      }
 
-				return ODataExpressionParser
-						.parseToJPAOrderByExpression(entitySetView.getOrderBy(),getJPAEntityAlias());
+    }
 
-			} else if (entitySetView.getTop() != null
-					|| entitySetView.getSkip() != null) {
+    /*
+     * Generate Select Clause 
+     */
+    protected String generateSelectExpression() throws EdmException {
+      return getJPAEntityAlias();
+    }
 
-					return ODataExpressionParser
-							.parseKeyPropertiesToJPAOrderByExpression(entitySetView.getTargetEntitySet()
-									.getEntityType().getKeyProperties(),getJPAEntityAlias());
-			} else
-				return null;
-			
-		}
+    /*
+     * Generate Order By Clause Fields
+     */
+    protected HashMap<String, String> generateOrderByFileds()
+        throws ODataJPARuntimeException, EdmException {
 
-		/*
-		 * Generate Where Clause Expression
-		 */
-		protected String generateWhereExpression() throws ODataException {
-			if(entitySetView.getFilter() != null){ 
-			return ODataExpressionParser
-					.parseToJPAWhereExpression(entitySetView.getFilter(),getJPAEntityAlias());
-			}
-			return null;
-		}
-	}
+      if (entitySetView.getOrderBy() != null) {
 
-	
+        return ODataExpressionParser
+            .parseToJPAOrderByExpression(entitySetView.getOrderBy(), getJPAEntityAlias());
+
+      } else if (entitySetView.getTop() != null
+          || entitySetView.getSkip() != null) {
+
+        return ODataExpressionParser
+            .parseKeyPropertiesToJPAOrderByExpression(entitySetView.getTargetEntitySet()
+                .getEntityType().getKeyProperties(), getJPAEntityAlias());
+      } else {
+        return null;
+      }
+
+    }
+
+    /*
+     * Generate Where Clause Expression
+     */
+    protected String generateWhereExpression() throws ODataException {
+      if (entitySetView.getFilter() != null) {
+        return ODataExpressionParser
+            .parseToJPAWhereExpression(entitySetView.getFilter(), getJPAEntityAlias());
+      }
+      return null;
+    }
+  }
+
 }

@@ -30,140 +30,141 @@ import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.ComplexTy
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
-	private static JPAEdmKeyView keyView;
-	private static JPAEdmKeyTest objJpaEdmKeyTest;
+  private static JPAEdmKeyView keyView;
+  private static JPAEdmKeyTest objJpaEdmKeyTest;
 
-	@BeforeClass
-	public static void setup() {
-		objJpaEdmKeyTest = new JPAEdmKeyTest();
-		keyView = new JPAEdmKey(objJpaEdmKeyTest, objJpaEdmKeyTest);
-	}
+  @BeforeClass
+  public static void setup() {
+    objJpaEdmKeyTest = new JPAEdmKeyTest();
+    keyView = new JPAEdmKey(objJpaEdmKeyTest, objJpaEdmKeyTest);
+  }
 
-	@SuppressWarnings("hiding")
-	private class JPAAttributeA<Object, ComplexTypeA> extends
-			JPAAttributeMock<Object, ComplexTypeA> {
-		@SuppressWarnings("unchecked")
-		@Override
-		public Class<ComplexTypeA> getJavaType() {
-			return (Class<ComplexTypeA>) JPAEdmMockData.ComplexType.ComplexTypeA.class;
-		}
-	}
+  @SuppressWarnings("hiding")
+  private class JPAAttributeA<Object, ComplexTypeA> extends
+      JPAAttributeMock<Object, ComplexTypeA> {
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<ComplexTypeA> getJavaType() {
+      return (Class<ComplexTypeA>) JPAEdmMockData.ComplexType.ComplexTypeA.class;
+    }
+  }
 
-	@Test
-	public void testBuildComplexKey() {
-		try {
-			keyView.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
+  @Test
+  public void testBuildComplexKey() {
+    try {
+      keyView.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
 
-		Key key = keyView.getEdmKey();
+    Key key = keyView.getEdmKey();
 
-		assertEquals(
-				JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_A,
-				key.getKeys().get(0).getName());
-		assertEquals(
-				JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_B,
-				key.getKeys().get(1).getName());
-		assertEquals(
-				JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_D,
-				key.getKeys().get(2).getName());
-		assertEquals(
-				JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E,
-				key.getKeys().get(3).getName());
+    assertEquals(
+        JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_A,
+        key.getKeys().get(0).getName());
+    assertEquals(
+        JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_B,
+        key.getKeys().get(1).getName());
+    assertEquals(
+        JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_D,
+        key.getKeys().get(2).getName());
+    assertEquals(
+        JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E,
+        key.getKeys().get(3).getName());
 
-	}
+  }
 
-	@Test
-	public void testGetBuilderIdempotent() {
-		JPAEdmBuilder builder1 = keyView.getBuilder();
-		JPAEdmBuilder builder2 = keyView.getBuilder();
+  @Test
+  public void testGetBuilderIdempotent() {
+    JPAEdmBuilder builder1 = keyView.getBuilder();
+    JPAEdmBuilder builder2 = keyView.getBuilder();
 
-		assertEquals(builder1.hashCode(), builder2.hashCode());
-	}
+    assertEquals(builder1.hashCode(), builder2.hashCode());
+  }
 
-	@Override
-	public Attribute<?, ?> getJPAAttribute() {
-		return new JPAAttributeA<Object, ComplexTypeA>();
+  @Override
+  public Attribute<?, ?> getJPAAttribute() {
+    return new JPAAttributeA<Object, ComplexTypeA>();
 
-	}
+  }
 
-	@Override
-	public ComplexType searchEdmComplexType(FullQualifiedName arg0) {
-		return searchEdmComplexType(arg0.getName());
-	}
+  @Override
+  public ComplexType searchEdmComplexType(final FullQualifiedName arg0) {
+    return searchEdmComplexType(arg0.getName());
+  }
 
-	@Override
-	public ComplexType searchEdmComplexType(String arg0) {
-		if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeA.class.getName()))
-			return buildComplexTypeA();
-		else if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeB.class
-				.getSimpleName()))
-			return buildComplexTypeB();
+  @Override
+  public ComplexType searchEdmComplexType(final String arg0) {
+    if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeA.class.getName())) {
+      return buildComplexTypeA();
+    } else if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeB.class
+        .getSimpleName())) {
+      return buildComplexTypeB();
+    }
 
-		return null;
+    return null;
 
-	}
+  }
 
-	private ComplexType buildComplexTypeB() {
-		ComplexType complexType = new ComplexType();
-		complexType.setProperties(buildPropertiesB());
+  private ComplexType buildComplexTypeB() {
+    ComplexType complexType = new ComplexType();
+    complexType.setProperties(buildPropertiesB());
 
-		return complexType;
-	}
+    return complexType;
+  }
 
-	private List<Property> buildPropertiesB() {
-		List<Property> propertyList = new ArrayList<Property>();
+  private List<Property> buildPropertiesB() {
+    List<Property> propertyList = new ArrayList<Property>();
 
-		SimpleProperty property = new SimpleProperty();
-		property.setName(JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_D);
-		property.setType(EdmSimpleTypeKind.Int16);
+    SimpleProperty property = new SimpleProperty();
+    property.setName(JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_D);
+    property.setType(EdmSimpleTypeKind.Int16);
 
-		propertyList.add(property);
+    propertyList.add(property);
 
-		property = new SimpleProperty();
-		property.setName(JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E);
-		property.setType(EdmSimpleTypeKind.Int16);
+    property = new SimpleProperty();
+    property.setName(JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E);
+    property.setType(EdmSimpleTypeKind.Int16);
 
-		propertyList.add(property);
+    propertyList.add(property);
 
-		return propertyList;
-	}
+    return propertyList;
+  }
 
-	private ComplexType buildComplexTypeA() {
-		ComplexType complexType = new ComplexType();
-		complexType.setProperties(buildPropertiesA());
+  private ComplexType buildComplexTypeA() {
+    ComplexType complexType = new ComplexType();
+    complexType.setProperties(buildPropertiesA());
 
-		return complexType;
-	}
+    return complexType;
+  }
 
-	private List<Property> buildPropertiesA() {
+  private List<Property> buildPropertiesA() {
 
-		List<Property> propertyList = new ArrayList<Property>();
+    List<Property> propertyList = new ArrayList<Property>();
 
-		SimpleProperty property = new SimpleProperty();
-		property.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_A);
-		property.setType(EdmSimpleTypeKind.Int16);
+    SimpleProperty property = new SimpleProperty();
+    property.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_A);
+    property.setType(EdmSimpleTypeKind.Int16);
 
-		propertyList.add(property);
+    propertyList.add(property);
 
-		property = new SimpleProperty();
-		property.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_B);
-		property.setType(EdmSimpleTypeKind.Int16);
+    property = new SimpleProperty();
+    property.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_B);
+    property.setType(EdmSimpleTypeKind.Int16);
 
-		propertyList.add(property);
+    propertyList.add(property);
 
-		ComplexProperty complexProperty = new ComplexProperty();
-		complexProperty
-				.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_C);
-		complexProperty.setType(new FullQualifiedName(ODataJPAContextMock.NAMESPACE,
-				JPAEdmMockData.ComplexType.ComplexTypeB.name));
+    ComplexProperty complexProperty = new ComplexProperty();
+    complexProperty
+        .setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_C);
+    complexProperty.setType(new FullQualifiedName(ODataJPAContextMock.NAMESPACE,
+        JPAEdmMockData.ComplexType.ComplexTypeB.name));
 
-		propertyList.add(complexProperty);
-		return propertyList;
+    propertyList.add(complexProperty);
+    return propertyList;
 
-	}
+  }
 
 }

@@ -14,81 +14,82 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLSelectSingleContextView;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
-	
-	private String selectExpression;
-	private List<KeyPredicate> keyPredicates;
-	
-	protected void setKeyPredicates(List<KeyPredicate> keyPredicates) {
-		this.keyPredicates = keyPredicates;		
-	}
 
+  private String selectExpression;
+  private List<KeyPredicate> keyPredicates;
 
-	public List<KeyPredicate> getKeyPredicates() {
-		return this.keyPredicates;
-	}
-	
-	protected final void setSelectExpression(String selectExpression) {
-		this.selectExpression = selectExpression;
-	}
+  protected void setKeyPredicates(final List<KeyPredicate> keyPredicates) {
+    this.keyPredicates = keyPredicates;
+  }
 
-	@Override
-	public String getSelectExpression() {
-		return selectExpression;
-	}
-	
-	public class JPQLSelectSingleContextBuilder
-			extends
-			com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder {
+  @Override
+  public List<KeyPredicate> getKeyPredicates() {
+    return keyPredicates;
+  }
 
-		protected GetEntityUriInfo entityView;
+  protected final void setSelectExpression(final String selectExpression) {
+    this.selectExpression = selectExpression;
+  }
 
-		@Override
-		public JPQLContext build() throws ODataJPAModelException, ODataJPARuntimeException {
-			if (entityView != null) {
+  @Override
+  public String getSelectExpression() {
+    return selectExpression;
+  }
 
-				try {
+  public class JPQLSelectSingleContextBuilder
+      extends
+      com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder {
 
-					JPQLSelectSingleContext.this.setType(JPQLContextType.SELECT_SINGLE);
-					
-					EdmEntityType entityType = entityView
-							.getTargetEntitySet().getEntityType();
-					EdmMapping mapping = entityType.getMapping();
-					if(mapping != null)
-						JPQLSelectSingleContext.this.setJPAEntityName(mapping.getInternalName());
-					else
-						JPQLSelectSingleContext.this.setJPAEntityName(entityType.getName());
-					
-					JPQLSelectSingleContext.this.setJPAEntityAlias(generateJPAEntityAlias());
-					
-					JPQLSelectSingleContext.this.setKeyPredicates(entityView.getKeyPredicates());
-					
-					JPQLSelectSingleContext.this.setSelectExpression(generateSelectExpression());
+    protected GetEntityUriInfo entityView;
 
-				} catch (EdmException e) {
-					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.GENERAL.addContent(e
-									.getMessage()), e);
-				}
+    @Override
+    public JPQLContext build() throws ODataJPAModelException, ODataJPARuntimeException {
+      if (entityView != null) {
 
-			}
+        try {
 
-			return JPQLSelectSingleContext.this;
+          setType(JPQLContextType.SELECT_SINGLE);
 
-		}
+          EdmEntityType entityType = entityView
+              .getTargetEntitySet().getEntityType();
+          EdmMapping mapping = entityType.getMapping();
+          if (mapping != null) {
+            setJPAEntityName(mapping.getInternalName());
+          } else {
+            setJPAEntityName(entityType.getName());
+          }
 
-		@Override
-		protected void setResultsView(Object resultsView) {
-			if (resultsView instanceof GetEntityUriInfo) {
-				this.entityView = (GetEntityUriInfo) resultsView;
-			}
+          setJPAEntityAlias(generateJPAEntityAlias());
 
-		}
-		
-		/*
-		 * Generate Select Clause 
-		 */
-		protected String generateSelectExpression() throws EdmException {
-			return getJPAEntityAlias();		
-		}
-	}	
+          setKeyPredicates(entityView.getKeyPredicates());
+
+          setSelectExpression(generateSelectExpression());
+
+        } catch (EdmException e) {
+          throw ODataJPARuntimeException.throwException(
+              ODataJPARuntimeException.GENERAL.addContent(e
+                  .getMessage()), e);
+        }
+
+      }
+
+      return JPQLSelectSingleContext.this;
+
+    }
+
+    @Override
+    protected void setResultsView(final Object resultsView) {
+      if (resultsView instanceof GetEntityUriInfo) {
+        entityView = (GetEntityUriInfo) resultsView;
+      }
+
+    }
+
+    /*
+     * Generate Select Clause 
+     */
+    protected String generateSelectExpression() throws EdmException {
+      return getJPAEntityAlias();
+    }
+  }
 }

@@ -12,62 +12,61 @@ import org.junit.Test;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 
-public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
-	
-	private JPAEdmBaseViewImplTest objJPAEdmBaseViewImplTest;
-	private JPAEdmBaseViewImpl objJPAEdmBaseViewImpl;
+public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView {
 
-	@Before
-	public void setUp() {
-		objJPAEdmBaseViewImplTest = new JPAEdmBaseViewImplTest();
-		objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(objJPAEdmBaseViewImplTest) {
-			
-			@Override
-			public JPAEdmBuilder getBuilder() {
-				return null;
-			}
-		};
-		
-		objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(getJPAMetaModel(),getpUnitName()) {
-			
-			@Override
-			public JPAEdmBuilder getBuilder() {
-				return null;
-			}
-		};
-		
-	}
+  private JPAEdmBaseViewImplTest objJPAEdmBaseViewImplTest;
+  private JPAEdmBaseViewImpl objJPAEdmBaseViewImpl;
 
-	@Test
-	public void testGetpUnitName() {
-		assertTrue(objJPAEdmBaseViewImpl.getpUnitName().equals("salesorderprocessing"));
-	}
+  @Before
+  public void setUp() {
+    objJPAEdmBaseViewImplTest = new JPAEdmBaseViewImplTest();
+    objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(objJPAEdmBaseViewImplTest) {
 
-	@Test
-	public void testGetJPAMetaModel() {
-		assertNotNull(objJPAEdmBaseViewImpl.getJPAMetaModel());
-	}
+      @Override
+      public JPAEdmBuilder getBuilder() {
+        return null;
+      }
+    };
 
-	@Test
-	public void testIsConsistent() {
-		assertTrue(objJPAEdmBaseViewImpl.isConsistent());
-	}
+    objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(getJPAMetaModel(), getpUnitName()) {
 
-	@Test
-	public void testClean() {
-		objJPAEdmBaseViewImpl.clean();
-		assertFalse(objJPAEdmBaseViewImpl.isConsistent());
-	}
-	
-	@Override
-	public String getpUnitName(){
-		return "salesorderprocessing";
-	}
+      @Override
+      public JPAEdmBuilder getBuilder() {
+        return null;
+      }
+    };
 
-	@Override
-	public Metamodel getJPAMetaModel() {
-		return new JPAMetaModelMock();
-	}
+  }
 
+  @Test
+  public void testGetpUnitName() {
+    assertTrue(objJPAEdmBaseViewImpl.getpUnitName().equals("salesorderprocessing"));
+  }
+
+  @Test
+  public void testGetJPAMetaModel() {
+    assertNotNull(objJPAEdmBaseViewImpl.getJPAMetaModel());
+  }
+
+  @Test
+  public void testIsConsistent() {
+    assertTrue(objJPAEdmBaseViewImpl.isConsistent());
+  }
+
+  @Test
+  public void testClean() {
+    objJPAEdmBaseViewImpl.clean();
+    assertFalse(objJPAEdmBaseViewImpl.isConsistent());
+  }
+
+  @Override
+  public String getpUnitName() {
+    return "salesorderprocessing";
+  }
+
+  @Override
+  public Metamodel getJPAMetaModel() {
+    return new JPAMetaModelMock();
+  }
 
 }

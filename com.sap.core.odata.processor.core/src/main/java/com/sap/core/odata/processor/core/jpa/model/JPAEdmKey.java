@@ -18,91 +18,96 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
 
 public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
-	private JPAEdmPropertyView propertyView;
-	private JPAEdmComplexTypeView complexTypeView = null;
-	private boolean isBuildModeComplexType = false;
-	private Key key;
+  private JPAEdmPropertyView propertyView;
+  private JPAEdmComplexTypeView complexTypeView = null;
+  private boolean isBuildModeComplexType = false;
+  private Key key;
 
-	public JPAEdmKey(JPAEdmProperty view) {
-		super(view);
-		this.propertyView = view;
-	}
+  public JPAEdmKey(final JPAEdmProperty view) {
+    super(view);
+    propertyView = view;
+  }
 
-	public JPAEdmKey(JPAEdmComplexTypeView complexTypeView,
-			JPAEdmPropertyView propertyView) {
-		super(complexTypeView);
-		this.propertyView = propertyView;
-		this.complexTypeView = complexTypeView;
-		isBuildModeComplexType = true;
-	}
+  public JPAEdmKey(final JPAEdmComplexTypeView complexTypeView,
+      final JPAEdmPropertyView propertyView) {
+    super(complexTypeView);
+    this.propertyView = propertyView;
+    this.complexTypeView = complexTypeView;
+    isBuildModeComplexType = true;
+  }
 
-	@Override
-	public JPAEdmBuilder getBuilder() {
-		if (this.builder == null)
-			this.builder = new JPAEdmKeyBuider();
-		
-		return builder;
-	}
+  @Override
+  public JPAEdmBuilder getBuilder() {
+    if (builder == null) {
+      builder = new JPAEdmKeyBuider();
+    }
 
-	@Override
-	public Key getEdmKey() {
-		return this.key;
-	}
+    return builder;
+  }
 
-	private class JPAEdmKeyBuider implements JPAEdmBuilder {
+  @Override
+  public Key getEdmKey() {
+    return key;
+  }
 
-		@Override
-		public void build() throws ODataJPAModelException {
+  private class JPAEdmKeyBuider implements JPAEdmBuilder {
 
-			List<PropertyRef> propertyRefList = null;
-			if (key == null)
-				key = new Key();
+    @Override
+    public void build() throws ODataJPAModelException {
 
-			if (key.getKeys() == null) {
-				propertyRefList = new ArrayList<PropertyRef>();
-				key.setKeys(propertyRefList);
-			} else {
-				propertyRefList = key.getKeys();
-			}
+      List<PropertyRef> propertyRefList = null;
+      if (key == null) {
+        key = new Key();
+      }
 
-			if (isBuildModeComplexType) {
-				ComplexType complexType = complexTypeView
-						.searchEdmComplexType(propertyView
-								.getJPAAttribute().getJavaType().getName());
-				normalizeComplexKey(complexType, propertyRefList);
-			} else {
-				PropertyRef propertyRef = new PropertyRef();
-				propertyRef.setName(propertyView.getEdmSimpleProperty().getName());
-				Facets facets = (Facets) propertyView.getEdmSimpleProperty().getFacets();
-				if(facets == null)
-					propertyView.getEdmSimpleProperty().setFacets(new Facets().setNullable(false));
-				else
-					facets.setNullable(false);
-				propertyRefList.add(propertyRef);
-			}
+      if (key.getKeys() == null) {
+        propertyRefList = new ArrayList<PropertyRef>();
+        key.setKeys(propertyRefList);
+      } else {
+        propertyRefList = key.getKeys();
+      }
 
-		}
-		//TODO think how to stop the recursion if A includes B and B includes A!!!!!!
-		public void normalizeComplexKey(ComplexType complexType,List<PropertyRef> propertyRefList) {
-			for (Property property : complexType.getProperties()) {
-				try {
+      if (isBuildModeComplexType) {
+        ComplexType complexType = complexTypeView
+            .searchEdmComplexType(propertyView
+                .getJPAAttribute().getJavaType().getName());
+        normalizeComplexKey(complexType, propertyRefList);
+      } else {
+        PropertyRef propertyRef = new PropertyRef();
+        propertyRef.setName(propertyView.getEdmSimpleProperty().getName());
+        Facets facets = (Facets) propertyView.getEdmSimpleProperty().getFacets();
+        if (facets == null) {
+          propertyView.getEdmSimpleProperty().setFacets(new Facets().setNullable(false));
+        } else {
+          facets.setNullable(false);
+        }
+        propertyRefList.add(propertyRef);
+      }
 
-					SimpleProperty simpleProperty = (SimpleProperty) property;
-					Facets facets = (Facets) simpleProperty.getFacets();
-					if(facets == null)
-						simpleProperty.setFacets(new Facets().setNullable(false));
-					else
-						facets.setNullable(false);
-					PropertyRef propertyRef = new PropertyRef();
-					propertyRef.setName(simpleProperty.getName());
-					propertyRefList.add(propertyRef);
+    }
 
-				} catch (ClassCastException e) {
-					ComplexProperty complexProperty = (ComplexProperty) property;
-					normalizeComplexKey(complexTypeView.searchEdmComplexType(complexProperty.getType()), propertyRefList);
-				}
+    //TODO think how to stop the recursion if A includes B and B includes A!!!!!!
+    public void normalizeComplexKey(final ComplexType complexType, final List<PropertyRef> propertyRefList) {
+      for (Property property : complexType.getProperties()) {
+        try {
 
-			}
-		}
-	}
+          SimpleProperty simpleProperty = (SimpleProperty) property;
+          Facets facets = (Facets) simpleProperty.getFacets();
+          if (facets == null) {
+            simpleProperty.setFacets(new Facets().setNullable(false));
+          } else {
+            facets.setNullable(false);
+          }
+          PropertyRef propertyRef = new PropertyRef();
+          propertyRef.setName(simpleProperty.getName());
+          propertyRefList.add(propertyRef);
+
+        } catch (ClassCastException e) {
+          ComplexProperty complexProperty = (ComplexProperty) property;
+          normalizeComplexKey(complexTypeView.searchEdmComplexType(complexProperty.getType()), propertyRefList);
+        }
+
+      }
+    }
+  }
 }
