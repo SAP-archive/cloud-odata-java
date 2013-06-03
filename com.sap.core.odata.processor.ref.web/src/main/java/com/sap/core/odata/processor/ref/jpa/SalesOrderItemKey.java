@@ -7,62 +7,67 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class SalesOrderItemKey implements Serializable {
-		
-	private static final long serialVersionUID = 1L;
 
-	public SalesOrderItemKey() {
-		//No arguement constructor	
-	}
-	
-	public SalesOrderItemKey(long liId) {
-		super();
-		this.liId = liId;
-	}
+  private static final long serialVersionUID = 1L;
 
-	@Column(name = "Sales_Order_Id",nullable = false)
-	private long soId;
-	
-	@Column(name = "Sales_Order_Item_Id",unique = true)
-	private long liId;
-		
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (liId ^ (liId >>> 32));
-		result = prime * result + (int) (soId ^ (soId >>> 32));
-		return result;
-	}
+  public SalesOrderItemKey() {
+    //No arguement constructor	
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SalesOrderItemKey other = (SalesOrderItemKey) obj;
-		if (liId != other.liId)
-			return false;
-		if (soId != other.soId)
-			return false;
-		return true;
-	}
+  public SalesOrderItemKey(final long liId) {
+    super();
+    this.liId = liId;
+  }
 
-	public long getSoId() {
-		return soId;
-	}
+  @Column(name = "Sales_Order_Id", nullable = false)
+  private long soId;
 
-	public void setSoId(long soId) {
-		this.soId = soId;
-	}
+  @Column(name = "Sales_Order_Item_Id", unique = true)
+  private long liId;
 
-	public long getLiId() {
-		return liId;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (int) (liId ^ (liId >>> 32));
+    result = prime * result + (int) (soId ^ (soId >>> 32));
+    return result;
+  }
 
-	public void setLiId(long liId) {
-		this.liId = liId;
-	}
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    SalesOrderItemKey other = (SalesOrderItemKey) obj;
+    if (liId != other.liId) {
+      return false;
+    }
+    if (soId != other.soId) {
+      return false;
+    }
+    return true;
+  }
+
+  public long getSoId() {
+    return soId;
+  }
+
+  public void setSoId(final long soId) {
+    this.soId = soId;
+  }
+
+  public long getLiId() {
+    return liId;
+  }
+
+  public void setLiId(final long liId) {
+    this.liId = liId;
+  }
 }

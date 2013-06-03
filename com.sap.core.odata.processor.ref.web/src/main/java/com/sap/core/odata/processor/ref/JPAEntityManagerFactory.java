@@ -9,14 +9,17 @@ public class JPAEntityManagerFactory {
 
   private static HashMap<String, EntityManagerFactory> emfMap;
 
-  public static EntityManagerFactory getEntityManagerFactory(String pUnit) {
-    if (pUnit == null) return null;
-    if (emfMap == null)
+  public static EntityManagerFactory getEntityManagerFactory(final String pUnit) {
+    if (pUnit == null) {
+      return null;
+    }
+    if (emfMap == null) {
       emfMap = new HashMap<String, EntityManagerFactory>();
+    }
 
-    if (emfMap.containsKey(pUnit))
+    if (emfMap.containsKey(pUnit)) {
       return emfMap.get(pUnit);
-    else
+    } else
     {
       EntityManagerFactory emf = Persistence.createEntityManagerFactory(pUnit);
       emfMap.put(pUnit, emf);
@@ -24,12 +27,12 @@ public class JPAEntityManagerFactory {
     }
 
   }
-  
-  public static void closeAll( ){
-    
+
+  public static void closeAll() {
+
   }
-  
-  public static void closeMe(String pUnit){
-    
+
+  public static void closeMe(final String pUnit) {
+
   }
 }

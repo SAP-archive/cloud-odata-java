@@ -6,72 +6,72 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class DummyComplexAttributeForExclusion {
 
-	public DummyComplexAttributeForExclusion() {	
-		super();
-		
-	}
+  public DummyComplexAttributeForExclusion() {
+    super();
 
-	public DummyComplexAttributeForExclusion(short houseNumber, String streetName, String city,
-			String country) {
-		this();
-		this.houseNumber = houseNumber;
-		this.streetName = streetName;
-		this.city = city;
-		this.country = country;
-	}
+  }
 
-	@Column(name = "HOUSE_NUMBER")
-	private short houseNumber;
+  public DummyComplexAttributeForExclusion(final short houseNumber, final String streetName, final String city,
+      final String country) {
+    this();
+    this.houseNumber = houseNumber;
+    this.streetName = streetName;
+    this.city = city;
+    this.country = country;
+  }
 
-	@Column(name = "STREET_NAME")
-	private String streetName;
+  @Column(name = "HOUSE_NUMBER")
+  private short houseNumber;
 
-	@Column(name = "CITY")
-	private String city;
+  @Column(name = "STREET_NAME")
+  private String streetName;
 
-	@Column(name = "COUNTRY")
-	private String country;
-	
-	@Column(name = "DUMMY_ATTRIBUTE",length = 10)
-	private String dummyAttributeForExclusion;
+  @Column(name = "CITY")
+  private String city;
 
-	public short getHouseNumber() {
-		return houseNumber;
-	}
+  @Column(name = "COUNTRY")
+  private String country;
 
-	public void setHouseNumber(short houseNumber) {
-		this.houseNumber = houseNumber;
-	}
+  @Column(name = "DUMMY_ATTRIBUTE", length = 10)
+  private String dummyAttributeForExclusion;
 
-	public String getStreetName() {
-		return streetName;
-	}
+  public short getHouseNumber() {
+    return houseNumber;
+  }
 
-	public void setStreetName(String streetName) {
-		this.streetName = streetName;
-	}
+  public void setHouseNumber(final short houseNumber) {
+    this.houseNumber = houseNumber;
+  }
 
-	public String getCity() {
-		return city;
-	}
+  public String getStreetName() {
+    return streetName;
+  }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+  public void setStreetName(final String streetName) {
+    this.streetName = streetName;
+  }
 
-	public String getCountry() {
-		return country;
-	}
+  public String getCity() {
+    return city;
+  }
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+  public void setCity(final String city) {
+    this.city = city;
+  }
 
-	public String getDummyAttributeForExclusion() {
-		return dummyAttributeForExclusion;
-	}
+  public String getCountry() {
+    return country;
+  }
 
-	public void setDummyAttributeForExclusion(String dummyAttributeForExclusion) {
-		this.dummyAttributeForExclusion = dummyAttributeForExclusion;
-	}
+  public void setCountry(final String country) {
+    this.country = country;
+  }
+
+  public String getDummyAttributeForExclusion() {
+    return dummyAttributeForExclusion;
+  }
+
+  public void setDummyAttributeForExclusion(final String dummyAttributeForExclusion) {
+    this.dummyAttributeForExclusion = dummyAttributeForExclusion;
+  }
 }

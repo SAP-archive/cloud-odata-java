@@ -13,7 +13,7 @@ public class JPAReferenceServiceFactory extends ODataJPAServiceFactory {
   @Override
   public ODataJPAContext initializeODataJPAContext()
       throws ODataJPARuntimeException {
-    ODataJPAContext oDataJPAContext = this.getODataJPAContext();
+    ODataJPAContext oDataJPAContext = getODataJPAContext();
     oDataJPAContext.setEntityManagerFactory(JPAEntityManagerFactory.getEntityManagerFactory(PUNIT_NAME));
     oDataJPAContext.setPersistenceUnitName(PUNIT_NAME);
     oDataJPAContext.setJPAEdmMappingModel(MAPPING_MODEL);

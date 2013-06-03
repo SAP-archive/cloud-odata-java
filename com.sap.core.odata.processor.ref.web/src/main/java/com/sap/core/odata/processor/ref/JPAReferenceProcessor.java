@@ -6,9 +6,8 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 public class JPAReferenceProcessor extends ODataJPAProcessor {
 
-	public JPAReferenceProcessor(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
-		super(oDataJPAContext);
-	}
+  public JPAReferenceProcessor(final ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+    super(oDataJPAContext);
+  }
 
-	
 }

@@ -20,78 +20,81 @@ import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
 
 public class SalesOrderHeaderProcessor {
 
-	private EntityManager em;
+  private EntityManager em;
 
-	public SalesOrderHeaderProcessor() {
-		em = Persistence.createEntityManagerFactory("salesorderprocessing")
-				.createEntityManager();
-	}
+  public SalesOrderHeaderProcessor() {
+    em = Persistence.createEntityManagerFactory("salesorderprocessing")
+        .createEntityManager();
+  }
 
-	@SuppressWarnings("unchecked")
-	@FunctionImport(name = "FindAllSalesOrders", entitySet = "SalesOrders", returnType = ReturnType.ENTITY_TYPE, multiplicity = Multiplicity.MANY)
-	public List<SalesOrderHeader> findAllSalesOrders(
-			@Parameter(name = "DeliveryStatusCode", facets = @Facets(maxLength = 2)) String status) {
+  @SuppressWarnings("unchecked")
+  @FunctionImport(name = "FindAllSalesOrders", entitySet = "SalesOrders", returnType = ReturnType.ENTITY_TYPE, multiplicity = Multiplicity.MANY)
+  public List<SalesOrderHeader> findAllSalesOrders(
+      @Parameter(name = "DeliveryStatusCode", facets = @Facets(maxLength = 2)) final String status) {
 
-		Query q = em
-				.createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.deliveryStatus = '"
-						+ status + "'");
-		List<SalesOrderHeader> soList = (List<SalesOrderHeader>) q
-				.getResultList();
-		return soList;
-	}
+    Query q = em
+        .createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.deliveryStatus = '"
+            + status + "'");
+    List<SalesOrderHeader> soList = (List<SalesOrderHeader>) q
+        .getResultList();
+    return soList;
+  }
 
-	@FunctionImport(name = "CheckATP", returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE, httpMethod = @HttpMethod(name = Name.GET))
-	public boolean checkATP(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false), mode = Mode.IN) Long soID,
-			@Parameter(name = "LiId", facets = @Facets(nullable = false), mode = Mode.IN) Long lineItemID) {
-		if (soID == 2L)
-			return false;
-		else
-			return true;
-	}
+  @FunctionImport(name = "CheckATP", returnType = ReturnType.SCALAR, multiplicity = Multiplicity.ONE, httpMethod = @HttpMethod(name = Name.GET))
+  public boolean checkATP(
+      @Parameter(name = "SoID", facets = @Facets(nullable = false), mode = Mode.IN) final Long soID,
+      @Parameter(name = "LiId", facets = @Facets(nullable = false), mode = Mode.IN) final Long lineItemID) {
+    if (soID == 2L) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
-	@FunctionImport(returnType = ReturnType.ENTITY_TYPE, entitySet = "SalesOrders")
-	public SalesOrderHeader calculateNetAmount(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false)) Long soID) {
+  @FunctionImport(returnType = ReturnType.ENTITY_TYPE, entitySet = "SalesOrders")
+  public SalesOrderHeader calculateNetAmount(
+      @Parameter(name = "SoID", facets = @Facets(nullable = false)) final Long soID) {
 
-		Query q = em
-				.createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.soId = "
-						+ soID + "l");
-		if (q.getResultList().isEmpty())
-			return null;
-		SalesOrderHeader so = (SalesOrderHeader) q.getResultList().get(0);
-		double amount = 0;
-		for (SalesOrderItem soi : so.getSalesOrderItem()) {
-			amount = amount
-					+ (soi.getAmount() * soi.getDiscount() * soi.getQuantity());
-		}
-		so.setNetAmount(amount);
-		return so;
-	}
+    Query q = em
+        .createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.soId = "
+            + soID + "l");
+    if (q.getResultList().isEmpty()) {
+      return null;
+    }
+    SalesOrderHeader so = (SalesOrderHeader) q.getResultList().get(0);
+    double amount = 0;
+    for (SalesOrderItem soi : so.getSalesOrderItem()) {
+      amount = amount
+          + (soi.getAmount() * soi.getDiscount() * soi.getQuantity());
+    }
+    so.setNetAmount(amount);
+    return so;
+  }
 
-	@SuppressWarnings("unchecked")
-	@FunctionImport(returnType = ReturnType.COMPLEX_TYPE)
-	public Address getAddress(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false)) Long soID) {
-		Query q = em
-				.createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.soId = "
-						+ soID + "l");
-		List<SalesOrderHeader> soList = (List<SalesOrderHeader>) q
-				.getResultList();
-		if (!soList.isEmpty())
-			return soList.get(0).getBuyerAddress();
-		else
-			return null;
-	}
+  @SuppressWarnings("unchecked")
+  @FunctionImport(returnType = ReturnType.COMPLEX_TYPE)
+  public Address getAddress(
+      @Parameter(name = "SoID", facets = @Facets(nullable = false)) final Long soID) {
+    Query q = em
+        .createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.soId = "
+            + soID + "l");
+    List<SalesOrderHeader> soList = (List<SalesOrderHeader>) q
+        .getResultList();
+    if (!soList.isEmpty()) {
+      return soList.get(0).getBuyerAddress();
+    } else {
+      return null;
+    }
+  }
 
-	/*
-	 * This method will not be transformed into Function Import Function Import
-	 * with return type as void is not supported yet.
-	 */
-	@FunctionImport(returnType = ReturnType.NONE)
-	public void process(
-			@Parameter(name = "SoID", facets = @Facets(nullable = false)) Long soID) {
-		return;
-	}
+  /*
+   * This method will not be transformed into Function Import Function Import
+   * with return type as void is not supported yet.
+   */
+  @FunctionImport(returnType = ReturnType.NONE)
+  public void process(
+      @Parameter(name = "SoID", facets = @Facets(nullable = false)) final Long soID) {
+    return;
+  }
 
 }
