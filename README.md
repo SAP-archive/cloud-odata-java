@@ -57,7 +57,8 @@ Contributions to this project are very welcome, but can only be accepted if the 
 Version History
 ---------------
 
-0.5.0-SNAPSHOT basic $batch as work in progress <br/>
+0.6.0-SNAPSHOT basic $batch as work in progress <br/>
+0.5.0  Service Document parsing / performance optimization
 0.4.1  JPA processor support  
 0.4.0  Advanced Read / Write and JSON support  
 0.3.0  Advanced Read / Basic Write  
