@@ -17,15 +17,15 @@ import com.sap.core.odata.api.exception.MessageReference;
  * @see com.sap.core.odata.api.exception.MessageReference
  */
 public interface ODataJPAMessageService {
-	/**
-	 * The method returns a language dependent message texts for the given
-	 * {@link com.sap.core.odata.api.exception.MessageReference}.
-	 * 
-	 * @param context
-	 *            is a Message Reference
-	 *        exception
-	 *        	  is a Throwable Exception
-	 * @return a language dependent message text
-	 */
-	public String getLocalizedMessage(MessageReference context,Throwable exception);
+  /**
+   * The method returns a language dependent message texts for the given
+   * {@link com.sap.core.odata.api.exception.MessageReference}.
+   * 
+   * @param context
+   *            is a Message Reference
+   *        exception
+   *        	  is a Throwable Exception
+   * @return a language dependent message text
+   */
+  public String getLocalizedMessage(MessageReference context, Throwable exception);
 }

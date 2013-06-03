@@ -31,73 +31,73 @@ import com.sap.core.odata.api.edm.provider.Schema;
  * 
  */
 public interface JPAEdmSchemaView extends JPAEdmBaseView {
-	/**
-	 * The method returns the EDM schema present in the container.
-	 * 
-	 * @return an instance EDM schema of type
-	 *         {@link com.sap.core.odata.api.edm.provider.Schema}
-	 */
-	public Schema getEdmSchema();
+  /**
+   * The method returns the EDM schema present in the container.
+   * 
+   * @return an instance EDM schema of type
+   *         {@link com.sap.core.odata.api.edm.provider.Schema}
+   */
+  public Schema getEdmSchema();
 
-	/**
-	 * The method returns JPA EDM container view. The JPA EDM container view can
-	 * be used to access EDM Entity Container elements.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView}
-	 */
-	public JPAEdmEntityContainerView getJPAEdmEntityContainerView();
+  /**
+   * The method returns JPA EDM container view. The JPA EDM container view can
+   * be used to access EDM Entity Container elements.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView}
+   */
+  public JPAEdmEntityContainerView getJPAEdmEntityContainerView();
 
-	/**
-	 * The method returns JPA EDM complex view. The JPA EDM complex view can be
-	 * used to access EDM complex types and JPA Embeddable Types.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
-	 */
-	public JPAEdmComplexTypeView getJPAEdmComplexTypeView();
+  /**
+   * The method returns JPA EDM complex view. The JPA EDM complex view can be
+   * used to access EDM complex types and JPA Embeddable Types.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
+   */
+  public JPAEdmComplexTypeView getJPAEdmComplexTypeView();
 
-	/**
-	 * The method returns JPA EDM association view. The JPA EDM association view
-	 * can be used to access EDM associations and JPA Relationships.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}
-	 */
-	public JPAEdmAssociationView getJPAEdmAssociationView();
+  /**
+   * The method returns JPA EDM association view. The JPA EDM association view
+   * can be used to access EDM associations and JPA Relationships.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}
+   */
+  public JPAEdmAssociationView getJPAEdmAssociationView();
 
-	/**
-	 * The method registers custom operations that shall be represented as Edm
-	 * Function Imports. Custom operations are created using Edm Annotation
-	 * {@link com.sap.core.odata.api.annotation.edm.FunctionImport}.
-	 * <p>
-	 * Custom Operations can be part of JPA Entity or can be created in a class
-	 * other than JPA Entity. Such custom operations can be registered using
-	 * this method.
-	 * <p>
-	 * The method is a callback.
-	 * 
-	 * @param customClass
-	 *            is the class that contains custom operations
-	 * @param methodNames
-	 *            is the name of the method that needs to be transformed into
-	 *            Function Imports. It is an optional parameter. If null is
-	 *            passed then all annotated methods are transformed into
-	 *            Function Imports.
-	 * 
-	 */
-	public void registerOperations(Class<?> customClass, String methodNames[]);
+  /**
+   * The method registers custom operations that shall be represented as Edm
+   * Function Imports. Custom operations are created using Edm Annotation
+   * {@link com.sap.core.odata.api.annotation.edm.FunctionImport}.
+   * <p>
+   * Custom Operations can be part of JPA Entity or can be created in a class
+   * other than JPA Entity. Such custom operations can be registered using
+   * this method.
+   * <p>
+   * The method is a callback.
+   * 
+   * @param customClass
+   *            is the class that contains custom operations
+   * @param methodNames
+   *            is the name of the method that needs to be transformed into
+   *            Function Imports. It is an optional parameter. If null is
+   *            passed then all annotated methods are transformed into
+   *            Function Imports.
+   * 
+   */
+  public void registerOperations(Class<?> customClass, String methodNames[]);
 
-	/**
-	 * The method returns an Hash Map containing the registered custom
-	 * operations.
-	 * 
-	 * @return a HashMap of Class and the methods in the class
-	 */
-	public HashMap<Class<?>, String[]> getRegisteredOperations();
+  /**
+   * The method returns an Hash Map containing the registered custom
+   * operations.
+   * 
+   * @return a HashMap of Class and the methods in the class
+   */
+  public HashMap<Class<?>, String[]> getRegisteredOperations();
 
-	public List<String> getNonKeyComplexTypeList();
+  public List<String> getNonKeyComplexTypeList();
 
-	public void addNonKeyComplexName(String complexTypeName);
+  public void addNonKeyComplexName(String complexTypeName);
 
 }

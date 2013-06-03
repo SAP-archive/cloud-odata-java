@@ -29,73 +29,73 @@ import com.sap.core.odata.api.edm.provider.Property;
  */
 public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 
-	/**
-	 * The method returns an EDM complex type that is currently being processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.ComplexType}
-	 */
-	public ComplexType getEdmComplexType();
+  /**
+   * The method returns an EDM complex type that is currently being processed.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.ComplexType}
+   */
+  public ComplexType getEdmComplexType();
 
-	/**
-	 * The method returns an JPA embeddable type that is currently being
-	 * processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link javax.persistence.metamodel.EmbeddableType}
-	 */
-	public javax.persistence.metamodel.EmbeddableType<?> getJPAEmbeddableType();
+  /**
+   * The method returns an JPA embeddable type that is currently being
+   * processed.
+   * 
+   * @return an instance of type
+   *         {@link javax.persistence.metamodel.EmbeddableType}
+   */
+  public javax.persistence.metamodel.EmbeddableType<?> getJPAEmbeddableType();
 
-	/**
-	 * The method returns a consistent list of EDM complex types.
-	 * 
-	 * @return a list of {@link com.sap.core.odata.api.edm.provider.ComplexType}
-	 */
-	public List<ComplexType> getConsistentEdmComplexTypes();
+  /**
+   * The method returns a consistent list of EDM complex types.
+   * 
+   * @return a list of {@link com.sap.core.odata.api.edm.provider.ComplexType}
+   */
+  public List<ComplexType> getConsistentEdmComplexTypes();
 
-	/**
-	 * The method searches for the EDM complex type with in the container for
-	 * the given JPA embeddable type name.
-	 * 
-	 * @param embeddableTypeName
-	 *            is the name of JPA embeddable type
-	 * @return a reference to EDM complex type if found else null
-	 */
-	public ComplexType searchEdmComplexType(String embeddableTypeName);
+  /**
+   * The method searches for the EDM complex type with in the container for
+   * the given JPA embeddable type name.
+   * 
+   * @param embeddableTypeName
+   *            is the name of JPA embeddable type
+   * @return a reference to EDM complex type if found else null
+   */
+  public ComplexType searchEdmComplexType(String embeddableTypeName);
 
-	/**
-	 * The method add a JPA EDM complex type view to the container.
-	 * 
-	 * @param view
-	 *            is an instance of type
-	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
-	 */
-	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView view);
+  /**
+   * The method add a JPA EDM complex type view to the container.
+   * 
+   * @param view
+   *            is an instance of type
+   *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
+   */
+  public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView view);
 
-	/**
-	 * The method searches for the EDM complex type with in the container for
-	 * the given EDM complex type's fully qualified name.
-	 * 
-	 * @param type
-	 *            is the fully qualified name of EDM complex type
-	 * @return a reference to EDM complex type if found else null
-	 */
-	public ComplexType searchEdmComplexType(FullQualifiedName type);
+  /**
+   * The method searches for the EDM complex type with in the container for
+   * the given EDM complex type's fully qualified name.
+   * 
+   * @param type
+   *            is the fully qualified name of EDM complex type
+   * @return a reference to EDM complex type if found else null
+   */
+  public ComplexType searchEdmComplexType(FullQualifiedName type);
 
-	/**
-	 * The method expands the given EDM complex type into a list of EDM simple
-	 * properties.
-	 * 
-	 * @param complexType
-	 *            is the EDM complex type to expand
-	 * @param expandedPropertyList
-	 *            is the list to be populated with expanded EDM simple
-	 *            properties
-	 * @param embeddablePropertyName
-	 *            is the name of the complex property. The name is used as the
-	 *            qualifier for the expanded simple property names.
-	 */
-	public void expandEdmComplexType(ComplexType complexType,
-			List<Property> expandedPropertyList, String embeddablePropertyName);
+  /**
+   * The method expands the given EDM complex type into a list of EDM simple
+   * properties.
+   * 
+   * @param complexType
+   *            is the EDM complex type to expand
+   * @param expandedPropertyList
+   *            is the list to be populated with expanded EDM simple
+   *            properties
+   * @param embeddablePropertyName
+   *            is the name of the complex property. The name is used as the
+   *            qualifier for the expanded simple property names.
+   */
+  public void expandEdmComplexType(ComplexType complexType,
+      List<Property> expandedPropertyList, String embeddablePropertyName);
 
 }

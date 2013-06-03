@@ -21,71 +21,71 @@ package com.sap.core.odata.processor.api.jpa.factory;
  */
 public abstract class ODataJPAFactory {
 
-	private static final String IMPLEMENTATION = "com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl";
-	private static ODataJPAFactory factoryImpl;
+  private static final String IMPLEMENTATION = "com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl";
+  private static ODataJPAFactory factoryImpl;
 
-	/**
-	 * Method creates a factory instance. The instance returned is singleton.
-	 * The instance of this factory can be used for creating other factory
-	 * implementations.
-	 * 
-	 * @return instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory}
-	 *         .
-	 */
-	public static ODataJPAFactory createFactory() {
+  /**
+   * Method creates a factory instance. The instance returned is singleton.
+   * The instance of this factory can be used for creating other factory
+   * implementations.
+   * 
+   * @return instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory}
+   *         .
+   */
+  public static ODataJPAFactory createFactory() {
 
-		if (factoryImpl != null)
-			return factoryImpl;
-		else {
-			try {
-				Class<?> clazz = Class.forName(ODataJPAFactory.IMPLEMENTATION);
+    if (factoryImpl != null) {
+      return factoryImpl;
+    } else {
+      try {
+        Class<?> clazz = Class.forName(ODataJPAFactory.IMPLEMENTATION);
 
-				Object object = clazz.newInstance();
-				factoryImpl = (ODataJPAFactory) object;
+        Object object = clazz.newInstance();
+        factoryImpl = (ODataJPAFactory) object;
 
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
 
-			return factoryImpl;
-		}
-	}
+      return factoryImpl;
+    }
+  }
 
-	/**
-	 * The method returns a null reference to JPQL Builder Factory. Override
-	 * this method to return an implementation of JPQLBuilderFactory if default
-	 * implementation from library is not required.
-	 * 
-	 * @return instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory}
-	 */
-	public JPQLBuilderFactory getJPQLBuilderFactory() {
-		return null;
-	};
+  /**
+   * The method returns a null reference to JPQL Builder Factory. Override
+   * this method to return an implementation of JPQLBuilderFactory if default
+   * implementation from library is not required.
+   * 
+   * @return instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory}
+   */
+  public JPQLBuilderFactory getJPQLBuilderFactory() {
+    return null;
+  };
 
-	/**
-	 * The method returns a null reference to JPA Access Factory. Override this
-	 * method to return an implementation of JPAAccessFactory if default
-	 * implementation from library is not required.
-	 * 
-	 * @return instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory}
-	 */
-	public JPAAccessFactory getJPAAccessFactory() {
-		return null;
-	};
+  /**
+   * The method returns a null reference to JPA Access Factory. Override this
+   * method to return an implementation of JPAAccessFactory if default
+   * implementation from library is not required.
+   * 
+   * @return instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory}
+   */
+  public JPAAccessFactory getJPAAccessFactory() {
+    return null;
+  };
 
-	/**
-	 * The method returns a null reference to OData JPA Access Factory. Override
-	 * this method to return an implementation of ODataJPAAccessFactory if
-	 * default implementation from library is not required.
-	 * 
-	 * @return instance of type
-	 *         {@link com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory}
-	 */
-	public ODataJPAAccessFactory getODataJPAAccessFactory() {
-		return null;
-	};
+  /**
+   * The method returns a null reference to OData JPA Access Factory. Override
+   * this method to return an implementation of ODataJPAAccessFactory if
+   * default implementation from library is not required.
+   * 
+   * @return instance of type
+   *         {@link com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory}
+   */
+  public ODataJPAAccessFactory getODataJPAAccessFactory() {
+    return null;
+  };
 
 }

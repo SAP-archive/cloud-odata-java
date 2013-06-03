@@ -192,7 +192,7 @@ public interface JPAProcessor {
   public void process(PostUriInfo uriParserResultView,
       InputStream content, String requestContentType, String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException;
-  
+
   /**
    * Process OData request for updating Links. The OData request should contain
    * $links OData command.

@@ -26,31 +26,31 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
  * 
  */
 public interface JPAEdmNavigationPropertyView extends JPAEdmBaseView {
-	/**
-	 * The method adds a navigation property view to its container.
-	 * 
-	 * @param view
-	 *            is an instance of type
-	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView}
-	 */
-	void addJPAEdmNavigationPropertyView(JPAEdmNavigationPropertyView view);
+  /**
+   * The method adds a navigation property view to its container.
+   * 
+   * @param view
+   *            is an instance of type
+   *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView}
+   */
+  void addJPAEdmNavigationPropertyView(JPAEdmNavigationPropertyView view);
 
-	/**
-	 * The method returns a consistent list of EDM navigation property. A
-	 * navigation property is consistent only if all its mandatory properties
-	 * can be built with no errors from Java persistence entity relationship.
-	 * 
-	 * @return a list of consistent EDM navigation property for the Entity
-	 */
-	List<NavigationProperty> getConsistentEdmNavigationProperties();
+  /**
+   * The method returns a consistent list of EDM navigation property. A
+   * navigation property is consistent only if all its mandatory properties
+   * can be built with no errors from Java persistence entity relationship.
+   * 
+   * @return a list of consistent EDM navigation property for the Entity
+   */
+  List<NavigationProperty> getConsistentEdmNavigationProperties();
 
-	/**
-	 * The method returns the navigation property that is currently being
-	 * processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.NavigationProperty}
-	 */
-	NavigationProperty getEdmNavigationProperty();
+  /**
+   * The method returns the navigation property that is currently being
+   * processed.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.NavigationProperty}
+   */
+  NavigationProperty getEdmNavigationProperty();
 
 }

@@ -10,19 +10,19 @@ import java.util.List;
  * 
  */
 public interface JPAMethodContextView {
-	/**
-	 * The method returns an instance of Object on which the methods/custom
-	 * operations can be executed.
-	 * 
-	 * @return instance of enclosing object for the method
-	 */
-	public Object getEnclosingObject();
+  /**
+   * The method returns an instance of Object on which the methods/custom
+   * operations can be executed.
+   * 
+   * @return instance of enclosing object for the method
+   */
+  public Object getEnclosingObject();
 
-	/**
-	 * The method returns list of JPA functions that can be executed on the
-	 * enclosing object.
-	 * 
-	 * @return an instance of list of JPA Function
-	 */
-	public List<JPAFunction> getJPAFunctionList();
+  /**
+   * The method returns list of JPA functions that can be executed on the
+   * enclosing object.
+   * 
+   * @return an instance of list of JPA Function
+   */
+  public List<JPAFunction> getJPAFunctionList();
 }

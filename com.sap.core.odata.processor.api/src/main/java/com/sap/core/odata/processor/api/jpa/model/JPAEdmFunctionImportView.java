@@ -22,13 +22,13 @@ import com.sap.core.odata.api.edm.provider.FunctionImport;
  */
 public interface JPAEdmFunctionImportView extends JPAEdmBaseView {
 
-	/**
-	 * The method returns a list of consistent Function Imports. A function
-	 * import is said to be consistent only if it adheres to the rules defined
-	 * in CSDL.
-	 * 
-	 * @return a list of type
-	 *         {@link com.sap.core.odata.api.edm.provider.FunctionImport}
-	 */
-	List<FunctionImport> getConsistentFunctionImportList();
+  /**
+   * The method returns a list of consistent Function Imports. A function
+   * import is said to be consistent only if it adheres to the rules defined
+   * in CSDL.
+   * 
+   * @return a list of type
+   *         {@link com.sap.core.odata.api.edm.provider.FunctionImport}
+   */
+  List<FunctionImport> getConsistentFunctionImportList();
 }

@@ -18,11 +18,11 @@ import com.sap.core.odata.api.edm.provider.ComplexProperty;
  * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView
  */
 public interface JPAEdmComplexPropertyView extends JPAEdmBaseView {
-	/**
-	 * The method returns a complex property for a complex type.
-	 * 
-	 * @return an instance of
-	 *         {@link com.sap.core.odata.api.edm.provider.ComplexProperty}
-	 */
-	ComplexProperty getEdmComplexProperty();
+  /**
+   * The method returns a complex property for a complex type.
+   * 
+   * @return an instance of
+   *         {@link com.sap.core.odata.api.edm.provider.ComplexProperty}
+   */
+  ComplexProperty getEdmComplexProperty();
 }
