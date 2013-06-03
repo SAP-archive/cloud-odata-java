@@ -16,45 +16,38 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  * @author SAP AG 
  */
 @SuppressWarnings("javadoc")
-class ParameterSet
-{
+class ParameterSet {
   private EdmType returnType = null;
   public ArrayList<EdmSimpleType> types = new ArrayList<EdmSimpleType>();
   private EdmSimpleType furtherType = null;
 
-  public ParameterSet(final EdmType returnType, final EdmSimpleType type1)
-  {
+  public ParameterSet(final EdmType returnType, final EdmSimpleType type1) {
     this.returnType = returnType;
     types.add(type1);
   }
 
-  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2)
-  {
+  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2) {
     this.returnType = returnType;
     types.add(type1);
     types.add(type2);
   }
 
-  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2, final EdmSimpleType type3)
-  {
+  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2, final EdmSimpleType type3) {
     this.returnType = returnType;
     types.add(type1);
     types.add(type2);
     types.add(type3);
   }
 
-  public EdmType getReturnType()
-  {
+  public EdmType getReturnType() {
     return returnType;
   }
 
-  public EdmSimpleType getFurtherType()
-  {
+  public EdmSimpleType getFurtherType() {
     return furtherType;
   }
 
-  public ParameterSet setFurtherType(final EdmSimpleType furtherType)
-  {
+  public ParameterSet setFurtherType(final EdmSimpleType furtherType) {
     this.furtherType = furtherType;
     return this;
   }
@@ -69,27 +62,23 @@ class ParameterSet
    * @return true if equals
    * @throws ExpressionParserInternalError
    */
-  public boolean equals(final List<EdmType> actualParameterTypes, final boolean allowPromotion) throws ExpressionParserInternalError
-  {
+  public boolean equals(final List<EdmType> actualParameterTypes, final boolean allowPromotion) throws ExpressionParserInternalError {
     int actSize = actualParameterTypes.size();
     int paramSize = types.size();
 
-    if (actSize < paramSize)
-    {
+    if (actSize < paramSize) {
       return false;
       //throw FilterParserInternalError.createINVALID_TYPE_COUNT(); //to few actual Parameters
     }
 
     //This may happen if the number of supplied actual method parameters is higher then than the number
     //of allowed method parameters but this should be checked before, hence this is an internal error in the parser
-    if ((actSize > paramSize) && (furtherType == null))
-    {
+    if ((actSize > paramSize) && (furtherType == null)) {
       return false;
       //throw FilterParserInternalError.createINVALID_TYPE_COUNT();
     }
 
-    for (int i = 0; i < actSize; i++)
-    {
+    for (int i = 0; i < actSize; i++) {
       EdmType actType = actualParameterTypes.get(i);
       if (actType == null) {
         return false;
@@ -102,8 +91,7 @@ class ParameterSet
         paramType = furtherType; // for methods with variable amount of method parameters  
       }
 
-      if (!actType.equals(paramType))
-      {
+      if (!actType.equals(paramType)) {
         //this the parameter type does not fit and if it is not allowed to promoted the actual parameter then
         //this parameter combination does not fit
         if (!allowPromotion) {
@@ -113,8 +101,7 @@ class ParameterSet
         //Its allowed to promoted the actual parameter!!!
 
         //Promotion only allowed for simple types
-        if (actType.getKind() != EdmTypeKind.SIMPLE)
-        {
+        if (actType.getKind() != EdmTypeKind.SIMPLE) {
           return false; //Tested with TestParserExceptions.testAdditionalStuff CASE 8
         }
 

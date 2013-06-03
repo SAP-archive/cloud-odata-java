@@ -14,8 +14,7 @@ import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
  * Expression tokenizer
  * @author SAP AG
  */
-public class Tokenizer
-{
+public class Tokenizer {
 
   private boolean flagIncludeWhitespace = false;
   private EdmSimpleTypeFacade typeDectector = null;
@@ -25,8 +24,7 @@ public class Tokenizer
   final int expressionLength;
   TokenList tokens;
 
-  public Tokenizer(final String expression)
-  {
+  public Tokenizer(final String expression) {
     typeDectector = new EdmSimpleTypeFacadeImpl();
     this.expression = expression;
     expressionLength = expression.length();
@@ -38,8 +36,7 @@ public class Tokenizer
    * @param flagIncludeWhitespace True -> Whitespace token will be added to token list; False otherwise
    * @return this
    */
-  public Tokenizer setFlagWhiteSpace(final Boolean flagIncludeWhitespace)
-  {
+  public Tokenizer setFlagWhiteSpace(final Boolean flagIncludeWhitespace) {
     this.flagIncludeWhitespace = flagIncludeWhitespace;
 
     return this;
@@ -49,20 +46,17 @@ public class Tokenizer
    * Tokenizes an expression as defined per OData specification 
    * @return Token list 
    */
-  public TokenList tokenize() throws TokenizerException, ExpressionParserException
-  {
+  public TokenList tokenize() throws TokenizerException, ExpressionParserException {
     curPosition = 0;
     int oldPosition;
     char curCharacter;
     String token = "";
 
-    while (curPosition < expressionLength)
-    {
+    while (curPosition < expressionLength) {
       oldPosition = curPosition;
 
       curCharacter = expression.charAt(curPosition);
-      switch (curCharacter)
-      {
+      switch (curCharacter) {
       case ' ':
         //count whitespace and move pointer to next non-whitespace char
         eatWhiteSpaces(curPosition, curCharacter);
@@ -142,13 +136,11 @@ public class Tokenizer
     return tokens;
   }
 
-  private boolean checkForLiteral(final int oldPosition, final char curCharacter, final String rem_expr)
-  {
+  private boolean checkForLiteral(final int oldPosition, final char curCharacter, final String rem_expr) {
     //Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
     final Pattern OTHER_LIT = Pattern.compile("(?:\\p{L}|\\p{Digit}|[-._~%!$&*+;:@])+");
     final Matcher matcher = OTHER_LIT.matcher(rem_expr);
-    if (matcher.lookingAt())
-    {
+    if (matcher.lookingAt()) {
       String token = matcher.group();
       try {
         EdmLiteral edmLiteral = typeDectector.parseUriLiteral(token);
@@ -162,8 +154,7 @@ public class Tokenizer
 
       // The '-' is checked here (and not in the switch statement) because it may be
       // part of a negative number.
-      if (curCharacter == '-')
-      {
+      if (curCharacter == '-') {
         curPosition = curPosition + 1;
         tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
         return true;
@@ -176,24 +167,19 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForBoolean(final int oldPosition, final String rem_expr)
-  {
-    if (rem_expr.equals("true") || rem_expr.equals("false"))
-    {
+  private boolean checkForBoolean(final int oldPosition, final String rem_expr) {
+    if (rem_expr.equals("true") || rem_expr.equals("false")) {
       curPosition = curPosition + rem_expr.length();
-      tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, rem_expr, new EdmLiteral(
-          EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean), rem_expr));
+      tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, rem_expr, new EdmLiteral(EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean), rem_expr));
       return true;
     }
     return false;
   }
 
-  private void eatWhiteSpaces(final int oldPosition, char curCharacter)
-  {
+  private void eatWhiteSpaces(final int oldPosition, char curCharacter) {
     int lv_token_len;
     String expression_sub;
-    while ((curCharacter == ' ') && (curPosition < expressionLength))
-    {
+    while ((curCharacter == ' ') && (curPosition < expressionLength)) {
       curPosition = curPosition + 1;
       if (curPosition < expressionLength) {
         curCharacter = expression.charAt(curPosition);
@@ -202,21 +188,18 @@ public class Tokenizer
 
     lv_token_len = curPosition - oldPosition;
 
-    if (flagIncludeWhitespace == true)
-    {
+    if (flagIncludeWhitespace == true) {
       expression_sub = expression.substring(oldPosition, oldPosition + lv_token_len);
       tokens.appendEdmTypedToken(oldPosition, TokenKind.WHITESPACE, expression_sub, null);
 
     }
   }
 
-  private boolean checkForMethod(final int oldPosition, final String rem_expr)
-  {
+  private boolean checkForMethod(final int oldPosition, final String rem_expr) {
     final Pattern FUNK = Pattern.compile("^(startswith|endswith|substring|substring|substringof|indexof|replace|tolower|toupper|trim|concat|length|year|mounth|day|hour|minute|second|round|ceiling|floor)( *)\\(");
     Matcher matcher = FUNK.matcher(rem_expr);
 
-    if (matcher.find())
-    {
+    if (matcher.find()) {
       String token = matcher.group(1);
       curPosition = curPosition + token.length();
       tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
@@ -225,13 +208,11 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForMath(final int oldPosition, final String rem_expr)
-  {
+  private boolean checkForMath(final int oldPosition, final String rem_expr) {
     final Pattern AND_SUB1 = Pattern.compile("^(add|sub|mul|div|mod|not) ");
     Matcher matcher1 = AND_SUB1.matcher(rem_expr);
 
-    if (matcher1.find())
-    {
+    if (matcher1.find()) {
       String token = matcher1.group(1);
       curPosition = curPosition + token.length();
       tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
@@ -240,13 +221,11 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForBinary(final int oldPosition, final String rem_expr)
-  {
+  private boolean checkForBinary(final int oldPosition, final String rem_expr) {
     final Pattern AND_SUB = Pattern.compile("^(and|or|eq|ne|lt|gt|le|ge) ");
     Matcher matcher1 = AND_SUB.matcher(rem_expr);
 
-    if (matcher1.find())
-    {
+    if (matcher1.find()) {
       String token = matcher1.group(1);
       curPosition = curPosition + token.length();
       tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
@@ -255,15 +234,13 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForPrefix(final String rem_expr) throws ExpressionParserException, TokenizerException
-  {
+  private boolean checkForPrefix(final String rem_expr) throws ExpressionParserException, TokenizerException {
     final Pattern prefix = Pattern.compile("^(X|binary|guid|datetime|datetimeoffset|time)'");
     Matcher matcher = prefix.matcher(rem_expr);
     String token = "";
     char curCharacter;
 
-    if (matcher.find())
-    {
+    if (matcher.find()) {
       token = matcher.group(1);
       curPosition = curPosition + token.length();
       curCharacter = expression.charAt(curPosition); //"should  be '
@@ -273,8 +250,7 @@ public class Tokenizer
     return false;
   }
 
-  private void readLiteral(final char curCharacter) throws ExpressionParserException, TokenizerException
-  {
+  private void readLiteral(final char curCharacter) throws ExpressionParserException, TokenizerException {
     readLiteral(curCharacter, "");
   }
 
@@ -285,35 +261,27 @@ public class Tokenizer
    * @throws ExpressionParserException
    * @throws TokenizerException
    */
-  private void readLiteral(char curCharacter, String token) throws ExpressionParserException, TokenizerException
-  {
+  private void readLiteral(char curCharacter, String token) throws ExpressionParserException, TokenizerException {
     int offsetPos = -token.length();
     int oldPosition = curPosition;
     token += Character.toString(curCharacter);
     curPosition += 1;
 
     boolean wasHochkomma = false; //leading ' does not count
-    while (curPosition < expressionLength)
-    {
+    while (curPosition < expressionLength) {
       curCharacter = expression.charAt(curPosition);
 
-      if (curCharacter != '\'')
-      {
+      if (curCharacter != '\'') {
         if (wasHochkomma == true) {
           break;
         }
 
         token = token + curCharacter;
         wasHochkomma = false;
-      }
-      else
-      {
-        if (wasHochkomma)
-        {
+      } else {
+        if (wasHochkomma) {
           wasHochkomma = false; //a double ' is a normal character '
-        }
-        else
-        {
+        } else {
           wasHochkomma = true;
           token = token + curCharacter;
         }
@@ -326,13 +294,11 @@ public class Tokenizer
       throw FilterParserExceptionImpl.createTOKEN_UNDETERMINATED_STRING(oldPosition, expression);
     }
 
-    try
-    {
+    try {
       EdmLiteral edmLiteral = typeDectector.parseUriLiteral(token);
       tokens.appendEdmTypedToken(oldPosition + offsetPos, TokenKind.SIMPLE_TYPE, token, edmLiteral);
 
-    } catch (EdmLiteralException ex)
-    {
+    } catch (EdmLiteralException ex) {
       throw TokenizerException.createTYPEDECTECTION_FAILED_ON_STRING(ex, oldPosition, token);
     }
 

@@ -79,8 +79,7 @@ public class MethodExpressionImpl implements MethodExpression {
   @Override
   public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     ArrayList<Object> retParameters = new ArrayList<Object>();
-    for (CommonExpression parameter : actualParameters)
-    {
+    for (CommonExpression parameter : actualParameters) {
       Object retParameter = parameter.accept(visitor);
       retParameters.add(retParameter);
     }

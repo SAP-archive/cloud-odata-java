@@ -6,38 +6,30 @@ import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 
-public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
-{
-  public OrderByParserImpl(final EdmEntityType resourceEntityType)
-  {
+public class OrderByParserImpl extends FilterParserImpl implements OrderByParser {
+  public OrderByParserImpl(final EdmEntityType resourceEntityType) {
     super(resourceEntityType);
   }
 
   @Override
-  public OrderByExpression parseOrderByString(final String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
-  {
+  public OrderByExpression parseOrderByString(final String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError {
     curExpression = orderByExpression;
     OrderByExpressionImpl orderCollection = new OrderByExpressionImpl(curExpression);
 
-    try
-    {
+    try {
       tokenList = new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
-    } catch (TokenizerException tokenizerException)
-    {
+    } catch (TokenizerException tokenizerException) {
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException, curExpression);
     }
 
     boolean weiter = false;
 
-    while (weiter == false)
-    {
+    while (weiter == false) {
       CommonExpression node = null;
-      try
-      {
+      try {
         CommonExpression nodeLeft = readElement(null);
         node = readElements(nodeLeft, 0);
-      } catch (ExpressionParserException expressionException)
-      {
+      } catch (ExpressionParserException expressionException) {
         expressionException.setFilterTree(orderCollection);
         throw expressionException;
       }
@@ -46,30 +38,21 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 
       //read the sort order
       Token token = tokenList.lookToken();
-      if (token == null)
-      {
+      if (token == null) {
         orderNode.setSortOrder(SortOrder.asc);
-      }
-      else if ((token.getKind() == TokenKind.LITERAL) && (token.getUriLiteral().equals("asc")))
-      {
+      } else if ((token.getKind() == TokenKind.LITERAL) && (token.getUriLiteral().equals("asc"))) {
         orderNode.setSortOrder(SortOrder.asc);
         tokenList.next();
         token = tokenList.lookToken();
-      }
-      else if ((token.getKind() == TokenKind.LITERAL) && (token.getUriLiteral().equals("desc")))
-      {
+      } else if ((token.getKind() == TokenKind.LITERAL) && (token.getUriLiteral().equals("desc"))) {
         orderNode.setSortOrder(SortOrder.desc);
         tokenList.next();
         token = tokenList.lookToken();
-      }
-      else if (token.getKind() == TokenKind.COMMA)
-      {
+      } else if (token.getKind() == TokenKind.COMMA) {
         orderNode.setSortOrder(SortOrder.asc);
         //tokenList.next();
         //token = tokenList.lookToken();
-      }
-      else
-      {
+      } else {
         // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 1
         throw FilterParserExceptionImpl.createINVALID_SORT_ORDER(token, curExpression);
       }
@@ -77,24 +60,19 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       orderCollection.addOrder(orderNode);
 
       //ls_token may be a ',' or  empty.
-      if (token == null)
-      {
+      if (token == null) {
         weiter = true;
         break;
-      }
-      else if (token.getKind() == TokenKind.COMMA)
-      {
+      } else if (token.getKind() == TokenKind.COMMA) {
         Token oldToken = token;
         tokenList.next();
         token = tokenList.lookToken();
 
-        if (token == null)
-        {
+        if (token == null) {
           // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 2
           throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken, curExpression);
         }
-      }
-      else //e.g. in case $orderby=String asc a
+      } else //e.g. in case $orderby=String asc a
       {
         throw FilterParserExceptionImpl.createCOMMA_OR_END_EXPECTED_AT_POS(token, curExpression);
       }
