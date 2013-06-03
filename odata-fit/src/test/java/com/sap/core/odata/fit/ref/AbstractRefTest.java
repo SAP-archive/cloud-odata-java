@@ -32,7 +32,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -48,12 +47,10 @@ import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
- * Abstract base class for tests employing the reference scenario
+ * Abstract base class for tests employing the reference scenario.
  * @author SAP AG
  */
 public class AbstractRefTest extends AbstractFitTest {
-
-  private static final Logger LOG = Logger.getLogger(AbstractRefTest.class);
 
   protected static final String IMAGE_JPEG = "image/jpeg";
   protected static final String IMAGE_GIF = "image/gif";
@@ -107,18 +104,17 @@ public class AbstractRefTest extends AbstractFitTest {
       request.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
     }
 
-    LOG.trace("Request url [" + request.getRequestLine() + "] for " + this.getClass().getSimpleName());
-
     final HttpResponse response = getHttpClient().execute(request);
 
     assertNotNull(response);
     assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
 
     if (expectedStatusCode == HttpStatusCodes.OK) {
-      assertNotNull(response);
       assertNotNull(response.getEntity());
       assertNotNull(response.getEntity().getContent());
     } else if (expectedStatusCode == HttpStatusCodes.CREATED) {
+      assertNotNull(response.getEntity());
+      assertNotNull(response.getEntity().getContent());
       assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     } else if (expectedStatusCode == HttpStatusCodes.NO_CONTENT) {
       assertTrue(response.getEntity() == null || response.getEntity().getContent() == null);
@@ -170,6 +166,10 @@ public class AbstractRefTest extends AbstractFitTest {
 
   protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
     return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+  }
+
+  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception {
+    return callUri(ODataHttpMethod.POST, uri, additionalHeader, additionalHeaderValue, requestBody, requestContentType, expectedStatusCode);
   }
 
   protected void putUri(final String uri,

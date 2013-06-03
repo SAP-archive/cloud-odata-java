@@ -1,7 +1,7 @@
+.pmd
 .project
 .classpath
 .settings
-.pmd
 target
 bin
 *.bak

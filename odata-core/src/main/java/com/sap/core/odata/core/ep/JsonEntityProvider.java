@@ -44,9 +44,11 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.consumer.JsonEntityConsumer;
+import com.sap.core.odata.core.ep.consumer.JsonServiceDocumentConsumer;
 import com.sap.core.odata.core.ep.producer.JsonCollectionEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonErrorDocumentProducer;
@@ -56,6 +58,7 @@ import com.sap.core.odata.core.ep.producer.JsonLinksEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonPropertyEntityProducer;
 import com.sap.core.odata.core.ep.producer.JsonServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * @author SAP AG
@@ -77,10 +80,10 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
    * @return            an {@link ODataResponse} containing the serialized error message
    */
   @Override
-  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
+  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
+    ODataRuntimeException cachedException = null;
 
     try {
       BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
@@ -95,9 +98,9 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new ODataRuntimeException(e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -105,7 +108,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new ODataRuntimeException(e);
           }
         }
       }
@@ -139,7 +142,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -177,7 +180,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -216,7 +219,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -248,7 +251,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -279,7 +282,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -315,7 +318,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -350,7 +353,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
         try {
           outStream.close();
@@ -401,7 +404,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    return new JsonEntityConsumer().readProperty(edmProperty, content, properties);
   }
 
   @Override
@@ -412,5 +415,11 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   @Override
   public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+  }
+
+  @Override
+  public ServiceDocument readServiceDocument(final InputStream serviceDocument) throws EntityProviderException {
+    JsonServiceDocumentConsumer serviceDocConsumer = new JsonServiceDocumentConsumer();
+    return serviceDocConsumer.parseJson(serviceDocument);
   }
 }

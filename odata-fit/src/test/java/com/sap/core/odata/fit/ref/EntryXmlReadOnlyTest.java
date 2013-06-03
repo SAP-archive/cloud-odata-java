@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Field;
+
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -28,6 +30,10 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.ref.model.DataContainer;
+import com.sap.core.odata.ref.model.Photo;
+import com.sap.core.odata.ref.processor.ListsProcessor;
+import com.sap.core.odata.ref.processor.ScenarioDataSource;
 
 /**
  * Tests employing the reference scenario reading a single entity in XML format.
@@ -74,8 +80,34 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("Container2.Photos(Id=4,Type='foo')/$value", "/atom:entry/atom:content/@src", getBody(response));
 
     notFound("Managers('5')");
+    notFound("Managers('1%2C2')");
     badRequest("Managers('3')?$top=1");
     badRequest("Rooms(X'33')");
+  }
+
+  @Test
+  public void entryWithSpecialKey() throws Exception {
+    // Ugly hack to create an entity with a key containing special characters just for this test.
+    ListsProcessor processor = (ListsProcessor) getService().getEntityProcessor();
+    Field field = processor.getClass().getDeclaredField("dataSource");
+    field.setAccessible(true);
+    ScenarioDataSource dataSource = (ScenarioDataSource) field.get(processor);
+    field = dataSource.getClass().getDeclaredField("dataContainer");
+    field.setAccessible(true);
+    DataContainer dataContainer = (DataContainer) field.get(dataSource);
+    // Add a new Photo where the "Type" property is set to, space-separated,
+    // a literal percent character, all gen-delims, and all sub-delims
+    // as specified by RFC 3986.
+    dataContainer.getPhotos().add(new Photo(42, "strange Photo", "% :/?#[]@ !$&'()*+,;="));
+
+    // Check that percent-decoding and -encoding works as expected.
+    final String url = "Container2.Photos(Id=42,Type='%25%20%3A%2F%3F%23%5B%5D%40%20%21%24%26%27%28%29%2A%2B%2C%3B%3D')";
+    final String expected = url.replace("%27", "''");
+    final HttpResponse response = callUri(url);
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("strange Photo", "/atom:entry/m:properties/d:Name", body);
+    assertXpathEvaluatesTo(expected, "/atom:entry/atom:link[@rel=\"edit\"]/@href", body);
+    assertXpathEvaluatesTo(expected + "/$value", "/atom:entry/atom:link[@rel=\"edit-media\"]/@href", body);
   }
 
   @Test

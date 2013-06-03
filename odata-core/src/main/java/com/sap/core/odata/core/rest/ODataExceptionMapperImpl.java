@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -56,6 +57,9 @@ import com.sap.core.odata.core.exception.MessageService.Message;
  */
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
+
+  private static final String DOLLAR_FORMAT = "$format";
+  private static final String DOLLAR_FORMAT_JSON = "json";
 
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
@@ -123,14 +127,16 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ODataErrorContext extractInformationForHttpException(final ODataHttpException toHandleException) {
     MessageReference messageReference = toHandleException.getMessageReference();
-    Message localizedMessage = extractEntity(messageReference);
+    Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
 
     ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(toHandleException.getHttpStatus());
     context.setErrorCode(toHandleException.getErrorCode());
-    context.setMessage(localizedMessage.getText());
-    context.setLocale(localizedMessage.getLocale());
+    if (localizedMessage != null) {
+      context.setMessage(localizedMessage.getText());
+      context.setLocale(localizedMessage.getLocale());
+    }
     context.setException(toHandleException);
     return context;
   }
@@ -160,9 +166,22 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ODataErrorContext context = createDefaultErrorContext();
     context.setContentType(getContentType().toContentTypeString());
     context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
+    if (toHandleException instanceof NotAllowedException) {
+      // RFC 2616, 5.1.1: " An origin server SHOULD return the status code
+      // 405 (Method Not Allowed) if the method is known by the origin server
+      // but not allowed for the requested resource, and 501 (Not Implemented)
+      // if the method is unrecognized or not implemented by the origin server."
+      // Since all recognized methods are handled elsewhere, we unconditionally
+      // switch to 501 here for not-allowed exceptions thrown directly from
+      // JAX-RS implementations.
+      context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
+      context.setMessage("The request dispatcher does not allow the HTTP method used for the request.");
+      context.setLocale(Locale.ENGLISH);
+    } else {
+      context.setMessage(toHandleException.getMessage());
+      context.setLocale(DEFAULT_RESPONSE_LOCALE);
+    }
     context.setErrorCode(null);
-    context.setMessage(toHandleException.getMessage());
-    context.setLocale(DEFAULT_RESPONSE_LOCALE);
     context.setException(toHandleException);
     return context;
   }
@@ -235,6 +254,32 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ContentType getContentType() {
+    ContentType contentType = getContentTypeByUriInfo();
+    if (contentType == null) {
+      contentType = getContentTypeByAcceptHeader();
+    }
+    return contentType;
+  }
+
+  private ContentType getContentTypeByUriInfo() {
+    ContentType contentType = null;
+    if (uriInfo != null && uriInfo.getQueryParameters() != null) {
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+      if (queryParameters.containsKey(DOLLAR_FORMAT)) {
+        String contentTypeString = queryParameters.getFirst(DOLLAR_FORMAT);
+        if (DOLLAR_FORMAT_JSON.equals(contentTypeString)) {
+          contentType = ContentType.APPLICATION_JSON;
+        } else {
+          //Any format mentioned in the $format parameter other than json results in an application/xml content type for error messages
+          //due to the OData V2 Specification
+          contentType = ContentType.APPLICATION_XML;
+        }
+      }
+    }
+    return contentType;
+  }
+
+  private ContentType getContentTypeByAcceptHeader() {
     for (MediaType type : httpHeaders.getAcceptableMediaTypes()) {
       if (ContentType.isParseable(type.toString())) {
         ContentType convertedContentType = ContentType.create(type.toString());

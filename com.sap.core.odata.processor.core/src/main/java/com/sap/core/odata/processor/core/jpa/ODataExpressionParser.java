@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sap.core.odata.processor.core.jpa.access.data;
+package com.sap.core.odata.processor.core.jpa;
 
 import java.util.ArrayList;
 import java.util.Calendar;

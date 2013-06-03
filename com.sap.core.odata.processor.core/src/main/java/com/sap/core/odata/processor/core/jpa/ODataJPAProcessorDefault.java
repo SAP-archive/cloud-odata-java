@@ -22,7 +22,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntitySetLinksUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
@@ -156,6 +158,52 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
         uriParserResultView, contentType, oDataJPAContext);
 
     return oDataResponse;
+  }
+
+  @Override
+  public ODataResponse readEntityLink(
+      final GetEntityLinkUriInfo uriParserResultView,
+      final String contentType) throws ODataException {
+
+    Object jpaEntity = jpaProcessor.process(uriParserResultView);
+
+    ODataResponse oDataResponse = ODataJPAResponseBuilder.build(jpaEntity,
+        uriParserResultView, contentType, oDataJPAContext);
+
+    return oDataResponse;
+  }
+
+  @Override
+  public ODataResponse readEntityLinks(
+      final GetEntitySetLinksUriInfo uriParserResultView,
+      final String contentType) throws ODataException {
+
+    List<Object> jpaEntity = jpaProcessor.process(uriParserResultView);
+
+    ODataResponse oDataResponse = ODataJPAResponseBuilder.build(jpaEntity,
+        uriParserResultView, contentType, oDataJPAContext);
+
+    return oDataResponse;
+  }
+
+  @Override
+  public ODataResponse createEntityLink(
+      final PostUriInfo uriParserResultView, final InputStream content,
+      final String requestContentType, final String contentType) throws ODataException {
+
+    jpaProcessor.process(uriParserResultView, content, requestContentType, contentType);
+
+    return ODataResponse.newBuilder().build();
+  }
+
+  @Override
+  public ODataResponse updateEntityLink(final PutMergePatchUriInfo uriParserResultView,
+      final InputStream content, final String requestContentType, final String contentType)
+      throws ODataException {
+
+    jpaProcessor.process(uriParserResultView, content, requestContentType, contentType);
+
+    return ODataResponse.newBuilder().build();
   }
 
 }

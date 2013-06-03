@@ -32,7 +32,7 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
     JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
     navPropView = new JPAEdmNavigationPropertyTest();
     objNavigationProperty = new JPAEdmNavigationProperty(localView,
-        localView);
+        localView, 1);
     try {
       objNavigationProperty.getBuilder().build();
     } catch (ODataJPAModelException e) {
@@ -102,7 +102,7 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
       JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
       navPropView = new JPAEdmNavigationPropertyTest();
       objNavigationProperty = new JPAEdmNavigationProperty(localView,
-          localView);
+          localView, 1);
       try {
         objNavigationProperty.getBuilder().build();
       } catch (ODataJPAModelException e) {
@@ -127,7 +127,7 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
     JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
     navPropView = new JPAEdmNavigationPropertyTest();
     objNavigationProperty = new JPAEdmNavigationProperty(localView,
-        localView);
+        localView, 1);
     try {
       objNavigationProperty.getBuilder().build();
     } catch (ODataJPAModelException e) {

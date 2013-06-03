@@ -111,4 +111,24 @@ public class ODataException extends Exception {
 
     return null;
   }
+
+  /**
+   * Returns the last Throwable in the chain of caused exceptions or null if there is no cause.
+   * @return null or the root cause of this exception
+   */
+  public Throwable getRootCause() {
+    Throwable rootCause = getCause();
+
+    if (rootCause != null) {
+      if (rootCause instanceof ODataException) {
+        ODataException ode = (ODataException) rootCause;
+        Throwable t = ode.getRootCause();
+        if (t != null) {
+          rootCause = t;
+        }
+      }
+    }
+
+    return rootCause;
+  }
 }

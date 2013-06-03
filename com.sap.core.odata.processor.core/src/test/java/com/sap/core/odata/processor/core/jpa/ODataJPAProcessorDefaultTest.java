@@ -303,7 +303,7 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView {
     EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andStubReturn("salesorderprocessing");
     EasyMock.expect(odataJPAContext.getEntityManagerFactory()).andStubReturn(mockEntityManagerFactory());
     EasyMock.expect(odataJPAContext.getODataContext()).andStubReturn(getLocalODataContext());
-
+    EasyMock.expect(odataJPAContext.getEntityManager()).andStubReturn(getLocalEntityManager());
     EasyMock.replay(odataJPAContext);
     return odataJPAContext;
   }

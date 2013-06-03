@@ -16,6 +16,7 @@
 package com.sap.core.odata.core.edm.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
@@ -184,6 +185,9 @@ public class EdmParserTest {
       + "<Property Name=\""
       + propertyNames[0]
       + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+      + "<Property Name=\""
+      + propertyNames[1]
+      + "\" Type=\"Edm.String\"/>"
       + "</EntityType>"
       + "</Schema>"
       + "<Schema Namespace=\""
@@ -240,6 +244,10 @@ public class EdmParserTest {
           ComplexProperty cProperty = (ComplexProperty) property;
           assertEquals(NAMESPACE, cProperty.getType().getNamespace());
           assertEquals("c_Location", cProperty.getType().getName());
+        } else if ("EmployeeName".equals(property.getName())) {
+          assertNotNull(property.getCustomizableFeedMappings());
+          assertEquals("SyndicationTitle", property.getCustomizableFeedMappings().getFcTargetPath());
+          assertNull(property.getCustomizableFeedMappings().getFcContentKind());
         }
         i++;
       }
@@ -350,7 +358,16 @@ public class EdmParserTest {
     DataServices result = parser.readMetadata(reader, true);
     for (Schema schema : result.getSchemas()) {
       for (EntityType entityType : schema.getEntityTypes()) {
-        if ("Photo".equals(entityType.getName())) {
+        if ("Employee".equals(entityType.getName())) {
+          for (Property property : entityType.getProperties()) {
+            if (propertyNames[0].equals(property.getName())) {
+              assertNotNull(property.getFacets());
+              assertEquals(Boolean.FALSE, property.getFacets().isNullable());
+            } else if (propertyNames[1].equals(property.getName())) {
+              assertNull(property.getFacets());
+            }
+          }
+        } else if ("Photo".equals(entityType.getName())) {
           for (Property property : entityType.getProperties()) {
             SimpleProperty sProperty = (SimpleProperty) property;
             if ("Id".equals(property.getName())) {
@@ -363,6 +380,7 @@ public class EdmParserTest {
 
               assertEquals(EdmSimpleTypeKind.Int32,
                   sProperty.getType());
+              assertNull(property.getCustomizableFeedMappings());
             }
             if ("Name".equals(property.getName())) {
               assertEquals(Boolean.TRUE, property.getFacets()
@@ -373,6 +391,7 @@ public class EdmParserTest {
                   .isFixedLength());
               assertEquals(EdmSimpleTypeKind.String,
                   sProperty.getType());
+              assertNull(property.getCustomizableFeedMappings());
             }
             if ("Содержание".equals(property.getName())) {
               assertEquals(FC_TARGET_PATH, property

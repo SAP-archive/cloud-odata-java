@@ -17,7 +17,10 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -34,6 +37,7 @@ import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
@@ -63,6 +67,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
   private ComplexProperty currentComplexProperty = null;
   private Attribute<?, ?> currentAttribute;
   private boolean isBuildModeComplexType;
+  private Map<String, Integer> associationCount;
 
   public JPAEdmProperty(final JPAEdmSchemaView view) {
     super(view);
@@ -72,6 +77,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
     complexTypeView = schemaView.getJPAEdmComplexTypeView();
     navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
     isBuildModeComplexType = false;
+    associationCount = new HashMap<String, Integer>();
   }
 
   public JPAEdmProperty(final JPAEdmSchemaView schemaView,
@@ -168,19 +174,28 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
       properties = new ArrayList<Property>();
 
-      Set<?> jpaAttributes = null;
-
+      List<Attribute<?, ?>> jpaAttributes = null;
+      String currentEntityName = null;
+      String targetEntityName = null;
+      String entityTypeName = null;
       if (isBuildModeComplexType) {
-        jpaAttributes = complexTypeView.getJPAEmbeddableType()
-            .getAttributes();
+        jpaAttributes = sortInAscendingOrder(complexTypeView.getJPAEmbeddableType()
+            .getAttributes());
+        entityTypeName = complexTypeView.getJPAEmbeddableType().getJavaType()
+            .getSimpleName();
       } else {
-
-        jpaAttributes = entityTypeView.getJPAEntityType()
-            .getAttributes();
+        jpaAttributes = sortInAscendingOrder(entityTypeView.getJPAEntityType()
+            .getAttributes());
+        entityTypeName = entityTypeView.getJPAEntityType().getName();
       }
 
       for (Object jpaAttribute : jpaAttributes) {
         currentAttribute = (Attribute<?, ?>) jpaAttribute;
+
+        // Check for need to Exclude 
+        if (isExcluded((JPAEdmPropertyView) JPAEdmProperty.this, entityTypeName, currentAttribute.getName())) {
+          continue;
+        }
 
         PersistentAttributeType attributeType = currentAttribute
             .getPersistentAttributeType();
@@ -269,12 +284,12 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
           JPAEdmAssociationEndView associationEndView = new JPAEdmAssociationEnd(entityTypeView, JPAEdmProperty.this);
           associationEndView.getBuilder().build();
-
           JPAEdmAssociationView associationView = schemaView.getJPAEdmAssociationView();
           if (associationView.searchAssociation(associationEndView) == null) {
-            JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView, entityTypeView, JPAEdmProperty.this);
+            int count = associationView.getNumberOfAssociationsWithSimilarEndPoints(associationEndView);
+            JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView, entityTypeView, JPAEdmProperty.this, count);
             associationViewLocal.getBuilder().build();
-            associationView.addJPAEdmAssociationView(associationViewLocal);
+            associationView.addJPAEdmAssociationView(associationViewLocal, associationEndView);
           }
 
           JPAEdmReferentialConstraintView refConstraintView = new JPAEdmReferentialConstraint(
@@ -289,7 +304,16 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
           {
             navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
           }
-          JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(associationView, JPAEdmProperty.this);
+          currentEntityName = entityTypeView.getJPAEntityType().getName();
+          targetEntityName = currentAttribute.getJavaType().getSimpleName();
+          Integer sequenceNumber = associationCount.get(currentEntityName + targetEntityName);
+          if (sequenceNumber == null) {
+            sequenceNumber = new Integer(1);
+          } else {
+            sequenceNumber = new Integer(sequenceNumber.intValue() + 1);
+          }
+          associationCount.put(currentEntityName + targetEntityName, sequenceNumber);
+          JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(associationView, JPAEdmProperty.this, sequenceNumber.intValue());
           localNavigationPropertyView.getBuilder().build();
           navigationPropertyView.addJPAEdmNavigationPropertyView(localNavigationPropertyView);
           break;
@@ -298,6 +322,27 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
         }
       }
 
+    }
+
+    @SuppressWarnings("rawtypes")
+    private List<Attribute<?, ?>> sortInAscendingOrder(final Set<?> jpaAttributes) {
+      List<Attribute<?, ?>> jpaAttributeList = new ArrayList<Attribute<?, ?>>();
+      Iterator itr = null;
+      Attribute<?, ?> smallestJpaAttribute;
+      Attribute<?, ?> currentJpaAttribute;
+      while (!jpaAttributes.isEmpty()) {
+        itr = jpaAttributes.iterator();
+        smallestJpaAttribute = (Attribute<?, ?>) itr.next();
+        while (itr.hasNext()) {
+          currentJpaAttribute = (Attribute<?, ?>) itr.next();
+          if (smallestJpaAttribute.getName().compareTo(currentJpaAttribute.getName()) > 0) {
+            smallestJpaAttribute = currentJpaAttribute;
+          }
+        }
+        jpaAttributeList.add(smallestJpaAttribute);
+        jpaAttributes.remove(smallestJpaAttribute);
+      }
+      return jpaAttributeList;
     }
 
     private EdmFacets setFacets(final Attribute<?, ?> jpaAttribute)
@@ -338,5 +383,20 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
   @Override
   public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
     return complexTypeView;
+  }
+
+  private boolean isExcluded(final JPAEdmPropertyView jpaEdmPropertyView, final String jpaEntityTypeName, final String jpaAttributeName) {
+    JPAEdmMappingModelAccess mappingModelAccess = jpaEdmPropertyView
+        .getJPAEdmMappingModelAccess();
+    boolean isExcluded = false;
+    if (mappingModelAccess != null && mappingModelAccess.isMappingModelExists()) {
+      // Exclusion of a simple property in a complex type
+      if (isBuildModeComplexType && mappingModelAccess.checkExclusionOfJPAEmbeddableAttributeType(jpaEntityTypeName, jpaAttributeName)
+          // Exclusion of a simple property of an Entity Type
+          || (!isBuildModeComplexType && mappingModelAccess.checkExclusionOfJPAAttributeType(jpaEntityTypeName, jpaAttributeName))) {
+        isExcluded = true;
+      }
+    }
+    return isExcluded;
   }
 }

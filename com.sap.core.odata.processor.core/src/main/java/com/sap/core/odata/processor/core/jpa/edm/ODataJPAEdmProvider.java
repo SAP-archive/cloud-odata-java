@@ -102,9 +102,6 @@ public class ODataJPAEdmProvider extends EdmProvider {
         }
       }
     }
-    /*throw ODataJPAModelException
-    		.throwException(ODataJPAModelException.INVALID_ENTITYCONTAINER
-    				.addContent(name), null);*/
     return null;
   }
 
@@ -140,9 +137,6 @@ public class ODataJPAEdmProvider extends EdmProvider {
       }
     }
 
-    /*throw ODataJPAModelException.throwException(
-    		ODataJPAModelException.INVALID_ENTITY_TYPE.addContent(edmFQName
-    				.toString()), null);*/
     return null;
   }
 
@@ -173,9 +167,6 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
     }
 
-    /*throw ODataJPAModelException.throwException(
-    		ODataJPAModelException.INVALID_COMPLEX_TYPE
-    				.addContent(edmFQName.toString()), null);*/
     return returnCT;
   }
 
@@ -227,17 +218,13 @@ public class ODataJPAEdmProvider extends EdmProvider {
     if (container != null && name != null) {
       for (EntitySet es : container.getEntitySets()) {
         if (name.equals(es.getName())) {
-          //return es;
           returnedSet = es;
           break;
         }
       }
     }
 
-    /*throw ODataJPAModelException
-    		.throwException(ODataJPAModelException.INVALID_ENTITYSET
-    				.addContent(name), null);*/
-    return returnedSet; //Fix for Function Import
+    return returnedSet;
   }
 
   @Override
@@ -300,9 +287,6 @@ public class ODataJPAEdmProvider extends EdmProvider {
         }
       }
     }
-    /*throw ODataJPAModelException
-    		.throwException(ODataJPAModelException.INVALID_FUNC_IMPORT
-    				.addContent(name), null);	*/
     return returnFI;
   }
 

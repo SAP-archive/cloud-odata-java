@@ -40,6 +40,7 @@ import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -349,9 +350,10 @@ public class XmlEntryConsumer {
    * @param navigationProperty
    * @param isFeed
    * @param inlineEntries
+   * @throws EntityProviderException 
    */
   private void updateReadProperties(final EntityProviderReadProperties readProperties, final String navigationPropertyName,
-      final EdmNavigationProperty navigationProperty, final boolean isFeed, final List<ODataEntry> inlineEntries) {
+      final EdmNavigationProperty navigationProperty, final boolean isFeed, final List<ODataEntry> inlineEntries) throws EntityProviderException {
     Object entry = extractODataEntity(isFeed, inlineEntries);
     OnReadInlineContent callback = readProperties.getCallback();
     if (callback == null) {
@@ -367,11 +369,34 @@ public class XmlEntryConsumer {
    * 
    * @param navigationPropertyName
    * @param inlineEntries
+   * @throws EntityProviderException 
    */
-  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) {
+  private void updateExpandSelectTree(final String navigationPropertyName, final List<ODataEntry> inlineEntries) throws EntityProviderException {
     expandSelectTree.setExpanded();
-    ExpandSelectTreeNode subNode = inlineEntries.isEmpty() ? new ExpandSelectTreeNodeImpl() : inlineEntries.get(0).getExpandSelectTree();
-    expandSelectTree.putLinkNode(navigationPropertyName, subNode);
+    ExpandSelectTreeNodeImpl subNode = getExpandSelectTreeNode(inlineEntries);
+    expandSelectTree.putLink(navigationPropertyName, subNode);
+  }
+
+  /**
+   * Get the {@link ExpandSelectTreeNodeImpl} from the <code>inlineEntries</code> or if none exists create a new
+   * {@link ExpandSelectTreeNodeImpl}.
+   * 
+   * @param inlineEntries entries which are checked for existing {@link ExpandSelectTreeNodeImpl}
+   * @return {@link ExpandSelectTreeNodeImpl} from the <code>inlineEntries</code> or if none exists create a new {@link ExpandSelectTreeNodeImpl}.
+   * @throws EntityProviderException if an unsupported {@link ExpandSelectTreeNode} implementation was found.
+   */
+  private ExpandSelectTreeNodeImpl getExpandSelectTreeNode(final List<ODataEntry> inlineEntries) throws EntityProviderException {
+    if (inlineEntries.isEmpty()) {
+      return new ExpandSelectTreeNodeImpl();
+    } else {
+      ExpandSelectTreeNode inlinedEntryEstNode = inlineEntries.get(0).getExpandSelectTree();
+      if (inlinedEntryEstNode instanceof ExpandSelectTreeNodeImpl) {
+        return (ExpandSelectTreeNodeImpl) inlinedEntryEstNode;
+      } else {
+        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
+            .addContent("Unsupported implementation for " + ExpandSelectTreeNode.class + " found."));
+      }
+    }
   }
 
   /**
@@ -400,16 +425,21 @@ public class XmlEntryConsumer {
    * @param callback
    * @param isFeed
    * @param entry
+   * @throws EntityProviderException
    */
   private void doCallback(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty,
-      final OnReadInlineContent callback, final boolean isFeed, final Object content) {
+      final OnReadInlineContent callback, final boolean isFeed, final Object content) throws EntityProviderException {
 
-    if (isFeed) {
-      ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (ODataFeed) content);
-      callback.handleReadFeed(callbackInfo);
-    } else {
-      ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) content);
-      callback.handleReadEntry(callbackInfo);
+    try {
+      if (isFeed) {
+        ReadFeedResult callbackInfo = new ReadFeedResult(readProperties, navigationProperty, (ODataFeed) content);
+        callback.handleReadFeed(callbackInfo);
+      } else {
+        ReadEntryResult callbackInfo = new ReadEntryResult(readProperties, navigationProperty, (ODataEntry) content);
+        callback.handleReadEntry(callbackInfo);
+      }
+    } catch (ODataApplicationException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
@@ -420,15 +450,20 @@ public class XmlEntryConsumer {
    * @param readProperties
    * @param navigationProperty
    * @return
+   * @throws EntityProviderException 
    */
-  private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) {
+  private EntityProviderReadProperties createInlineProperties(final EntityProviderReadProperties readProperties, final EdmNavigationProperty navigationProperty) throws EntityProviderException {
     final OnReadInlineContent callback = readProperties.getCallback();
 
     EntityProviderReadProperties currentReadProperties = EntityProviderReadProperties.initFrom(readProperties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
     if (callback == null) {
       return currentReadProperties;
     } else {
-      return callback.receiveReadProperties(currentReadProperties, navigationProperty);
+      try {
+        return callback.receiveReadProperties(currentReadProperties, navigationProperty);
+      } catch (ODataApplicationException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
+      }
     }
   }
 

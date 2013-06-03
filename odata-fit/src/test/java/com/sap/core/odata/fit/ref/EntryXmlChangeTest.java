@@ -109,7 +109,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
     response = postUri("Container2.Photos", "dummy", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
-    assertEquals(getEndpoint() + "Container2.Photos(Id=5,Type='application%2foctet-stream')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertEquals(getEndpoint() + "Container2.Photos(Id=5,Type='application%2Foctet-stream')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     checkEtag(response, "W/\"5\"");
     assertXpathEvaluatesTo("Photo 5", "/atom:entry/m:properties/d:Name", getBody(response));
     response = callUri("Container2.Photos(Id=5,Type='application%2Foctet-stream')/$value");

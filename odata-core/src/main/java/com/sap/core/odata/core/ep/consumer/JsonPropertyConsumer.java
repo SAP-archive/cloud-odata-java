@@ -27,6 +27,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
@@ -37,13 +38,10 @@ import com.sap.core.odata.core.ep.util.FormatJson;
  */
 public class JsonPropertyConsumer {
 
-  public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty) throws EntityProviderException {
-    return readPropertyStandalone(reader, edmProperty, null);
-  }
-
-  public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty edmProperty, final Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readPropertyStandalone(final JsonReader reader, final EdmProperty property, final EntityProviderReadProperties readProperties) throws EntityProviderException {
     try {
-      EntityPropertyInfo entityPropertyInfo = EntityInfoAggregator.create(edmProperty);
+      EntityPropertyInfo entityPropertyInfo = EntityInfoAggregator.create(property);
+      Map<String, Object> typeMappings = readProperties == null ? null : readProperties.getTypeMappings();
       Map<String, Object> result = new HashMap<String, Object>();
 
       reader.beginObject();
@@ -56,9 +54,17 @@ public class JsonPropertyConsumer {
       } else {
         handleName(reader, typeMappings, entityPropertyInfo, result, nextName);
       }
+      reader.endObject();
+
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        //TODO: CA Messagetext
+        throw new EntityProviderException(EntityProviderException.COMMON);
+      }
 
       return result;
-    } catch (IOException e) {
+    } catch (final IOException e) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+    } catch (final IllegalStateException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }
@@ -72,18 +78,14 @@ public class JsonPropertyConsumer {
     result.put(nextName, propertyValue);
   }
 
-  public Object readPropertyValue(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
+  protected Object readPropertyValue(final JsonReader reader, final EntityPropertyInfo entityPropertyInfo, final Object typeMapping) throws EntityProviderException {
     try {
-      Object value = null;
-      if (entityPropertyInfo.isComplex()) {
-        value = readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping);
-      } else {
-        value = readSimpleProperty(reader, entityPropertyInfo, typeMapping);
-      }
-      return value;
-    } catch (EdmException e) {
+      return entityPropertyInfo.isComplex() ?
+          readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping) :
+          readSimpleProperty(reader, entityPropertyInfo, typeMapping);
+    } catch (final EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
     }
   }

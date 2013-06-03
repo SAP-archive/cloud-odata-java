@@ -36,7 +36,7 @@ public class JsonFeedEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public JsonFeedEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data, final boolean isRootElement) throws EntityProviderException {
@@ -51,7 +51,8 @@ public class JsonFeedEntityProducer {
       }
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
-        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
+        final int inlineCount = properties.getInlineCount() == null ? 0 : properties.getInlineCount();
+        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount));
         jsonStreamWriter.separator();
       }
 

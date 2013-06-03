@@ -211,11 +211,6 @@ public class JPAEdmTestModelView implements JPAEdmAssociationEndView,
   }
 
   @Override
-  public void addJPAEdmAssociationView(final JPAEdmAssociationView arg0) {
-
-  }
-
-  @Override
   public void addJPAEdmRefConstraintView(final JPAEdmReferentialConstraintView arg0) {
 
   }
@@ -337,6 +332,44 @@ public class JPAEdmTestModelView implements JPAEdmAssociationEndView,
 
   @Override
   public JPAEdmExtension getJPAEdmExtension() {
+    return null;
+  }
+
+  @Override
+  public void addJPAEdmAssociationView(final JPAEdmAssociationView associationView,
+      final JPAEdmAssociationEndView associationEndView) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public int getNumberOfAssociationsWithSimilarEndPoints(
+      final JPAEdmAssociationEndView view) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public String getJoinColumnName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getJoinColumnReferenceColumnName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getMappedByName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getOwningPropertyName() {
+    // TODO Auto-generated method stub
     return null;
   }
 

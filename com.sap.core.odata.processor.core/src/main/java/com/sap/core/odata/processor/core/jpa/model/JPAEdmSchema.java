@@ -154,7 +154,7 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
             .getConsistentEdmComplexTypes();
         List<ComplexType> existingComplexTypes = new ArrayList<ComplexType>();
         for (ComplexType complexType : complexTypes) {
-          if (nonKeyComplexList.contains(complexType.getName())) {
+          if (complexType != null && nonKeyComplexList.contains(complexType.getName())) {//null check for exclude
             existingComplexTypes.add(complexType);
           }
         }

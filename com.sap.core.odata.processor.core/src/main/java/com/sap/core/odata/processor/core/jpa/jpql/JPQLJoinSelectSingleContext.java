@@ -30,7 +30,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLJoinSelectSingleContextView;
-import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
+import com.sap.core.odata.processor.core.jpa.ODataExpressionParser;
 
 public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
     implements JPQLJoinSelectSingleContextView {

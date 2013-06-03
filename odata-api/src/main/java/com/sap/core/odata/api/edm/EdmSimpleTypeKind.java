@@ -39,7 +39,7 @@ public enum EdmSimpleTypeKind {
    * @return {@link EdmSimpleType} instance
    */
   public EdmSimpleType getEdmSimpleTypeInstance() {
-    return RuntimeDelegate.getEdmSimpleType(this);
+    return SimpleTypeFacadeHolder.instance.getEdmSimpleTypeInstance(this);
   }
 
   /**
@@ -73,7 +73,14 @@ public enum EdmSimpleTypeKind {
    * @throws EdmLiteralException if the literal is malformed
    */
   public static EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
-    return RuntimeDelegate.getSimpleTypeFacade().parseUriLiteral(uriLiteral);
+    return SimpleTypeFacadeHolder.instance.parseUriLiteral(uriLiteral);
   }
 
+  /**
+   * Cached access to {@link EdmSimpleTypeFacade} which is used i.a. for {@link EdmSimpleType} instance creation 
+   * or parsing of {@link EdmLiteral}s.
+   */
+  private static class SimpleTypeFacadeHolder {
+    static final EdmSimpleTypeFacade instance = RuntimeDelegate.getSimpleTypeFacade();
+  }
 }

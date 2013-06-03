@@ -52,7 +52,9 @@ public class ProcessLocker {
           }
           Thread.sleep(250); // 4 attempts/sec
         }
-      } catch (final Exception e) {
+      } catch (final IOException e) {
+        throw new TestUtilRuntimeException(e);
+      } catch (final InterruptedException e) {
         throw new TestUtilRuntimeException(e);
       }
     }

@@ -20,7 +20,9 @@ import java.util.List;
 
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntitySetLinksUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
@@ -163,4 +165,63 @@ public interface JPAProcessor {
   public List<Object> process(GetFunctionImportUriInfo requestView)
       throws ODataJPAModelException, ODataJPARuntimeException;
 
+  /**
+   * Processes OData request for executing $links OData command for N:1 relation. 
+   * The method returns an Object of type representing OData entity.
+   * 
+   * @param uriParserResultView
+   *          OData request for Entity Link URI
+   * @return an object representing JPA entity
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+  public Object process(GetEntityLinkUriInfo uriParserResultView)
+      throws ODataJPAModelException, ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for executing $links OData command for N:1 relation. 
+   * The method returns an Object of type representing OData entity.
+   * 
+   * @param uriParserResultView
+   *          OData request for Entity Set Link URI
+   * @return a list of object representing JPA entities
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+  public <T> List<T> process(GetEntitySetLinksUriInfo uriParserResultView)
+      throws ODataJPAModelException, ODataJPARuntimeException;
+
+  /**
+   * Process OData request for creating Links. The OData request should contain
+   * $links OData command.
+   * 
+   * @param uriParserResultView
+   *          OData request for creating Links
+   * @param content
+   * @param requestContentType
+   * @param contentType
+   * 
+   * @throws ODataJPARuntimeException
+   * @throws ODataJPAModelException
+   */
+  public void process(PostUriInfo uriParserResultView,
+      InputStream content, String requestContentType, String contentType)
+      throws ODataJPARuntimeException, ODataJPAModelException;
+
+  /**
+   * Process OData request for updating Links. The OData request should contain
+   * $links OData command.
+   * 
+   * @param uriParserResultView
+   *          OData request for updating Links
+   * @param content
+   * @param requestContentType
+   * @param contentType
+   * 
+   * @throws ODataJPARuntimeException
+   * @throws ODataJPAModelException
+   */
+  public void process(PutMergePatchUriInfo uriParserResultView,
+      InputStream content, String requestContentType, String contentType)
+      throws ODataJPARuntimeException, ODataJPAModelException;
 }

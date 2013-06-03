@@ -56,7 +56,7 @@ public class JsonEntryEntityProducer {
   private JsonStreamWriter jsonStreamWriter;
 
   public JsonEntryEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final Writer writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
@@ -74,7 +74,7 @@ public class JsonEntryEntityProducer {
       jsonStreamWriter.name(FormatJson.METADATA);
       jsonStreamWriter.beginObject();
       final String self = AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
-      location = properties.getServiceRoot().toASCIIString() + self;
+      location = (properties.getServiceRoot() == null ? "" : properties.getServiceRoot().toASCIIString()) + self;
       jsonStreamWriter.namedStringValue(FormatJson.ID, location);
       jsonStreamWriter.separator();
       jsonStreamWriter.namedStringValue(FormatJson.URI, location);
@@ -90,7 +90,7 @@ public class JsonEntryEntityProducer {
         jsonStreamWriter.separator();
         jsonStreamWriter.namedStringValueRaw(FormatJson.CONTENT_TYPE,
             properties.getMediaResourceMimeType() == null ?
-                type.getMapping() == null || type.getMapping().getMimeType() == null ?
+                type.getMapping() == null || type.getMapping().getMimeType() == null || data.get(type.getMapping().getMimeType()) == null ?
                     HttpContentType.APPLICATION_OCTET_STREAM : data.get(type.getMapping().getMimeType()).toString() :
                 properties.getMediaResourceMimeType());
         jsonStreamWriter.separator();
@@ -126,6 +126,9 @@ public class JsonEntryEntityProducer {
               context.setCurrentExpandSelectTreeNode(properties.getExpandSelectTree().getLinks().get(navigationPropertyName));
 
               ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
+              if (callback == null) {
+                throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED);
+              }
               try {
                 if (isFeed) {
                   final WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult((WriteFeedCallbackContext) context);
@@ -148,13 +151,10 @@ public class JsonEntryEntityProducer {
                 throw new EntityProviderException(EntityProviderException.COMMON, e);
               }
             } else {
-              throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
+              writeDeferredUri(navigationPropertyName);
             }
           } else {
-            jsonStreamWriter.beginObject();
-            jsonStreamWriter.name(FormatJson.DEFERRED);
-            JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
-            jsonStreamWriter.endObject();
+            writeDeferredUri(navigationPropertyName);
           }
         }
       }
@@ -170,6 +170,13 @@ public class JsonEntryEntityProducer {
     } catch (final EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private void writeDeferredUri(final String navigationPropertyName) throws IOException {
+    jsonStreamWriter.beginObject();
+    jsonStreamWriter.name(FormatJson.DEFERRED);
+    JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
+    jsonStreamWriter.endObject();
   }
 
   public String getETag() {

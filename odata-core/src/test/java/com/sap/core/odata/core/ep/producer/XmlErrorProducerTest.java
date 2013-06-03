@@ -37,6 +37,7 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.AbstractXmlProducerTestHelper;
@@ -46,12 +47,11 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG
- *
  */
 public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
 
-  final String contentType = ContentType.APPLICATION_XML.toContentTypeString();
-  final HttpStatusCodes expectedStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+  private static final String contentType = ContentType.APPLICATION_XML.toContentTypeString();
+  private static final HttpStatusCodes expectedStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
 
   public XmlErrorProducerTest(final StreamWriterImplType type) {
     super(type);
@@ -66,30 +66,30 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
 
   @Test
   public void viaRuntimeDelegate() throws Exception {
-    String errorCode = null;
-    String message = null;
-    Locale locale = null;
-    String innerError = null;
-    ODataResponse response = EntityProvider.writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+    ODataErrorContext context = new ODataErrorContext();
+    context.setContentType(contentType);
+    context.setHttpStatus(expectedStatus);
+    context.setErrorCode(null);
+    context.setMessage(null);
+    context.setLocale(null);
+    context.setInnerError(null);
+    ODataResponse response = EntityProvider.writeErrorDocument(context);
     String errorXml = verifyResponse(response);
-    verifyXml(errorCode, message, locale, innerError, errorXml);
+    verifyXml(null, null, null, null, errorXml);
 
-    errorCode = "a";
-    message = "a";
-    locale = Locale.GERMAN;
-    innerError = "a";
-    response = EntityProvider.writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+    context.setErrorCode("a");
+    context.setMessage("a");
+    context.setLocale(Locale.GERMAN);
+    context.setInnerError("a");
+    response = EntityProvider.writeErrorDocument(context);
     errorXml = verifyResponse(response);
-    verifyXml(errorCode, message, locale, innerError, errorXml);
+    verifyXml("a", "a", Locale.GERMAN, "a", errorXml);
 
-    errorCode = null;
-    message = "a";
-    locale = Locale.GERMAN;
-    innerError = null;
-    response = EntityProvider.writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+    context.setErrorCode(null);
+    context.setInnerError(null);
+    response = EntityProvider.writeErrorDocument(context);
     errorXml = verifyResponse(response);
-    verifyXml(errorCode, message, locale, innerError, errorXml);
-
+    verifyXml(null, "a", Locale.GERMAN, null, errorXml);
   }
 
   @Test
@@ -98,7 +98,15 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     String message = null;
     Locale locale = null;
     String innerError = null;
-    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ODataErrorContext ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+
+    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     String errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
 
@@ -106,7 +114,16 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     message = "a";
     locale = Locale.GERMAN;
     innerError = "a";
-    response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+    ctx.setInnerError(innerError);
+
+    response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
 
@@ -114,7 +131,16 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     message = "a";
     locale = Locale.GERMAN;
     innerError = null;
-    response = new ProviderFacadeImpl().writeErrorDocument(contentType, expectedStatus, errorCode, message, locale, innerError);
+
+    ctx = new ODataErrorContext();
+    ctx.setContentType(contentType);
+    ctx.setErrorCode(errorCode);
+    ctx.setHttpStatus(expectedStatus);
+    ctx.setLocale(locale);
+    ctx.setMessage(message);
+    ctx.setInnerError(innerError);
+
+    response = new ProviderFacadeImpl().writeErrorDocument(ctx);
     errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
   }
