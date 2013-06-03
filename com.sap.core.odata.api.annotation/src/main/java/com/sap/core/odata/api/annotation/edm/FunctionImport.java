@@ -12,23 +12,23 @@ import com.sap.core.odata.api.annotation.edmx.HttpMethod.Name;
 @Target(ElementType.METHOD)
 public @interface FunctionImport {
 
-	enum ReturnType {
-		SCALAR, ENTITY_TYPE, COMPLEX_TYPE,NONE
-	}
+  enum ReturnType {
+    SCALAR, ENTITY_TYPE, COMPLEX_TYPE, NONE
+  }
 
-	enum Multiplicity {
-		MANY, ONE
-	}
+  enum Multiplicity {
+    MANY, ONE
+  }
 
-	String name() default "";
+  String name() default "";
 
-	String entitySet() default "";
+  String entitySet() default "";
 
-	ReturnType returnType();
+  ReturnType returnType();
 
-	Multiplicity multiplicity() default Multiplicity.ONE;
-	
-	HttpMethod httpMethod( ) default @HttpMethod(name=Name.GET);
-	
-	Documentation documentation() default @Documentation;
+  Multiplicity multiplicity() default Multiplicity.ONE;
+
+  HttpMethod httpMethod() default @HttpMethod(name = Name.GET);
+
+  Documentation documentation() default @Documentation;
 }

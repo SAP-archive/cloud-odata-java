@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Facets {
-	int maxLength() default 0;
+  int maxLength() default 0;
 
-	int scale() default -1;
+  int scale() default -1;
 
-	int precision() default 0;
+  int precision() default 0;
 
-	boolean nullable() default false;
+  boolean nullable() default false;
 }
