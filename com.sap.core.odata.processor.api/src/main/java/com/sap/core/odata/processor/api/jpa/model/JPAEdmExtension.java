@@ -33,6 +33,7 @@ public interface JPAEdmExtension {
    * @deprecated Use {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension#extendWithOperations(JPAEdmSchemaView view)}
    * 
    */
+  @Deprecated
   public void extend(JPAEdmSchemaView view);
 
   /**

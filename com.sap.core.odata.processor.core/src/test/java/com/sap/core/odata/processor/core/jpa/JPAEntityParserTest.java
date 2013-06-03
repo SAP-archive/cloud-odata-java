@@ -327,8 +327,8 @@ public class JPAEntityParserTest {
       /*
        * Case 1 - Property having No mapping
        */
-      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
-      Object[] params = {"Field1", null,"get"};
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { "Field1", null, "get" };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
           "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
@@ -364,8 +364,8 @@ public class JPAEntityParserTest {
       /*
        * Case 1 - Property having No mapping and no name
        */
-      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
-      Object[] params = { null, null,null };
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { null, null, null };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
           "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
@@ -409,8 +409,8 @@ public class JPAEntityParserTest {
     EasyMock.replay(edmMapping);
     try {
 
-      Class<?>[] pars = { String.class, EdmMapping.class,String.class };
-      Object[] params = { "myField", edmMapping,"get" };
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { "myField", edmMapping, "get" };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
           "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
@@ -532,7 +532,7 @@ public class JPAEntityParserTest {
       return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
       this.id = id;
     }
 
@@ -540,7 +540,7 @@ public class JPAEntityParserTest {
       return relatedEntity;
     }
 
-    public void setRelatedEntity(DemoRelatedEntity relatedEntity) {
+    public void setRelatedEntity(final DemoRelatedEntity relatedEntity) {
       this.relatedEntity = relatedEntity;
     }
 
@@ -548,11 +548,11 @@ public class JPAEntityParserTest {
       return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(final int value) {
       this.value = value;
     }
 
-    demoItem(String id, int value) {
+    demoItem(final String id, final int value) {
       this.id = id;
       this.value = value;
     }
@@ -567,11 +567,11 @@ public class JPAEntityParserTest {
       return order;
     }
 
-    public void setOrder(String order) {
+    public void setOrder(final String order) {
       this.order = order;
     }
 
-    public DemoRelatedEntity(String order) {
+    public DemoRelatedEntity(final String order) {
       super();
       this.order = order;
     }
@@ -592,13 +592,13 @@ public class JPAEntityParserTest {
       return field1;
     }
 
-    public void setField1(String field) {
-      this.field1 = field;
+    public void setField1(final String field) {
+      field1 = field;
     }
 
-    public DemoItem2(String field)
+    public DemoItem2(final String field)
     {
-      this.field1 = field;
+      field1 = field;
     }
 
   }

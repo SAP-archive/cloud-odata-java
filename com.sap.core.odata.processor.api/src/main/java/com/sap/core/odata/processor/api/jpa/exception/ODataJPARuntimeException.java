@@ -65,8 +65,8 @@ public class ODataJPARuntimeException extends ODataJPAException {
   public static final MessageReference RESOURCE_X_NOT_FOUND = createMessageReference(
       ODataJPARuntimeException.class, "RESOURCE_X_NOT_FOUND");
 
-  private ODataJPARuntimeException(String localizedMessage, Throwable e,
-      MessageReference msgRef) {
+  private ODataJPARuntimeException(final String localizedMessage, final Throwable e,
+      final MessageReference msgRef) {
     super(localizedMessage, e, msgRef);
   }
 
@@ -84,7 +84,7 @@ public class ODataJPARuntimeException extends ODataJPAException {
    * @throws ODataJPARuntimeException
    */
   public static ODataJPARuntimeException throwException(
-      MessageReference messageReference, Throwable e) {
+      final MessageReference messageReference, final Throwable e) {
     ODataJPAMessageService messageService;
     messageService = ODataJPAFactory.createFactory()
         .getODataJPAAccessFactory()

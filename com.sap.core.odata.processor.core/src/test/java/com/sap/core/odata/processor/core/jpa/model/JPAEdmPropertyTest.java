@@ -30,355 +30,356 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.ComplexType;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEmbeddableTypeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
-import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.ComplexType;
-import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 
 public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
-	private JPAEdmPropertyTest objJPAEdmPropertyTest;
-	private JPAEdmProperty objJPAEdmProperty;
-	
-	private static int ATTRIBUTE_TYPE = 1; 
+  private JPAEdmPropertyTest objJPAEdmPropertyTest;
+  private JPAEdmProperty objJPAEdmProperty;
 
-	@Before
-	public void setUp() {
-		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
-		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
-		try {
-			objJPAEdmProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
+  private static int ATTRIBUTE_TYPE = 1;
 
-	}
+  @Before
+  public void setUp() {
+    objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+    objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
+    try {
+      objJPAEdmProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
 
-	@Test
-	public void testGetBuilder() {
-		assertNotNull(objJPAEdmProperty.getBuilder());
+  }
 
-		// builder for complex type
-		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
-		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest,
-				objJPAEdmPropertyTest);
-		try {
-			objJPAEdmProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-	}
+  @Test
+  public void testGetBuilder() {
+    assertNotNull(objJPAEdmProperty.getBuilder());
 
-	@Test
-	public void testGetBuilderIdempotent() {
-		JPAEdmBuilder builder1 = objJPAEdmProperty.getBuilder();
-		JPAEdmBuilder builder2 = objJPAEdmProperty.getBuilder();
+    // builder for complex type
+    objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+    objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest,
+        objJPAEdmPropertyTest);
+    try {
+      objJPAEdmProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+  }
 
-		assertEquals(builder1.hashCode(), builder2.hashCode());
-	}
+  @Test
+  public void testGetBuilderIdempotent() {
+    JPAEdmBuilder builder1 = objJPAEdmProperty.getBuilder();
+    JPAEdmBuilder builder2 = objJPAEdmProperty.getBuilder();
 
-	@Test
-	public void testGetPropertyList() {
-		assertNotNull(objJPAEdmProperty.getEdmPropertyList());
-		assertTrue(objJPAEdmProperty.getEdmPropertyList().size() > 0);
-	}
+    assertEquals(builder1.hashCode(), builder2.hashCode());
+  }
 
-	@Test
-	public void testGetJPAEdmKeyView() {
-		assertNotNull(objJPAEdmProperty.getJPAEdmKeyView());
-	}
+  @Test
+  public void testGetPropertyList() {
+    assertNotNull(objJPAEdmProperty.getEdmPropertyList());
+    assertTrue(objJPAEdmProperty.getEdmPropertyList().size() > 0);
+  }
 
-	@Test
-	public void testGetSimpleProperty() {
-		assertNotNull(objJPAEdmProperty.getEdmSimpleProperty());
-	}
+  @Test
+  public void testGetJPAEdmKeyView() {
+    assertNotNull(objJPAEdmProperty.getJPAEdmKeyView());
+  }
 
-	@Test
-	public void testGetJPAAttribute() {
-		assertNotNull(objJPAEdmProperty.getJPAAttribute());
-	}
+  @Test
+  public void testGetSimpleProperty() {
+    assertNotNull(objJPAEdmProperty.getEdmSimpleProperty());
+  }
 
-	@Test
-	public void testGetEdmComplexProperty() {
-		assertNull(objJPAEdmProperty.getEdmComplexProperty());
-	}
+  @Test
+  public void testGetJPAAttribute() {
+    assertNotNull(objJPAEdmProperty.getJPAAttribute());
+  }
 
-	@Test
-	public void testGetJPAEdmNavigationPropertyView() {
-		assertNotNull(objJPAEdmProperty.getJPAEdmNavigationPropertyView());
-	}
+  @Test
+  public void testGetEdmComplexProperty() {
+    assertNull(objJPAEdmProperty.getEdmComplexProperty());
+  }
 
-	@Test
-	public void testIsConsistent() {
-		assertNotNull(objJPAEdmProperty.isConsistent());
-	}
+  @Test
+  public void testGetJPAEdmNavigationPropertyView() {
+    assertNotNull(objJPAEdmProperty.getJPAEdmNavigationPropertyView());
+  }
 
-	@Test
-	public void testClean() {
-		objJPAEdmProperty.clean();
-		assertFalse(objJPAEdmProperty.isConsistent());
-	}
-	
-	@Test
-	public void testBuildManyToOne() {
-		ATTRIBUTE_TYPE = 3;
-		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
-		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
-		try {
-			objJPAEdmProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		
-		ATTRIBUTE_TYPE = 1;
-		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
-		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
-		try {
-			objJPAEdmProperty.getBuilder().build();
-		} catch (ODataJPAModelException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
-		
-	}
+  @Test
+  public void testIsConsistent() {
+    assertNotNull(objJPAEdmProperty.isConsistent());
+  }
 
-	@Override
-	public Metamodel getJPAMetaModel() {
-		return new JPAEdmMetaModel();
-	}
+  @Test
+  public void testClean() {
+    objJPAEdmProperty.clean();
+    assertFalse(objJPAEdmProperty.isConsistent());
+  }
 
-	@Override
-	public JPAEdmEntitySetView getJPAEdmEntitySetView() {
-		return this;
-	}
+  @Test
+  public void testBuildManyToOne() {
+    ATTRIBUTE_TYPE = 3;
+    objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+    objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
+    try {
+      objJPAEdmProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
 
-	@Override
-	public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
-		return this;
-	}
+    ATTRIBUTE_TYPE = 1;
+    objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+    objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
+    try {
+      objJPAEdmProperty.getBuilder().build();
+    } catch (ODataJPAModelException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (ODataJPARuntimeException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
 
-	@Override
-	public EntityType<?> getJPAEntityType() {
-		return new JPAEdmEntityType<String>();
-	}
+  }
 
-	@Override
-	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
-		return this;
-	}
-	
+  @Override
+  public Metamodel getJPAMetaModel() {
+    return new JPAEdmMetaModel();
+  }
 
-	@Override
-	public com.sap.core.odata.api.edm.provider.EntityType getEdmEntityType() {
-		/*EntityType entityType = new EntityType();
-		entityType.setName("SalesOrderHeader");
-		return entityType;*/
-		com.sap.core.odata.api.edm.provider.EntityType entityType = new com.sap.core.odata.api.edm.provider.EntityType();
-		entityType.setName("SalesOrderHeader");
-		
-		return entityType;
-	}
-	
-	@Override
-	public Association getEdmAssociation() {
-		Association association = new Association();
-		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName(
-				"salesorderprocessing", "SalesOrderHeader")));
-		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName(
-				"salesorderprocessing", "String")));
+  @Override
+  public JPAEdmEntitySetView getJPAEdmEntitySetView() {
+    return this;
+  }
 
-		return association;
-	}
+  @Override
+  public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
+    return this;
+  }
 
-	@Override
-	public String getpUnitName() {
-		return "salesorderprocessing";
-	}
+  @Override
+  public EntityType<?> getJPAEntityType() {
+    return new JPAEdmEntityType<String>();
+  }
 
-	@Override
-	public JPAEdmAssociationView getJPAEdmAssociationView() {
-		return this;
-	}
+  @Override
+  public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
+    return this;
+  }
 
-	@Override
-	public EmbeddableType<?> getJPAEmbeddableType() {
-		return new JPAEdmEmbeddable<java.lang.String>();
-	}
-	
-	@Override
-	public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
-		return this;
-	}
+  @Override
+  public com.sap.core.odata.api.edm.provider.EntityType getEdmEntityType() {
+    /*EntityType entityType = new EntityType();
+    entityType.setName("SalesOrderHeader");
+    return entityType;*/
+    com.sap.core.odata.api.edm.provider.EntityType entityType = new com.sap.core.odata.api.edm.provider.EntityType();
+    entityType.setName("SalesOrderHeader");
 
+    return entityType;
+  }
 
-	private class JPAEdmMetaModel extends JPAMetaModelMock {
-		Set<EntityType<?>> entities;
-		Set<EmbeddableType<?>> embeddableSet;
+  @Override
+  public Association getEdmAssociation() {
+    Association association = new Association();
+    association.setEnd1(new AssociationEnd().setType(new FullQualifiedName(
+        "salesorderprocessing", "SalesOrderHeader")));
+    association.setEnd2(new AssociationEnd().setType(new FullQualifiedName(
+        "salesorderprocessing", "String")));
 
-		public JPAEdmMetaModel() {
-			entities = new HashSet<EntityType<?>>();
-			embeddableSet = new HashSet<EmbeddableType<?>>();
-		}
+    return association;
+  }
 
-		@Override
-		public Set<EntityType<?>> getEntities() {
-			entities.add(new JPAEdmEntityType());
-			return entities;
-		}
+  @Override
+  public String getpUnitName() {
+    return "salesorderprocessing";
+  }
 
-		@Override
-		public Set<EmbeddableType<?>> getEmbeddables() {
-			embeddableSet.add(new JPAEdmEmbeddable<String>());
-			return embeddableSet;
-		}
+  @Override
+  public JPAEdmAssociationView getJPAEdmAssociationView() {
+    return this;
+  }
 
-		private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
-			@Override
-			public String getName() {
-				return "SalesOrderHeader";
-			}
-		}
-	}
+  @Override
+  public EmbeddableType<?> getJPAEmbeddableType() {
+    return new JPAEdmEmbeddable<java.lang.String>();
+  }
 
-	@SuppressWarnings("hiding")
-	private class JPAEdmEntityType<String> extends JPAEntityTypeMock<String> {
-		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
+  @Override
+  public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
+    return this;
+  }
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private void setValuesToSet() {
-			attributeSet
-					.add((Attribute<? super String, String>) new JPAEdmAttribute(
-							java.lang.String.class, "SOID"));
-			attributeSet
-					.add((Attribute<? super String, String>) new JPAEdmAttribute(
-							java.lang.String.class, "SONAME"));
-		}
+  private class JPAEdmMetaModel extends JPAMetaModelMock {
+    Set<EntityType<?>> entities;
+    Set<EmbeddableType<?>> embeddableSet;
 
-		@Override
-		public Set<Attribute<? super String, ?>> getAttributes() {
-			setValuesToSet();
-			return attributeSet;
-		}
+    public JPAEdmMetaModel() {
+      entities = new HashSet<EntityType<?>>();
+      embeddableSet = new HashSet<EmbeddableType<?>>();
+    }
 
-		private class JPAEdmAttribute<Object, String> extends
-				JPASingularAttributeMock<Object, String> {
+    @Override
+    public Set<EntityType<?>> getEntities() {
+      entities.add(new JPAEdmEntityType());
+      return entities;
+    }
 
-			@Override
-			public PersistentAttributeType getPersistentAttributeType() {
-				if(ATTRIBUTE_TYPE == 1)
-					return PersistentAttributeType.BASIC;
-				else if(ATTRIBUTE_TYPE == 2)
-					return PersistentAttributeType.EMBEDDED;
-				else
-					return PersistentAttributeType.MANY_TO_ONE;
-			}
+    @Override
+    public Set<EmbeddableType<?>> getEmbeddables() {
+      embeddableSet.add(new JPAEdmEmbeddable<String>());
+      return embeddableSet;
+    }
 
-			Class<String> clazz;
-			java.lang.String attributeName;
+    private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
+      @Override
+      public String getName() {
+        return "SalesOrderHeader";
+      }
+    }
+  }
 
-			public JPAEdmAttribute(Class<String> javaType, java.lang.String name) {
-				this.clazz = javaType;
-				this.attributeName = name;
+  @SuppressWarnings("hiding")
+  private class JPAEdmEntityType<String> extends JPAEntityTypeMock<String> {
+    Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
 
-			}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void setValuesToSet() {
+      attributeSet
+          .add((Attribute<? super String, String>) new JPAEdmAttribute(
+              java.lang.String.class, "SOID"));
+      attributeSet
+          .add((Attribute<? super String, String>) new JPAEdmAttribute(
+              java.lang.String.class, "SONAME"));
+    }
 
-			@Override
-			public Class<String> getJavaType() {
-				return clazz;
-			}
+    @Override
+    public Set<Attribute<? super String, ?>> getAttributes() {
+      setValuesToSet();
+      return attributeSet;
+    }
 
-			@Override
-			public java.lang.String getName() {
-				return this.attributeName;
-			}
+    private class JPAEdmAttribute<Object, String> extends
+        JPASingularAttributeMock<Object, String> {
 
-			@Override
-			public boolean isId() {
-				return true;
-			}
-		}
-	}
+      @Override
+      public PersistentAttributeType getPersistentAttributeType() {
+        if (ATTRIBUTE_TYPE == 1) {
+          return PersistentAttributeType.BASIC;
+        } else if (ATTRIBUTE_TYPE == 2) {
+          return PersistentAttributeType.EMBEDDED;
+        } else {
+          return PersistentAttributeType.MANY_TO_ONE;
+        }
+      }
 
-	@SuppressWarnings("hiding")
-	private class JPAEdmEmbeddable<String> extends
-			JPAEmbeddableTypeMock<String> {
+      Class<String> clazz;
+      java.lang.String attributeName;
 
-		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
+      public JPAEdmAttribute(final Class<String> javaType, final java.lang.String name) {
+        this.clazz = javaType;
+        this.attributeName = name;
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private void setValuesToSet() {
-			attributeSet
-					.add((Attribute<? super String, String>) new JPAEdmAttribute(
-							java.lang.String.class, "SOID"));
-			attributeSet
-					.add((Attribute<? super String, String>) new JPAEdmAttribute(
-							java.lang.String.class, "SONAME"));
-		}
+      }
 
-		@Override
-		public Set<Attribute<? super String, ?>> getAttributes() {
-			setValuesToSet();
-			return attributeSet;
-		}
-		
-		@SuppressWarnings("unchecked")
-		@Override
-		public Class<String> getJavaType() {
-			Class<?> clazz = null;
-			if(ATTRIBUTE_TYPE == 1)
-				clazz = (Class<java.lang.String>) SimpleType.SimpleTypeA.clazz;
-			else
-				clazz = (Class<?>) ComplexType.ComplexTypeA.clazz;
-			return (Class<String>) clazz;
-		}
+      @Override
+      public Class<String> getJavaType() {
+        return clazz;
+      }
 
-		private class JPAEdmAttribute<Object, String> extends
-				JPASingularAttributeMock<Object, String> {
+      @Override
+      public java.lang.String getName() {
+        return this.attributeName;
+      }
 
-			@Override
-			public PersistentAttributeType getPersistentAttributeType() {
-				if(ATTRIBUTE_TYPE == 1)
-					return PersistentAttributeType.BASIC;
-				else if(ATTRIBUTE_TYPE == 2)
-					return PersistentAttributeType.EMBEDDED;
-				else
-					return PersistentAttributeType.MANY_TO_ONE;
-			}
+      @Override
+      public boolean isId() {
+        return true;
+      }
+    }
+  }
 
-			Class<String> clazz;
-			java.lang.String attributeName;
+  @SuppressWarnings("hiding")
+  private class JPAEdmEmbeddable<String> extends
+      JPAEmbeddableTypeMock<String> {
 
-			public JPAEdmAttribute(Class<String> javaType, java.lang.String name) {
-				this.clazz = javaType;
-				this.attributeName = name;
+    Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
 
-			}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void setValuesToSet() {
+      attributeSet
+          .add((Attribute<? super String, String>) new JPAEdmAttribute(
+              java.lang.String.class, "SOID"));
+      attributeSet
+          .add((Attribute<? super String, String>) new JPAEdmAttribute(
+              java.lang.String.class, "SONAME"));
+    }
 
-			@Override
-			public Class<String> getJavaType() {
-				return clazz;
-			}
+    @Override
+    public Set<Attribute<? super String, ?>> getAttributes() {
+      setValuesToSet();
+      return attributeSet;
+    }
 
-			@Override
-			public java.lang.String getName() {
-				return this.attributeName;
-			}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<String> getJavaType() {
+      Class<?> clazz = null;
+      if (ATTRIBUTE_TYPE == 1) {
+        clazz = (Class<java.lang.String>) SimpleType.SimpleTypeA.clazz;
+      } else {
+        clazz = (Class<?>) ComplexType.ComplexTypeA.clazz;
+      }
+      return (Class<String>) clazz;
+    }
 
-			@Override
-			public boolean isId() {
-				return true;
-			}
-		}
+    private class JPAEdmAttribute<Object, String> extends
+        JPASingularAttributeMock<Object, String> {
 
-	}
+      @Override
+      public PersistentAttributeType getPersistentAttributeType() {
+        if (ATTRIBUTE_TYPE == 1) {
+          return PersistentAttributeType.BASIC;
+        } else if (ATTRIBUTE_TYPE == 2) {
+          return PersistentAttributeType.EMBEDDED;
+        } else {
+          return PersistentAttributeType.MANY_TO_ONE;
+        }
+      }
+
+      Class<String> clazz;
+      java.lang.String attributeName;
+
+      public JPAEdmAttribute(final Class<String> javaType, final java.lang.String name) {
+        this.clazz = javaType;
+        this.attributeName = name;
+
+      }
+
+      @Override
+      public Class<String> getJavaType() {
+        return clazz;
+      }
+
+      @Override
+      public java.lang.String getName() {
+        return this.attributeName;
+      }
+
+      @Override
+      public boolean isId() {
+        return true;
+      }
+    }
+
+  }
 
 }

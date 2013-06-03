@@ -32,18 +32,18 @@ public class JPALink {
   private Object targetJPAEntity;
   private Object sourceJPAEntity;
 
-  public JPALink(ODataJPAContext context) {
+  public JPALink(final ODataJPAContext context) {
     this.context = context;
     jpaProcessor = ODataJPAFactory.createFactory().getJPAAccessFactory()
         .getJPAProcessor(this.context);
     parser = new ODataEntityParser(this.context);
   }
 
-  public void setSourceJPAEntity(Object jpaEntity) {
+  public void setSourceJPAEntity(final Object jpaEntity) {
     sourceJPAEntity = jpaEntity;
   }
 
-  public void create(PostUriInfo uriInfo, InputStream content, String requestContentType, String contentType)
+  public void create(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException {
 
     EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
@@ -70,7 +70,9 @@ public class JPALink {
       uriInfoList = parser.parseLinks(targetEntitySet, content, contentType);
     }
 
-    if (uriInfoList == null) return;
+    if (uriInfoList == null) {
+      return;
+    }
     try {
       for (UriInfo getUriInfo : uriInfoList) {
 
@@ -79,8 +81,9 @@ public class JPALink {
           throw ODataJPARuntimeException
               .throwException(ODataJPARuntimeException.RELATIONSHIP_INVALID, null);
         }
-        if (!((UriInfo) uriInfo).isLinks())
+        if (!((UriInfo) uriInfo).isLinks()) {
           navigationProperty = getUriInfo.getNavigationSegments().get(0).getNavigationProperty();
+        }
 
         targetJPAEntity = jpaProcessor.process((GetEntityUriInfo) getUriInfo);
         if (targetJPAEntity != null && ((UriInfo) uriInfo).isLinks()) {
@@ -105,9 +108,9 @@ public class JPALink {
           List<Object> relatedEntities = (List<Object>) getMethod.invoke(sourceJPAEntity);
           relatedEntities.add(targetJPAEntity);
           setMethod.invoke(sourceJPAEntity, relatedEntities);
-        }
-        else
+        } else {
           setMethod.invoke(sourceJPAEntity, targetJPAEntity);
+        }
       }
     } catch (IllegalAccessException e) {
       throw ODataJPARuntimeException
@@ -144,9 +147,9 @@ public class JPALink {
 
   }
 
-public void create(PutMergePatchUriInfo putUriInfo, InputStream content,
-		String requestContentType, String contentType) throws ODataJPARuntimeException, ODataJPAModelException {
-	UriInfo uriInfo = (UriInfo) putUriInfo;
+  public void create(final PutMergePatchUriInfo putUriInfo, final InputStream content,
+      final String requestContentType, final String contentType) throws ODataJPARuntimeException, ODataJPAModelException {
+    UriInfo uriInfo = (UriInfo) putUriInfo;
 
     EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
     String targerEntitySetName;
@@ -172,7 +175,9 @@ public void create(PutMergePatchUriInfo putUriInfo, InputStream content,
       uriInfoList = parser.parseLinks(targetEntitySet, content, contentType);
     }
 
-    if (uriInfoList == null) return;
+    if (uriInfoList == null) {
+      return;
+    }
     try {
       for (UriInfo getUriInfo : uriInfoList) {
 
@@ -181,8 +186,9 @@ public void create(PutMergePatchUriInfo putUriInfo, InputStream content,
           throw ODataJPARuntimeException
               .throwException(ODataJPARuntimeException.RELATIONSHIP_INVALID, null);
         }
-        if (!((UriInfo) uriInfo).isLinks())
+        if (!((UriInfo) uriInfo).isLinks()) {
           navigationProperty = getUriInfo.getNavigationSegments().get(0).getNavigationProperty();
+        }
 
         targetJPAEntity = jpaProcessor.process((GetEntityUriInfo) getUriInfo);
         if (targetJPAEntity != null && ((UriInfo) uriInfo).isLinks()) {
@@ -207,9 +213,9 @@ public void create(PutMergePatchUriInfo putUriInfo, InputStream content,
           List<Object> relatedEntities = (List<Object>) getMethod.invoke(sourceJPAEntity);
           relatedEntities.add(targetJPAEntity);
           setMethod.invoke(sourceJPAEntity, relatedEntities);
-        }
-        else
+        } else {
           setMethod.invoke(sourceJPAEntity, targetJPAEntity);
+        }
       }
     } catch (IllegalAccessException e) {
       throw ODataJPARuntimeException
@@ -228,8 +234,7 @@ public void create(PutMergePatchUriInfo putUriInfo, InputStream content,
           .throwException(ODataJPARuntimeException.GENERAL
               .addContent(e.getMessage()), e);
     }
-  
-	
-}
+
+  }
 
 }

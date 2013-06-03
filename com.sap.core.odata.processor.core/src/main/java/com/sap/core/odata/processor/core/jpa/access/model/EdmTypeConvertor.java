@@ -39,7 +39,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 public class EdmTypeConvertor {
 
-  public static Class<?> convertToJavaType(EdmType edmType) throws ODataJPAModelException, ODataJPARuntimeException {
+  public static Class<?> convertToJavaType(final EdmType edmType) throws ODataJPAModelException, ODataJPARuntimeException {
     if (edmType instanceof EdmString) {
       return String.class;
     }

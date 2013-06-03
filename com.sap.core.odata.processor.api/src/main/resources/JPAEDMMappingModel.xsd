@@ -42,7 +42,8 @@
 					<xs:simpleContent>
 						<xs:extension base="xs:string">
 							<xs:attribute type="xs:string" name="name" use="required" />
-							<xs:attribute type="xs:boolean" name="exclude" use="optional" default="false"/>
+							<xs:attribute type="xs:boolean" name="exclude" use="optional"
+								default="false" />
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -90,7 +91,8 @@
 			<xs:element name="JPARelationships" type="tns:JPARelationshipMapType" />
 		</xs:sequence>
 		<xs:attribute type="xs:string" name="name" use="required" />
-		<xs:attribute type="xs:boolean" name="exclude" use="optional" default="false"/>
+		<xs:attribute type="xs:boolean" name="exclude" use="optional"
+			default="false" />
 	</xs:complexType>
 
 	<xs:complexType name="JPAEntityTypesMapType">
@@ -113,7 +115,8 @@
 			<xs:element name="JPAAttributes" type="tns:JPAAttributeMapType" />
 		</xs:sequence>
 		<xs:attribute type="xs:string" name="name" use="required" />
-		<xs:attribute type="xs:boolean" name="exclude" use="optional" default="false"/>
+		<xs:attribute type="xs:boolean" name="exclude" use="optional"
+			default="false" />
 	</xs:complexType>
 
 	<xs:complexType name="JPAEmbeddableTypesMapType">

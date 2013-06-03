@@ -12,7 +12,7 @@ public class JPAProcessorExtension {
     return jpaProcessor;
   }
 
-  public void setJpaProcessor(JPAProcessor jpaProcessor) {
+  public void setJpaProcessor(final JPAProcessor jpaProcessor) {
     this.jpaProcessor = jpaProcessor;
   }
 
@@ -20,7 +20,7 @@ public class JPAProcessorExtension {
     return operationEntityMap;
   }
 
-  public void setOperationEntityMap(HashMap<JPAProcessorOperation, List<String>> operationEntityMap) {
+  public void setOperationEntityMap(final HashMap<JPAProcessorOperation, List<String>> operationEntityMap) {
     this.operationEntityMap = operationEntityMap;
   }
 

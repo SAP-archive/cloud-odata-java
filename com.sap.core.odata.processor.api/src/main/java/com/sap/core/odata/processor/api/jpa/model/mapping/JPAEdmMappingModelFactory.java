@@ -32,52 +32,51 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class JPAEdmMappingModelFactory {
 
-	/**
-	 * Create a new ObjectFactory that can be used to create new instances of
-	 * schema derived classes for package:
-	 * com.sap.core.odata.processor.api.jpa.model.mapping
-	 * 
-	 */
-	public JPAEdmMappingModelFactory() {
-	}
+  /**
+   * Create a new ObjectFactory that can be used to create new instances of
+   * schema derived classes for package:
+   * com.sap.core.odata.processor.api.jpa.model.mapping
+   * 
+   */
+  public JPAEdmMappingModelFactory() {}
 
-	/**
-	 * Create an instance of {@link JPARelationshipMapType }
-	 * 
-	 */
-	public JPARelationshipMapType createJPARelationshipMapType() {
-		return new JPARelationshipMapType();
-	}
+  /**
+   * Create an instance of {@link JPARelationshipMapType }
+   * 
+   */
+  public JPARelationshipMapType createJPARelationshipMapType() {
+    return new JPARelationshipMapType();
+  }
 
-	/**
-	 * Create an instance of {@link JPAAttributeMapType }
-	 * 
-	 */
-	public JPAAttributeMapType createJPAAttributeMapType() {
-		return new JPAAttributeMapType();
-	}
+  /**
+   * Create an instance of {@link JPAAttributeMapType }
+   * 
+   */
+  public JPAAttributeMapType createJPAAttributeMapType() {
+    return new JPAAttributeMapType();
+  }
 
-	/**
-	 * Create an instance of {@link JPAEDMMappingModel }
-	 * 
-	 */
-	public JPAEdmMappingModel createJPAEDMMappingModel() {
-		return new JPAEdmMappingModel();
-	}
+  /**
+   * Create an instance of {@link JPAEDMMappingModel }
+   * 
+   */
+  public JPAEdmMappingModel createJPAEDMMappingModel() {
+    return new JPAEdmMappingModel();
+  }
 
-	/**
-	 * Create an instance of {@link JPAPersistenceUnitMapType }
-	 * 
-	 */
-	public JPAPersistenceUnitMapType createJPAPersistenceUnitMapType() {
-		return new JPAPersistenceUnitMapType();
-	}
+  /**
+   * Create an instance of {@link JPAPersistenceUnitMapType }
+   * 
+   */
+  public JPAPersistenceUnitMapType createJPAPersistenceUnitMapType() {
+    return new JPAPersistenceUnitMapType();
+  }
 
-	/**
-	 * Create an instance of {@link JPAEmbeddableTypeMapType }
-	 * 
-	 */
-	public JPAEmbeddableTypeMapType createJPAEmbeddableTypeMapType() {
-		return new JPAEmbeddableTypeMapType();
-	}
+  /**
+   * Create an instance of {@link JPAEmbeddableTypeMapType }
+   * 
+   */
+  public JPAEmbeddableTypeMapType createJPAEmbeddableTypeMapType() {
+    return new JPAEmbeddableTypeMapType();
+  }
 }

@@ -48,28 +48,28 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "JPAEDMMappingModel")
 public class JPAEdmMappingModel {
 
-	@XmlElement(name = "PersistenceUnit", required = true)
-	protected JPAPersistenceUnitMapType persistenceUnit;
+  @XmlElement(name = "PersistenceUnit", required = true)
+  protected JPAPersistenceUnitMapType persistenceUnit;
 
-	/**
-	 * Gets the value of the persistenceUnit property.
-	 * 
-	 * @return possible object is {@link JPAPersistenceUnitMapType }
-	 * 
-	 */
-	public JPAPersistenceUnitMapType getPersistenceUnit() {
-		return persistenceUnit;
-	}
+  /**
+   * Gets the value of the persistenceUnit property.
+   * 
+   * @return possible object is {@link JPAPersistenceUnitMapType }
+   * 
+   */
+  public JPAPersistenceUnitMapType getPersistenceUnit() {
+    return persistenceUnit;
+  }
 
-	/**
-	 * Sets the value of the persistenceUnit property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link JPAPersistenceUnitMapType }
-	 * 
-	 */
-	public void setPersistenceUnit(JPAPersistenceUnitMapType value) {
-		this.persistenceUnit = value;
-	}
+  /**
+   * Sets the value of the persistenceUnit property.
+   * 
+   * @param value
+   *            allowed object is {@link JPAPersistenceUnitMapType }
+   * 
+   */
+  public void setPersistenceUnit(final JPAPersistenceUnitMapType value) {
+    persistenceUnit = value;
+  }
 
 }

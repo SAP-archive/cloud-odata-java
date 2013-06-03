@@ -40,61 +40,61 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
  * 
  */
 public interface JPAEdmReferentialConstraintRoleView extends JPAEdmBaseView {
-	/**
-	 * Two types of EDM roles of a referential constraint.
-	 */
-	public enum RoleType {
-		PRINCIPAL, DEPENDENT
-	}
+  /**
+   * Two types of EDM roles of a referential constraint.
+   */
+  public enum RoleType {
+    PRINCIPAL, DEPENDENT
+  }
 
-	/**
-	 * The method returns the role type (PRINCIPAL or DEPENDENT)
-	 * 
-	 * @return a
-	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintRoleView.RoleType}
-	 */
-	RoleType getRoleType();
+  /**
+   * The method returns the role type (PRINCIPAL or DEPENDENT)
+   * 
+   * @return a
+   *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintRoleView.RoleType}
+   */
+  RoleType getRoleType();
 
-	/**
-	 * The method returns the Referential constraint role that is currently
-	 * being processed.
-	 * 
-	 * @return an instance of type
-	 *         {@link com.sap.core.odata.api.edm.provider.ReferentialConstraintRole}
-	 */
-	ReferentialConstraintRole getEdmReferentialConstraintRole();
+  /**
+   * The method returns the Referential constraint role that is currently
+   * being processed.
+   * 
+   * @return an instance of type
+   *         {@link com.sap.core.odata.api.edm.provider.ReferentialConstraintRole}
+   */
+  ReferentialConstraintRole getEdmReferentialConstraintRole();
 
-	/**
-	 * The method returns the name of JPA attribute's column name (annotated
-	 * with @Column). The returned Column Name acts as the PRINCIPAL entity
-	 * type.
-	 * 
-	 * @return name of JPA Column name
-	 */
-	String getJPAColumnName();
+  /**
+   * The method returns the name of JPA attribute's column name (annotated
+   * with @Column). The returned Column Name acts as the PRINCIPAL entity
+   * type.
+   * 
+   * @return name of JPA Column name
+   */
+  String getJPAColumnName();
 
-	/**
-	 * The method returns the EDM entity type name that holds the
-	 * relationship/referential constraint. The entity type that acts as a
-	 * DEPENDENT entity type.
-	 * 
-	 * @return name of EDM entity type
-	 */
-	String getEdmEntityTypeName();
+  /**
+   * The method returns the EDM entity type name that holds the
+   * relationship/referential constraint. The entity type that acts as a
+   * DEPENDENT entity type.
+   * 
+   * @return name of EDM entity type
+   */
+  String getEdmEntityTypeName();
 
-	/**
-	 * The method returns the EDM association name.
-	 * 
-	 * @return name of EDM association
-	 */
-	String getEdmAssociationName();
+  /**
+   * The method returns the EDM association name.
+   * 
+   * @return name of EDM association
+   */
+  String getEdmAssociationName();
 
-	/**
-	 * The method tells if there exists a valid referential constraint for a
-	 * given association.
-	 * 
-	 * @return true - if valid referential constraint exits else false
-	 */
-	boolean isExists();
+  /**
+   * The method tells if there exists a valid referential constraint for a
+   * given association.
+   * 
+   * @return true - if valid referential constraint exits else false
+   */
+  boolean isExists();
 
 }

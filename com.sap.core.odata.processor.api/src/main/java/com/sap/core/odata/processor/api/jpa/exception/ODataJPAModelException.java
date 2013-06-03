@@ -27,68 +27,68 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  */
 public class ODataJPAModelException extends ODataJPAException {
 
-	public static final MessageReference INVALID_ENTITY_TYPE = createMessageReference(
-			ODataJPAModelException.class, "INVALID_ENTITY_TYPE");
-	public static final MessageReference INVALID_COMPLEX_TYPE = createMessageReference(
-			ODataJPAModelException.class, "INVLAID_COMPLEX_TYPE");
-	public static final MessageReference INVALID_ASSOCIATION = createMessageReference(
-			ODataJPAModelException.class, "INVALID_ASSOCIATION");
-	public static final MessageReference INVALID_ENTITYSET = createMessageReference(
-			ODataJPAModelException.class, "INVALID_ENTITYSET");
-	public static final MessageReference INVALID_ENTITYCONTAINER = createMessageReference(
-			ODataJPAModelException.class, "INVALID_ENTITYCONTAINER");
-	public static final MessageReference INVALID_ASSOCIATION_SET = createMessageReference(
-			ODataJPAModelException.class, "INVALID_ASSOCIATION_SET");
-	public static final MessageReference INVALID_FUNC_IMPORT = createMessageReference(
-			ODataJPAModelException.class, "INVALID_FUNC_IMPORT");
+  public static final MessageReference INVALID_ENTITY_TYPE = createMessageReference(
+      ODataJPAModelException.class, "INVALID_ENTITY_TYPE");
+  public static final MessageReference INVALID_COMPLEX_TYPE = createMessageReference(
+      ODataJPAModelException.class, "INVLAID_COMPLEX_TYPE");
+  public static final MessageReference INVALID_ASSOCIATION = createMessageReference(
+      ODataJPAModelException.class, "INVALID_ASSOCIATION");
+  public static final MessageReference INVALID_ENTITYSET = createMessageReference(
+      ODataJPAModelException.class, "INVALID_ENTITYSET");
+  public static final MessageReference INVALID_ENTITYCONTAINER = createMessageReference(
+      ODataJPAModelException.class, "INVALID_ENTITYCONTAINER");
+  public static final MessageReference INVALID_ASSOCIATION_SET = createMessageReference(
+      ODataJPAModelException.class, "INVALID_ASSOCIATION_SET");
+  public static final MessageReference INVALID_FUNC_IMPORT = createMessageReference(
+      ODataJPAModelException.class, "INVALID_FUNC_IMPORT");
 
-	public static final MessageReference BUILDER_NULL = createMessageReference(
-			ODataJPAModelException.class, "BUILDER_NULL");
-	public static final MessageReference TYPE_NOT_SUPPORTED = createMessageReference(
-			ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
-	public static final MessageReference FUNC_ENTITYSET_EXP = createMessageReference(
-			ODataJPAModelException.class, "FUNC_ENTITYSET_EXP");
-	public static final MessageReference FUNC_RETURN_TYPE_EXP = createMessageReference(
-			ODataJPAModelException.class, "FUNC_RETURN_TYPE_EXP");
-	public static final MessageReference FUNC_RETURN_TYPE_ENTITY_NOT_FOUND = createMessageReference(
-			ODataJPAModelException.class, "FUNC_RETURN_TYPE_ENTITY_NOT_FOUND");
-	public static final MessageReference GENERAL = createMessageReference(
-			ODataJPAModelException.class, "GENERAL");
-	public static final MessageReference INNER_EXCEPTION = createMessageReference(
-			ODataJPAModelException.class, "INNER_EXCEPTION");
-	public static final MessageReference FUNC_PARAM_NAME_EXP = createMessageReference(
-			ODataJPAModelException.class, "FUNC_PARAM_NAME_EXP");
+  public static final MessageReference BUILDER_NULL = createMessageReference(
+      ODataJPAModelException.class, "BUILDER_NULL");
+  public static final MessageReference TYPE_NOT_SUPPORTED = createMessageReference(
+      ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
+  public static final MessageReference FUNC_ENTITYSET_EXP = createMessageReference(
+      ODataJPAModelException.class, "FUNC_ENTITYSET_EXP");
+  public static final MessageReference FUNC_RETURN_TYPE_EXP = createMessageReference(
+      ODataJPAModelException.class, "FUNC_RETURN_TYPE_EXP");
+  public static final MessageReference FUNC_RETURN_TYPE_ENTITY_NOT_FOUND = createMessageReference(
+      ODataJPAModelException.class, "FUNC_RETURN_TYPE_ENTITY_NOT_FOUND");
+  public static final MessageReference GENERAL = createMessageReference(
+      ODataJPAModelException.class, "GENERAL");
+  public static final MessageReference INNER_EXCEPTION = createMessageReference(
+      ODataJPAModelException.class, "INNER_EXCEPTION");
+  public static final MessageReference FUNC_PARAM_NAME_EXP = createMessageReference(
+      ODataJPAModelException.class, "FUNC_PARAM_NAME_EXP");
 
-	private ODataJPAModelException(String localizedMessage, Throwable e,
-			MessageReference msgRef) {
-		super(localizedMessage, e, msgRef);
-	}
+  private ODataJPAModelException(final String localizedMessage, final Throwable e,
+      final MessageReference msgRef) {
+    super(localizedMessage, e, msgRef);
+  }
 
-	/**
-	 * The method creates an exception object of type ODataJPAModelException
-	 * with localized error texts.
-	 * 
-	 * @param messageReference
-	 *            is a <b>mandatory</b> parameter referring to a literal that
-	 *            could be translated to localized error texts.
-	 * @param e
-	 *            is an optional parameter representing the previous exception
-	 *            in the call stack
-	 * @return an instance of ODataJPAModelException which can be then raised.
-	 * @throws ODataJPARuntimeException
-	 */
-	public static ODataJPAModelException throwException(
-			MessageReference messageReference, Throwable e) {
+  /**
+   * The method creates an exception object of type ODataJPAModelException
+   * with localized error texts.
+   * 
+   * @param messageReference
+   *            is a <b>mandatory</b> parameter referring to a literal that
+   *            could be translated to localized error texts.
+   * @param e
+   *            is an optional parameter representing the previous exception
+   *            in the call stack
+   * @return an instance of ODataJPAModelException which can be then raised.
+   * @throws ODataJPARuntimeException
+   */
+  public static ODataJPAModelException throwException(
+      final MessageReference messageReference, final Throwable e) {
 
-		ODataJPAMessageService messageService;
-		messageService = ODataJPAFactory.createFactory()
-				.getODataJPAAccessFactory()
-				.getODataJPAMessageService(DEFAULT_LOCALE);
-		String message = messageService
-				.getLocalizedMessage(messageReference, e);
-		return new ODataJPAModelException(message, e, messageReference);
-	}
+    ODataJPAMessageService messageService;
+    messageService = ODataJPAFactory.createFactory()
+        .getODataJPAAccessFactory()
+        .getODataJPAMessageService(DEFAULT_LOCALE);
+    String message = messageService
+        .getLocalizedMessage(messageReference, e);
+    return new ODataJPAModelException(message, e, messageReference);
+  }
 
-	private static final long serialVersionUID = 7940106375606950703L;
+  private static final long serialVersionUID = 7940106375606950703L;
 
 }
