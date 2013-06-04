@@ -16,10 +16,7 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    return this == obj || getClass() == obj.getClass();
+    return this == obj || (obj != null && getClass() == obj.getClass());
   }
 
   @Override
@@ -60,17 +57,14 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
 
   @Override
   public final <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
-    if (value == null) {
-      if (facets == null || facets.isNullable() == null || facets.isNullable()) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-      }
-    }
 
-    if (literalKind == null) {
+    if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
 
     return internalValueOfString(value, literalKind, facets, returnType);
   }
@@ -79,23 +73,14 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
 
   @Override
   public final String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null) {
-      if (facets == null) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
-      } else if (facets.getDefaultValue() == null) {
-        if (facets.isNullable() == null || facets.isNullable()) {
-          return null;
-        } else {
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-        }
-      } else {
-        return facets.getDefaultValue();
-      }
-    }
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
 
-    if (literalKind == null) {
+    if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    }
 
     final String result = internalValueToString(value, literalKind, facets);
     return literalKind == EdmLiteralKind.URI ? toUriLiteral(result) : result;

@@ -347,12 +347,6 @@ public class EdmSimpleTypeTest extends BaseTest {
     return facets;
   }
 
-  private EdmFacets getDefaultFacets(final String defaultValue) {
-    EdmFacets facets = mock(EdmFacets.class);
-    when(facets.getDefaultValue()).thenReturn(defaultValue);
-    return facets;
-  }
-
   private EdmFacets getPrecisionScaleFacets(final Integer precision, final Integer scale) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.getPrecision()).thenReturn(precision);
@@ -389,8 +383,6 @@ public class EdmSimpleTypeTest extends BaseTest {
       assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(null)));
 
       expectErrorInValueToString(instance, null, EdmLiteralKind.DEFAULT, getNullableFacets(false), EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-
-      assertEquals("default", instance.valueToString(null, EdmLiteralKind.DEFAULT, getDefaultFacets("default")));
     }
   }
 
