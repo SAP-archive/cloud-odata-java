@@ -103,6 +103,7 @@ public class ODataRequestHandler {
   private ODataContextImpl buildODataContext(final ODataRequest request) {
     ODataContextImpl context = new ODataContextImpl();
 
+    context.setServiceFactory(serviceFactory);
     context.setRequest(request);
     context.setPathInfo(request.getPathInfo());
     context.setHttpMethod(request.getMethod().name());

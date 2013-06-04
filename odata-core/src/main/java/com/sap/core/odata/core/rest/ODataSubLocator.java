@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
@@ -28,6 +29,8 @@ public final class ODataSubLocator implements ODataLocator {
   private ODataRequestImpl request;
 
   private ODataRequestHandler requestHandler;
+
+  private ODataServiceFactory serviceFactory;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -92,6 +95,7 @@ public final class ODataSubLocator implements ODataLocator {
     context.setRequest(request);
     context.setAcceptableLanguages(request.getAcceptableLanguages());
     context.setPathInfo(request.getPathInfo());
+    context.setServiceFactory(serviceFactory);
     ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(context, request.getQueryParameters(), request.getAcceptHeaders());
     ODataResponse response = exceptionWrapper.wrapInExceptionResponse(new ODataNotImplementedException(messageReference));
     return RestUtil.convertResponse(response);
@@ -124,7 +128,8 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public void initialize(final SubLocatorParameter param) throws ODataException {
-    requestHandler = new ODataRequestHandler(param.getServiceFactory());
+    serviceFactory = param.getServiceFactory();
+    requestHandler = new ODataRequestHandler(serviceFactory);
 
     request = new ODataRequestImpl();
 

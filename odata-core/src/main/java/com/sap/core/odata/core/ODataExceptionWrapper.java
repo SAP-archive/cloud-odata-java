@@ -296,9 +296,7 @@ public class ODataExceptionWrapper {
   private ODataErrorCallback getErrorHandlerCallbackFromContext(final ODataContext context) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
     ODataErrorCallback callback = null;
     ODataServiceFactory serviceFactory = context.getServiceFactory();
-    if (serviceFactory != null) {
-      callback = serviceFactory.getCallback(ODataErrorCallback.class);
-    }
+    callback = serviceFactory.getCallback(ODataErrorCallback.class);
     return callback;
   }
 
