@@ -14,10 +14,41 @@ import java.util.TreeMap;
 
 /**
  * Internally used {@link ContentType} for OData library.
- * For more details on format and content of a {@link ContentType} see    
- * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
  * 
- * Once created a {@link ContentType} is IMMUTABLE.
+ * For more details on format and content of a {@link ContentType} see    
+ * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html)</code>.
+ * <pre>
+ * <code>
+ *   media-type     = type "/" subtype *( ";" parameter )
+ *   type           = token
+ *   subtype        = token
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Accept</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.1 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Accept = "Accept" ":"
+ *          #( media-range [ accept-params ] )
+ *  media-range = ( "* /*"
+ *                | ( type "/" "*" )
+ *                | ( type "/" subtype )
+ *                ) *( ";" parameter )
+ *  accept-params  = ";" "q" "=" qvalue *( accept-extension )
+ *  accept-extension = ";" token [ "=" ( token | quoted-string ) ]
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Content-Type</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Content-Type   = "Content-Type" ":" media-type
+ * </code>
+ * </pre>
+ * 
+ * Once created a {@link ContentType} is <b>IMMUTABLE</b>.
  * 
  * @author SAP AG
  */
@@ -352,9 +383,7 @@ public class ContentType {
    */
   @Override
   public boolean equals(final Object obj) {
-    if (obj == null) {
-      return false;
-    }
+    // NULL validation is done in method 'isEqualWithoutParameters(obj)'
     Boolean compatible = isEqualWithoutParameters(obj);
 
     if (compatible == null) {
