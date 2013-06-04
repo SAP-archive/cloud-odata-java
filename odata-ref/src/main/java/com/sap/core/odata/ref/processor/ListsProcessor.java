@@ -887,7 +887,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private class WriteCallback implements ODataCallback, OnWriteEntryContent, OnWriteFeedContent {
+  private class WriteCallback implements OnWriteEntryContent, OnWriteFeedContent {
     private final Object data;
 
     private <T> WriteCallback(final T data) {

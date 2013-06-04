@@ -328,19 +328,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_UPDATED);
 
-      Object updateDate = null;
-      EdmFacets updateFacets = null;
-      EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
-      if (updatedInfo != null) {
-        updateDate = data.get(updatedInfo.getName());
-        if (updateDate != null) {
-          updateFacets = updatedInfo.getFacets();
-        }
-      }
-      if (updateDate == null) {
-        updateDate = new Date();
-      }
-      writer.writeCharacters(EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
+      writer.writeCharacters(getUpdatedString(eia, data));
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -348,6 +336,23 @@ public class AtomEntryEntityProducer {
     } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  String getUpdatedString(final EntityInfoAggregator eia, final Map<String, Object> data) throws EdmSimpleTypeException {
+    Object updateDate = null;
+    EdmFacets updateFacets = null;
+    EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
+    if (updatedInfo != null) {
+      updateDate = data.get(updatedInfo.getName());
+      if (updateDate != null) {
+        updateFacets = updatedInfo.getFacets();
+      }
+    }
+    if (updateDate == null) {
+      updateDate = new Date();
+    }
+    String valueToString = EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets);
+    return valueToString;
   }
 
   private String getTargetPathValue(final EntityInfoAggregator eia, final String targetPath, final Map<String, Object> data) throws EntityProviderException {
@@ -423,7 +428,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  protected static String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
+  static String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
     StringBuilder sb = new StringBuilder();
     if (!eia.isDefaultEntityContainer()) {
       sb.append(Encoder.encode(eia.getEntityContainerName())).append(Edm.DELIMITER);

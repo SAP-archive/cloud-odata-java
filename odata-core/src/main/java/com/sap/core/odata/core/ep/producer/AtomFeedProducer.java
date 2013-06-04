@@ -15,11 +15,11 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.callback.TombstoneCallback;
 import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatXml;
-import com.sap.core.odata.core.myextensions.TombstoneCallback;
 
 /**
  * Serializes an ATOM feed.
@@ -36,12 +36,16 @@ public class AtomFeedProducer {
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data, final boolean isInline) throws EntityProviderException {
     try {
       writer.writeStartElement("feed");
-
+      TombstoneCallback callback = null;
       if (!isInline) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
-        appendAtomTombstoneNamespace(writer);
+        //TODO: Check if tombstones can appear inline
+        callback = getTombstoneCallback();
+        if (callback != null) {
+          writer.writeNamespace(TombstoneProducer.TOMBSTONE_NAMESPACE_PREFIX, TombstoneProducer.TOMBSTONE_NAMESPACE);
+        }
       }
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
 
@@ -53,7 +57,9 @@ public class AtomFeedProducer {
       }
 
       appendEntries(writer, eia, data);
-      appendDeletedEntries(writer, eia);
+      if (callback != null) {
+        appendDeletedEntries(writer, eia, callback);
+      }
       if (properties.getNextLink() != null) {
         appendNextLink(writer, properties.getNextLink());
       }
@@ -64,22 +70,22 @@ public class AtomFeedProducer {
     }
   }
 
-  //---------------------------- TOMBSTONES -----------------------------//
-  private void appendAtomTombstoneNamespace(final XMLStreamWriter writer) throws EntityProviderException {
-    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey("deleted-entry")) {
-      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get("deleted-entry");
-      callback.writeNamespace(writer);
+  private TombstoneCallback getTombstoneCallback() {
+    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(TombstoneCallback.TOMBSTONE_CALLBACK_KEY)) {
+      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get(TombstoneCallback.TOMBSTONE_CALLBACK_KEY);
+      return callback;
+    } else {
+      return null;
     }
   }
 
-  private void appendDeletedEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia) throws EntityProviderException {
-    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey("deleted-entry")) {
-      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get("deleted-entry");
-      callback.write(writer, eia, properties);
+  private void appendDeletedEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia, final TombstoneCallback callback) throws EntityProviderException {
+    List<Map<String, Object>> tombstoneData = callback.getTombstoneData();
+    if (tombstoneData != null) {
+      TombstoneProducer tombstoneProducer = new TombstoneProducer(tombstoneData);
+      tombstoneProducer.write(writer, eia, properties);
     }
   }
-
-  //--------------------------------------------------------------------//
 
   private void appendNextLink(final XMLStreamWriter writer, final String nextLink) throws EntityProviderException {
     try {

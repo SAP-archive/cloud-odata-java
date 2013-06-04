@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.myextensions;
+package com.sap.core.odata.core.ep.producer;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
@@ -25,12 +25,13 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.callback.TombstoneCallback;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class TombstoneTest {
+public class TombstoneProducerTest {
   private ArrayList<Map<String, Object>> roomsData;
   private ArrayList<Map<String, Object>> deletedRoomsData;
   private Map<String, ODataCallback> callbacks;
@@ -50,7 +51,7 @@ public class TombstoneTest {
     prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
     prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
     prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
-    prefixMap.put("at", AtomExtension.TOMBSTONE_NAMESPACE);
+    prefixMap.put("at", TombstoneProducer.TOMBSTONE_NAMESPACE);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 
@@ -80,7 +81,6 @@ public class TombstoneTest {
     String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathExists("/a:feed/at:deleted-entry", xmlString);
     assertXpathEvaluatesTo("2", "count(/a:feed/at:deleted-entry)", xmlString);
-    System.out.println(xmlString);
   }
 
   @Test
@@ -134,9 +134,9 @@ public class TombstoneTest {
 
   private void initializeCallbacks() {
     initializeDeletedRoomData();
-    TombstoneCallback callback = new TombstoneCallback(deletedRoomsData);
+    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(deletedRoomsData);
     callbacks = new HashMap<String, ODataCallback>();
-    callbacks.put("deleted-entry", callback);
+    callbacks.put(TombstoneCallback.TOMBSTONE_CALLBACK_KEY, tombstoneCallback);
   }
 
 }
