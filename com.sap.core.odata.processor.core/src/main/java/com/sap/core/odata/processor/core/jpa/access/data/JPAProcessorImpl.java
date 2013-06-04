@@ -125,19 +125,19 @@ public class JPAProcessorImpl implements JPAProcessor {
         .build();
     Query query = null;
     try {
-      query = em.createQuery(jpqlStatement.toString());
-      if (uriParserResultView.getSkip() != null) {
-        query.setFirstResult(uriParserResultView.getSkip());
-      }
+        query = em.createQuery(jpqlStatement.toString());
+        // $top/$skip with $inlinecount case handled in response builder to avoid multiple DB call
+        if (uriParserResultView.getSkip() != null && uriParserResultView.getInlineCount() == null) 
+          query.setFirstResult(uriParserResultView.getSkip());
 
-      if (uriParserResultView.getTop() != null) {
-        if (uriParserResultView.getTop() == 0) {
-          List<T> resultList = new ArrayList<T>();
-          return resultList;
-        } else {
-          query.setMaxResults(uriParserResultView.getTop());
+        if (uriParserResultView.getTop() != null && uriParserResultView.getInlineCount() == null) {
+          if (uriParserResultView.getTop() == 0) {
+            List<T> resultList = new ArrayList<T>();
+            return resultList;
+          } else {
+            query.setMaxResults(uriParserResultView.getTop());
+          }
         }
-      }
       return query.getResultList();
     } catch (IllegalArgumentException e) {
       throw ODataJPARuntimeException.throwException(
