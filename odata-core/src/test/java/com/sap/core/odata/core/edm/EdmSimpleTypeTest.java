@@ -544,9 +544,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("/Date(" + millis + ")/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
     assertEquals("datetimeoffset'2012-02-29T23:32:03.007Z'", instance.valueToString(millis, EdmLiteralKind.URI, null));
 
-    final Date date = new Date(millis);
-    final String time = date.toString().substring(11, 19);
-    assertTrue(instance.valueToString(date, EdmLiteralKind.DEFAULT, null).contains(time));
+    assertEquals("2012-02-29T23:32:03.007Z", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED);
     expectErrorInValueToString(instance, dateTime, null, null, EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -951,6 +949,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.98700", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9876", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.00000000", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "20120229T233202", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1900-02-29T00:00:00", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "2012-02-29T24:00:01", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);

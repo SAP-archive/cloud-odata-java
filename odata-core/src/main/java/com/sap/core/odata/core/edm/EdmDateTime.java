@@ -19,12 +19,12 @@ public class EdmDateTime extends AbstractSimpleType {
 
   private static final Pattern PATTERN = Pattern.compile(
       "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
-          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
+          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.(\\p{Digit}{0,3}?)0*)?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
   private static final SimpleDateFormat DATE_FORMAT;
   static {
-    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
   }
 
@@ -99,34 +99,24 @@ public class EdmDateTime extends AbstractSimpleType {
    */
   protected static void parseLiteral(final String value, final EdmFacets facets, Calendar dateTimeValue) throws EdmSimpleTypeException {
     final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches()) {
+    if (!matcher.matches())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
 
     dateTimeValue.set(
         Short.parseShort(matcher.group(1)),
         Byte.parseByte(matcher.group(2)) - 1, // month is zero-based
         Byte.parseByte(matcher.group(3)),
         Byte.parseByte(matcher.group(4)),
-        Byte.parseByte(matcher.group(5)));
-    if (matcher.group(6) != null) {
-      dateTimeValue.set(Calendar.SECOND, Byte.parseByte(matcher.group(6)));
-    }
+        Byte.parseByte(matcher.group(5)),
+        matcher.group(6) == null ? 0 : Byte.parseByte(matcher.group(6)));
 
     if (matcher.group(7) != null) {
-      String milliSeconds = matcher.group(7).substring(1);
-      while (milliSeconds.endsWith("0")) {
-        milliSeconds = milliSeconds.substring(0, milliSeconds.length() - 1);
-      }
-      if (milliSeconds.length() > 3) {
+      if (matcher.group(7).length() == 1 || matcher.group(7).length() > 8)
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length()) {
+      final String decimals = matcher.group(8);
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < decimals.length())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-      while (milliSeconds.length() < 3) {
-        milliSeconds += "0";
-      }
+      final String milliSeconds = decimals + "000".substring(decimals.length());
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
 
@@ -156,33 +146,28 @@ public class EdmDateTime extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    if (literalKind == EdmLiteralKind.JSON) {
+    if (literalKind == EdmLiteralKind.JSON)
       return "/Date(" + timeInMillis + ")/";
-    }
 
-    String result = DATE_FORMAT.format(timeInMillis);
+    StringBuilder result = new StringBuilder(DATE_FORMAT.format(timeInMillis));
 
-    if (facets == null || facets.getPrecision() == null) {
-      while (result.endsWith("0")) {
-        result = result.substring(0, result.length() - 1);
+    final int digits = timeInMillis % 1000 == 0 ? 0 : timeInMillis % 100 == 0 ? 1 : timeInMillis % 10 == 0 ? 2 : 3;
+    if (digits > 0) {
+      result.append('.');
+      for (int d = 100; d > 0; d /= 10) {
+        final byte digit = (byte) (timeInMillis % (d * 10) / d);
+        if (digit > 0 || timeInMillis % d > 0)
+          result.append(String.valueOf(digit));
       }
-    } else if (facets.getPrecision() <= 3) {
-      if (result.endsWith("000".substring(0, 3 - facets.getPrecision()))) {
-        result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-      } else {
+    }
+    if (facets != null && facets.getPrecision() != null) {
+      if (digits > facets.getPrecision())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-    } else {
-      for (int i = 4; i <= facets.getPrecision(); i++) {
-        result += "0";
-      }
+      for (int i = digits; i < facets.getPrecision(); i++)
+        result.append('0');
     }
 
-    if (result.endsWith(".")) {
-      result = result.substring(0, result.length() - 1);
-    }
-
-    return result;
+    return result.toString();
   }
 
   @Override
