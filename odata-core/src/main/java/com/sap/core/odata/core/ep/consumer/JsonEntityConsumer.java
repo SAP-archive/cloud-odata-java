@@ -19,19 +19,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
+/**
+ * @author SAP AG
+ */
 public class JsonEntityConsumer {
 
   /** Default used charset for writer and response content header */
-  private static final String DEFAULT_CHARSET = "utf-8";
+  private static final String DEFAULT_CHARSET = "UTF-8";
 
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     JsonReader reader = null;
@@ -47,7 +52,7 @@ public class JsonEntityConsumer {
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
@@ -77,11 +82,36 @@ public class JsonEntityConsumer {
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
         try {
           reader.close();
         } catch (IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
+        }
+      }
+    }
+  }
+
+  public Map<String, Object> readProperty(final EdmProperty property, final InputStream content, final EntityProviderReadProperties readProperties) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonPropertyConsumer().readPropertyStandalone(reader, property, readProperties);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
           if (cachedException != null) {
             throw cachedException;
           } else {

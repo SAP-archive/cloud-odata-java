@@ -18,7 +18,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * Exceptions of this class will result in a HTTP status 501 Not implemented
+ * Exceptions of this class will result in a HTTP status 501 (Not implemented).
  * @author SAP AG
  */
 public class ODataNotImplementedException extends ODataHttpException {
@@ -26,6 +26,7 @@ public class ODataNotImplementedException extends ODataHttpException {
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference COMMON = createMessageReference(ODataNotImplementedException.class, "COMMON");
+  public static final MessageReference TUNNELING = createMessageReference(ODataNotImplementedException.class, "TUNNELING");
 
   public ODataNotImplementedException(final MessageReference context) {
     super(context, HttpStatusCodes.NOT_IMPLEMENTED);

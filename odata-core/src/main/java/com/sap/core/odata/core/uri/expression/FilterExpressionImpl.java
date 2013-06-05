@@ -23,19 +23,19 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 
-public class FilterExpressionImpl implements FilterExpression
-{
+/**
+ * @author SAP AG
+ */
+public class FilterExpressionImpl implements FilterExpression {
   private final String filterString;
   private EdmType edmType;
   private CommonExpression commonExpression;
 
-  public FilterExpressionImpl(final String filterExpression)
-  {
+  public FilterExpressionImpl(final String filterExpression) {
     filterString = filterExpression;
   }
 
-  public FilterExpressionImpl(final String filterExpression, final CommonExpression childExpression)
-  {
+  public FilterExpressionImpl(final String filterExpression, final CommonExpression childExpression) {
     filterString = filterExpression;
     commonExpression = childExpression;
   }
@@ -51,36 +51,30 @@ public class FilterExpressionImpl implements FilterExpression
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     Object retCommonExpression = commonExpression.accept(visitor);
 
     return visitor.visitFilterExpression(this, filterString, retCommonExpression);
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
-
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.FILTER;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return getExpressionString();
   }
 

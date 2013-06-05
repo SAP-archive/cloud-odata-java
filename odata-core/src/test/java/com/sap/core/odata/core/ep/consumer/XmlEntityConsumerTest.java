@@ -39,7 +39,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -718,9 +717,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Read of employee with inlined but <code>NULL</code> room navigation property (which has {@link EdmMultiplicity#ONE}.
-   * 
-   * @throws Exception
+   * Reads an employee with inlined but <code>NULL</code> room navigation property
+   * (which has {@link com.sap.core.odata.api.edm.EdmMultiplicity#ONE EdmMultiplicity#ONE}).
    */
   @Test
   public void readWithInlineContentEmployeeNullRoomEntry() throws Exception {
@@ -742,9 +740,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Read of employee with inlined but <code>NULL</code> room navigation property (which has {@link EdmMultiplicity#ONE}.
-   * 
-   * @throws Exception
+   * Reads an employee with inlined but <code>NULL</code> room navigation property
+   * (which has {@link com.sap.core.odata.api.edm.EdmMultiplicity#ONE EdmMultiplicity#ONE}).
    */
   @Test
   public void readWithInlineContentEmployeeNullRoomEntrySpecialXmlFormat() throws Exception {
@@ -766,9 +763,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Read of room with inlined but <code>NULL</code> employees navigation property (which has {@link EdmMultiplicity#MANY}.
-   * 
-   * @throws Exception
+   * Reads a room with inlined but <code>NULL</code> employees navigation property
+   * (which has {@link com.sap.core.odata.api.edm.EdmMultiplicity#MANY EdmMultiplicity#MANY}).
    */
   @Test
   public void readWithInlineContentRoomNullEmployeesEntry() throws Exception {

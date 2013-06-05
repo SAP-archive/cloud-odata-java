@@ -59,8 +59,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
           return;
         }
 
-        mappingModel = (JPAEdmMappingModel) unmarshaller
-            .unmarshal(is);
+        mappingModel = (JPAEdmMappingModel) unmarshaller.unmarshal(is);
 
         if (mappingModel != null) {
           mappingModelExists = true;
@@ -121,7 +120,11 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
   public String mapJPAAttribute(final String jpaEntityTypeName,
       final String jpaAttributeName) {
     JPAEntityTypeMapType jpaEntityTypeMap = searchJPAEntityTypeMapType(jpaEntityTypeName);
-    if (jpaEntityTypeMap != null) {
+    if (jpaEntityTypeMap != null
+        && jpaEntityTypeMap.getJPAAttributes() != null) {
+      // fixing attributes
+      // removal issue
+      // from mapping
       for (JPAAttribute jpaAttribute : jpaEntityTypeMap
           .getJPAAttributes().getJPAAttribute()) {
         if (jpaAttribute.getName().equals(jpaAttributeName)) {
@@ -163,7 +166,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
   public String mapJPAEmbeddableTypeAttribute(final String jpaEmbeddableTypeName,
       final String jpaAttributeName) {
     JPAEmbeddableTypeMapType jpaEmbeddableType = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
-    if (jpaEmbeddableType != null) {
+    if (jpaEmbeddableType != null && jpaEmbeddableType.getJPAAttributes() != null) {
       for (JPAAttribute jpaAttribute : jpaEmbeddableType
           .getJPAAttributes().getJPAAttribute()) {
         if (jpaAttribute.getName().equals(jpaAttributeName)) {
@@ -207,4 +210,52 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 
   }
 
+  @Override
+  public boolean checkExclusionOfJPAEntityType(final String jpaEntityTypeName) {
+    JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (type != null) {
+      return type.isExclude();
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkExclusionOfJPAAttributeType(final String jpaEntityTypeName,
+      final String jpaAttributeName) {
+    JPAEntityTypeMapType type = searchJPAEntityTypeMapType(jpaEntityTypeName);
+    if (type != null && type.getJPAAttributes() != null) {
+      for (JPAAttribute jpaAttribute : type.getJPAAttributes()
+          .getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.isExclude();
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkExclusionOfJPAEmbeddableType(
+      final String jpaEmbeddableTypeName) {
+    JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (type != null) {
+      return type.isExclude();
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkExclusionOfJPAEmbeddableAttributeType(
+      final String jpaEmbeddableTypeName, final String jpaAttributeName) {
+    JPAEmbeddableTypeMapType type = searchJPAEmbeddableTypeMapType(jpaEmbeddableTypeName);
+    if (type != null && type.getJPAAttributes() != null) {
+      for (JPAAttribute jpaAttribute : type.getJPAAttributes()
+          .getJPAAttribute()) {
+        if (jpaAttribute.getName().equals(jpaAttributeName)) {
+          return jpaAttribute.isExclude();
+        }
+      }
+    }
+    return false;
+  }
 }

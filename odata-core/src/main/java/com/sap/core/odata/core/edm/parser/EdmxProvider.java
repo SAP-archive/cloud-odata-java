@@ -49,10 +49,20 @@ public class EdmxProvider extends EdmProvider {
 
   @Override
   public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataException {
-    for (Schema schema : dataServices.getSchemas()) {
-      for (EntityContainer container : schema.getEntityContainers()) {
-        if (container.getName().equals(name)) {
-          return container;
+    if (name != null) {
+      for (Schema schema : dataServices.getSchemas()) {
+        for (EntityContainer container : schema.getEntityContainers()) {
+          if (container.getName().equals(name)) {
+            return container;
+          }
+        }
+      }
+    } else {
+      for (Schema schema : dataServices.getSchemas()) {
+        for (EntityContainer container : schema.getEntityContainers()) {
+          if (container.isDefaultEntityContainer()) {
+            return container;
+          }
         }
       }
     }

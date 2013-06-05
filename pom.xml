@@ -5,7 +5,7 @@
 
 	<groupId>com.sap.odata</groupId>
 	<artifactId>com.sap.core.odata.parent</artifactId>
-	<version>0.5.0-SNAPSHOT</version>
+	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -79,8 +79,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<code.signing.phase>verify</code.signing.phase>
 
 		<!-- required for correct Sonar coverage data reporting (list of artifactIds) -->
 		<projectsToInstrument>com.sap.core.odata.api,com.sap.core.odata.core,com.sap.core.odata.ref</projectsToInstrument>
@@ -171,11 +169,6 @@
 					<artifactId>maven-bundle-plugin</artifactId>
 					<version>2.3.7</version>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.4</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -250,24 +243,41 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>${code.signing.phase}</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
-	<dependencies>
+	<profiles>
+		<profile>
+			<id>build.release</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-gpg-plugin</artifactId>
+							<version>1.4</version>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
+	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

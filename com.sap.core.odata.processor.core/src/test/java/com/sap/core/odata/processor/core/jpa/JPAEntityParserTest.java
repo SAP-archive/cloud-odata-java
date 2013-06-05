@@ -23,24 +23,25 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
-public class JPAResultParserTest {
+public class JPAEntityParserTest {
   /*
    * TestCase - JPAResultParser is a singleton class Check if the same
    * instance is returned when create method is called
    */
   @Test
   public void testCreate() {
-    JPAResultParser resultParser1 = JPAResultParser.create();
-    JPAResultParser resultParser2 = JPAResultParser.create();
+    JPAEntityParser resultParser1 = JPAEntityParser.create();
+    JPAEntityParser resultParser2 = JPAEntityParser.create();
 
     assertEquals(resultParser1, resultParser2);
   }
 
   @Test
   public void testparse2EdmPropertyValueMap() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -102,7 +103,7 @@ public class JPAResultParserTest {
 
   @Test
   public void testparse2EdmPropertyValueMapEdmExcep() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -165,7 +166,7 @@ public class JPAResultParserTest {
   @Test
   public void testparse2EdmPropertyListMap()
   {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     Map<String, Object> edmEntity = new HashMap<String, Object>();
     edmEntity.put("SoId", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("NewOrder");
@@ -188,8 +189,8 @@ public class JPAResultParserTest {
 
     navigationPropertyList.add(navigationProperty);
     try {
-      resultParser.parse2EdmPropertyListMap(edmEntity, jpaEntity, navigationPropertyList);
-      assertEquals(relatedEntity, edmEntity.get("RelatedEntities"));
+      HashMap<String, Object> result = resultParser.parse2EdmNavigationValueMap(jpaEntity, navigationPropertyList);
+      assertEquals(relatedEntity, result.get("RelatedEntities"));
 
     } catch (ODataJPARuntimeException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -200,7 +201,7 @@ public class JPAResultParserTest {
   @Test
   public void testparse2EdmPropertyValueMapFromList()
   {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     demoItem jpaEntity = new demoItem("laptop", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
     jpaEntity.setRelatedEntity(relatedEntity);
@@ -237,7 +238,7 @@ public class JPAResultParserTest {
     selectPropertyList.add(edmProperty1);
     selectPropertyList.add(edmProperty2);
     try {
-      Map<String, Object> result = resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, selectPropertyList);
+      Map<String, Object> result = resultParser.parse2EdmPropertyValueMap(jpaEntity, selectPropertyList);
       assertEquals("DemoOrder", result.get("Order"));
     } catch (ODataJPARuntimeException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -251,7 +252,7 @@ public class JPAResultParserTest {
   @Test
   public void testparse2EdmPropertyValueMapFromListComplex()
   {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     demoItem jpaEntity = new demoItem("laptop", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
     jpaEntity.setRelatedEntity(relatedEntity);
@@ -304,7 +305,7 @@ public class JPAResultParserTest {
     selectPropertyList.add(edmProperty1);
     selectPropertyList.add(edmProperty2);
     try {
-      Map<String, Object> result = resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, selectPropertyList);
+      Map<String, Object> result = resultParser.parse2EdmPropertyValueMap(jpaEntity, selectPropertyList);
       assertEquals(1, ((HashMap<String, Object>) result.get("Order")).size());
     } catch (ODataJPARuntimeException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -320,18 +321,17 @@ public class JPAResultParserTest {
    */
   @Test
   public void testGetGettersWithOutMapping() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     try {
 
       /*
        * Case 1 - Property having No mapping
        */
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { "Field1", null };
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { "Field1", null, "get" };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
-
       String name = (String) getGetterName.invoke(resultParser,
           params);
 
@@ -358,16 +358,16 @@ public class JPAResultParserTest {
 
   @Test
   public void testGetGettersWithNullPropname() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     try {
 
       /*
        * Case 1 - Property having No mapping and no name
        */
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { null, null };
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { null, null, null };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
 
       String name = (String) getGetterName.invoke(resultParser,
@@ -403,16 +403,16 @@ public class JPAResultParserTest {
    */
   @Test
   public void testGetGettersWithMapping() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
     EasyMock.expect(edmMapping.getInternalName()).andStubReturn("field1");
     EasyMock.replay(edmMapping);
     try {
 
-      Class<?>[] pars = { String.class, EdmMapping.class };
-      Object[] params = { "myField", edmMapping };
+      Class<?>[] pars = { String.class, EdmMapping.class, String.class };
+      Object[] params = { "myField", edmMapping, "get" };
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
-          "getGetterName", pars);
+          "getAccessModifierName", pars);
       getGetterName.setAccessible(true);
 
       String name = (String) getGetterName.invoke(resultParser,
@@ -440,7 +440,7 @@ public class JPAResultParserTest {
 
   @Test
   public void testGetGettersNoSuchMethodException() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     try {
 
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
@@ -449,7 +449,7 @@ public class JPAResultParserTest {
 
     } catch (NoSuchMethodException e) {
       assertEquals(
-          "com.sap.core.odata.processor.core.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
+          "com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
           e.getMessage());
     } catch (SecurityException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -460,10 +460,10 @@ public class JPAResultParserTest {
 
   @Test
   public void testParse2EdmPropertyValueMap() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     Object jpaEntity = new DemoItem2("abc");
     try {
-      resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, getEdmPropertyList());
+      resultParser.parse2EdmPropertyValueMap(jpaEntity, getEdmPropertyList());
     } catch (ODataJPARuntimeException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
           + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -472,7 +472,7 @@ public class JPAResultParserTest {
 
   @Test
   public void testGetGetterEdmException() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -496,7 +496,7 @@ public class JPAResultParserTest {
       }
     } catch (NoSuchMethodException e) {
       assertEquals(
-          "com.sap.core.odata.processor.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
+          "com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser.getGetters(java.lang.Object, com.sap.core.odata.api.edm.EdmStructuralType)",
           e.getMessage());
     } catch (SecurityException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
@@ -509,7 +509,7 @@ public class JPAResultParserTest {
 
   @Test
   public void testForNullJPAEntity() {
-    JPAResultParser resultParser = JPAResultParser.create();
+    JPAEntityParser resultParser = JPAEntityParser.create();
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
     Object map;

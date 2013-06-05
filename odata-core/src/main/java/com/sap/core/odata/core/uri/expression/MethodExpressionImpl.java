@@ -27,52 +27,48 @@ import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 
+/**
+ * @author SAP AG
+ */
 public class MethodExpressionImpl implements MethodExpression {
 
   private InfoMethod infoMethod;
   private EdmType returnType;
   private List<CommonExpression> actualParameters;
 
-  public MethodExpressionImpl(final InfoMethod infoMethod)
-  {
+  public MethodExpressionImpl(final InfoMethod infoMethod) {
     this.infoMethod = infoMethod;
     returnType = infoMethod.getReturnType();
     actualParameters = new ArrayList<CommonExpression>();
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return returnType;
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     returnType = edmType;
     return this;
   }
 
   @Override
-  public MethodOperator getMethod()
-  {
+  public MethodOperator getMethod() {
     return infoMethod.getMethod();
   }
 
-  public InfoMethod getMethodInfo()
-  {
+  public InfoMethod getMethodInfo() {
     return infoMethod;
   }
 
   @Override
-  public List<CommonExpression> getParameters()
-  {
+  public List<CommonExpression> getParameters() {
     return actualParameters;
   }
 
   @Override
-  public int getParameterCount()
-  {
+  public int getParameterCount() {
     return actualParameters.size();
   }
 
@@ -80,27 +76,23 @@ public class MethodExpressionImpl implements MethodExpression {
    * @param expression
    * @return A self reference for method chaining" 
    */
-  public MethodExpressionImpl appendParameter(final CommonExpression expression)
-  {
+  public MethodExpressionImpl appendParameter(final CommonExpression expression) {
     actualParameters.add(expression);
     return this;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.METHOD;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return infoMethod.getSyntax();
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     ArrayList<Object> retParameters = new ArrayList<Object>();
     for (CommonExpression parameter : actualParameters)
     {

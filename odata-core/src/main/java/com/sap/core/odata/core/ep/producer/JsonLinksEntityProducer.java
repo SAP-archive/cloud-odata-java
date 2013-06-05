@@ -36,7 +36,7 @@ public class JsonLinksEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public JsonLinksEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final Writer writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
@@ -47,8 +47,9 @@ public class JsonLinksEntityProducer {
       jsonStreamWriter.name(FormatJson.D);
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
+        final int inlineCount = properties.getInlineCount() == null ? 0 : properties.getInlineCount();
         jsonStreamWriter.beginObject();
-        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(properties.getInlineCount()));
+        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount));
         jsonStreamWriter.separator();
         jsonStreamWriter.name(FormatJson.RESULTS);
       }
@@ -63,7 +64,7 @@ public class JsonLinksEntityProducer {
           jsonStreamWriter.separator();
         }
         JsonLinkEntityProducer.appendUri(jsonStreamWriter,
-            serviceRoot + AtomEntryEntityProducer.createSelfLink(entityInfo, entryData, null));
+            (serviceRoot == null ? "" : serviceRoot) + AtomEntryEntityProducer.createSelfLink(entityInfo, entryData, null));
       }
       jsonStreamWriter.endArray();
 

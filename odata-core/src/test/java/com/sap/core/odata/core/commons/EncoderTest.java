@@ -25,6 +25,7 @@ import org.junit.Test;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
+ * Tests for percent-encoding.
  * @author SAP AG
  */
 public class EncoderTest extends BaseTest {
@@ -36,22 +37,20 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void asciiCharacters() {
-    String s = "azAZ019";
+    final String s = "azAZ019";
     assertEquals(s, Encoder.encode(s));
-    assertEquals(s, Encoder.encode(s));
-
-    s = "\"\\`{}|";
     assertEquals(s, Encoder.encode(s));
   }
 
   @Test
   public void asciiControl() {
-    assertEquals("%08%09%0a%0d", Encoder.encode("\b\t\n\r"));
+    assertEquals("%08%09%0A%0D", Encoder.encode("\b\t\n\r"));
   }
 
   @Test
   public void unsafe() {
-    assertEquals("%3c%3e%25%26", Encoder.encode("<>%&"));
+    assertEquals("%3C%3E%25%26", Encoder.encode("<>%&"));
+    assertEquals("%22%5C%60%7B%7D%7C", Encoder.encode("\"\\`{}|"));
   }
 
   @Test
@@ -61,23 +60,23 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void rfc3986GenDelims() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40", Encoder.encode(RFC3986_GEN_DELIMS));
+    assertEquals("%3A%2F%3F%23%5B%5D%40", Encoder.encode(RFC3986_GEN_DELIMS));
   }
 
   @Test
   public void rfc3986SubDelims() {
-    assertEquals("!$%26'()*+,;=", Encoder.encode(RFC3986_SUB_DELIMS));
+    assertEquals("%21%24%26'%28%29%2A%2B%2C%3B%3D", Encoder.encode(RFC3986_SUB_DELIMS));
   }
 
   @Test
   public void rfc3986Reserved() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40!$%26'()*+,;=", Encoder.encode(RFC3986_RESERVED));
+    assertEquals("%3A%2F%3F%23%5B%5D%40%21%24%26'%28%29%2A%2B%2C%3B%3D", Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test
   public void unicodeCharacters() {
-    assertEquals("%e2%82%ac", Encoder.encode("€"));
-    assertEquals("%ef%b7%bc", Encoder.encode("\uFDFC")); // RIAL SIGN
+    assertEquals("%E2%82%AC", Encoder.encode("€"));
+    assertEquals("%EF%B7%BC", Encoder.encode("\uFDFC")); // RIAL SIGN
   }
 
   @Test
@@ -85,17 +84,17 @@ public class EncoderTest extends BaseTest {
     // Unicode characters outside the Basic Multilingual Plane are stored
     // in a Java String in two surrogate characters.
     final String s = String.valueOf(Character.toChars(0x1F603));
-    assertEquals("%f0%9f%98%83", Encoder.encode(s));
+    assertEquals("%F0%9F%98%83", Encoder.encode(s));
   }
 
   @Test
   public void uriDecoding() throws URISyntaxException {
-    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@"
+    final String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@"
         + "\u2323\uFDFC" + String.valueOf(Character.toChars(0x1F603));
 
-    String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
-    String encodedQuery = Encoder.encode(decodedValue);
-    URI uri = new URI("http://host:80/" + encodedPath + "?" + encodedQuery + "=" + encodedQuery);
+    final String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
+    final String encodedQuery = Encoder.encode(decodedValue);
+    final URI uri = new URI("http://host:80/" + encodedPath + "?" + encodedQuery + "=" + encodedQuery);
 
     assertEquals(uri.getPath(), "/" + decodedValue + "/" + decodedValue);
     assertEquals(uri.getQuery(), decodedValue + "=" + decodedValue);
@@ -103,5 +102,4 @@ public class EncoderTest extends BaseTest {
     assertEquals(uri.getRawPath(), "/" + encodedPath);
     assertEquals(uri.getRawQuery(), encodedQuery + "=" + encodedQuery);
   }
-
 }

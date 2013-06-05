@@ -219,4 +219,23 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
 
     callUri("Employees?$filter=ne_Manager/Age%20gt%2042", HttpStatusCodes.NOT_IMPLEMENTED);
   }
+
+  @Test
+  public void nextLink() throws Exception {
+    HttpResponse response = callUri("Rooms()");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    String body = getBody(response);
+
+    assertXpathEvaluatesTo("Rooms?$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
+
+  @Test
+  public void nextLinkOrderBy() throws Exception {
+    HttpResponse response = callUri("Rooms()?$orderby=Name");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    String body = getBody(response);
+
+    assertXpathEvaluatesTo("Rooms?$skiptoken=97&$orderby=Name", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
+
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +40,8 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
+import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImplTest;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
@@ -241,63 +244,69 @@ public class JPQLBuilderFactoryTest {
     JPAAccessFactory jpaAccessFactory = oDataJPAFactoryImpl
         .getJPAAccessFactory();
     ODataJPAContextImpl oDataJPAContextImpl = new ODataJPAContextImpl();
-
+    Class<?> clazz = oDataJPAContextImpl.getClass();
+    try {
+      Field field = clazz.getDeclaredField("em");
+      field.setAccessible(true);
+      field.set(oDataJPAContextImpl, new JPAProcessorImplTest().getLocalEntityManager());
+    } catch (SecurityException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
+          + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (NoSuchFieldException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
+          + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (IllegalArgumentException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
+          + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    } catch (IllegalAccessException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
+          + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
     EntityManagerFactory emf = new EntityManagerFactory() {
 
       @Override
       public boolean isOpen() {
-        // TODO Auto-generated method stub
         return false;
       }
 
       @Override
       public Map<String, Object> getProperties() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public PersistenceUnitUtil getPersistenceUnitUtil() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Metamodel getMetamodel() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public CriteriaBuilder getCriteriaBuilder() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Cache getCache() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @SuppressWarnings("rawtypes")
       @Override
       public EntityManager createEntityManager(final Map arg0) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public EntityManager createEntityManager() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
-      public void close() {
-        // TODO Auto-generated method stub
-
-      }
+      public void close() {}
     };
     oDataJPAContextImpl.setEntityManagerFactory(emf);
     oDataJPAContextImpl.setPersistenceUnitName("pUnit");

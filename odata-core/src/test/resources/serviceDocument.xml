@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<service
+	xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
+	<workspace>
+		<atom:title>Default</atom:title>
+		<collection href="Container.Nr1.Employees">
+			<atom:title>Employees</atom:title>
+		</collection>
+		<collection href="Teams">
+			<atom:title>Teams</atom:title>
+		</collection>
+		<collection href="Rooms">
+			<atom:title>Rooms</atom:title>
+		</collection>
+		<collection href="Managers">
+			<atom:title>Managers</atom:title>
+		</collection>
+		<collection href="Buildings">
+			<atom:title>Buildings</atom:title>
+		</collection>
+		<collection href="Container2.Photos">
+			<atom:title>Photos</atom:title>
+		</collection>
+	</workspace>
+</service>

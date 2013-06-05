@@ -25,14 +25,15 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 
-public class MemberExpressionImpl implements BinaryExpression, MemberExpression
-{
+/**
+ * @author SAP AG
+ */
+public class MemberExpressionImpl implements BinaryExpression, MemberExpression {
   CommonExpression path;
   CommonExpression property;
   EdmType edmType;
 
-  public MemberExpressionImpl(final CommonExpression path, final CommonExpression property)
-  {
+  public MemberExpressionImpl(final CommonExpression path, final CommonExpression property) {
     this.path = path;
     this.property = property;
     edmType = property.getEdmType();
@@ -49,8 +50,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
@@ -61,26 +61,22 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public BinaryOperator getOperator()
-  {
+  public BinaryOperator getOperator() {
     return BinaryOperator.PROPERTY_ACCESS;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.MEMBER;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return BinaryOperator.PROPERTY_ACCESS.toUriLiteral();
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     Object retSource = path.accept(visitor);
     Object retPath = property.accept(visitor);
 
@@ -89,14 +85,12 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public CommonExpression getLeftOperand()
-  {
+  public CommonExpression getLeftOperand() {
     return path;
   }
 
   @Override
-  public CommonExpression getRightOperand()
-  {
+  public CommonExpression getRightOperand() {
     return property;
   }
 

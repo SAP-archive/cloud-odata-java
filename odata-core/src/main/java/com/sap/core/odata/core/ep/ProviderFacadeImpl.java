@@ -34,10 +34,13 @@ import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * @author SAP AG
@@ -68,9 +71,22 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     }
   }
 
+  /**
+   * @deprecated since 0.5.0
+   */
+  @Deprecated
   @Override
   public ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
     return create(contentType).writeErrorDocument(status, errorCode, message, locale, innerError);
+  }
+
+  @Override
+  public ODataResponse writeErrorDocument(final ODataErrorContext context) {
+    try {
+      return create(context.getContentType()).writeErrorDocument(context.getHttpStatus(), context.getErrorCode(), context.getMessage(), context.getLocale(), context.getInnerError());
+    } catch (EntityProviderException e) {
+      throw new ODataRuntimeException(e);
+    }
   }
 
   @Override
@@ -169,4 +185,8 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     return new EdmImplProv(provider);
   }
 
+  @Override
+  public ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
+    return create(contentType).readServiceDocument(serviceDocument);
+  }
 }

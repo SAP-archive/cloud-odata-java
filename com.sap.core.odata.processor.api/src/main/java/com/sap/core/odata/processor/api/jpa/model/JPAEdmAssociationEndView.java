@@ -84,4 +84,12 @@ public interface JPAEdmAssociationEndView extends JPAEdmBaseView {
    */
   boolean compare(AssociationEnd end1, AssociationEnd end2);
 
+  String getJoinColumnName();
+
+  String getJoinColumnReferenceColumnName();
+
+  String getMappedByName();
+
+  String getOwningPropertyName();
+
 }

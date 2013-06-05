@@ -30,6 +30,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  * @see InfoUnaryOperator
  * @author SAP AG 
  */
+@SuppressWarnings("javadoc")
 class ParameterSet
 {
   private EdmType returnType = null;
@@ -80,7 +81,7 @@ class ParameterSet
    * which takes a variable number of input parameters), the actual parameter type is compared against the {@link #furtherType}.
    * @param actualParameterTypes
    * @param allowPromotion
-   * @return
+   * @return true if equals
    * @throws ExpressionParserInternalError
    */
   public boolean equals(final List<EdmType> actualParameterTypes, final boolean allowPromotion) throws ExpressionParserInternalError

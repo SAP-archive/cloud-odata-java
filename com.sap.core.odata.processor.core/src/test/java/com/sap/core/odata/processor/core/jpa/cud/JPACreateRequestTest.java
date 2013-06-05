@@ -150,7 +150,7 @@ public class JPACreateRequestTest {
   }
 
   @Test
-  public void getSetNavigationProperties()
+  public void testSetNavigationProperties()
   {
     JPACreateRequest createRequest = new JPACreateRequest();
     Method method = getMethodForTesting("setNavigationProperties", createRequest);
@@ -162,7 +162,9 @@ public class JPACreateRequestTest {
       relatedClassMap.put("salesOrderLineItems", SalesOrderLineItem.class);
       Map<String, Object> propertyValueMap = new HashMap<String, Object>();
       propertyValueMap.put("id", 1);
-      propertyValueMap.put("salesOrderLineItems", new SalesOrderLineItem(23));
+      List<Object> objectList = new ArrayList<Object>();
+      objectList.add(new SalesOrderLineItem(23));
+      propertyValueMap.put("salesOrderLineItems", objectList);
       Object[] actualParams = { JPATestUtil.getJPAEntity(), JPATestUtil.mockSourceEdmEntitySet(), propertyValueMap, "SalesOrderHeader", relatedClassMap };
       try {
         method.invoke(createRequest, actualParams);
@@ -244,6 +246,7 @@ public class JPACreateRequestTest {
       jpaEmbeddableObjectKeyMap.put("soId", int.class);
       jpaEmbeddableObjectKeyMap.put("liId", int.class);
       Object[] actualParams = { embeddableKeyObject, key, setterName, propertyValueMap };
+      //			Object[] incorrectParams = {embeddableKeyObject,key,setterName,propertyValueMap};
       try {
         for (Field f : createRequest.getClass().getSuperclass().getDeclaredFields()) {
           if (f.getName().equalsIgnoreCase("jpaEmbeddableKeyObjectMap")) {
@@ -322,7 +325,7 @@ public class JPACreateRequestTest {
     EntryMetadataImpl entryMetadata = new EntryMetadataImpl();
     entryMetadata.setId("http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/SalesOrders(5L)");
     ExpandSelectTreeNodeImpl expandSelectTree = new ExpandSelectTreeNodeImpl();
-    expandSelectTree.putLinkNode("SalesOrderLineItemDetails", new ExpandSelectTreeNodeImpl());
+    expandSelectTree.putLink("SalesOrderLineItemDetails", new ExpandSelectTreeNodeImpl());
     expandSelectTree.setExpanded();
     expandSelectTree.setAllExplicitly();
     data1.put("id", 1);

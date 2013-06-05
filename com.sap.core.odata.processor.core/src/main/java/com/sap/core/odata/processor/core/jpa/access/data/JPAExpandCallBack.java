@@ -38,7 +38,6 @@ import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.JPAResultParser;
 
 public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryContent, ODataCallback {
 
@@ -60,7 +59,7 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
     Map<String, Object> edmPropertyValueMap = null;
     List<EdmNavigationProperty> currentNavPropertyList = null;
     Map<String, ExpandSelectTreeNode> navigationLinks = null;
-    JPAResultParser jpaResultParser = JPAResultParser.create();
+    JPAEntityParser jpaResultParser = JPAEntityParser.create();
     EdmNavigationProperty currentNavigationProperty = context.getNavigationProperty();
     try {
       Object inlinedEntry = entry.get(currentNavigationProperty.getName());
@@ -74,7 +73,8 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
       {
         currentNavPropertyList = new ArrayList<EdmNavigationProperty>();
         currentNavPropertyList.add(getNextNavigationProperty(context.getSourceEntitySet().getEntityType(), context.getNavigationProperty()));
-        jpaResultParser.parse2EdmPropertyListMap(edmPropertyValueMap, inlinedEntry, currentNavPropertyList);
+        HashMap<String, Object> navigationMap = jpaResultParser.parse2EdmNavigationValueMap(inlinedEntry, currentNavPropertyList);
+        edmPropertyValueMap.putAll(navigationMap);
         result.setEntryData(edmPropertyValueMap);
       }
       result.setInlineProperties(getInlineEntityProviderProperties(context));
@@ -94,7 +94,7 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
     HashMap<String, Object> inlinedEntry = (HashMap<String, Object>) context.getEntryData();
     List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
     Map<String, Object> edmPropertyValueMap = null;
-    JPAResultParser jpaResultParser = JPAResultParser.create();
+    JPAEntityParser jpaResultParser = JPAEntityParser.create();
     List<EdmNavigationProperty> currentNavPropertyList = null;
     EdmNavigationProperty currentNavigationProperty = context.getNavigationProperty();
     try {
@@ -116,7 +116,8 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
         int count = 0;
         for (Object object : listOfItems)
         {
-          jpaResultParser.parse2EdmPropertyListMap(edmEntityList.get(count), object, currentNavPropertyList);
+          HashMap<String, Object> navigationMap = jpaResultParser.parse2EdmNavigationValueMap(object, currentNavPropertyList);
+          edmEntityList.get(count).putAll(navigationMap);
           count++;
         }
         result.setFeedData(edmEntityList);

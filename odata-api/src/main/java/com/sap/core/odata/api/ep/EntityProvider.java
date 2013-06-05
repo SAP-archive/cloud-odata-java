@@ -28,17 +28,18 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
+import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 
 /**
- * Entity Provider<p>
- * 
- * An {@link com.sap.core.odata.api.ep.EntityProvider} provides all necessary <b>read</b> and <b>write</b> methods for accessing 
- * the entities defined in an <code>Entity Data Model</code>.
- * Therefore this library provides (in its <code>core</code> packages) as convenience basic {@link com.sap.core.odata.api.ep.EntityProvider} 
- * for accessing entities in the <b>XML</b> and <b>JSON</b> format.
- *
+ * <p>Entity Provider</p> 
+ * <p>An {@link EntityProvider} provides all necessary <b>read</b> and <b>write</b>
+ * methods for accessing the entities defined in an <code>Entity Data Model</code>.
+ * Therefore this library provides (in its <code>core</code> packages) as convenience
+ * basic entity providers for accessing entities in the <b>XML</b> and <b>JSON</b>
+ * formats.</p>
  * @author SAP AG
  */
 public final class EntityProvider {
@@ -51,7 +52,7 @@ public final class EntityProvider {
    * access (and basic implementation for <b>XML</b> and <b>JSON</b> format) to all interface methods.
    * <br/>
    * Hence, it is <b>not recommended</b> to implement this interface (it is possible to implement it and to provide an 
-   * own {@link com.sap.core.odata.api.ep.EntityProvider} for support of additional formats but it is recommended to
+   * own {@link EntityProvider} for support of additional formats but it is recommended to
    * handle additional formats directly within an <code>ODataProcessor</code>).
    */
   public interface EntityProviderInterface {
@@ -306,10 +307,29 @@ public final class EntityProvider {
      * @param errorCode   a String that serves as a substatus to the HTTP response code
      * @param message     a human-readable message describing the error
      * @param locale      the {@link Locale} that should be used to format the error message
-     * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+     * @param innerError  the inner error for this message as a plain string. MUST NOT BE a deep XML structure.  If it is null or an empty String no inner error tag is shown inside the response XML.
+     * @return            an {@link ODataResponse} containing the serialized error message
+     * @deprecated since 0.5.0
+     */
+    @Deprecated
+    ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
+
+    /**
+     * <p>Serializes an error message according to the OData standard.</p>
+     * @param context     contains error details see {@link ODataErrorContext}
      * @return            an {@link ODataResponse} containing the serialized error message
      */
-    ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
+    ODataResponse writeErrorDocument(ODataErrorContext context);
+
+    /**
+     * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
+     * 
+     * @param serviceDocument the given input stream
+     * @param contentType format of content in the given input stream
+     * @return ServiceDocument as {@link ServiceDocument}
+     * @throws EntityProviderException  if reading of data (de-serialization) fails
+     */
+    ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
   }
 
   /**
@@ -330,11 +350,24 @@ public final class EntityProvider {
    * @param errorCode   a String that serves as a substatus to the HTTP response code
    * @param message     a human-readable message describing the error
    * @param locale      the {@link Locale} that should be used to format the error message
-   * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+   * @param innerError  the inner error for this message. MUST NOT BE a deep XML structure. If it is null or an empty String no inner error tag is shown inside the response xml
    * @return            an {@link ODataResponse} containing the serialized error message
+   * @deprecated since 0.5.0
    */
+  @Deprecated
   public static ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
     return createEntityProvider().writeErrorDocument(contentType, status, errorCode, message, locale, innerError);
+  }
+
+  /**
+   * <p>Serializes an error message according to the OData standard.</p>
+   * <p>In case an error occurs, it is logged.
+   * An exception is not thrown because this method is used in exception handling.</p>
+   * @param context     contains error details see {@link ODataErrorContext}
+   * @return            an {@link ODataResponse} containing the serialized error message
+   */
+  public static ODataResponse writeErrorDocument(final ODataErrorContext context) {
+    return createEntityProvider().writeErrorDocument(context);
   }
 
   /**
@@ -622,12 +655,25 @@ public final class EntityProvider {
   /**
    * Read (de-serialize) data from metadata <code>inputStream</code> (as {@link InputStream}) and provide Edm as {@link Edm}
    * 
-   * @param inputStream the given input stream
+   * @param metadataXml a metadata xml input stream (means the metadata document)
    * @param validate has to be true if metadata should be validated 
    * @return Edm as {@link Edm}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Edm readMetadata(final InputStream inputStream, final boolean validate) throws EntityProviderException {
-    return createEntityProvider().readMetadata(inputStream, validate);
+  public static Edm readMetadata(final InputStream metadataXml, final boolean validate) throws EntityProviderException {
+    return createEntityProvider().readMetadata(metadataXml, validate);
   }
+
+  /**
+   * Read (de-serialize) data from service document <code>inputStream</code> (as {@link InputStream}) and provide ServiceDocument as {@link ServiceDocument}
+   * 
+   * @param serviceDocument the given input stream
+   * @param contentType format of content in the given input stream
+   * @return ServiceDocument as {@link ServiceDocument}
+   * @throws EntityProviderException  if reading of data (de-serialization) fails
+   */
+  public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
+    return createEntityProvider().readServiceDocument(serviceDocument, contentType);
+  }
+
 }

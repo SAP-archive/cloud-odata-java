@@ -22,12 +22,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -65,6 +67,10 @@ public class ContentTypeTest extends BaseTest {
     assertTrue(ContentType.isParseable("text/plain"));
     assertTrue(ContentType.isParseable("application/atom+xml; charset=UTF-8"));
 
+    // see: https://jtrack/browse/ODATAFORSAP-65
+    assertFalse(ContentType.isParseable("application/  atom+xml; charset=UTF-8"));
+    assertFalse(ContentType.isParseable("application   /atom+xml; charset=UTF-8"));
+    //
     assertFalse(ContentType.isParseable("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertFalse(ContentType.isParseable(null));
@@ -76,6 +82,10 @@ public class ContentTypeTest extends BaseTest {
     assertNotNull(ContentType.parse("text/plain"));
     assertNotNull(ContentType.parse("application/atom+xml; charset=UTF-8"));
 
+    // see: https://jtrack/browse/ODATAFORSAP-65
+    assertFalse(ContentType.isParseable("application/  atom+xml; charset=UTF-8"));
+    assertFalse(ContentType.isParseable("application   /atom+xml; charset=UTF-8"));
+    //
     assertNull(ContentType.parse("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertNull(ContentType.parse(null));
@@ -138,6 +148,67 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("type", mt.getType());
     assertEquals("subtype", mt.getSubtype());
     assertEquals("type/subtype", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unused")
+  public void testContentTypeCreationWildcardType() {
+    ContentType mt = ContentType.create("*", "subtype");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unused")
+  public void testContentTypeCreationWildcardTypeSingleFormat() {
+    ContentType mt = ContentType.create("*/subtype");
+  }
+
+  /**
+   * See: https://jtrack/browse/ODATAFORSAP-65
+   * and: 
+   * <p>
+   * RFC 2616:
+   * The type, subtype, and parameter attribute names are case-insensitive. Parameter values might or might not be case-sensitive,
+   * depending on the semantics of the parameter name. Linear white space (LWS) MUST NOT be used between the type and subtype, 
+   * nor between an attribute and its value.
+   * </p>
+   * @throws Throwable 
+   */
+  @Test
+  public void testContentTypeCreationInvalidWithSpaces() throws Throwable {
+    failContentTypeCreation("app/  space", IllegalArgumentException.class);
+    failContentTypeCreation("app    /space", IllegalArgumentException.class);
+    failContentTypeCreation("app    /   space", IllegalArgumentException.class);
+  }
+
+  @SuppressWarnings("unused")
+  private void failContentTypeCreation(final String contentType, final Class<? extends Exception> expectedExceptionClass) throws Exception {
+    try {
+      ContentType mt = ContentType.create(contentType);
+      Assert.fail("Expected exception class " + expectedExceptionClass +
+          " was not thrown for creation of content type based on '" + contentType + "'.");
+    } catch (Exception e) {
+      assertEquals(expectedExceptionClass, e.getClass());
+    }
+  }
+
+  @Test
+  public void testContentTypeCreationWildcardSubType() {
+    ContentType mt = ContentType.create("type", "*");
+
+    assertEquals("type", mt.getType());
+    assertEquals("*", mt.getSubtype());
+    assertEquals("type/*", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationWildcardSubTypeSingleFormat() {
+    ContentType mt = ContentType.create("type/*");
+
+    assertEquals("type", mt.getType());
+    assertEquals("*", mt.getSubtype());
+    assertEquals("type/*", mt.toString());
     assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
   }
 
@@ -218,6 +289,91 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json", mt.toString());
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationFromStrings() {
+    List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json;key=value"));
+
+    assertEquals(3, types.size());
+
+    ContentType first = types.get(0);
+    assertEquals("type", first.getType());
+    assertEquals("subtype", first.getSubtype());
+    assertEquals("type/subtype", first.toString());
+    assertEquals(ODataFormat.CUSTOM, first.getODataFormat());
+
+    ContentType second = types.get(1);
+    assertEquals("application", second.getType());
+    assertEquals("xml", second.getSubtype());
+    assertEquals("application/xml", second.toString());
+    assertEquals(ODataFormat.XML, second.getODataFormat());
+
+    ContentType third = types.get(2);
+    assertEquals("application", third.getType());
+    assertEquals("json", third.getSubtype());
+    assertEquals("application/json; key=value", third.toString());
+    assertEquals("value", third.getParameters().get("key"));
+    assertEquals(ODataFormat.JSON, third.getODataFormat());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testContentTypeCreationFromStringsFail() {
+    List<ContentType> types = ContentType.create(Arrays.asList("type/subtype", "application/xml", "application/json/FAIL;key=value"));
+
+    assertEquals(3, types.size());
+  }
+
+  @Test
+  public void testEnsureCharsetParameter() {
+    ContentType mt = ContentType.create("application/json");
+
+    mt = mt.receiveWithCharsetParameter("utf-8");
+
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterIso() {
+    ContentType mt = ContentType.create("application/xml");
+
+    mt = mt.receiveWithCharsetParameter("iso-8859-1");
+
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml; charset=iso-8859-1", mt.toString());
+    assertEquals("iso-8859-1", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterAlreadySet() {
+    ContentType mt = ContentType.create("application/json;charset=utf-8");
+
+    mt = mt.receiveWithCharsetParameter("utf-8");
+
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testEnsureCharsetParameterAlreadySetDiffValue() {
+    ContentType mt = ContentType.create("application/json;charset=utf-8");
+
+    mt = mt.receiveWithCharsetParameter("iso-8859-1");
+
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
 
@@ -699,5 +855,21 @@ public class ContentTypeTest extends BaseTest {
     ContentType match = check.matchCompatible(toMatchContentTypes);
 
     assertTrue(match == null);
+  }
+
+  @Test
+  public void testIsWildcard() {
+    assertFalse(ContentType.create("aaa/bbb;x=y;a").isWildcard());
+    assertFalse(ContentType.create("aaa/*;x=y;a").isWildcard());
+    assertTrue(ContentType.create("*/*;x=y;a").isWildcard());
+    assertTrue(ContentType.create("*/*").isWildcard());
+  }
+
+  @Test
+  public void testHasWildcard() {
+    assertFalse(ContentType.create("aaa/bbb;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("aaa/*;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("*/*;x=y;a").hasWildcard());
+    assertTrue(ContentType.create("*/*").hasWildcard());
   }
 }

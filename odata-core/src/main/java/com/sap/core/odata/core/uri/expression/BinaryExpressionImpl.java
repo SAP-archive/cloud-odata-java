@@ -24,8 +24,10 @@ import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
-public class BinaryExpressionImpl implements BinaryExpression
-{
+/**
+ * @author SAP AG
+ */
+public class BinaryExpressionImpl implements BinaryExpression {
   final protected InfoBinaryOperator operatorInfo;
   final protected CommonExpression leftSide;
   final protected CommonExpression rightSide;
@@ -41,59 +43,50 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public BinaryOperator getOperator()
-  {
+  public BinaryOperator getOperator() {
     return operatorInfo.getOperator();
   }
 
   @Override
-  public CommonExpression getLeftOperand()
-  {
+  public CommonExpression getLeftOperand() {
     return leftSide;
   }
 
   @Override
-  public CommonExpression getRightOperand()
-  {
+  public CommonExpression getRightOperand() {
     return rightSide;
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.BINARY;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return operatorInfo.getSyntax();
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);
 
     return visitor.visitBinary(this, operatorInfo.getOperator(), retLeftSide, retRightSide);
   }
 
-  public Token getToken()
-  {
+  public Token getToken() {
     return token;
   }
 

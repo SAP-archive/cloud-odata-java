@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -40,12 +41,16 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
   private Association currentAssociation;
   private List<Association> consistentAssociatonList;
   private HashMap<String, Association> associationMap;
+  private HashMap<String, JPAEdmAssociationEndView> associationEndMap;
   private List<JPAEdmReferentialConstraintView> inconsistentRefConstraintViewList;
+  private int numberOfSimilarEndPoints;
 
   public JPAEdmAssociation(final JPAEdmAssociationEndView associationEndview,
-      final JPAEdmEntityTypeView entityTypeView, final JPAEdmPropertyView propertyView) {
+      final JPAEdmEntityTypeView entityTypeView,
+      final JPAEdmPropertyView propertyView, final int value) {
     super(associationEndview);
     associationEndView = associationEndview;
+    numberOfSimilarEndPoints = value;
     init();
   }
 
@@ -59,6 +64,7 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
     consistentAssociatonList = new ArrayList<Association>();
     inconsistentRefConstraintViewList = new LinkedList<JPAEdmReferentialConstraintView>();
     associationMap = new HashMap<String, Association>();
+    associationEndMap = new HashMap<String, JPAEdmAssociationEndView>();
   }
 
   @Override
@@ -84,9 +90,41 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
     if (view != null) {
       for (String key : associationMap.keySet()) {
         Association association = associationMap.get(key);
-        if (association != null && view.compare(association.getEnd1(), association.getEnd2())) {
-          currentAssociation = association;
-          return association;
+        if (association != null) {
+          if (view.compare(association.getEnd1(),
+              association.getEnd2())) {
+            JPAEdmAssociationEndView associationEnd = associationEndMap
+                .get(association.getName());
+            if (associationEnd.getJoinColumnName() != null
+                && associationEnd
+                    .getJoinColumnReferenceColumnName() != null
+                && view.getJoinColumnName() != null
+                && view.getJoinColumnReferenceColumnName() != null) {
+              if (view.getJoinColumnName().equals(
+                  associationEnd.getJoinColumnName())
+                  && view.getJoinColumnReferenceColumnName()
+                      .equals(associationEnd
+                          .getJoinColumnReferenceColumnName())) {
+                currentAssociation = association;
+                return association;
+              }
+
+            }
+            if (associationEnd.getMappedByName() != null) {
+              if (associationEnd.getMappedByName().equals(
+                  view.getOwningPropertyName())) {
+                currentAssociation = association;
+                return association;
+              }
+            }
+            if (associationEnd.getOwningPropertyName() != null) {
+              if (associationEnd.getOwningPropertyName().equals(
+                  view.getMappedByName())) {
+                currentAssociation = association;
+                return association;
+              }
+            }
+          }
         }
       }
     }
@@ -94,11 +132,14 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
   }
 
   @Override
-  public void addJPAEdmAssociationView(final JPAEdmAssociationView associationView) {
+  public void addJPAEdmAssociationView(final JPAEdmAssociationView associationView,
+      final JPAEdmAssociationEndView associationEndView) {
     if (associationView != null) {
       currentAssociation = associationView.getEdmAssociation();
       associationMap
           .put(currentAssociation.getName(), currentAssociation);
+      associationEndMap.put(currentAssociation.getName(),
+          associationEndView);
       addJPAEdmRefConstraintView(associationView
           .getJPAEdmReferentialConstraintView());
     }
@@ -123,7 +164,8 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
   private class JPAEdmAssociationBuilder implements JPAEdmBuilder {
 
     @Override
-    public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+    public void build() throws ODataJPAModelException,
+        ODataJPARuntimeException {
 
       if (associationEndView != null
           && searchAssociation(associationEndView) == null) {
@@ -133,7 +175,8 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
         currentAssociation.setEnd2(associationEndView
             .getEdmAssociationEnd2());
 
-        JPAEdmNameBuilder.build(JPAEdmAssociation.this);
+        JPAEdmNameBuilder.build(JPAEdmAssociation.this,
+            numberOfSimilarEndPoints);
 
         associationMap.put(currentAssociation.getName(),
             currentAssociation);
@@ -150,11 +193,14 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
             view.getBuilder().build();
           }
           if (view.isConsistent()) {
-            currentAssociation = associationMap.get(view
-                .getEdmRelationShipName());
-            currentAssociation.setReferentialConstraint(view
+            Association newAssociation = new Association();
+            copyAssociation(newAssociation, associationMap.get(view
+                .getEdmRelationShipName()));
+            newAssociation.setReferentialConstraint(view
                 .getEdmReferentialConstraint());
-            consistentAssociatonList.add(currentAssociation);
+            consistentAssociatonList.add(newAssociation);
+            associationMap.put(view.getEdmRelationShipName(),
+                newAssociation);
             inconsistentRefConstraintViewList.remove(index);
           } else {
             associationMap.remove(view.getEdmRelationShipName());
@@ -176,6 +222,46 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
       }
 
     }
+
+    private void copyAssociation(final Association copyToAssociation,
+        final Association copyFromAssociation) {
+      copyToAssociation.setEnd1(copyFromAssociation.getEnd1());
+      copyToAssociation.setEnd2(copyFromAssociation.getEnd2());
+      copyToAssociation.setName(copyFromAssociation.getName());
+      copyToAssociation.setAnnotationAttributes(copyFromAssociation
+          .getAnnotationAttributes());
+      copyToAssociation.setAnnotationElements(copyFromAssociation
+          .getAnnotationElements());
+      copyToAssociation.setDocumentation(copyFromAssociation
+          .getDocumentation());
+
+    }
+  }
+
+  @Override
+  public int getNumberOfAssociationsWithSimilarEndPoints(
+      final JPAEdmAssociationEndView view) {
+    int count = 0;
+    AssociationEnd currentAssociationEnd1 = view.getEdmAssociationEnd1();
+    AssociationEnd currentAssociationEnd2 = view.getEdmAssociationEnd2();
+    AssociationEnd end1 = null;
+    AssociationEnd end2 = null;
+    for (String key : associationMap.keySet()) {
+      Association association = associationMap.get(key);
+      if (association != null) {
+        end1 = association.getEnd1();
+        end2 = association.getEnd2();
+        if ((end1.getType().equals(currentAssociationEnd1.getType()) && end2
+            .getType().equals(currentAssociationEnd2.getType()))
+            || (end1.getType().equals(
+                currentAssociationEnd2.getType()) && end2
+                .getType().equals(
+                    currentAssociationEnd1.getType()))) {
+          count++;
+        }
+      }
+    }
+    return count;
   }
 
 }

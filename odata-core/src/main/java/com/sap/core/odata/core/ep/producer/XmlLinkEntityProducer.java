@@ -35,7 +35,7 @@ public class XmlLinkEntityProducer {
   private final EntityProviderWriteProperties properties;
 
   public XmlLinkEntityProducer(final EntityProviderWriteProperties properties) throws EntityProviderException {
-    this.properties = properties;
+    this.properties = properties == null ? EntityProviderWriteProperties.serviceRoot(null).build() : properties;
   }
 
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
@@ -44,7 +44,9 @@ public class XmlLinkEntityProducer {
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
       }
-      writer.writeCharacters(properties.getServiceRoot().toASCIIString());
+      if (properties.getServiceRoot() != null) {
+        writer.writeCharacters(properties.getServiceRoot().toASCIIString());
+      }
       writer.writeCharacters(AtomEntryEntityProducer.createSelfLink(entityInfo, data, null));
       writer.writeEndElement();
       writer.flush();

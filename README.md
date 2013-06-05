@@ -26,18 +26,42 @@ and import generated projects into Eclipse.
 
 To consume libraries with Maven add following dependencies to your pom.xml:
 
+    $odata.lib.version=0.5.0
+
     <dependency>
       <groupId>com.sap.odata</groupId>
       <artifactId>com.sap.core.odata.api</artifactId>
-      <version>0.4.1</version> 
+      <version>${odata.lib.version}</version> 
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.sap.odata</groupId>
       <artifactId>com.sap.core.odata.core</artifactId>
-      <version>0.4.1</version>
+      <version>${odata.lib.version}</version>
       <scope>runtime</scope>
     </dependency>
+
+For advanced JPA processor usage these additional dependencies are required:
+
+    <dependency>
+      <groupId>com.sap.odata</groupId>
+      <artifactId>com.sap.core.odata.processor.api</artifactId>
+      <version>${odata.lib.version}</version> 
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sap.odata</groupId>
+      <artifactId>com.sap.core.odata.api.annotation</artifactId>
+      <version>${odata.lib.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sap.odata</groupId>
+      <artifactId>com.sap.core.odata.processor.core</artifactId>
+      <version>${odata.lib.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
 
 Build artifacts are already available at Maven Central.
 
@@ -57,7 +81,8 @@ Contributions to this project are very welcome, but can only be accepted if the 
 Version History
 ---------------
 
-0.5.0-SNAPSHOT basic $batch as work in progress <br/>
+0.6.0-SNAPSHOT basic $batch as work in progress <br/>
+0.5.0  Service Document parsing / performance optimization<br/>
 0.4.1  JPA processor support  
 0.4.0  Advanced Read / Write and JSON support  
 0.3.0  Advanced Read / Basic Write  

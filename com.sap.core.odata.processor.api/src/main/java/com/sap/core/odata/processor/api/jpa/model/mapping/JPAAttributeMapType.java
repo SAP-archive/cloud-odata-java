@@ -27,16 +27,15 @@ import javax.xml.bind.annotation.XmlValue;
 
 /**
  * 
- * The default name for EDM property is derived from JPA attribute name. This
- * can be overriden using JPAAttributeMapType.
+ * 				The default name for EDM
+ * 				property is derived from JPA attribute name. This can be overriden
+ * 				using
+ * 				JPAAttributeMapType.
+ * 			
  * 
+ * <p>Java class for JPAAttributeMapType complex type.
  * 
- * <p>
- * Java class for JPAAttributeMapType complex type.
- * 
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="JPAAttributeMapType">
@@ -48,6 +47,7 @@ import javax.xml.bind.annotation.XmlValue;
  *             &lt;simpleContent>
  *               &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
  *                 &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *                 &lt;attribute name="exclude" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *               &lt;/extension>
  *             &lt;/simpleContent>
  *           &lt;/complexType>
@@ -61,7 +61,9 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "JPAAttributeMapType", propOrder = { "jpaAttribute" })
+@XmlType(name = "JPAAttributeMapType", propOrder = {
+    "jpaAttribute"
+})
 public class JPAAttributeMapType {
 
   @XmlElement(name = "JPAAttribute")
@@ -71,16 +73,15 @@ public class JPAAttributeMapType {
    * Gets the value of the jpaAttribute property.
    * 
    * <p>
-   * This accessor method returns a reference to the live list, not a
-   * snapshot. Therefore any modification you make to the returned list will
-   * be present inside the JAXB object. This is why there is not a
-   * <CODE>set</CODE> method for the jpaAttribute property.
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the jpaAttribute property.
    * 
    * <p>
    * For example, to add a new item, do as follows:
-   * 
    * <pre>
-   * getJPAAttribute().add(newItem);
+   *    getJPAAttribute().add(newItem);
    * </pre>
    * 
    * 
@@ -98,18 +99,16 @@ public class JPAAttributeMapType {
   }
 
   /**
-   * <p>
-   * Java class for anonymous complex type.
+   * <p>Java class for anonymous complex type.
    * 
-   * <p>
-   * The following schema fragment specifies the expected content contained
-   * within this class.
+   * <p>The following schema fragment specifies the expected content contained within this class.
    * 
    * <pre>
    * &lt;complexType>
    *   &lt;simpleContent>
    *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
    *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+   *       &lt;attribute name="exclude" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
    *     &lt;/extension>
    *   &lt;/simpleContent>
    * &lt;/complexType>
@@ -118,19 +117,25 @@ public class JPAAttributeMapType {
    * 
    */
   @XmlAccessorType(XmlAccessType.FIELD)
-  @XmlType(name = "", propOrder = { "value" })
+  @XmlType(name = "", propOrder = {
+      "value"
+  })
   public static class JPAAttribute {
 
     @XmlValue
     protected String value;
     @XmlAttribute(name = "name", required = true)
     protected String name;
+    @XmlAttribute(name = "exclude")
+    protected Boolean exclude;
 
     /**
      * Gets the value of the value property.
      * 
-     * @return possible object is {@link String }
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getValue() {
       return value;
@@ -140,8 +145,9 @@ public class JPAAttributeMapType {
      * Sets the value of the value property.
      * 
      * @param value
-     *            allowed object is {@link String }
-     * 
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setValue(final String value) {
       this.value = value;
@@ -150,8 +156,10 @@ public class JPAAttributeMapType {
     /**
      * Gets the value of the name property.
      * 
-     * @return possible object is {@link String }
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getName() {
       return name;
@@ -161,11 +169,40 @@ public class JPAAttributeMapType {
      * Sets the value of the name property.
      * 
      * @param value
-     *            allowed object is {@link String }
-     * 
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setName(final String value) {
       name = value;
+    }
+
+    /**
+     * Gets the value of the exclude property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public boolean isExclude() {
+      if (exclude == null) {
+        return false;
+      } else {
+        return exclude;
+      }
+    }
+
+    /**
+     * Sets the value of the exclude property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setExclude(final Boolean value) {
+      exclude = value;
     }
 
   }

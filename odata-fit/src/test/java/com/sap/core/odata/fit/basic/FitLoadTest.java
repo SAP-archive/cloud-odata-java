@@ -38,16 +38,19 @@ import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 
+/**
+ * @author SAP AG
+ */
 public class FitLoadTest extends AbstractBasicTest {
 
   /*
    * increase for load analysis > 10.000
    */
-  private static int LOOP_COUNT = 1;
+  private static final int LOOP_COUNT = 1;
 
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
-    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
@@ -55,25 +58,23 @@ public class FitLoadTest extends AbstractBasicTest {
 
   @Test
   public void useApacheHttpClient() throws ClientProtocolException, IOException {
+    final URI uri = URI.create(getEndpoint().toString() + "$metadata");
     for (int i = 0; i < LOOP_COUNT; i++) {
-      final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "$metadata"));
+      HttpGet get = new HttpGet(uri);
       HttpResponse response = getHttpClient().execute(get);
-      assertEquals(200, response.getStatusLine().getStatusCode());
+      assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
       get.abort();
     }
   }
 
   @Test
   public void useJavaHttpClient() throws IOException {
+    final URI uri = URI.create(getEndpoint().toString() + "$metadata");
     for (int i = 0; i < LOOP_COUNT; i++) {
-      URI uri = URI.create(getEndpoint().toString() + "$metadata");
-
       HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
       connection.setRequestMethod("GET");
       connection.connect();
-
-      int code = connection.getResponseCode();
-      assertEquals(200, code);
+      assertEquals(HttpStatusCodes.OK.getStatusCode(), connection.getResponseCode());
     }
   }
 

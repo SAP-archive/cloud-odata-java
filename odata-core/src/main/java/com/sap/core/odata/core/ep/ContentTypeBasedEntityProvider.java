@@ -31,6 +31,7 @@ import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.servicedocument.ServiceDocument;
 
 /**
  * Interface for all none basic (content type <b>dependent</b>) provider methods.
@@ -63,5 +64,7 @@ public interface ContentTypeBasedEntityProvider {
 
   ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, EntityProviderWriteProperties properties) throws EntityProviderException;
 
-  ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
+  ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError);
+
+  ServiceDocument readServiceDocument(InputStream serviceDocument) throws EntityProviderException;
 }

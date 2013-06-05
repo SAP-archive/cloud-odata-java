@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +16,11 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG
@@ -31,9 +34,19 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   private static final String SIMPLE_ENTRY_BUILDING_WITHOUT_D = "JsonBuildingWithoutD";
 
   //Negative Test jsonStart
-  public static final String negativeJsonStart_1 = "{ \"abc\": {";
+  private static final String negativeJsonStart_1 = "{ \"abc\": {";
+  private static final String negativeJsonStart_2 = "{ \"d\": [a: 1, b: 2] }";
 
-  public static final String negativeJsonStart_2 = "{ \"d\": [a: 1, b: 2] }";
+  @Test(expected = EntityProviderException.class)
+  public void doubleClosingBracketsAtTheEnd() throws Exception {
+    String invalidJson = "{ \"Id\" : \"1\", \"Seats\" : 1, \"Version\" : 1}}";
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream contentBody = createContentAsStream(invalidJson);
+
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    xec.readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
 
   @SuppressWarnings("unchecked")
   @Test
@@ -146,10 +159,41 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
     }
   }
 
+  @Test
+  public void entryWithMetadataElementProperties() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream(
+        "{\"__metadata\":{\"properties\":{\"nt_Employees\":{\"associationuri\":"
+            + "\"http://some.host.com/service.root/Teams('1')/$links/nt_Employees\"}}},"
+            + "\"Id\":\"1\"}");
+    ODataEntry result = new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+    checkMediaDataInitial(result.getMediaMetadata());
+  }
+
   private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {
     assertNull(mediaMetadata.getContentType());
     assertNull(mediaMetadata.getEditLink());
     assertNull(mediaMetadata.getEtag());
     assertNull(mediaMetadata.getSourceLink());
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void emptyEntry() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    new JsonEntityConsumer().readEntry(entitySet, createContentAsStream("{}"), DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongStart() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream(negativeJsonStart_1);
+    new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void wrongStart2() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream contentBody = createContentAsStream(negativeJsonStart_2);
+    new JsonEntityConsumer().readEntry(entitySet, contentBody, DEFAULT_PROPERTIES);
   }
 }

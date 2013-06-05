@@ -263,7 +263,7 @@ public class JPAProcessorImplTest {
     EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andStubReturn("salesorderprocessing");
     EasyMock.expect(odataJPAContext.getEntityManagerFactory()).andStubReturn(mockEntityManagerFactory());
     EasyMock.expect(odataJPAContext.getODataContext()).andStubReturn(getLocalODataContext());
-
+    EasyMock.expect(odataJPAContext.getEntityManager()).andStubReturn(getLocalEntityManager());
     EasyMock.replay(odataJPAContext);
     return odataJPAContext;
   }
@@ -276,7 +276,7 @@ public class JPAProcessorImplTest {
     return emf;
   }
 
-  private EntityManager getLocalEntityManager() {
+  public EntityManager getLocalEntityManager() {
     EntityManager em = EasyMock.createMock(EntityManager.class);
     EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andStubReturn(getQuery());
     EasyMock.expect(em.createQuery("SELECT COUNT ( E1 ) FROM SalesOrderHeaders E1")).andStubReturn(getQueryForSelectCount());

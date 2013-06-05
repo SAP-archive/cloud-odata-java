@@ -18,7 +18,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * Exceptions of this class will result in a HTTP status 405 method not allowed
+ * Exceptions of this class will result in a HTTP status 405 (method not allowed).
  * @author SAP AG
  */
 public class ODataMethodNotAllowedException extends ODataHttpException {
@@ -26,7 +26,6 @@ public class ODataMethodNotAllowedException extends ODataHttpException {
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference DISPATCH = createMessageReference(ODataMethodNotAllowedException.class, "DISPATCH");
-  public static final MessageReference TUNNELING = createMessageReference(ODataMethodNotAllowedException.class, "TUNNELING");
 
   public ODataMethodNotAllowedException(final MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.METHOD_NOT_ALLOWED);

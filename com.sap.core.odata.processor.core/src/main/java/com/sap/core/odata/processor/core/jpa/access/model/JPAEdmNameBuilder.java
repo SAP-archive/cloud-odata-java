@@ -84,14 +84,14 @@ public class JPAEdmNameBuilder {
     }
 
     JPAEdmMapping mapping = new JPAEdmMappingImpl();
-    mapping.setJPAType(view.getJPAEntityType().getClass());
+    mapping.setJPAType(view.getJPAEntityType().getJavaType());
 
     if (edmEntityTypeName == null) {
       edmEntityTypeName = jpaEntityName;
-    } else {
-      edmEntityType.setMapping(((Mapping) mapping)
-          .setInternalName(jpaEntityName));
     }
+    //Setting the mapping object
+    edmEntityType.setMapping(((Mapping) mapping)
+        .setInternalName(jpaEntityName));
 
     edmEntityType.setName(edmEntityTypeName);
 
@@ -306,8 +306,10 @@ public class JPAEdmNameBuilder {
   public static void build(final JPAEdmComplexPropertyView complexView, final String parentComplexTypeName)
   {
     ComplexProperty complexProperty = complexView.getEdmComplexProperty();
+
     JPAEdmMappingModelAccess mappingModelAccess = complexView.getJPAEdmMappingModelAccess();
-    String jpaAttributeName = ((JPAEdmPropertyView) complexView).getJPAAttribute().getName();
+    JPAEdmPropertyView propertyView = ((JPAEdmPropertyView) complexView);
+    String jpaAttributeName = propertyView.getJPAAttribute().getName();
     String propertyName = null;
     if (mappingModelAccess != null
         && mappingModelAccess.isMappingModelExists()) {
@@ -320,7 +322,7 @@ public class JPAEdmNameBuilder {
     }
     JPAEdmMapping mapping = new JPAEdmMappingImpl();
     ((Mapping) mapping).setInternalName(jpaAttributeName);
-    //mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
+    mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
     complexProperty.setMapping((Mapping) mapping);
     complexProperty.setName(propertyName);
 
@@ -402,17 +404,21 @@ public class JPAEdmNameBuilder {
    * ************************************************************************
    */
 
-  public static void build(final JPAEdmAssociationView view) {
+  public static void build(final JPAEdmAssociationView view, final int count) {
     Association association = view.getEdmAssociation();
-
+    String associationName = null;
     String end1Name = association.getEnd1().getType().getName();
     String end2Name = association.getEnd2().getType().getName();
 
     if (end1Name.compareToIgnoreCase(end2Name) > 0) {
-      association.setName(end2Name + UNDERSCORE + end1Name);
+      associationName = end2Name + UNDERSCORE + end1Name;
     } else {
-      association.setName(end1Name + UNDERSCORE + end2Name);
+      associationName = end1Name + UNDERSCORE + end2Name;
     }
+    if (count > 1) {
+      associationName = associationName + Integer.toString(count - 1);
+    }
+    association.setName(associationName);
 
   }
 
@@ -435,7 +441,7 @@ public class JPAEdmNameBuilder {
 
   public static void build(final JPAEdmAssociationView associationView,
       final JPAEdmPropertyView propertyView,
-      final JPAEdmNavigationPropertyView navPropertyView) {
+      final JPAEdmNavigationPropertyView navPropertyView, final int count) {
 
     String toName = null;
     String fromName = null;
@@ -483,7 +489,9 @@ public class JPAEdmNameBuilder {
       if (navPropName == null) {
         navPropName = toName.concat(NAVIGATION_NAME);
       }
-
+      if (count > 1) {
+        navPropName = navPropName + Integer.toString(count - 1);
+      }
       navProp.setName(navPropName);
 
       if (toName.equals(associationEndTypeOne.getName())) {
@@ -514,7 +522,9 @@ public class JPAEdmNameBuilder {
       if (navPropName == null) {
         navPropName = toName.concat(NAVIGATION_NAME);
       }
-
+      if (count > 1) {
+        navPropName = navPropName + Integer.toString(count - 1);
+      }
       navProp.setName(navPropName);
 
       if (toName.equals(associationEndTypeOne.getName())) {
