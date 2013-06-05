@@ -508,7 +508,7 @@ public final class ODataJPAResponseBuilder {
 				  }
 				  edmEntityList.subList(0, resultsView.getSkip()).clear();
 			  }
-			  if(resultsView.getTop() != null && resultsView.getTop() >= 0){
+			  if(resultsView.getTop() != null && resultsView.getTop() >= 0 && resultsView.getTop() < edmEntityList.size()){
 				  edmEntityList.subList(0, resultsView.getTop());
 			  }
 		  }
@@ -526,8 +526,6 @@ public final class ODataJPAResponseBuilder {
       final List<Map<String, Object>> edmEntityList)
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
-    /*Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
-        .size() : null;*/
     
     Integer count = null;
     if(resultsView.getInlineCount() != null){
@@ -586,7 +584,7 @@ public final class ODataJPAResponseBuilder {
 				  }
 				  edmEntityList.subList(0, resultsView.getSkip()).clear();
 			  }
-			  if(resultsView.getTop() != null && resultsView.getTop() >= 0){
+			  if(resultsView.getTop() != null && resultsView.getTop() >= 0 && resultsView.getTop() < edmEntityList.size()){
 				  edmEntityList.retainAll(edmEntityList.subList(0, resultsView.getTop()));
 			  }
 		  }
