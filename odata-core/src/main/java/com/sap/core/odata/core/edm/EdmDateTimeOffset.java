@@ -48,54 +48,41 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
     if (literalKind == EdmLiteralKind.JSON) {
       final Matcher matcher = JSON_PATTERN.matcher(value);
       if (matcher.matches()) {
-        dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-        dateTimeValue.clear();
         long millis;
         try {
           millis = Long.parseLong(matcher.group(1));
         } catch (final NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
-        dateTimeValue.setTimeInMillis(millis);
+        String timeZone = "GMT";
         if (matcher.group(2) != null) {
           final int offsetInMinutes = Integer.parseInt(matcher.group(3));
-          if (offsetInMinutes >= 24 * 60) {
+          if (offsetInMinutes >= 24 * 60)
             throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-          }
           if (offsetInMinutes != 0) {
-            dateTimeValue.setTimeZone(TimeZone.getTimeZone(
-                "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
-                    + ":" + String.format("%02d", offsetInMinutes % 60)));
-            // Subtract the time-zone offset to counter the automatic adjustment above
-            // caused by the fact that the Calendar instance created above is in the
-            // "GMT" timezone.
-            dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
+            timeZone += matcher.group(2) + String.valueOf(offsetInMinutes / 60)
+                + ":" + String.format("%02d", offsetInMinutes % 60);
+            // Convert the local-time milliseconds to UTC.
+            millis -= (matcher.group(2).equals("+") ? 1 : -1) * offsetInMinutes * 60 * 1000;
           }
         }
+        dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        dateTimeValue.clear();
+        dateTimeValue.setTimeInMillis(millis);
       }
     }
 
     if (dateTimeValue == null) {
       final Matcher matcher = PATTERN.matcher(value);
-      if (!matcher.matches()) {
+      if (!matcher.matches())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      }
 
-      if (matcher.group(8) == null) {
-        return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets, returnType);
-      } else {
-        dateTimeValue = EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets, Calendar.class);
-        if (matcher.group(9) != null && !matcher.group(9).matches("[-+]0+:0+")) {
-          dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
-          if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) {
-            throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-          }
-          // Subtract the time-zone offset to counter the automatic adjustment above
-          // caused by the fact that the Calendar instance returned from EdmDateTime
-          // is in the "GMT" timezone.
-          dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
-        }
-      }
+      final String timeZoneOffset = matcher.group(8) != null && matcher.group(9) != null && !matcher.group(9).matches("[-+]0+:0+") ? matcher.group(9) : null;
+      dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT" + timeZoneOffset));
+      if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0 && timeZoneOffset != null)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      dateTimeValue.clear();
+      EdmDateTime.parseLiteral(value.substring(0, matcher.group(8) == null ? value.length() : matcher.start(8)), facets, dateTimeValue);
     }
 
     if (returnType.isAssignableFrom(Calendar.class)) {

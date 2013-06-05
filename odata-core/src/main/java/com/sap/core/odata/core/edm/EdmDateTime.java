@@ -54,45 +54,50 @@ public class EdmDateTime extends AbstractSimpleType {
           return returnType.cast(millis);
         } else if (returnType.isAssignableFrom(Date.class)) {
           return returnType.cast(new Date(millis));
-        } else if (!returnType.isAssignableFrom(Calendar.class)) {
+        } else if (returnType.isAssignableFrom(Calendar.class)) {
+          Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+          dateTimeValue.clear();
+          dateTimeValue.setTimeInMillis(millis);
+          return returnType.cast(dateTimeValue);
+        } else {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
         }
-
-        Calendar dateTimeValue = Calendar.getInstance();
-        dateTimeValue.clear();
-        dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-        dateTimeValue.setTimeInMillis(millis);
-        return returnType.cast(dateTimeValue);
       }
     }
 
-    Calendar calendarValue;
+    Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    dateTimeValue.clear();
+
     if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'")) {
-        calendarValue = parseLiteral(value.substring(9, value.length() - 1), facets);
+        parseLiteral(value.substring(9, value.length() - 1), facets, dateTimeValue);
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
     } else {
-      calendarValue = parseLiteral(value, facets);
+      parseLiteral(value, facets, dateTimeValue);
     }
 
     if (returnType.isAssignableFrom(Calendar.class)) {
-      return returnType.cast(calendarValue);
+      return returnType.cast(dateTimeValue);
     } else if (returnType.isAssignableFrom(Long.class)) {
-      return returnType.cast(calendarValue.getTimeInMillis());
+      return returnType.cast(dateTimeValue.getTimeInMillis());
     } else if (returnType.isAssignableFrom(Date.class)) {
-      return returnType.cast(calendarValue.getTime());
+      return returnType.cast(dateTimeValue.getTime());
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
     }
   }
 
-  private Calendar parseLiteral(final String value, final EdmFacets facets) throws EdmSimpleTypeException {
-    Calendar dateTimeValue = Calendar.getInstance();
-    dateTimeValue.clear();
-    dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-
+  /**
+   * Parses a formatted date/time value and sets the values of a
+   * {@link Calendar} object accordingly. 
+   * @param value         the formatted date/time value as String
+   * @param facets        additional constraints for parsing (optional)
+   * @param dateTimeValue the Calendar object to be set to the parsed value
+   * @throws EdmSimpleTypeException
+   */
+  protected static void parseLiteral(final String value, final EdmFacets facets, Calendar dateTimeValue) throws EdmSimpleTypeException {
     final Matcher matcher = PATTERN.matcher(value);
     if (!matcher.matches()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
@@ -136,7 +141,6 @@ public class EdmDateTime extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
     dateTimeValue.setLenient(true);
-    return dateTimeValue;
   }
 
   @Override
