@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.producer;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,55 +7,37 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.callback.TombstoneCallback;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
-public class TombstoneProducer implements ODataCallback {
+public class TombstoneProducer {
 
   private String defaultDateString;
 
-  public static final String TOMBSTONE_NAMESPACE_PREFIX = "at";
-  public static final String TOMBSTONE_NAMESPACE = "http://purl.org/atompub/tombstones/1.0";
-
-  private static final String WHEN = "when";
-  private static final String REF = "ref";
-
-  List<Map<String, Object>> deletedEntries = new ArrayList<Map<String, Object>>();
-
-  public TombstoneProducer(final List<Map<String, Object>> deletedEntries) {
-    this.deletedEntries = deletedEntries;
-  }
-
-  public void write(final XMLStreamWriter writer, final EntityInfoAggregator eia, final EntityProviderWriteProperties properties) throws EntityProviderException {
+  /**
+   * appends tombstones to an already started feed. If the list is empty no elements will be appended.
+   * @param writer- same as in feed
+   * @param eia - same as in feed
+   * @param properties- same as in feed
+   * @param deletedEntries data to be appended
+   * @throws EntityProviderException
+   */
+  public void appendTombstones(final XMLStreamWriter writer, final EntityInfoAggregator eia, final EntityProviderWriteProperties properties, final List<Map<String, Object>> deletedEntries) throws EntityProviderException {
     try {
       for (Map<String, Object> deletedEntry : deletedEntries) {
-        writer.writeStartElement(TOMBSTONE_NAMESPACE, FormatXml.ATOM_TOMBSTONE_DELETED_ENTRY);
-        // "ref" attribute whose value specifies the value of the atom:id of the entry that has been removed
-        String ref = properties.getServiceRoot().toASCIIString() + AtomEntryEntityProducer.createSelfLink(eia, deletedEntry, null);
-        writer.writeAttribute(REF, ref);
+        writer.writeStartElement(TombstoneCallback.NAMESPACE_TOMBSTONE, FormatXml.ATOM_TOMBSTONE_DELETED_ENTRY);
 
-        // "when" attribute whose value is an "date-time", specifying the instant the entry was remove. 
-        Object updateDate = null;
-        EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
-        if (updatedInfo != null) {
-          updateDate = deletedEntry.get(updatedInfo.getName());
-        }
-
-        if (updateDate == null) {
-          writeDefaultWhenAttribute(writer);
-        } else {
-          EdmFacets updateFacets = updatedInfo.getFacets();
-          writer.writeAttribute(WHEN, EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
-        }
+        appendRefAttribute(writer, eia, properties, deletedEntry);
+        appendWhenAttribute(writer, eia, deletedEntry);
 
         writer.writeEndElement();
       }
@@ -67,12 +48,36 @@ public class TombstoneProducer implements ODataCallback {
     }
   }
 
-  private void writeDefaultWhenAttribute(final XMLStreamWriter writer) throws XMLStreamException, EdmSimpleTypeException {
+  private void appendWhenAttribute(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> deletedEntry) throws XMLStreamException, EdmSimpleTypeException {
+    Object updateDate = null;
+    EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
+    if (updatedInfo != null) {
+      updateDate = deletedEntry.get(updatedInfo.getName());
+    }
+
+    if (updateDate == null) {
+      appendDefaultWhenAttribute(writer);
+    } else {
+      appendCustomWhenAttribute(writer, updateDate, updatedInfo);
+    }
+  }
+
+  private void appendCustomWhenAttribute(final XMLStreamWriter writer, final Object updateDate, final EntityPropertyInfo updatedInfo) throws XMLStreamException, EdmSimpleTypeException {
+    EdmFacets updateFacets = updatedInfo.getFacets();
+    writer.writeAttribute(FormatXml.ATOM_TOMBSTONE_WHEN, EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
+  }
+
+  private void appendRefAttribute(final XMLStreamWriter writer, final EntityInfoAggregator eia, final EntityProviderWriteProperties properties, final Map<String, Object> deletedEntry) throws XMLStreamException, EntityProviderException {
+    String ref = properties.getServiceRoot().toASCIIString() + AtomEntryEntityProducer.createSelfLink(eia, deletedEntry, null);
+    writer.writeAttribute(FormatXml.ATOM_TOMBSTONE_REF, ref);
+  }
+
+  private void appendDefaultWhenAttribute(final XMLStreamWriter writer) throws XMLStreamException, EdmSimpleTypeException {
     if (defaultDateString == null) {
       Object defaultDate = new Date();
       defaultDateString = EdmDateTimeOffset.getInstance().valueToString(defaultDate, EdmLiteralKind.DEFAULT, null);
     }
-    writer.writeAttribute(WHEN, defaultDateString);
+    writer.writeAttribute(FormatXml.ATOM_TOMBSTONE_WHEN, defaultDateString);
 
   }
 }

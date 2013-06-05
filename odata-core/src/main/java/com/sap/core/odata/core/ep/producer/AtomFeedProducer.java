@@ -44,7 +44,7 @@ public class AtomFeedProducer {
         //TODO: Check if tombstones can appear inline
         callback = getTombstoneCallback();
         if (callback != null) {
-          writer.writeNamespace(TombstoneProducer.TOMBSTONE_NAMESPACE_PREFIX, TombstoneProducer.TOMBSTONE_NAMESPACE);
+          writer.writeNamespace(TombstoneCallback.PREFIX_TOMBSTONE, TombstoneCallback.NAMESPACE_TOMBSTONE);
         }
       }
       writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
@@ -57,9 +57,11 @@ public class AtomFeedProducer {
       }
 
       appendEntries(writer, eia, data);
+
       if (callback != null) {
         appendDeletedEntries(writer, eia, callback);
       }
+
       if (properties.getNextLink() != null) {
         appendNextLink(writer, properties.getNextLink());
       }
@@ -71,8 +73,8 @@ public class AtomFeedProducer {
   }
 
   private TombstoneCallback getTombstoneCallback() {
-    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(TombstoneCallback.TOMBSTONE_CALLBACK_KEY)) {
-      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get(TombstoneCallback.TOMBSTONE_CALLBACK_KEY);
+    if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(TombstoneCallback.CALLBACK_KEY_TOMBSTONE)) {
+      TombstoneCallback callback = (TombstoneCallback) properties.getCallbacks().get(TombstoneCallback.CALLBACK_KEY_TOMBSTONE);
       return callback;
     } else {
       return null;
@@ -82,8 +84,8 @@ public class AtomFeedProducer {
   private void appendDeletedEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia, final TombstoneCallback callback) throws EntityProviderException {
     List<Map<String, Object>> tombstoneData = callback.getTombstoneData();
     if (tombstoneData != null) {
-      TombstoneProducer tombstoneProducer = new TombstoneProducer(tombstoneData);
-      tombstoneProducer.write(writer, eia, properties);
+      TombstoneProducer tombstoneProducer = new TombstoneProducer();
+      tombstoneProducer.appendTombstones(writer, eia, properties, tombstoneData);
     }
   }
 

@@ -69,5 +69,7 @@ public class FormatXml {
   public static final String ATOM_NULL = "null";
   public static final String ATOM_VALUE_TRUE = "true";
   public static final String ATOM_NEXT_LINK = "next";
+  public static final String ATOM_TOMBSTONE_REF = "ref";
+  public static final String ATOM_TOMBSTONE_WHEN = "when";
   public static final String ATOM_TOMBSTONE_DELETED_ENTRY = "deleted-entry";
 }
