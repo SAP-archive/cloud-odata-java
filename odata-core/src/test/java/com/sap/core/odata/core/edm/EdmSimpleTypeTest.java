@@ -565,7 +565,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
     assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
-    assertEquals("123456789012345678901234567890", instance.valueToString(new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null));
+    assertEquals("12345678901234567890123456789", instance.valueToString(new BigInteger("12345678901234567890123456789"), EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
     assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
     assertEquals("-1234567890.1234567890", instance.valueToString(new BigDecimal("-1234567890.1234567890"), EdmLiteralKind.DEFAULT, null));
@@ -580,6 +580,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("0.5", instance.valueToString(0.5, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1)));
     assertEquals("100", instance.valueToString(new BigDecimal(BigInteger.ONE, -2), EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null)));
 
+    expectErrorInValueToString(instance, new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.TEN, -28), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.ONE, 30), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
     expectErrorInValueToString(instance, -1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
     expectErrorInValueToString(instance, 1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
     expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
