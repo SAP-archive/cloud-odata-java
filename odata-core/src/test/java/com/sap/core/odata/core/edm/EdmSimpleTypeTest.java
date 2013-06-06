@@ -501,13 +501,15 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
     dateTime.add(Calendar.MILLISECOND, -90);
     assertEquals("2012-02-29T23:32:02.9", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    dateTime.add(Calendar.MILLISECOND, 100);
+    assertEquals("2012-02-29T23:32:03.0000000", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(7, null)));
 
-    Calendar dateTime2 = Calendar.getInstance();
+    Calendar dateTime2 = Calendar.getInstance(TimeZone.getTimeZone("GMT-11:30"));
     dateTime2.clear();
-    dateTime2.setTimeZone(TimeZone.getTimeZone("GMT-11:30"));
     dateTime2.set(1969, 11, 31, 12, 29, 58);
     assertEquals("/Date(-2000)/", instance.valueToString(dateTime2, EdmLiteralKind.JSON, null));
 
+    dateTime.add(Calendar.MILLISECOND, -100);
     expectErrorInValueToString(instance, dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED);
@@ -544,7 +546,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("/Date(" + millis + ")/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
     assertEquals("datetimeoffset'2012-02-29T23:32:03.007Z'", instance.valueToString(millis, EdmLiteralKind.URI, null));
 
-    assertEquals("2012-02-29T23:32:03.007Z", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
+    final Date date = new Date(millis);
+    final String time = date.toString().substring(11, 19);
+    assertTrue(instance.valueToString(date, EdmLiteralKind.DEFAULT, null).contains(time));
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED);
     expectErrorInValueToString(instance, dateTime, null, null, EdmSimpleTypeException.LITERAL_KIND_MISSING);

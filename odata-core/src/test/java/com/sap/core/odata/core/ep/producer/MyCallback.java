@@ -18,7 +18,10 @@ import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.core.ep.AbstractProviderTest;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
-public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFeedContent {
+/**
+ * @author SAP AG
+ */
+public class MyCallback implements OnWriteEntryContent, OnWriteFeedContent {
 
   private AbstractProviderTest dataProvider;
   private URI baseUri;

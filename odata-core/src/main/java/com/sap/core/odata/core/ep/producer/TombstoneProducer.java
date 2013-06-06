@@ -19,15 +19,19 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
+/**
+ * @author SAP AG
+ */
 public class TombstoneProducer {
 
   private String defaultDateString;
 
   /**
-   * appends tombstones to an already started feed. If the list is empty no elements will be appended.
-   * @param writer- same as in feed
-   * @param eia - same as in feed
-   * @param properties- same as in feed
+   * Appends tombstones to an already started feed.
+   * If the list is empty no elements will be appended.
+   * @param writer         same as in feed
+   * @param eia            same as in feed
+   * @param properties     same as in feed
    * @param deletedEntries data to be appended
    * @throws EntityProviderException
    */

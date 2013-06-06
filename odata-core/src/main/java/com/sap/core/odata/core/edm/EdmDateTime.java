@@ -161,9 +161,12 @@ public class EdmDateTime extends AbstractSimpleType {
       }
     }
     if (facets != null && facets.getPrecision() != null) {
-      if (digits > facets.getPrecision())
+      final int precision = facets.getPrecision();
+      if (digits > precision)
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      for (int i = digits; i < facets.getPrecision(); i++)
+      if (digits == 0 && precision > 0)
+        result.append('.');
+      for (int i = digits; i < precision; i++)
         result.append('0');
     }
 
