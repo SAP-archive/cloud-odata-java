@@ -89,7 +89,7 @@ public class JPAProcessorImpl implements JPAProcessor {
     } catch (InvocationTargetException e) {
       throw ODataJPARuntimeException
           .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
+              .addContent(e.getTargetException().getMessage()), e.getTargetException());
     }
 
     return resultObj;
@@ -205,7 +205,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     }
-    return 0;// Invalid value
+    return 0;
   }
 
   /* Process $count for Get Entity Request */

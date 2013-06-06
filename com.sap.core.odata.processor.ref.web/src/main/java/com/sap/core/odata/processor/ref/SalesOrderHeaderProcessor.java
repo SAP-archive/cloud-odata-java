@@ -14,6 +14,7 @@ import com.sap.core.odata.api.annotation.edm.Parameter;
 import com.sap.core.odata.api.annotation.edm.Parameter.Mode;
 import com.sap.core.odata.api.annotation.edmx.HttpMethod;
 import com.sap.core.odata.api.annotation.edmx.HttpMethod.Name;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.ref.jpa.Address;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
@@ -53,7 +54,12 @@ public class SalesOrderHeaderProcessor {
 
   @FunctionImport(returnType = ReturnType.ENTITY_TYPE, entitySet = "SalesOrders")
   public SalesOrderHeader calculateNetAmount(
-      @Parameter(name = "SoID", facets = @Facets(nullable = false)) final Long soID) {
+      @Parameter(name = "SoID", facets = @Facets(nullable = false)) final Long soID)
+      throws ODataException {
+
+    if (soID <= 0L) {
+      throw new ODataException("Invalid SoID");
+    }
 
     Query q = em
         .createQuery("SELECT E1 from SalesOrderHeader E1 WHERE E1.soId = "
