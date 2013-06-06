@@ -118,11 +118,18 @@ public class RestUtil {
     Map<String, String> headerMap = new HashMap<String, String>();
 
     for (final String key : headers.keySet()) {
-      final String value = httpHeaders.getHeaderString(key);
-
-      if (value != null && !"".equals(value)) {
-        headerMap.put(key, value);
+      List<String> header = httpHeaders.getRequestHeader(key);
+      if (header != null && !header.isEmpty()) {
+        /*
+         * consider first header value only
+         * avoid using jax-rs 2.0 (getHeaderString())
+         */
+        String value = header.get(0); 
+        if (value != null && !"".equals(value)) {
+          headerMap.put(key, value);
+        }
       }
+
     }
     return headerMap;
   }
