@@ -42,7 +42,8 @@ public class BatchRequestParser {
   }
 
   public List<Object> parse(final InputStream in) throws ODataException {
-    scanner = new Scanner(in).useDelimiter("\n");
+    scanner = new Scanner(in);
+    scanner = scanner.useDelimiter("\n");
     List<Object> requestList;
     try {
       requestList = parseBatchRequest();
@@ -184,14 +185,14 @@ public class BatchRequestParser {
       request.setMethod(ODataHttpMethod.valueOf(method));
       request.setRequestHeaders(getRequestHeaders());
       request.setHeaders(getHeaders());
-      if (request.getHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE) != null) {
-        request.setContentType(ContentType.create(request.getHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE)));
+      if (request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE) != null) {
+        request.setContentType(ContentType.create(request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE)));
       }
-      if (request.getHeaderValue(BatchRequestConstants.ACCEPT) != null) {
-        request.setAcceptHeaders(parseAcceptHeaders(request.getHeaderValue(BatchRequestConstants.ACCEPT)));
+      if (request.getRequestHeaderValue(BatchRequestConstants.ACCEPT) != null) {
+        request.setAcceptHeaders(parseAcceptHeaders(request.getRequestHeaderValue(BatchRequestConstants.ACCEPT)));
       }
-      if (request.getHeaderValue("Accept-Language") != null) {
-        request.setAcceptableLanguages(parseAcceptableLanguages(request.getHeaderValue("Accept-Language")));
+      if (request.getRequestHeaderValue("Accept-Language") != null) {
+        request.setAcceptableLanguages(parseAcceptableLanguages(request.getRequestHeaderValue("Accept-Language")));
       }
 
       parseNewLine();
@@ -236,7 +237,8 @@ public class BatchRequestParser {
   private List<String> parseAcceptHeaders(final String headerValue) throws ODataException {
     List<String> acceptHeaders = new ArrayList<String>();
     List<Double> acceptParams = new ArrayList<Double>();
-    Scanner acceptHeaderScanner = new Scanner(headerValue).useDelimiter(",\\s?");
+    Scanner acceptHeaderScanner = new Scanner(headerValue);
+    acceptHeaderScanner = acceptHeaderScanner.useDelimiter(",\\s?");
     while (acceptHeaderScanner.hasNext()) {
       if (acceptHeaderScanner.hasNext("[a-z\\*]+/[a-z\\+\\*\\-]+")) {
         acceptHeaderScanner.next("([a-z\\*]+/[a-z\\+\\*\\-]+)");
@@ -280,7 +282,8 @@ public class BatchRequestParser {
     List<Locale> acceptLanguages = new LinkedList<Locale>();
     List<Double> acceptParams = new ArrayList<Double>();
     Locale locale;
-    Scanner acceptLanguageScanner = new Scanner(headerValue).useDelimiter(",\\s?");
+    Scanner acceptLanguageScanner = new Scanner(headerValue);
+    acceptLanguageScanner = acceptLanguageScanner.useDelimiter(",\\s?");
     while (acceptLanguageScanner.hasNext()) {
       if (acceptLanguageScanner.hasNext("[a-z]{2}(?:\\-[A-Z]{2})?")) {
         acceptLanguageScanner.next("([a-z][a-z])\\-?([A-Z][A-Z])?");
@@ -341,7 +344,8 @@ public class BatchRequestParser {
   }
 
   private String getBoundary(final String contentType) throws ODataException {
-    Scanner contentTypeScanner = new Scanner(contentType).useDelimiter(";\\s?");
+    Scanner contentTypeScanner = new Scanner(contentType);
+    contentTypeScanner = contentTypeScanner.useDelimiter(";\\s?");
     if (contentTypeScanner.hasNext(OPTIONAL_WHITESPACE_REG_EX + BatchRequestConstants.MULTIPART_MIXED)) {
       contentTypeScanner.next(OPTIONAL_WHITESPACE_REG_EX + BatchRequestConstants.MULTIPART_MIXED);
     } else {

@@ -42,7 +42,6 @@ public class AtomFeedProducer {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
-        //TODO: Check if tombstones can appear inline
         callback = getTombstoneCallback();
         if (callback != null) {
           writer.writeNamespace(TombstoneCallback.PREFIX_TOMBSTONE, TombstoneCallback.NAMESPACE_TOMBSTONE);
