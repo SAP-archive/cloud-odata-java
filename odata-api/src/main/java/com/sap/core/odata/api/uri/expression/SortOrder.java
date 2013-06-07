@@ -24,11 +24,6 @@ public enum SortOrder {
     stringRespresentation = syntax;
   }
 
-  private SortOrder(final String syntax, final String stringRespresentation) {
-    this.syntax = syntax;
-    this.stringRespresentation = stringRespresentation;
-  }
-
   /** 
    * @return Operators name for usage in in text
    */

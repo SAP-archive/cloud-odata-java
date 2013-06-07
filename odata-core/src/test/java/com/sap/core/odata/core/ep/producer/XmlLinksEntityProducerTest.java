@@ -34,7 +34,7 @@ public class XmlLinksEntityProducerTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeLinks(entitySet, roomsData, DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);

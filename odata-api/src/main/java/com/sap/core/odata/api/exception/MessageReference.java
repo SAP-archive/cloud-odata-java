@@ -120,4 +120,38 @@ public abstract class MessageReference {
       return this;
     }
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((key == null) ? 0 : key.hashCode());
+    return result;
+  }
+
+  /**
+   * {@link MessageReference}s are equal if their message keys have the same value.
+   * @return <code>true</code> if both instances are equal, otherwise <code>false</code>.
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    MessageReference other = (MessageReference) obj;
+    if (key == null) {
+      if (other.key != null) {
+        return false;
+      }
+    } else if (!key.equals(other.key)) {
+      return false;
+    }
+    return true;
+  }
 }

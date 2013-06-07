@@ -2,10 +2,8 @@ package com.sap.core.odata.core.ep;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -54,15 +52,6 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     } catch (final ODataNotAcceptableException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-  }
-
-  /**
-   * @deprecated since 0.5.0
-   */
-  @Deprecated
-  @Override
-  public ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
-    return create(contentType).writeErrorDocument(status, errorCode, message, locale, innerError);
   }
 
   @Override

@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author SAP AG
  */
 public class Photo {
-  private static final String RESOURCE = "/darth.jpg";
+  private static final String RESOURCE = "/male_1_WinterW.jpg";
   private static byte[] defaultImage;
 
   private final int id;

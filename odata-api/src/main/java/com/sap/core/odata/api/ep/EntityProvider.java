@@ -2,10 +2,8 @@ package com.sap.core.odata.api.ep;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -255,13 +253,14 @@ public final class EntityProvider {
     String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
     /**
-     * Read (de-serialize) all links from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
-     * 
+     * Read (de-serialize) all links from <code>content</code> (as {@link InputStream})
+     * in specified format (given as <code>contentType</code>) based on <code>entity data model</code>
+     * (given as {@link EdmEntitySet}) and provide the link as List of Strings.
+     *
      * @param contentType format of content in the given input stream.
      * @param entitySet entity data model for entity property to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @return links as list of strings
+     * @return links as List of Strings
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
@@ -284,20 +283,6 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     byte[] readBinary(InputStream content) throws EntityProviderException;
-
-    /**
-     * <p>Serializes an error message according to the OData standard.</p>
-     * @param contentType contentType format in which the error document should be written
-     * @param status      the {@link HttpStatusCodes} associated with this error  
-     * @param errorCode   a String that serves as a substatus to the HTTP response code
-     * @param message     a human-readable message describing the error
-     * @param locale      the {@link Locale} that should be used to format the error message
-     * @param innerError  the inner error for this message as a plain string. MUST NOT BE a deep XML structure.  If it is null or an empty String no inner error tag is shown inside the response XML.
-     * @return            an {@link ODataResponse} containing the serialized error message
-     * @deprecated since 0.5.0
-     */
-    @Deprecated
-    ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
 
     /**
      * <p>Serializes an error message according to the OData standard.</p>
@@ -328,25 +313,6 @@ public final class EntityProvider {
 
   /**
    * <p>Serializes an error message according to the OData standard.</p>
-   * <p>In case an error occurs, it is logged.
-   * An exception is not thrown because this method is used in exception handling.</p>
-   * @param contentType contentType format in which the error document should be written
-   * @param status      the {@link HttpStatusCodes} associated with this error  
-   * @param errorCode   a String that serves as a substatus to the HTTP response code
-   * @param message     a human-readable message describing the error
-   * @param locale      the {@link Locale} that should be used to format the error message
-   * @param innerError  the inner error for this message. MUST NOT BE a deep XML structure. If it is null or an empty String no inner error tag is shown inside the response xml
-   * @return            an {@link ODataResponse} containing the serialized error message
-   * @deprecated since 0.5.0
-   */
-  @Deprecated
-  public static ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
-    return createEntityProvider().writeErrorDocument(contentType, status, errorCode, message, locale, innerError);
-  }
-
-  /**
-   * <p>Serializes an error message according to the OData standard.</p>
-   * <p>In case an error occurs, it is logged.
    * An exception is not thrown because this method is used in exception handling.</p>
    * @param context     contains error details see {@link ODataErrorContext}
    * @return            an {@link ODataResponse} containing the serialized error message
@@ -613,13 +579,14 @@ public final class EntityProvider {
   }
 
   /**
-   * Read (de-serialize) a link from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-   * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
-   * 
+   * Read (de-serialize) a link collection from <code>content</code> (as {@link InputStream})
+   * in specified format (given as <code>contentType</code>) based on <code>entity data model</code>
+   * (given as {@link EdmEntitySet}) and provide the links as List of Strings.
+   *
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @return link as string
+   * @return links as List of Strings
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
   public static List<String> readLinks(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {

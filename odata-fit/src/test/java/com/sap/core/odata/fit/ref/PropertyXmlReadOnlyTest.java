@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
  * Tests employing the reference scenario reading properties in XML format.
@@ -49,9 +50,10 @@ public class PropertyXmlReadOnlyTest extends AbstractRefXmlTest {
     checkEtag(response, "W/\"2\"");
     assertXpathEvaluatesTo("5", "/d:Seats", getBody(response));
 
-    response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
-    checkMediaType(response, IMAGE_JPEG);
-    assertEquals("", getBody(response));
+    response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value", HttpStatusCodes.NO_CONTENT);
+    assertNull(response.getEntity());
+    //    checkMediaType(response, IMAGE_JPEG);
+    //    assertEquals("", getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);

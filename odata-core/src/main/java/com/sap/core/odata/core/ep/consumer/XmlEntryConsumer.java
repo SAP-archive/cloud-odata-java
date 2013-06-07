@@ -394,7 +394,7 @@ public class XmlEntryConsumer {
    */
   private Object extractODataEntity(final boolean isFeed, final List<ODataEntry> inlineEntries) {
     if (isFeed) {
-      //TODO: fill metadata correctly
+      //TODO: fill metadata correctly with inline count and inline next link. Both are currently ignored.
       return new ODataFeedImpl(inlineEntries, new FeedMetadataImpl());
     } else if (!inlineEntries.isEmpty()) {
       return inlineEntries.get(0);

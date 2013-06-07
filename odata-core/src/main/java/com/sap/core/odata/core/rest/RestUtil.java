@@ -13,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -31,17 +33,15 @@ import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.Decoder;
 
-class RestUtil {
+/**
+ * @author SAP AG
+ */
+public class RestUtil {
   public static Response convertResponse(final ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
 
     for (final String name : odataResponse.getHeaderNames()) {
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
-    }
-
-    final String eTag = odataResponse.getETag();
-    if (eTag != null) {
-      responseBuilder.header(HttpHeaders.ETAG, eTag);
     }
 
     return responseBuilder.build();
@@ -119,23 +119,33 @@ class RestUtil {
     Map<String, String> headerMap = new HashMap<String, String>();
 
     for (final String key : headers.keySet()) {
-      final String value = httpHeaders.getHeaderString(key);
-      headerMap.put(key, value);
+      List<String> header = httpHeaders.getRequestHeader(key);
+      if (header != null && !header.isEmpty()) {
+        /*
+         * consider first header value only
+         * avoid using jax-rs 2.0 (getHeaderString())
+         */
+        String value = header.get(0);
+        if (value != null && !"".equals(value)) {
+          headerMap.put(key, value);
+        }
+      }
+
     }
     return headerMap;
   }
 
   public static PathInfoImpl buildODataPathInfo(final SubLocatorParameter param) throws ODataException {
-
-    final PathInfoImpl pathInfo = splitPath(param);
-    final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
-    pathInfo.setServiceRoot(uri);
+    final UriInfo uriInfo = param.getUriInfo();
+    PathInfoImpl pathInfo = splitPath(param);
+    pathInfo.setServiceRoot(buildBaseUri(param.getServletRequest(), uriInfo, pathInfo.getPrecedingSegments()));
+    pathInfo.setRequestUri(uriInfo.getRequestUri());
 
     return pathInfo;
   }
 
   private static PathInfoImpl splitPath(final SubLocatorParameter param) throws ODataException {
-    final PathInfoImpl pathInfo = new PathInfoImpl();
+    PathInfoImpl pathInfo = new PathInfoImpl();
 
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
@@ -171,7 +181,7 @@ class RestUtil {
     return pathInfo;
   }
 
-  private static URI buildBaseUri(final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
+  private static URI buildBaseUri(final HttpServletRequest request, final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
       for (final PathSegment ps : precedingPathSegments) {
@@ -181,6 +191,11 @@ class RestUtil {
           uriBuilder = uriBuilder.matrixParam(key, v);
         }
       }
+
+      /*
+       * workaround because of host name is cached by uriInfo
+       */
+      uriBuilder.host(request.getServerName());
 
       String uriString = uriBuilder.build().toString();
       if (!uriString.endsWith("/")) {

@@ -16,6 +16,9 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
  */
 public class EdmDecimal extends AbstractSimpleType {
 
+  // value-range limitation according to the CSDL document
+  private static final int MAX_DIGITS = 29;
+
   private static final Pattern PATTERN = Pattern.compile("(?:\\+|-)?(?:0*(\\p{Digit}{1,29}?))(?:\\.(\\p{Digit}{1,29}?)0*)?(M|m)?");
   private static final EdmDecimal instance = new EdmDecimal();
 
@@ -127,6 +130,9 @@ public class EdmDecimal extends AbstractSimpleType {
     if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte || value instanceof BigInteger) {
       result = value.toString();
       final int digits = result.startsWith("-") ? result.length() - 1 : result.length();
+      if (digits > MAX_DIGITS) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+      }
       if (facets != null && facets.getPrecision() != null && facets.getPrecision() < digits) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
       }
@@ -145,13 +151,14 @@ public class EdmDecimal extends AbstractSimpleType {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value), e);
       }
 
-      int digits = bigDecimalValue.precision();
-      if (bigDecimalValue.scale() < 0) {
-        digits -= bigDecimalValue.scale();
+      if (bigDecimalValue.precision() - bigDecimalValue.scale() > MAX_DIGITS
+          || bigDecimalValue.scale() > MAX_DIGITS) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
       }
-      if (bigDecimalValue.scale() > bigDecimalValue.precision()) {
-        digits = bigDecimalValue.scale();
-      }
+
+      final int digits = bigDecimalValue.scale() >= 0 ?
+          Math.max(bigDecimalValue.precision(), bigDecimalValue.scale()) :
+          bigDecimalValue.precision() - bigDecimalValue.scale();
       if (facets == null
           || (facets.getPrecision() == null || facets.getPrecision() >= digits)
           && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale())) {

@@ -26,6 +26,9 @@ import com.sap.core.odata.api.servicedocument.Fixed;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.api.servicedocument.Workspace;
 
+/**
+ * @author SAP AG
+ */
 public class AtomServiceDocumentConsumerTest {
   private static final String NAMESPACE_SAP = "http://www.sap.com/Data";
   private static final String PREFIX_SAP = "sap";

@@ -3,6 +3,7 @@ package com.sap.core.odata.core.edm.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -26,6 +27,7 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
+import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
@@ -265,6 +267,113 @@ public class EdmParserTest {
       }
 
     }
+  }
+
+  @Test
+  public void testComplexTypeWithBaseType() throws XMLStreamException,
+      EntityProviderException {
+    final String xml = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\""
+        + Edm.NAMESPACE_M_2007_08 + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE + "\" Alias=\"RS\"  xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\" m:HasStream=\"true\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0]
+        + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<Property Name=\"" + propertyNames[2]
+        + "\" Type=\"RefScenario.c_Location\" Nullable=\"false\"/>"
+        + "</EntityType>"
+        + "<ComplexType Name=\"c_BaseType_for_Location\" Abstract=\"true\">"
+        + "<Property Name=\"Country\" Type=\"Edm.String\"/>"
+        + "</ComplexType>"
+        + "<ComplexType Name=\"c_Location\" BaseType=\"RefScenario.c_BaseType_for_Location\">"
+        + "</ComplexType>"
+        + "<ComplexType Name=\"c_Other_Location\" BaseType=\"RS.c_BaseType_for_Location\">"
+        + "</ComplexType>"
+        + "</Schema>" + "</edmx:DataServices>"
+        + "</edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xml);
+    DataServices result = parser.readMetadata(reader, true);
+    assertEquals("2.0", result.getDataServiceVersion());
+    for (Schema schema : result.getSchemas()) {
+      for (ComplexType complexType : schema.getComplexTypes()) {
+        if ("c_Location".equals(complexType.getName())) {
+          assertNotNull(complexType.getBaseType());
+          assertTrue(!complexType.isAbstract());
+          assertEquals("c_BaseType_for_Location", complexType.getBaseType().getName());
+          assertEquals("RefScenario", complexType.getBaseType().getNamespace());
+        }
+        else if ("c_Other_Location".equals(complexType.getName())) {
+          assertNotNull(complexType.getBaseType());
+          assertTrue(!complexType.isAbstract());
+          assertEquals("c_BaseType_for_Location", complexType.getBaseType().getName());
+          assertEquals("RS", complexType.getBaseType().getNamespace());
+        }
+        else if ("c_BaseType_for_Location".equals(complexType.getName())) {
+          assertNotNull(complexType.isAbstract());
+          assertTrue(complexType.isAbstract());
+        } else {
+          assertTrue(false);
+        }
+      }
+
+    }
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testComplexTypeWithInvalidBaseType() throws XMLStreamException,
+      EntityProviderException {
+    final String xml = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\""
+        + Edm.NAMESPACE_M_2007_08 + "\">" + "<Schema Namespace=\""
+        + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\" m:HasStream=\"true\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0]
+        + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<Property Name=\"" + propertyNames[2]
+        + "\" Type=\"RefScenario.c_Location\" Nullable=\"false\"/>"
+        + "</EntityType>"
+        + "<ComplexType Name=\"c_BaseType_for_Location\" Abstract=\"true\">"
+        + "<Property Name=\"Country\" Type=\"Edm.String\"/>"
+        + "</ComplexType>"
+        + "<ComplexType Name=\"c_Location\" BaseType=\"RefScenario.Employee\">"
+        + "</ComplexType>"
+        + "</Schema>" + "</edmx:DataServices>"
+        + "</edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xml);
+    parser.readMetadata(reader, true);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void testComplexTypeWithInvalidBaseType2() throws XMLStreamException,
+      EntityProviderException {
+    final String xml = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
+        + Edm.NAMESPACE_EDMX_2007_06 + "\">"
+        + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\""
+        + Edm.NAMESPACE_M_2007_08 + "\">" + "<Schema Namespace=\""
+        + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
+        + "<EntityType Name= \"Employee\" m:HasStream=\"true\">"
+        + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>"
+        + "<Property Name=\"" + propertyNames[0]
+        + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
+        + "<Property Name=\"" + propertyNames[2]
+        + "\" Type=\"RefScenario.c_Location\" Nullable=\"false\"/>"
+        + "</EntityType>"
+        + "<ComplexType Name=\"c_BaseType_for_Location\" Abstract=\"true\">"
+        + "<Property Name=\"Country\" Type=\"Edm.String\"/>"
+        + "</ComplexType>"
+        + "<ComplexType Name=\"c_Location\" BaseType=\"c_BaseType_for_Location\">"
+        + "</ComplexType>"
+        + "</Schema>" + "</edmx:DataServices>"
+        + "</edmx:Edmx>";
+    EdmParser parser = new EdmParser();
+    XMLStreamReader reader = createStreamReader(xml);
+    parser.readMetadata(reader, true);
   }
 
   @Test

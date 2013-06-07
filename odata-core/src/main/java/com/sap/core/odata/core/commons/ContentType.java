@@ -14,10 +14,41 @@ import java.util.TreeMap;
 
 /**
  * Internally used {@link ContentType} for OData library.
- * For more details on format and content of a {@link ContentType} see    
- * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
  * 
- * Once created a {@link ContentType} is IMMUTABLE.
+ * For more details on format and content of a {@link ContentType} see    
+ * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html)</code>.
+ * <pre>
+ * <code>
+ *   media-type     = type "/" subtype *( ";" parameter )
+ *   type           = token
+ *   subtype        = token
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Accept</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.1 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Accept = "Accept" ":"
+ *          #( media-range [ accept-params ] )
+ *  media-range = ( "* /*"
+ *                | ( type "/" "*" )
+ *                | ( type "/" subtype )
+ *                ) *( ";" parameter )
+ *  accept-params  = ";" "q" "=" qvalue *( accept-extension )
+ *  accept-extension = ";" token [ "=" ( token | quoted-string ) ]
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Content-Type</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Content-Type   = "Content-Type" ":" media-type
+ * </code>
+ * </pre>
+ * 
+ * Once created a {@link ContentType} is <b>IMMUTABLE</b>.
  * 
  * @author SAP AG
  */
@@ -67,10 +98,6 @@ public class ContentType {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
 
-  private ContentType(final String type, final String subtype, final Map<String, String> parameters) {
-    this(type, subtype, mapToODataFormat(subtype), parameters);
-  }
-
   private ContentType(final String type, final String subtype, final ODataFormat odataFormat) {
     this(type, subtype, odataFormat, null);
   }
@@ -98,7 +125,7 @@ public class ContentType {
   }
 
   private String validateType(final String type) {
-    if (type == null) {
+    if (type == null || type.isEmpty()) {
       return MEDIA_TYPE_WILDCARD;
     }
     if (type.charAt(0) == WHITESPACE_CHAR || type.charAt(type.length() - 1) == WHITESPACE_CHAR) {
@@ -356,6 +383,7 @@ public class ContentType {
    */
   @Override
   public boolean equals(final Object obj) {
+    // NULL validation is done in method 'isEqualWithoutParameters(obj)'
     Boolean compatible = isEqualWithoutParameters(obj);
 
     if (compatible == null) {
@@ -489,7 +517,7 @@ public class ContentType {
     for (String key : parameters.keySet()) {
       if (isParameterAllowed(key)) {
         String value = parameters.get(key);
-        sb.append("; ").append(key).append("=").append(value);
+        sb.append(";").append(key).append("=").append(value);
       }
     }
     return sb.toString();

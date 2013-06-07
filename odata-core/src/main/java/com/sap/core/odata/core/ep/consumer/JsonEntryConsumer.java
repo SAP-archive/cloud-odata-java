@@ -64,8 +64,7 @@ public class JsonEntryConsumer {
       reader.endObject();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -278,7 +277,6 @@ public class JsonEntryConsumer {
   private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {
     expandSelectTree.setExpanded();
     expandSelectTree.setExplicitlySelected();
-    //TODO: CA get rid of cast
     expandSelectTree.putLink(navigationPropertyName, (ExpandSelectTreeNodeImpl) entry.getExpandSelectTree());
   }
 

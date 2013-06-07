@@ -7,6 +7,9 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
+/**
+ * @author SAP AG
+ */
 public class ODataResponseImpl extends ODataResponse {
 
   private HttpStatusCodes status;
@@ -74,11 +77,11 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponse build() {
+      ODataResponseImpl.this.status = status;
       ODataResponseImpl.this.entity = entity;
       ODataResponseImpl.this.header = header;
-      ODataResponseImpl.this.eTag = eTag;
-      ODataResponseImpl.this.status = status;
       ODataResponseImpl.this.idLiteral = idLiteral;
+      ODataResponseImpl.this.eTag = eTag;
 
       return ODataResponseImpl.this;
     }
@@ -126,14 +129,16 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     protected ODataResponseBuilder fromResponse(final ODataResponse response) {
+      status = response.getStatus();
       entity = response.getEntity();
-      eTag = response.getETag();
-      idLiteral = response.getIdLiteral();
 
       header = new HashMap<String, String>();
       for (String key : response.getHeaderNames()) {
         header.put(key, response.getHeader(key));
       }
+
+      idLiteral = response.getIdLiteral();
+      eTag = response.getETag();
 
       return this;
     }

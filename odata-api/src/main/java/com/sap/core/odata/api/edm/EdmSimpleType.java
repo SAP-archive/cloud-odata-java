@@ -1,7 +1,6 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * @com.sap.core.odata.DoNotImplement
  * <p>EdmSimpleType is a primitive type as defined in the Entity Data Model (EDM).</p>
  * <p>There are methods to convert EDM simple types from and to Java objects, respectively.
  * The following Java types are supported:
@@ -28,15 +27,16 @@ package com.sap.core.odata.api.edm;
  * </tbody>
  * </table></p>
  * <p>The first Java type is the default type for the respective EDM simple type.</p>
- * <p>For all EDM simple types, the {@link EdmFacets} <code>Nullable</code> and
- * <code>DefaultValue</code> have to be considered.
+ * <p>For all EDM simple types, the {@link EdmFacets facet} <code>Nullable</code> is
+ * taken into account.
  * For <code>Binary</code>, <code>MaxLength</code> is also applicable.
  * For <code>String</code>, the facets <code>MaxLength</code> and <code>Unicode</code>
- * have to be considered.
+ * are also considered.
  * The EDM simple types <code>DateTime</code>, <code>DateTimeOffset</code>, and
  * <code>Time</code> can have a <code>Precision</code> facet.
  * <code>Decimal</code> can have the facets <code>Precision</code> and <code>Scale</code>.</p> 
  * @author SAP AG
+ * @com.sap.core.odata.DoNotImplement
  */
 public interface EdmSimpleType extends EdmType {
 
@@ -61,9 +61,9 @@ public interface EdmSimpleType extends EdmType {
   /**
    * Validates literal value.
    *
-   * @param value  the literal value
+   * @param value        the literal value
    * @param literalKind  the kind of literal representation of value
-   * @param facets  additional constraints for parsing (optional)
+   * @param facets       additional constraints for parsing (optional)
    * @return <code>true</code> if the validation is successful
    * @see EdmLiteralKind
    * @see EdmFacets
@@ -73,11 +73,11 @@ public interface EdmSimpleType extends EdmType {
   /**
    * Converts literal representation of value to system data type.
    *
-   * @param value  the literal representation of value
+   * @param value        the literal representation of value
    * @param literalKind  the kind of literal representation of value
-   * @param facets  additional constraints for parsing (optional)
-   * @param returnType the class of the returned value; it must be one of the
-   *                   list in the documentation of {@link EdmSimpleType}
+   * @param facets       additional constraints for parsing (optional)
+   * @param returnType   the class of the returned value; it must be one of the
+   *                     list in the documentation of {@link EdmSimpleType}
    * @return the value as an instance of the class the parameter <code>returnType</code> indicates
    * @see EdmLiteralKind
    * @see EdmFacets
@@ -92,7 +92,7 @@ public interface EdmSimpleType extends EdmType {
    * @param value  the Java value as Object; its type must be one of the list
    *               in the documentation of {@link EdmSimpleType}
    * @param literalKind  the requested kind of literal representation
-   * @param facets  additional constraints for formatting (optional)
+   * @param facets       additional constraints for formatting (optional)
    * @return literal representation as String
    * @see EdmLiteralKind
    * @see EdmFacets

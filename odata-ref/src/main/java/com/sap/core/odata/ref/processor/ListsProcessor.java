@@ -887,7 +887,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private class WriteCallback implements ODataCallback, OnWriteEntryContent, OnWriteFeedContent {
+  private class WriteCallback implements OnWriteEntryContent, OnWriteFeedContent {
     private final Object data;
 
     private <T> WriteCallback(final T data) {
@@ -1185,19 +1185,11 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> boolean appliesFilter(final T data, final FilterExpression filter) throws ODataException {
-    if (data == null) {
-      return false;
-    }
-
-    if (filter == null) {
-      return true;
-    }
-
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "appliesFilter");
 
     try {
-      return evaluateExpression(data, filter.getExpression()).equals("true");
+      return data != null && (filter == null || evaluateExpression(data, filter.getExpression()).equals("true"));
     } catch (final RuntimeException e) {
       return false;
     } finally {

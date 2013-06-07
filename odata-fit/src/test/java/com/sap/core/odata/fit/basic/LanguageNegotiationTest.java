@@ -3,6 +3,7 @@ package com.sap.core.odata.fit.basic;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,14 +32,16 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
+/**
+ * @author SAP AG
+ */
 public class LanguageNegotiationTest extends AbstractBasicTest {
 
-  @SuppressWarnings("unchecked")
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-    when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class)))
-        .thenThrow(MyException.class);
+    when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), anyString()))
+        .thenThrow(new MyException(null));
     return processor;
   }
 
@@ -92,20 +95,21 @@ public class LanguageNegotiationTest extends AbstractBasicTest {
     assertXpathEvaluatesTo("fallbackLanguage", "/m:error/m:message/text()", content);
   }
 
-  static class MyException extends ODataMessageException {
+  private static class MyException extends ODataMessageException {
+    private static final MessageReference TEST = createMessageReference(MyException.class, "TEST");
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructor.
+     * @param messageReference unused message reference, to satisfy inheritance constraints
+     */
     public MyException(final MessageReference messageReference) {
       super(TEST);
     }
-
-    private static final long serialVersionUID = 1L;
 
     @Override
     public MessageReference getMessageReference() {
       return TEST;
     }
-
-    public static final MessageReference TEST = createMessageReference(MyException.class, "TEST");
   }
-
 }

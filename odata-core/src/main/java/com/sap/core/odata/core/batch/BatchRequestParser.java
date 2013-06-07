@@ -182,6 +182,7 @@ public class BatchRequestParser {
         throw new ODataException("Invalid method.  A Batch Request cannot contain insert, update or delete requests: line " + linenumber);
       }
       request.setMethod(ODataHttpMethod.valueOf(method));
+      request.setRequestHeaders(getRequestHeaders());
       request.setHeaders(getHeaders());
       if (request.getHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE) != null) {
         request.setContentType(ContentType.create(request.getHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE)));
@@ -204,6 +205,32 @@ public class BatchRequestParser {
       throw new ODataException("line " + linenumber);
     }
     return request;
+  }
+
+  private Map<String, List<String>> getRequestHeaders() throws ODataException {
+    Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    while (scanner.hasNext() && !scanner.hasNext("")) {
+      if (scanner.hasNext("[a-zA-Z\\-]+:" + ANY_CHARACTERS)) {
+        scanner.next("([a-zA-Z\\-]+):" + OPTIONAL_WHITESPACE_REG_EX + "(.*)" + ZERO_OR_MORE_WHITESPACES_REG_EX);
+        MatchResult result = scanner.match();
+        if (result.groupCount() == 2) {
+          String headerName = result.group(1).trim();
+          String headerValue = result.group(2).trim();
+          if (headers.containsKey(headerName)) {
+            headers.get(headerName).add(headerValue);
+          } else {
+            List<String> headerList = new ArrayList<String>();
+            headerList.add(headerValue);
+            headers.put(headerName, headerList);
+          }
+        }
+        nextLineNumber();
+      } else {
+        nextLineNumber();
+        throw new ODataException("Invalid header: " + linenumber);
+      }
+    }
+    return headers;
   }
 
   private List<String> parseAcceptHeaders(final String headerValue) throws ODataException {

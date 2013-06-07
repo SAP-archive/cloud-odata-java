@@ -39,8 +39,8 @@ public class JsonFeedConsumer {
       readFeed();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
 
     } catch (IOException e) {
@@ -83,8 +83,7 @@ public class JsonFeedConsumer {
     }
 
     if (!resultsArrayPresent) {
-      //TODO: Messagetext
-      throw new EntityProviderException(EntityProviderException.COMMON);
+      throw new EntityProviderException(EntityProviderException.MISSING_RESULTS_ARRAY);
     }
   }
 
@@ -94,34 +93,18 @@ public class JsonFeedConsumer {
       readArrayContent();
 
     } else if (FormatJson.COUNT.equals(nextName)) {
-      if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
-        int inlineCount;
-        try {
-          inlineCount = reader.nextInt();
-        } catch (final NumberFormatException e) {
-          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
-        }
-        if (inlineCount >= 0) {
-          feedMetadata.setInlineCount(inlineCount);
-        } else {
-          throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
-        }
-      } else {
-        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
-      }
+      readInlineCount(reader, feedMetadata);
 
     } else if (FormatJson.NEXT.equals(nextName)) {
       if (reader.peek() == JsonToken.STRING && feedMetadata.getNextLink() == null) {
         String nextLink = reader.nextString();
         feedMetadata.setNextLink(nextLink);
       } else {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
       }
 
     } else {
-      //TODO: CA Messagetext
-      throw new EntityProviderException(EntityProviderException.COMMON);
+      throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
     }
   }
 
@@ -133,6 +116,26 @@ public class JsonFeedConsumer {
     }
     reader.endArray();
   }
+
+
+  protected static void readInlineCount(final JsonReader reader, final FeedMetadataImpl feedMetadata) throws IOException, EntityProviderException {
+    if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
+      int inlineCount;
+      try {
+        inlineCount = reader.nextInt();
+      } catch (final NumberFormatException e) {
+        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
+      }
+      if (inlineCount >= 0) {
+        feedMetadata.setInlineCount(inlineCount);
+      } else {
+        throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCount));
+      }
+    } else {
+      throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
+    }
+  }
+
 
   protected ODataFeed readStartedInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content

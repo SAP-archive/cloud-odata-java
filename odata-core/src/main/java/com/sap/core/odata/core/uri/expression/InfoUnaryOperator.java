@@ -9,38 +9,32 @@ import com.sap.core.odata.api.uri.expression.UnaryOperator;
  * Describes a unary operator which is allowed in OData expressions
  * @author SAP AG
  */
-class InfoUnaryOperator
-{
+class InfoUnaryOperator {
   UnaryOperator operator;
   private String category;
   private String syntax;
   ParameterSetCombination combination;
 
-  public InfoUnaryOperator(final UnaryOperator operator, final String category, final ParameterSetCombination combination)
-  {
+  public InfoUnaryOperator(final UnaryOperator operator, final String category, final ParameterSetCombination combination) {
     this.operator = operator;
     this.category = category;
     syntax = operator.toUriLiteral();
     this.combination = combination;
   }
 
-  public String getCategory()
-  {
+  public String getCategory() {
     return category;
   }
 
-  public String getSyntax()
-  {
+  public String getSyntax() {
     return syntax;
   }
 
-  public UnaryOperator getOperator()
-  {
+  public UnaryOperator getOperator() {
     return operator;
   }
 
-  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
-  {
+  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
     return combination.validate(actualParameterTypes);
   }
 

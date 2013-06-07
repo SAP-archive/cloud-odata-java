@@ -23,8 +23,7 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
  *  
  * @author SAP AG
  */
-public interface OrderByParser
-{
+public interface OrderByParser {
   /**
    * Parses a $orderby expression string and creates an $orderby expression tree
    * @param orderByExpression

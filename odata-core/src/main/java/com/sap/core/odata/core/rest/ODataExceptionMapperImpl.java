@@ -1,7 +1,5 @@
 package com.sap.core.odata.core.rest;
 
-import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -22,22 +20,17 @@ import javax.ws.rs.ext.Provider;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataHttpException;
-import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataErrorCallback;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.core.ODataExceptionWrapper;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
-import com.sap.core.odata.core.exception.MessageService;
-import com.sap.core.odata.core.exception.MessageService.Message;
 
 /**
  * Creates an error response according to the format defined by the OData standard
- * if an exception occurs.
+ * if an exception occurs that is not handled elsewhere.
  * @author SAP AG
  */
 @Provider
@@ -57,132 +50,46 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   @Override
   public Response toResponse(final Exception exception) {
+    ODataResponse response;
     try {
-      final Exception toHandleException = extractException(exception);
-
-      ODataErrorContext errorContext;
-      if (toHandleException instanceof ODataApplicationException) {
-        errorContext = extractInformationForApplicationException((ODataApplicationException) toHandleException);
-      } else if (toHandleException instanceof ODataHttpException) {
-        errorContext = extractInformationForHttpException((ODataHttpException) toHandleException);
-      } else if (toHandleException instanceof ODataMessageException) {
-        errorContext = extractInformationForMessageException((ODataMessageException) toHandleException);
-      } else if (toHandleException instanceof WebApplicationException) {
-        errorContext = extractInformationForWebApplicationException((WebApplicationException) toHandleException);
+      if (exception instanceof WebApplicationException) {
+        response = handleWebApplicationException(exception);
       } else {
-        errorContext = extractInformationForException(exception);
+        response = handleException(exception);
       }
-
-      ODataResponse oDataResponse;
-      ODataErrorCallback callback = getErrorHandlerCallback();
-      if (callback != null) {
-        try {
-          oDataResponse = callback.handleError(errorContext);
-        } catch (ODataApplicationException e) {
-          errorContext = extractInformationForApplicationException(e);
-          oDataResponse = convertContextToODataResponse(errorContext);
-        }
-
-      } else {
-        oDataResponse = convertContextToODataResponse(errorContext);
-      }
-
-      //Convert ODataResponse to JAXRS Response
-      return RestUtil.convertResponse(oDataResponse);
-
     } catch (Exception e) {
-      //Exception mapper has to be robust thus we log the exception and just give back a generic error
-      ODataResponse response = ODataResponse.entity("Exception during error handling occured!")
+      response = ODataResponse.entity("Exception during error handling occured!")
           .contentHeader(ContentType.TEXT_PLAIN.toContentTypeString())
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR).build();
-      return RestUtil.convertResponse(response);
     }
+    // Convert OData response to JAX-RS response.
+    return RestUtil.convertResponse(response);
   }
 
-  private ODataErrorContext extractInformationForApplicationException(final ODataApplicationException toHandleException) {
-    ODataErrorContext context = createDefaultErrorContext();
-    context.setContentType(getContentType().toContentTypeString());
-    context.setHttpStatus(toHandleException.getHttpStatus());
-    context.setErrorCode(toHandleException.getCode());
-    context.setMessage(toHandleException.getMessage());
-    context.setLocale(toHandleException.getLocale());
-    context.setException(toHandleException);
-    return context;
+  private ODataResponse handleException(final Exception exception) {
+    ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(uriInfo, httpHeaders, servletConfig);
+    ODataResponse oDataResponse = exceptionWrapper.wrapInExceptionResponse(exception);
+    return oDataResponse;
   }
 
-  private ODataErrorContext extractInformationForHttpException(final ODataHttpException toHandleException) {
-    MessageReference messageReference = toHandleException.getMessageReference();
-    Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
+  private ODataResponse handleWebApplicationException(final Exception exception) throws ClassNotFoundException, InstantiationException, IllegalAccessException, EntityProviderException {
+    ODataErrorContext errorContext = createErrorContext((WebApplicationException) exception);
+    ODataErrorCallback callback = getErrorHandlerCallback();
+    return callback == null ?
+        new ProviderFacadeImpl().writeErrorDocument(errorContext) : executeErrorCallback(errorContext, callback);
+  }
 
-    ODataErrorContext context = createDefaultErrorContext();
-    context.setContentType(getContentType().toContentTypeString());
-    context.setHttpStatus(toHandleException.getHttpStatus());
-    context.setErrorCode(toHandleException.getErrorCode());
-    if (localizedMessage != null) {
-      context.setMessage(localizedMessage.getText());
-      context.setLocale(localizedMessage.getLocale());
+  private ODataResponse executeErrorCallback(final ODataErrorContext errorContext, final ODataErrorCallback callback) {
+    ODataResponse oDataResponse;
+    try {
+      oDataResponse = callback.handleError(errorContext);
+    } catch (ODataApplicationException e) {
+      oDataResponse = handleException(e);
     }
-    context.setException(toHandleException);
-    return context;
+    return oDataResponse;
   }
 
-  private ODataErrorContext extractInformationForMessageException(final ODataMessageException toHandleException) {
-    HttpStatusCodes responseStatusCode;
-    if (toHandleException instanceof EntityProviderException) {
-      responseStatusCode = HttpStatusCodes.BAD_REQUEST;
-    } else {
-      responseStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
-    }
-
-    MessageReference messageReference = toHandleException.getMessageReference();
-    Message localizedMessage = extractEntity(messageReference);
-
-    ODataErrorContext context = createDefaultErrorContext();
-    context.setContentType(getContentType().toContentTypeString());
-    context.setHttpStatus(responseStatusCode);
-    context.setErrorCode(toHandleException.getErrorCode());
-    context.setMessage(localizedMessage.getText());
-    context.setLocale(localizedMessage.getLocale());
-    context.setException(toHandleException);
-    return context;
-  }
-
-  private ODataErrorContext extractInformationForWebApplicationException(final WebApplicationException toHandleException) {
-    ODataErrorContext context = createDefaultErrorContext();
-    context.setContentType(getContentType().toContentTypeString());
-    context.setHttpStatus(HttpStatusCodes.fromStatusCode(toHandleException.getResponse().getStatus()));
-    if (toHandleException instanceof NotAllowedException) {
-      // RFC 2616, 5.1.1: " An origin server SHOULD return the status code
-      // 405 (Method Not Allowed) if the method is known by the origin server
-      // but not allowed for the requested resource, and 501 (Not Implemented)
-      // if the method is unrecognized or not implemented by the origin server."
-      // Since all recognized methods are handled elsewhere, we unconditionally
-      // switch to 501 here for not-allowed exceptions thrown directly from
-      // JAX-RS implementations.
-      context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
-      context.setMessage("The request dispatcher does not allow the HTTP method used for the request.");
-      context.setLocale(Locale.ENGLISH);
-    } else {
-      context.setMessage(toHandleException.getMessage());
-      context.setLocale(DEFAULT_RESPONSE_LOCALE);
-    }
-    context.setErrorCode(null);
-    context.setException(toHandleException);
-    return context;
-  }
-
-  private ODataErrorContext extractInformationForException(final Exception exception) {
-    ODataErrorContext context = createDefaultErrorContext();
-    context.setContentType(getContentType().toContentTypeString());
-    context.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-    context.setErrorCode(null);
-    context.setMessage(exception.getMessage());
-    context.setLocale(DEFAULT_RESPONSE_LOCALE);
-    context.setException(exception);
-    return context;
-  }
-
-  private ODataErrorContext createDefaultErrorContext() {
+  private ODataErrorContext createErrorContext(final WebApplicationException exception) {
     ODataErrorContext context = new ODataErrorContext();
     if (uriInfo != null) {
       context.setRequestUri(uriInfo.getRequestUri());
@@ -194,48 +101,25 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
         context.putRequestHeader(entry.getKey(), entry.getValue());
       }
     }
+    context.setContentType(getContentType().toContentTypeString());
+    context.setException(exception);
+    context.setErrorCode(null);
+    context.setMessage(exception.getMessage());
+    context.setLocale(DEFAULT_RESPONSE_LOCALE);
+    context.setHttpStatus(HttpStatusCodes.fromStatusCode(exception.getResponse().getStatus()));
+    if (exception instanceof NotAllowedException) {
+      // RFC 2616, 5.1.1: " An origin server SHOULD return the status code
+      // 405 (Method Not Allowed) if the method is known by the origin server
+      // but not allowed for the requested resource, and 501 (Not Implemented)
+      // if the method is unrecognized or not implemented by the origin server."
+      // Since all recognized methods are handled elsewhere, we unconditionally
+      // switch to 501 here for not-allowed exceptions thrown directly from
+      // JAX-RS implementations.
+      context.setHttpStatus(HttpStatusCodes.NOT_IMPLEMENTED);
+      context.setMessage("The request dispatcher does not allow the HTTP method used for the request.");
+      context.setLocale(Locale.ENGLISH);
+    }
     return context;
-  }
-
-  private ODataResponse convertContextToODataResponse(final ODataErrorContext errorContext) throws EntityProviderException {
-    return new ProviderFacadeImpl().writeErrorDocument(errorContext.getContentType(), errorContext.getHttpStatus(), errorContext.getErrorCode(), errorContext.getMessage(), errorContext.getLocale(), null);
-  }
-
-  private Exception extractException(final Exception exception) {
-    if (exception instanceof ODataException) {
-
-      ODataException odataException = (ODataException) exception;
-      if (odataException.isCausedByApplicationException()) {
-        return odataException.getApplicationExceptionCause();
-      } else if (odataException.isCausedByHttpException()) {
-        return odataException.getHttpExceptionCause();
-      } else if (odataException.isCausedByMessageException()) {
-        return odataException.getMessageExceptionCause();
-      }
-    }
-    return exception;
-  }
-
-  private Message extractEntity(final MessageReference context) {
-    final Locale locale = MessageService.getSupportedLocale(getLanguages(), DEFAULT_RESPONSE_LOCALE);
-    return MessageService.getMessage(locale, context);
-  }
-
-  private List<Locale> getLanguages() {
-    try {
-      if (httpHeaders.getAcceptableLanguages().isEmpty()) {
-        return Arrays.asList(DEFAULT_RESPONSE_LOCALE);
-      }
-      return httpHeaders.getAcceptableLanguages();
-    } catch (WebApplicationException e) {
-      if (e.getCause() != null && e.getCause().getClass() == ParseException.class) {
-        // invalid accept-language string in http header
-        // compensate exception with using default locale
-        return Arrays.asList(DEFAULT_RESPONSE_LOCALE);
-      }
-      // not able to compensate exception -> re-throw
-      throw e;
-    }
   }
 
   private ContentType getContentType() {
@@ -255,8 +139,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
         if (DOLLAR_FORMAT_JSON.equals(contentTypeString)) {
           contentType = ContentType.APPLICATION_JSON;
         } else {
-          //Any format mentioned in the $format parameter other than json results in an application/xml content type for error messages
-          //due to the OData V2 Specification
+          //Any format mentioned in the $format parameter other than json results in an application/xml content type 
+          //for error messages due to the OData V2 Specification.
           contentType = ContentType.APPLICATION_XML;
         }
       }

@@ -69,6 +69,9 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     uri = new URI("http://localhost:8080/ODataService.svc/Entity");
     when(exceptionMapper.uriInfo.getRequestUri()).thenReturn(uri);
 
+    MultivaluedHashMap<String, String> httpHeaders = new MultivaluedHashMap<String, String>();
+    when(exceptionMapper.httpHeaders.getRequestHeaders()).thenReturn(httpHeaders);
+
     disableLogging();
 
   }

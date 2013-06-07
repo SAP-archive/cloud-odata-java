@@ -72,14 +72,14 @@ public class FunctionImportXmlTest extends AbstractRefXmlTest {
   @Test
   public void select() throws Exception {
     HttpResponse response = callUri("EmployeeSearch?q='ede'&$select=Age");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo(EMPLOYEE_2_AGE, "/atom:feed/atom:entry/m:properties/d:Age", body);
     assertXpathNotExists("/atom:feed/atom:entry/m:properties/d:Location", body);
     assertXpathEvaluatesTo("2", "count(/atom:feed/atom:entry/atom:link)", body);
 
     response = callUri("EmployeeSearch('2')/ne_Room?q='ede'&$select=Seats");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     body = getBody(response);
     assertXpathEvaluatesTo("5", "/atom:entry/atom:content/m:properties/d:Seats", body);
     assertXpathNotExists("/atom:entry/atom:content/m:properties/d:Id", body);

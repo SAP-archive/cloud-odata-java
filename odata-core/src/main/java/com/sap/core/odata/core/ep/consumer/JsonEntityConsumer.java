@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
@@ -89,6 +90,56 @@ public class JsonEntityConsumer {
     try {
       reader = createJsonReader(content);
       return new JsonPropertyConsumer().readPropertyStandalone(reader, property, readProperties);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
+        }
+      }
+    }
+  }
+
+  public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonLinkConsumer().readLink(reader, entitySet);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.COMMON, e);
+          }
+        }
+      }
+    }
+  }
+
+  public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonLinkConsumer().readLinks(reader, entitySet);
     } catch (final UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;

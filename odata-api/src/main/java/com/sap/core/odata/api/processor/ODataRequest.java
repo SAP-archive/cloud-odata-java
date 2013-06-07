@@ -14,9 +14,15 @@ import com.sap.core.odata.api.uri.PathInfo;
  */
 public interface ODataRequest {
 
+  @Deprecated
   String getHeaderValue(String name);
 
+  @Deprecated
   Map<String, String> getHeaders();
+
+  String getRequestHeaderValue(String name);
+
+  Map<String, List<String>> getRequestHeaders();
 
   InputStream getBody();
 

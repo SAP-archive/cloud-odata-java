@@ -5,7 +5,8 @@
 
 	<groupId>com.sap.core.odata</groupId>
 	<artifactId>com.sap.core.odata.parent</artifactId>
-	<version>0.6.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
 
 	<inceptionYear>2012</inceptionYear>
@@ -62,7 +63,7 @@
 		<jax.ws.rs.version>2.0-m10</jax.ws.rs.version>
 		<!-- <jsr311.version>1.1.1</jsr311.version> -->
 		<joda.version>2.1</joda.version>
-		<cxf.version>2.7.0</cxf.version>
+		<cxf.version>2.7.5</cxf.version>
 		<jetty.version>7.5.4.v20111024</jetty.version>
 		<httpclient.version>4.2.3</httpclient.version>
 		<slf4j.version>1.7.1</slf4j.version>

@@ -67,8 +67,7 @@ public class OrderByExpressionImpl implements OrderByExpression {
   @Override
   public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     ArrayList<Object> retParameters = new ArrayList<Object>();
-    for (OrderExpression order : orders)
-    {
+    for (OrderExpression order : orders) {
       Object retParameter = order.accept(visitor);
       retParameters.add(retParameter);
     }

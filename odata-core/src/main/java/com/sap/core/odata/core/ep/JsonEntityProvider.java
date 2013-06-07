@@ -26,7 +26,6 @@ import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
-import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
@@ -394,12 +393,12 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public String readLink(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    return new JsonEntityConsumer().readLink(entitySet, content);
   }
 
   @Override
   public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
-    throw new EntityProviderException(EntityProviderException.COMMON, new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(HttpContentType.APPLICATION_JSON)));
+    return new JsonEntityConsumer().readLinks(entitySet, content);
   }
 
   @Override
@@ -407,4 +406,5 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     JsonServiceDocumentConsumer serviceDocConsumer = new JsonServiceDocumentConsumer();
     return serviceDocConsumer.parseJson(serviceDocument);
   }
+
 }

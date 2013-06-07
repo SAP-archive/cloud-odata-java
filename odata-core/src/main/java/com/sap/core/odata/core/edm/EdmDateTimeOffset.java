@@ -17,8 +17,8 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 public class EdmDateTimeOffset extends AbstractSimpleType {
 
   private static final Pattern PATTERN = Pattern.compile(
-      "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
-          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?"
+      "\\p{Digit}{1,4}-\\p{Digit}{1,2}-\\p{Digit}{1,2}"
+          + "T\\p{Digit}{1,2}:\\p{Digit}{1,2}(?::\\p{Digit}{1,2}(?:\\.\\p{Digit}{1,7})?)?"
           + "(Z|([-+]\\p{Digit}{1,2}:\\p{Digit}{2}))?");
   private static final Pattern JSON_PATTERN = Pattern.compile(
       "/Date\\((-?\\p{Digit}+)(?:(\\+|-)(\\p{Digit}{1,4}))?\\)/");
@@ -48,30 +48,28 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
     if (literalKind == EdmLiteralKind.JSON) {
       final Matcher matcher = JSON_PATTERN.matcher(value);
       if (matcher.matches()) {
-        dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-        dateTimeValue.clear();
         long millis;
         try {
           millis = Long.parseLong(matcher.group(1));
         } catch (final NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
-        dateTimeValue.setTimeInMillis(millis);
+        String timeZone = "GMT";
         if (matcher.group(2) != null) {
           final int offsetInMinutes = Integer.parseInt(matcher.group(3));
           if (offsetInMinutes >= 24 * 60) {
             throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
           }
           if (offsetInMinutes != 0) {
-            dateTimeValue.setTimeZone(TimeZone.getTimeZone(
-                "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
-                    + ":" + String.format("%02d", offsetInMinutes % 60)));
-            // Subtract the time-zone offset to counter the automatic adjustment above
-            // caused by the fact that the Calendar instance created above is in the
-            // "GMT" timezone.
-            dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
+            timeZone += matcher.group(2) + String.valueOf(offsetInMinutes / 60)
+                + ":" + String.format("%02d", offsetInMinutes % 60);
+            // Convert the local-time milliseconds to UTC.
+            millis -= (matcher.group(2).equals("+") ? 1 : -1) * offsetInMinutes * 60 * 1000;
           }
         }
+        dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        dateTimeValue.clear();
+        dateTimeValue.setTimeInMillis(millis);
       }
     }
 
@@ -81,21 +79,13 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
 
-      if (matcher.group(8) == null) {
-        return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets, returnType);
-      } else {
-        dateTimeValue = EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets, Calendar.class);
-        if (matcher.group(9) != null && !matcher.group(9).matches("[-+]0+:0+")) {
-          dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
-          if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) {
-            throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-          }
-          // Subtract the time-zone offset to counter the automatic adjustment above
-          // caused by the fact that the Calendar instance returned from EdmDateTime
-          // is in the "GMT" timezone.
-          dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
-        }
+      final String timeZoneOffset = matcher.group(1) != null && matcher.group(2) != null && !matcher.group(2).matches("[-+]0+:0+") ? matcher.group(2) : null;
+      dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT" + timeZoneOffset));
+      if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0 && timeZoneOffset != null) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
+      dateTimeValue.clear();
+      EdmDateTime.parseLiteral(value.substring(0, matcher.group(1) == null ? value.length() : matcher.start(1)), facets, dateTimeValue);
     }
 
     if (returnType.isAssignableFrom(Calendar.class)) {
@@ -111,34 +101,35 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
 
   @Override
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    Calendar dateTimeValue;
+    Long milliSeconds; // number of milliseconds since 1970-01-01T00:00:00Z
+    int offset; // offset in milliseconds from GMT to the requested time zone
     if (value instanceof Date) {
-      dateTimeValue = Calendar.getInstance();
-      dateTimeValue.clear();
+      milliSeconds = ((Date) value).getTime();
+      // Although java.util.Date, as stated in its documentation,
+      // "is intended to reflect coordinated universal time (UTC)",
+      // its toString() method uses the default time zone. And so do we.
+      Calendar dateTimeValue = Calendar.getInstance();
       dateTimeValue.setTime((Date) value);
+      offset = dateTimeValue.get(Calendar.ZONE_OFFSET) + dateTimeValue.get(Calendar.DST_OFFSET);
     } else if (value instanceof Calendar) {
-      dateTimeValue = (Calendar) ((Calendar) value).clone();
+      final Calendar dateTimeValue = (Calendar) ((Calendar) value).clone();
+      milliSeconds = dateTimeValue.getTimeInMillis();
+      offset = dateTimeValue.get(Calendar.ZONE_OFFSET) + dateTimeValue.get(Calendar.DST_OFFSET);
     } else if (value instanceof Long) {
-      dateTimeValue = Calendar.getInstance();
-      dateTimeValue.clear();
-      dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-      dateTimeValue.setTimeInMillis((Long) value);
+      milliSeconds = (Long) value;
+      offset = 0;
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    final int offset = dateTimeValue.get(Calendar.ZONE_OFFSET) + dateTimeValue.get(Calendar.DST_OFFSET);
-    dateTimeValue.add(Calendar.MILLISECOND, offset); // to counter UTC output below
+    milliSeconds += offset; // Convert from UTC to local time.
     final int offsetInMinutes = offset / 60 / 1000;
 
     if (literalKind == EdmLiteralKind.JSON) {
-      return "/Date("
-          + Long.toString(dateTimeValue.getTimeInMillis())
-          + (offset == 0 ? "" : String.format("%+05d", offsetInMinutes))
-          + ")/";
+      return "/Date(" + milliSeconds + (offset == 0 ? "" : String.format("%+05d", offsetInMinutes)) + ")/";
 
     } else {
-      final String localTimeString = EdmDateTime.getInstance().valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);
+      final String localTimeString = EdmDateTime.getInstance().valueToString(milliSeconds, EdmLiteralKind.DEFAULT, facets);
       final int offsetHours = offsetInMinutes / 60;
       final int offsetMinutes = Math.abs(offsetInMinutes % 60);
       final String offsetString = offset == 0 ? "Z" : String.format("%+03d:%02d", offsetHours, offsetMinutes);

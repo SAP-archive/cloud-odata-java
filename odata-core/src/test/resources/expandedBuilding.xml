@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<entry xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xml:base="https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
-	<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Rooms('1')</id>
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+       xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+       xml:base="http://some.host.com/service.root/ReferenceScenario.svc/">
+	<id>http://some.host.com/service.root/ReferenceScenario.svc/Rooms('1')</id>
 	<title type="text">Room 1</title>
 	<updated>2013-04-19T10:58:03.646Z</updated>
 	<category term="RefScenario.Room" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
@@ -8,8 +11,8 @@
 	<link href="Rooms('1')/nr_Employees" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees" title="nr_Employees" type="application/atom+xml; type=feed"/>
 	<link href="Rooms('1')/nr_Building" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building" title="nr_Building" type="application/atom+xml; type=entry">
 		<m:inline>
-			<entry xml:base="https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
-				<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Buildings('1')</id>
+			<entry>
+				<id>http://some.host.com/service.root/ReferenceScenario.svc/Buildings('1')</id>
 				<title type="text">Buildings</title>
 				<updated>2013-04-19T10:58:03.646Z</updated>
 				<author>
