@@ -50,7 +50,12 @@ public class RestUtil {
   public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataUnsupportedMediaTypeException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     if (requestMediaType == null) {
-      return null;
+      // RFC 2616, 7.2.1:
+      // "Any HTTP/1.1 message containing an entity-body SHOULD include a
+      // Content-Type header field defining the media type of that body. [...]
+      // If the media type remains unknown, the recipient SHOULD treat it
+      // as type "application/octet-stream"."
+      return ContentType.APPLICATION_OCTET_STREAM;
     } else if (requestMediaType == MediaType.WILDCARD_TYPE
         || requestMediaType == MediaType.TEXT_PLAIN_TYPE
         || requestMediaType == MediaType.APPLICATION_XML_TYPE) {

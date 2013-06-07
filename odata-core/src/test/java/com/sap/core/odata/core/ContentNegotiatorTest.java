@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
@@ -14,6 +15,9 @@ import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 
+/**
+ * @author SAP AG
+ */
 public class ContentNegotiatorTest {
   private void negotiateContentType(final List<ContentType> contentTypes, final List<ContentType> supportedTypes, final String expected) throws ODataException {
     final ContentType contentType = new ContentNegotiator().contentNegotiation(contentTypes, supportedTypes);
@@ -130,13 +134,11 @@ public class ContentNegotiatorTest {
     negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml;charset=utf-8", true);
   }
 
-  private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
-      throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
-
-    UriInfoImpl uriInfo = new UriInfoImpl();
-    uriInfo.setUriType(UriType.URI1); // 
+  private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat) throws ODataException {
+    UriInfoImpl uriInfo = Mockito.mock(UriInfoImpl.class);
+    Mockito.when(uriInfo.getUriType()).thenReturn(UriType.URI1);
     if (asFormat) {
-      uriInfo.setFormat(requestType);
+      Mockito.when(uriInfo.getFormat()).thenReturn(requestType);
     }
 
     List<String> acceptedContentTypes = Arrays.asList(requestType);

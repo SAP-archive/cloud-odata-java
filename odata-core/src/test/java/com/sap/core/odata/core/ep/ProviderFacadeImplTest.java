@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -16,13 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
@@ -215,9 +214,12 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void writeFunctionImport() {
-    fail("Not yet implemented");
+  public void writeFunctionImport() throws Exception {
+    final EdmFunctionImport function = MockFacade.getMockEdm().getDefaultEntityContainer().getFunctionImport("MaximalAge");
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("MaximalAge", 99);
+    final ODataResponse result = new ProviderFacadeImpl().writeFunctionImport(HttpContentType.APPLICATION_JSON, function, properties, null);
+    assertEquals("{\"d\":{\"MaximalAge\":99}}", StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
 }

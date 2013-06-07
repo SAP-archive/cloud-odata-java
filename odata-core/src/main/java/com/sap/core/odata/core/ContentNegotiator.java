@@ -13,6 +13,9 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 
+/**
+ * @author SAP AG
+ */
 public class ContentNegotiator {
   private static final String URI_INFO_FOMRAT_JSON = "json";
   private static final String URI_INFO_FOMRAT_ATOM = "atom";

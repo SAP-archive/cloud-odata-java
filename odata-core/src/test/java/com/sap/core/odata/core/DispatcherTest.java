@@ -174,14 +174,9 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    final ODataResponse response = new Dispatcher(getMockService(), getMockContentNegotiator())
-        .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", Arrays.asList("*/*"));
+    final ODataResponse response = new Dispatcher(getMockService())
+        .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", null);
     assertEquals(expectedMethodName, response.getEntity());
-  }
-
-  private static ContentNegotiator getMockContentNegotiator() {
-    ContentNegotiator mock = Mockito.mock(ContentNegotiator.class);
-    return mock;
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
@@ -376,7 +371,7 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
-    assertEquals(feature, new Dispatcher(getMockService(), getMockContentNegotiator()).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
   }
 
   @Test
@@ -407,51 +402,4 @@ public class DispatcherTest extends BaseTest {
     checkFeature(UriType.URI50A, false, EntityLinkProcessor.class);
     checkFeature(UriType.URI50B, false, EntityLinksProcessor.class);
   }
-
-  @Test
-  public void contentNegotiationDefaultCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", false);
-  }
-
-  @Test
-  public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", true);
-  }
-
-  @Test
-  public void contentNegotiationSupportedCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", false);
-  }
-
-  @Test
-  public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", true);
-  }
-
-  @SuppressWarnings("unchecked")
-  private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
-      throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
-
-    ODataService service = Mockito.mock(ODataService.class);
-    Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
-
-    UriInfoImpl uriInfo = new UriInfoImpl();
-    uriInfo.setUriType(UriType.URI1); // 
-    if (asFormat) {
-      uriInfo.setFormat(requestType);
-    }
-    List<String> acceptedContentTypes = Arrays.asList(requestType);
-
-    Mockito.when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList(supportedType));
-    EntitySetProcessor processor = Mockito.mock(EntitySetProcessor.class);
-    ODataResponse response = Mockito.mock(ODataResponse.class);
-    Mockito.when(response.getContentHeader()).thenReturn(supportedType);
-    Mockito.when(processor.readEntitySet(uriInfo, supportedType)).thenReturn(response);
-    Mockito.when(service.getEntitySetProcessor()).thenReturn(processor);
-
-    InputStream content = null;
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriInfo, content, requestType, acceptedContentTypes);
-    assertEquals(supportedType, odataResponse.getContentHeader());
-  }
-
 }

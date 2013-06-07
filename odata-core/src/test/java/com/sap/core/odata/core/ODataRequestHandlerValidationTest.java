@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,27 +6,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -44,6 +31,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataRequest;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.part.BatchProcessor;
 import com.sap.core.odata.api.processor.part.EntityComplexPropertyProcessor;
 import com.sap.core.odata.api.processor.part.EntityLinkProcessor;
@@ -57,8 +46,9 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
+import com.sap.core.odata.api.uri.PathInfo;
+import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -70,8 +60,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * Tests for the validation of URI path, query options, and request-body content type.
  * @author SAP AG
  */
-@Ignore
-public class ODataSubLocatorValidationTest extends BaseTest {
+public class ODataRequestHandlerValidationTest extends BaseTest {
 
   private Edm edm = null;
 
@@ -80,13 +69,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     edm = MockFacade.getMockEdm();
   }
 
-  private PathSegment mockPathSegment(final String segment) {
-    PathSegment pathSegment = mock(PathSegment.class);
-    when(pathSegment.getPath()).thenReturn(segment);
-    return pathSegment;
-  }
-
-  private List<PathSegment> mockPathSegments(final UriType uriType, final boolean moreNavigation, final boolean isValue) {
+  private List<String> mockPathSegments(final UriType uriType, final boolean moreNavigation, final boolean isValue) {
     List<String> segments = new ArrayList<String>();
 
     if (uriType == UriType.URI1 || uriType == UriType.URI15) {
@@ -170,101 +153,71 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       fail();
     }
 
-    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    for (final String segment : segments) {
-      pathSegments.add(mockPathSegment(segment));
-    }
-    return pathSegments;
+    return segments;
   }
 
-  private MultivaluedMap<String, String> mockOptions(
+  private Map<String, String> mockOptions(
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
       final boolean expand, final boolean select) {
 
-    MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+    Map<String, String> map = new HashMap<String, String>();
 
     if (format) {
-      map.add("$format", ODataFormat.XML.toString());
+      map.put("$format", ODataFormat.XML.toString());
     }
     if (filter) {
-      map.add("$filter", "true");
+      map.put("$filter", "true");
     }
     if (inlineCount) {
-      map.add("$inlinecount", "none");
+      map.put("$inlinecount", "none");
     }
     if (orderBy) {
-      map.add("$orderby", "Age");
+      map.put("$orderby", "Age");
     }
     if (skipToken) {
-      map.add("$skiptoken", "x");
+      map.put("$skiptoken", "x");
     }
     if (skip) {
-      map.add("$skip", "0");
+      map.put("$skip", "0");
     }
     if (top) {
-      map.add("$top", "0");
+      map.put("$top", "0");
     }
     if (expand) {
-      map.add("$expand", "ne_Team");
+      map.put("$expand", "ne_Team");
     }
     if (select) {
-      map.add("$select", "Age");
+      map.put("$select", "Age");
     }
 
     return map;
   }
 
-  private void mockSubLocatorInputForUriInfoTests(final ODataSubLocator locator,
-      final List<PathSegment> pathSegments,
-      final MultivaluedMap<String, String> queryParameters,
-      final String requestContentType) throws IOException, ODataException {
-
-    SubLocatorParameter param = new SubLocatorParameter();
-
-    HttpHeaders httpHeaders = mock(HttpHeaders.class);
-    final MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
-    when(httpHeaders.getRequestHeaders()).thenReturn(map);
-    MediaType mediaType = null;
-    if (requestContentType != null) {
-      mediaType = mock(MediaType.class);
-      when(mediaType.toString()).thenReturn(requestContentType);
-      when(httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE)).thenReturn(requestContentType);
+  private ODataRequest mockODataRequest(
+      final ODataHttpMethod method,
+      final List<String> pathSegments,
+      final Map<String, String> queryParameters,
+      final String requestContentType) throws ODataException {
+    ODataRequest request = mock(ODataRequest.class);
+    when(request.getMethod()).thenReturn(method);
+    PathInfo pathInfo = mock(PathInfo.class);
+    List<PathSegment> segments = new ArrayList<PathSegment>();
+    for (final String pathSegment : pathSegments) {
+      PathSegment segment = mock(PathSegment.class);
+      when(segment.getPath()).thenReturn(pathSegment);
+      segments.add(segment);
     }
-    when(httpHeaders.getMediaType()).thenReturn(mediaType);
-    param.setHttpHeaders(httpHeaders);
-
-    param.setPathSplit(0);
-    param.setPathSegments(pathSegments);
-
-    UriInfo initUriInfo = mock(UriInfo.class);
-    UriBuilder uriBuilder = mock(UriBuilder.class);
-    when(uriBuilder.build()).thenReturn(URI.create(""));
-    when(initUriInfo.getBaseUriBuilder()).thenReturn(uriBuilder);
-    if (queryParameters == null) {
-      when(initUriInfo.getQueryParameters()).thenReturn(map);
-    } else {
-      when(initUriInfo.getQueryParameters()).thenReturn(queryParameters);
-    }
-    param.setUriInfo(initUriInfo);
-
-    HttpServletRequest servletRequest = mock(HttpServletRequest.class);
-    when(servletRequest.getInputStream()).thenReturn(mock(ServletInputStream.class));
-    param.setServletRequest(servletRequest);
-
-    ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
-    mockODataService(serviceFactory);
-
-    param.setServiceFactory(serviceFactory);
-
-    Request request = mock(Request.class);
-    param.setRequest(request);
-
-    locator.initialize(param);
+    when(pathInfo.getODataSegments()).thenReturn(segments);
+    when(request.getPathInfo()).thenReturn(pathInfo);
+    when(request.getQueryParameters())
+        .thenReturn(queryParameters == null ? new HashMap<String, String>() : queryParameters);
+    when(request.getContentType()).thenReturn(requestContentType);
+    return request;
   }
 
-  private void mockODataService(final ODataServiceFactory serviceFactory) throws ODataException {
+  private ODataService mockODataService(final ODataServiceFactory serviceFactory) throws ODataException {
     ODataService service = DispatcherTest.getMockService();
     when(service.getEntityDataModel()).thenReturn(edm);
     when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
@@ -323,71 +276,49 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
+
+    return service;
   }
 
-  private Response executeRequest(final ODataHttpMethod method,
-      final List<PathSegment> pathSegments,
-      final MultivaluedMap<String, String> queryParameters,
-      final String requestContentType) throws IOException, ODataException {
-
-    ODataSubLocator locator = new ODataSubLocator();
-    mockSubLocatorInputForUriInfoTests(locator, pathSegments, queryParameters, requestContentType);
-    Response response = null;
-    switch (method) {
-    case GET:
-      response = locator.handleGet();
-      break;
-    case POST:
-      response = locator.handlePost(null);
-      break;
-    case PUT:
-      response = locator.handlePut();
-      break;
-    case DELETE:
-      response = locator.handleDelete();
-      break;
-    case PATCH:
-      response = locator.handlePatch();
-      break;
-    case MERGE:
-      response = locator.handleMerge();
-      break;
-    default:
-      fail();
-    }
-
-    return response;
+  private ODataResponse executeRequest(final ODataHttpMethod method,
+      final List<String> pathSegments,
+      final Map<String, String> queryParameters,
+      final String requestContentType) throws ODataException {
+    ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
+    final ODataService service = mockODataService(serviceFactory);
+    when(serviceFactory.createService(Matchers.any(ODataContext.class))).thenReturn(service);
+    return new ODataRequestHandler(serviceFactory).handle(mockODataRequest(method, pathSegments, queryParameters, requestContentType));
   }
 
   private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
     executeRequest(method, mockPathSegments(uriType, false, true), null, requestContentType);
   }
 
-  private void wrongRequest(final ODataHttpMethod method, final List<PathSegment> pathSegments, final MultivaluedMap<String, String> queryParameters) throws IOException, ODataException {
-    final Response response = executeRequest(method, pathSegments, queryParameters, null);
+  private void wrongRequest(final ODataHttpMethod method, final List<String> pathSegments, final Map<String, String> queryParameters) throws ODataException {
+    final ODataResponse response = executeRequest(method, pathSegments, queryParameters, null);
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED, response.getStatus());
   }
 
   private void wrongOptions(final ODataHttpMethod method, final UriType uriType,
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
-      final boolean expand, final boolean select) throws IOException, ODataException {
+      final boolean expand, final boolean select) throws ODataException {
     wrongRequest(method,
         mockPathSegments(uriType, false, false),
         mockOptions(format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select));
   }
 
-  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) throws IOException, ODataException {
+  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) throws ODataException {
     if (uriType == UriType.URI1) {
-      wrongRequest(method, Arrays.asList(mockPathSegment("EmployeeSearch")), null);
+      wrongRequest(method, Arrays.asList("EmployeeSearch"), null);
     } else {
       wrongRequest(method, mockPathSegments(uriType, false, false), null);
     }
   }
 
-  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) throws IOException, ODataException {
+  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) throws ODataException {
     EdmProperty property = null;
     try {
       if (ofComplex) {
@@ -401,54 +332,54 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     } catch (final EdmException e) {
       fail();
     }
-    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    pathSegments.add(mockPathSegment("Employees('1')"));
+    List<String> pathSegments = new ArrayList<String>();
+    pathSegments.add("Employees('1')");
     if (ofComplex) {
-      pathSegments.add(mockPathSegment("Location"));
+      pathSegments.add("Location");
     }
     if (ofComplex) {
-      pathSegments.add(mockPathSegment("Country"));
+      pathSegments.add("Country");
     } else if (key) {
-      pathSegments.add(mockPathSegment("EmployeeId"));
+      pathSegments.add("EmployeeId");
     } else {
-      pathSegments.add(mockPathSegment("Age"));
+      pathSegments.add("Age");
     }
 
     wrongRequest(method, pathSegments, null);
   }
 
-  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType, final HttpStatusCodes expectedStatusCode) throws IOException, ODataException {
-    final Response response = executeRequest(method, mockPathSegments(uriType, true, false), null, null);
+  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType, final HttpStatusCodes expectedStatusCode) throws ODataException {
+    final ODataResponse response = executeRequest(method, mockPathSegments(uriType, true, false), null, null);
     assertNotNull(response);
-    assertEquals(expectedStatusCode.getStatusCode(), response.getStatus());
+    assertEquals(expectedStatusCode, response.getStatus());
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws EdmException, IOException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws ODataException {
     wrongRequestContentType(method, uriType, false, requestContentType);
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final ContentType requestContentType) throws EdmException, IOException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final ContentType requestContentType) throws ODataException {
     wrongRequestContentType(method, uriType, isValue, requestContentType.toContentTypeString());
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
-    Response response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws ODataException {
+    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
   }
 
-  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, IOException, ODataException {
-    Response response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws ODataException {
+    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
   }
 
-  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, IOException, ODataException {
-    MultivaluedMap<String, String> options = new MultivaluedHashMap<String, String>(3);
-    options.putSingle("$format", dollarFormatOption);
-    Response response = executeRequest(method, mockPathSegments(uriType, false, isValue), options, null);
+  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws ODataException {
+    Map<String, String> options = new HashMap<String, String>(3);
+    options.put("$format", dollarFormatOption);
+    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), options, null);
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
   }
 
   @Test
@@ -636,16 +567,16 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void invalidRequestContentType() throws Exception {
-    Response response = executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, "app/app/xml");
+    ODataResponse response = executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, "app/app/xml");
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
   }
 
   @Test
   public void notAllowedMethodRequests() throws Exception {
-    Response response = executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI1, false, false), null, "application/xml");
+    ODataResponse response = executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI1, false, false), null, "application/xml");
     assertNotNull(response);
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED, response.getStatus());
   }
 
   @Test
