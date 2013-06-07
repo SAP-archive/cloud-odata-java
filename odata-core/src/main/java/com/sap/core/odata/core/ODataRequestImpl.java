@@ -73,6 +73,7 @@ public class ODataRequestImpl implements ODataRequest {
    * {@inheritDoc}
    */
   @Override
+  @Deprecated
   public String getHeaderValue(final String name) {
     return headers.get(name);
   }
