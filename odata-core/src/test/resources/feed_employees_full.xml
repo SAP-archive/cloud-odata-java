@@ -2,9 +2,8 @@
 <feed xmlns="http://www.w3.org/2005/Atom"
 	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
 	xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
-	xml:base="https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/">
-	<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees
-	</id>
+	xml:base="http://some.host.com/service.root/ReferenceScenario.svc/">
+	<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees</id>
 	<title type="text">Employees</title>
 	<updated>2013-04-23T11:46:14.926Z</updated>
 	<author>
@@ -14,8 +13,7 @@
 	<link href="Employees" rel="self" title="Employees" />
     <link href="http://thisisanextlink" rel="next"/>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('1')</id>
 		<title type="text">Walter Winter</title>
 		<updated>1999-01-01T00:00:00Z</updated>
 		<category term="RefScenario.Employee"
@@ -51,8 +49,7 @@
 		</m:properties>
 	</entry>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('2')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('2')</id>
 		<title type="text">Frederic Fall</title>
 		<updated>2003-07-01T00:00:00Z</updated>
 		<category term="RefScenario.Employee"
@@ -88,8 +85,7 @@
 		</m:properties>
 	</entry>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('3')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('3')</id>
 		<title type="text">Jonathan Smith</title>
 		<updated>2013-04-23T11:46:14.928Z</updated>
 		<category term="RefScenario.Employee"
@@ -125,8 +121,7 @@
 		</m:properties>
 	</entry>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('4')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('4')</id>
 		<title type="text">Peter Burke</title>
 		<updated>2004-09-12T00:00:00Z</updated>
 		<category term="RefScenario.Employee"
@@ -162,8 +157,7 @@
 		</m:properties>
 	</entry>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('5')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('5')</id>
 		<title type="text">John Field</title>
 		<updated>2001-02-01T00:00:00Z</updated>
 		<category term="RefScenario.Employee"
@@ -199,8 +193,7 @@
 		</m:properties>
 	</entry>
 	<entry>
-		<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('6')
-		</id>
+		<id>http://some.host.com/service.root/ReferenceScenario.svc/Employees('6')</id>
 		<title type="text">Susan Bay</title>
 		<updated>2010-12-01T00:00:00Z</updated>
 		<category term="RefScenario.Employee"
