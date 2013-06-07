@@ -16,6 +16,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.callback.TombstoneCallback;
+import com.sap.core.odata.api.ep.callback.TombstoneCallbackResult;
 import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -82,10 +83,24 @@ public class AtomFeedProducer {
   }
 
   private void appendDeletedEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia, final TombstoneCallback callback) throws EntityProviderException {
-    List<Map<String, Object>> tombstoneData = callback.getTombstoneData();
+    TombstoneCallbackResult callbackResult = callback.getTombstoneCallbackResult();
+    List<Map<String, Object>> tombstoneData = callbackResult.getDeletedEntriesData();
     if (tombstoneData != null) {
       TombstoneProducer tombstoneProducer = new TombstoneProducer();
       tombstoneProducer.appendTombstones(writer, eia, properties, tombstoneData);
+    }
+
+    String deltaLink = callbackResult.getDeltaLink();
+    //TODO: according to spec if a deltalink is set no next link must be present. Should we validate this?
+    if (deltaLink != null) {
+      try {
+        writer.writeStartElement(FormatXml.ATOM_LINK);
+        writer.writeAttribute(FormatXml.ATOM_REL, TombstoneCallback.REL_DELTA);
+        writer.writeAttribute(FormatXml.ATOM_HREF, deltaLink);
+        writer.writeEndElement();
+      } catch (XMLStreamException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
+      }
     }
   }
 

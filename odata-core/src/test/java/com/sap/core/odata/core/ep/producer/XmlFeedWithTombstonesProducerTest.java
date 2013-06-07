@@ -62,7 +62,7 @@ public class XmlFeedWithTombstonesProducerTest extends AbstractProviderTest {
   @Test
   public void nullAsCallbackResult() throws Exception {
     initializeRoomData(2);
-    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(null);
+    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(null, null);
     callbacks = new HashMap<String, ODataCallback>();
     callbacks.put(TombstoneCallback.CALLBACK_KEY_TOMBSTONE, tombstoneCallback);
 
@@ -71,6 +71,22 @@ public class XmlFeedWithTombstonesProducerTest extends AbstractProviderTest {
 
     String xmlString = execute(properties, entitySet);
     assertXpathNotExists("/a:feed/at:deleted-entry", xmlString);
+  }
+
+  @Test
+  public void deltaLinkPresent() throws Exception {
+    initializeRoomData(2);
+    initializeDeletedRoomData();
+    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(deletedRoomsData, BASE_URI.toASCIIString() + "Rooms?!deltatoken=1234");
+    callbacks = new HashMap<String, ODataCallback>();
+    callbacks.put(TombstoneCallback.CALLBACK_KEY_TOMBSTONE, tombstoneCallback);
+
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).callbacks(callbacks).build();
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+
+    String xmlString = execute(properties, entitySet);
+    assertXpathExists("/a:feed/at:deleted-entry", xmlString);
+    assertXpathExists("/a:feed/a:link[@rel=\"http://odata.org/delta\" and @href=\"" + BASE_URI.toASCIIString() + "Rooms?!deltatoken=1234" + "\"]", xmlString);
   }
 
   private String execute(final EntityProviderWriteProperties properties, final EdmEntitySet entitySet) throws EntityProviderException, IOException {
@@ -107,7 +123,7 @@ public class XmlFeedWithTombstonesProducerTest extends AbstractProviderTest {
 
   private void initializeCallbacks() {
     initializeDeletedRoomData();
-    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(deletedRoomsData);
+    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(deletedRoomsData, null);
     callbacks = new HashMap<String, ODataCallback>();
     callbacks.put(TombstoneCallback.CALLBACK_KEY_TOMBSTONE, tombstoneCallback);
   }
