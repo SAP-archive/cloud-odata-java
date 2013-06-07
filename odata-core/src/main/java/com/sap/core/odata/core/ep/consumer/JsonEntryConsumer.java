@@ -278,7 +278,6 @@ public class JsonEntryConsumer {
   private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {
     expandSelectTree.setExpanded();
     expandSelectTree.setExplicitlySelected();
-    //TODO: CA get rid of cast
     expandSelectTree.putLink(navigationPropertyName, (ExpandSelectTreeNodeImpl) entry.getExpandSelectTree());
   }
 

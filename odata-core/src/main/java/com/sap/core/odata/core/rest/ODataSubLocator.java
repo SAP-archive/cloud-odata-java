@@ -133,7 +133,10 @@ public final class ODataSubLocator implements ODataLocator {
 
     request = new ODataRequestImpl();
 
+    //Request headers are set twice to support previous versions till getHeaders() is removed.
+    request.setRequestHeaders(param.getHttpHeaders().getRequestHeaders());
     request.setHeaders(RestUtil.extractRequestHeaders(param.getHttpHeaders()));
+    
     request.setPathInfo(RestUtil.buildODataPathInfo(param));
     request.setBody(RestUtil.contentAsStream(RestUtil.extractRequestContent(param)));
 

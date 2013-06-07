@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataCallback;
@@ -42,8 +43,8 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
     assertNotNull(ctx);
     assertNotNull(ctx.getAcceptableLanguages());
 
-    final Map<String, String> requestHeaders = ctx.getHttpRequestHeaders();
-    final String host = requestHeaders.get("Host");
+    final Map<String, List<String>> requestHeaders = ctx.getRequestHeaders();
+    final String host = requestHeaders.get("Host").get(0);
     // access and validation in synchronized block
     synchronized (HOST_2_SERVICE) {
       final ODataService service = HOST_2_SERVICE.get(host);

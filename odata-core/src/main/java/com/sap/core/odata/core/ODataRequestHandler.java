@@ -58,7 +58,7 @@ public class ODataRequestHandler {
       Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
 
       final String serverDataServiceVersion = getServerDataServiceVersion();
-      final String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
+      final String requestDataServiceVersion = context.getRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
       validateDataServiceVersion(serverDataServiceVersion, requestDataServiceVersion);
 
       final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();

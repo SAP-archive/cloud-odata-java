@@ -3,12 +3,10 @@ package com.sap.core.odata.core;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.WebApplicationException;
@@ -46,7 +44,6 @@ public class ODataExceptionWrapper {
 
   private final String contentType;
   private final Locale messageLocale;
-  //TODO: Remove hack here and replace it with right map from context.
   private final Map<String, List<String>> httpRequestHeaders;
   private final ODataErrorCallback callback;
   private final ODataErrorContext errorContext = new ODataErrorContext();
@@ -55,10 +52,7 @@ public class ODataExceptionWrapper {
   public ODataExceptionWrapper(final ODataContextImpl context, final Map<String, String> queryParameters, final List<String> acceptHeaderContentTypes) {
     contentType = getContentType(queryParameters, acceptHeaderContentTypes).toContentTypeString();
     messageLocale = MessageService.getSupportedLocale(getLanguages(context), DEFAULT_RESPONSE_LOCALE);
-    httpRequestHeaders = new HashMap<String, List<String>>();
-    for (Entry<String, String> entry : context.getHttpRequestHeaders().entrySet()) {
-      httpRequestHeaders.put(entry.getKey(), Arrays.asList(entry.getValue()));
-    }
+    httpRequestHeaders = context.getRequestHeaders();
     try {
       requestUri = context.getPathInfo().getRequestUri();
       callback = getErrorHandlerCallbackFromContext(context);
@@ -70,12 +64,7 @@ public class ODataExceptionWrapper {
   public ODataExceptionWrapper(final UriInfo uriInfo, final HttpHeaders httpHeaders, final ServletConfig servletConfig) {
     contentType = getContentType(uriInfo, httpHeaders).toContentTypeString();
     messageLocale = MessageService.getSupportedLocale(getLanguages(httpHeaders), DEFAULT_RESPONSE_LOCALE);
-    httpRequestHeaders = new HashMap<String, List<String>>();
-    httpHeaders.getRequestHeaders();
-    Set<Entry<String, List<String>>> entries = httpHeaders.getRequestHeaders().entrySet();
-    for (Entry<String, List<String>> entry : entries) {
-      httpRequestHeaders.put(entry.getKey(), entry.getValue());
-    }
+    httpRequestHeaders = httpHeaders.getRequestHeaders();
     requestUri = uriInfo.getRequestUri();
     try {
       callback = getErrorHandlerCallbackFromServletConfig(servletConfig);

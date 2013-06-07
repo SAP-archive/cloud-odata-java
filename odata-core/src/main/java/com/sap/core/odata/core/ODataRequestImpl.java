@@ -20,6 +20,7 @@ public class ODataRequestImpl implements ODataRequest {
 
   private ODataHttpMethod method;
   private Map<String, String> headers = new HashMap<String, String>();
+  private Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
   private InputStream body;
   private PathInfo pathInfo;
   private Map<String, String> queryParameters;
@@ -51,8 +52,13 @@ public class ODataRequestImpl implements ODataRequest {
     this.method = method;
   }
 
+  @Deprecated
   public void setHeaders(final Map<String, String> headers) {
     this.headers = headers;
+  }
+
+  public void setRequestHeaders(final Map<String, List<String>> requestHeaders) {
+    this.requestHeaders = requestHeaders;
   }
 
   public void setBody(final InputStream body) {
@@ -75,8 +81,29 @@ public class ODataRequestImpl implements ODataRequest {
    * {@inheritDoc}
    */
   @Override
+  @Deprecated
   public Map<String, String> getHeaders() {
     return Collections.unmodifiableMap(headers);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getRequestHeaderValue(String name) {
+    List<String> headerList = requestHeaders.get(name);
+    if (headerList != null && headerList.size() > 0) {
+      return headerList.get(0);
+    }
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<String, List<String>> getRequestHeaders() {
+    return Collections.unmodifiableMap(requestHeaders);
   }
 
   /**
@@ -118,5 +145,4 @@ public class ODataRequestImpl implements ODataRequest {
   public void setAcceptableLanguages(final List<Locale> acceptableLanguages) {
     this.acceptableLanguages = acceptableLanguages;
   }
-
 }

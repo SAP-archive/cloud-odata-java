@@ -173,20 +173,29 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
+  @Deprecated
   public String getHttpRequestHeader(final String name) {
     ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
-    for (final String headerName : request.getHeaders().keySet()) {
-      if (headerName.equalsIgnoreCase(name)) {
-        return request.getHeaders().get(headerName);
-      }
-    }
-    return null;
+    return request.getHeaderValue(name);
   }
 
   @Override
+  @Deprecated
   public Map<String, String> getHttpRequestHeaders() {
     ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
     return request.getHeaders();
+  }
+
+  @Override
+  public String getRequestHeader(String name) {
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    return request.getRequestHeaderValue(name);
+  }
+
+  @Override
+  public Map<String, List<String>> getRequestHeaders() {
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    return request.getRequestHeaders();
   }
 
   @Override
