@@ -88,6 +88,22 @@ public class XmlFeedWithTombstonesProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:feed/at:deleted-entry", xmlString);
     assertXpathExists("/a:feed/a:link[@rel=\"http://odata.org/delta\" and @href=\"" + BASE_URI.toASCIIString() + "Rooms?!deltatoken=1234" + "\"]", xmlString);
   }
+  
+  @Test
+  public void deltaLinkAndDataNull() throws Exception {
+    initializeRoomData(2);
+    initializeDeletedRoomData();
+    TombstoneCallback tombstoneCallback = new TombstoneCallbackImpl(null, null);
+    callbacks = new HashMap<String, ODataCallback>();
+    callbacks.put(TombstoneCallback.CALLBACK_KEY_TOMBSTONE, tombstoneCallback);
+
+    EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).callbacks(callbacks).build();
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+
+    String xmlString = execute(properties, entitySet);
+    assertXpathNotExists("/a:feed/at:deleted-entry", xmlString);
+    assertXpathNotExists("/a:feed/a:link[@rel=\"http://odata.org/delta\" and @href]", xmlString);
+  }
 
   private String execute(final EntityProviderWriteProperties properties, final EdmEntitySet entitySet) throws EntityProviderException, IOException {
     ODataResponse response = EntityProvider.writeFeed("application/atom+xml", entitySet, roomsData, properties);

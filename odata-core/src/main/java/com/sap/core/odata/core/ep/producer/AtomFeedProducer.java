@@ -91,7 +91,6 @@ public class AtomFeedProducer {
     }
 
     String deltaLink = callbackResult.getDeltaLink();
-    //TODO: according to spec if a deltalink is set no next link must be present. Should we validate this?
     if (deltaLink != null) {
       try {
         writer.writeStartElement(FormatXml.ATOM_LINK);
