@@ -90,7 +90,7 @@ public class ODataRequestImpl implements ODataRequest {
    * {@inheritDoc}
    */
   @Override
-  public String getRequestHeaderValue(String name) {
+  public String getRequestHeaderValue(final String name) {
     List<String> headerList = requestHeaders.get(name);
     if (headerList != null && headerList.size() > 0) {
       return headerList.get(0);

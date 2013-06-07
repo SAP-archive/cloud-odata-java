@@ -187,7 +187,7 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
-  public String getRequestHeader(String name) {
+  public String getRequestHeader(final String name) {
     ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
     return request.getRequestHeaderValue(name);
   }

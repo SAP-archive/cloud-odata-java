@@ -64,8 +64,7 @@ public class JsonEntryConsumer {
       reader.endObject();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

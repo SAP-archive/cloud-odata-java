@@ -11,7 +11,7 @@ public class TombstoneCallbackImpl implements TombstoneCallback {
   private ArrayList<Map<String, Object>> deletedEntriesData;
   private String deltaLink = null;
 
-  public TombstoneCallbackImpl(final ArrayList<Map<String, Object>> deletedEntriesData, String deltaLink) {
+  public TombstoneCallbackImpl(final ArrayList<Map<String, Object>> deletedEntriesData, final String deltaLink) {
     this.deletedEntriesData = deletedEntriesData;
     this.deltaLink = deltaLink;
   }

@@ -21,7 +21,7 @@ public interface ODataRequest {
   Map<String, String> getHeaders();
 
   String getRequestHeaderValue(String name);
-  
+
   Map<String, List<String>> getRequestHeaders();
 
   InputStream getBody();
@@ -37,6 +37,5 @@ public interface ODataRequest {
   List<String> getAcceptHeaders();
 
   Map<String, String> getQueryParameters();
-
 
 }

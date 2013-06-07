@@ -88,7 +88,7 @@ public interface ODataContext {
    */
   @Deprecated
   String getHttpRequestHeader(String name);
-  
+
   /**
    * Returns the first found header value of the HTTP request.
    * @param name name of the first found request header element (e.g. "Content-Type")
@@ -108,7 +108,7 @@ public interface ODataContext {
    * @return immutable map of request header values
    */
   Map<String, List<String>> getRequestHeaders();
-  
+
   /**
    * Gets information about enabled debug mode.
    * @return debugMode as boolean

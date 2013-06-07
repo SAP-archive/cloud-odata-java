@@ -26,7 +26,7 @@ public class TombstoneCallbackResult {
    * Sets the data for all deleted entries
    * @param deletedEntriesData
    */
-  public void setDeletedEntriesData(List<Map<String, Object>> deletedEntriesData) {
+  public void setDeletedEntriesData(final List<Map<String, Object>> deletedEntriesData) {
     this.deletedEntriesData = deletedEntriesData;
   }
 
@@ -41,7 +41,7 @@ public class TombstoneCallbackResult {
    * Sets the delta link to retrieve a delta. 
    * @param deltaLink
    */
-  public void setDeltaLink(String deltaLink) {
+  public void setDeltaLink(final String deltaLink) {
     this.deltaLink = deltaLink;
   }
 

@@ -39,8 +39,7 @@ public class JsonFeedConsumer {
       readFeed();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
 
     } catch (IOException e) {
@@ -83,8 +82,7 @@ public class JsonFeedConsumer {
     }
 
     if (!resultsArrayPresent) {
-      //TODO: Messagetext
-      throw new EntityProviderException(EntityProviderException.COMMON);
+      throw new EntityProviderException(EntityProviderException.MISSING_RESULTS_ARRAY);
     }
   }
 
@@ -101,13 +99,11 @@ public class JsonFeedConsumer {
         String nextLink = reader.nextString();
         feedMetadata.setNextLink(nextLink);
       } else {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
       }
 
     } else {
-      //TODO: CA Messagetext
-      throw new EntityProviderException(EntityProviderException.COMMON);
+      throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
     }
   }
 

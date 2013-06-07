@@ -25,7 +25,6 @@ public class JsonLinkConsumer {
    * @throws EntityProviderException
    */
   public String readLink(final JsonReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
-    // TODO: message texts
     try {
       String result;
       reader.beginObject();
@@ -38,7 +37,7 @@ public class JsonLinkConsumer {
       if (FormatJson.URI.equals(nextName) && reader.peek() == JsonToken.STRING) {
         result = reader.nextString();
       } else {
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(FormatJson.D + " or " + FormatJson.URI).addContent(nextName));
       }
       reader.endObject();
       if (wrapped) {
@@ -94,13 +93,13 @@ public class JsonLinkConsumer {
       if (FormatJson.RESULTS.equals(nextName)) {
         links = readLinksArray(reader);
       } else {
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(FormatJson.RESULTS).addContent(nextName));
       }
       if (reader.hasNext() && reader.peek() == JsonToken.NAME) {
         if (FormatJson.COUNT.equals(reader.nextName())) {
           JsonFeedConsumer.readInlineCount(reader, feedMetadata);
         } else {
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(FormatJson.COUNT).addContent(nextName));
         }
       }
       for (; openedObjects > 0; openedObjects--) {
@@ -123,10 +122,11 @@ public class JsonLinkConsumer {
     reader.beginArray();
     while (reader.hasNext()) {
       reader.beginObject();
-      if (FormatJson.URI.equals(reader.nextName()) && reader.peek() == JsonToken.STRING) {
+      String nextName = reader.nextName();
+      if (FormatJson.URI.equals(nextName) && reader.peek() == JsonToken.STRING) {
         links.add(reader.nextString());
       } else {
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(FormatJson.URI).addContent(nextName));
       }
       reader.endObject();
     }

@@ -216,10 +216,10 @@ public class BatchRequestParser {
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim();
           String headerValue = result.group(2).trim();
-          if(headers.containsKey(headerName)){
+          if (headers.containsKey(headerName)) {
             headers.get(headerName).add(headerValue);
-          }else{
-            List<String> headerList = new ArrayList<String>(); 
+          } else {
+            List<String> headerList = new ArrayList<String>();
             headerList.add(headerValue);
             headers.put(headerName, headerList);
           }
