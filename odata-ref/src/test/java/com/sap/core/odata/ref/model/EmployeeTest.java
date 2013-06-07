@@ -21,7 +21,7 @@ public class EmployeeTest extends BaseTest {
   private static final int VALUE_AGE = 36;
   private static final String VALUE_NAME = "Alex Kaiser";
   private static final String VALUE_URI = "http://localhost/employee1.jpg";
-  private static final String IMAGE_URL = "/darth.jpg";
+  private static final String IMAGE_URL = "/male_1_WinterW.jpg";
   private static final String IMAGE = "String for convert";
   private static final String TYPE = "image/jpeg";
 

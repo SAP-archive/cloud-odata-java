@@ -50,7 +50,7 @@ public class EntryJsonReadOnlyTest extends AbstractRefTest {
         + "\"media_src\":\"Container2.Photos(Id=1,Type='image%2Fpng')/$value\","
         + "\"edit_media\":\"" + getEndpoint() + "Container2.Photos(Id=1,Type='image%2Fpng')/$value\"},"
         + "\"Id\":1,\"Name\":\"Photo 1\",\"Type\":\"image/png\","
-        + "\"ImageUrl\":\"http://localhost/darth.jpg\","
+        + "\"ImageUrl\":\"http://localhost/male_1_WinterW.jpg\","
         + "\"Image\":\"" + PHOTO_DEFAULT_IMAGE + "\",\"BinaryData\":null,"
         + "\"Содержание\":\"Образ\"}}",
         getBody(response));
