@@ -38,7 +38,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 public class LanguageNegotiationTest extends AbstractBasicTest {
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), anyString()))
         .thenThrow(new MyException(null));

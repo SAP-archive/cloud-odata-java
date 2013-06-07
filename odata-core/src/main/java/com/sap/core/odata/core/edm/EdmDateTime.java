@@ -97,10 +97,11 @@ public class EdmDateTime extends AbstractSimpleType {
    * @param dateTimeValue the Calendar object to be set to the parsed value
    * @throws EdmSimpleTypeException
    */
-  protected static void parseLiteral(final String value, final EdmFacets facets, Calendar dateTimeValue) throws EdmSimpleTypeException {
+  protected static void parseLiteral(final String value, final EdmFacets facets, final Calendar dateTimeValue) throws EdmSimpleTypeException {
     final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches())
+    if (!matcher.matches()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
     dateTimeValue.set(
         Short.parseShort(matcher.group(1)),
@@ -111,11 +112,13 @@ public class EdmDateTime extends AbstractSimpleType {
         matcher.group(6) == null ? 0 : Byte.parseByte(matcher.group(6)));
 
     if (matcher.group(7) != null) {
-      if (matcher.group(7).length() == 1 || matcher.group(7).length() > 8)
+      if (matcher.group(7).length() == 1 || matcher.group(7).length() > 8) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
       final String decimals = matcher.group(8);
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < decimals.length())
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < decimals.length()) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
       final String milliSeconds = decimals + "000".substring(decimals.length());
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
@@ -146,8 +149,9 @@ public class EdmDateTime extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    if (literalKind == EdmLiteralKind.JSON)
+    if (literalKind == EdmLiteralKind.JSON) {
       return "/Date(" + timeInMillis + ")/";
+    }
 
     StringBuilder result = new StringBuilder(DATE_FORMAT.format(timeInMillis));
 
@@ -156,18 +160,22 @@ public class EdmDateTime extends AbstractSimpleType {
       result.append('.');
       for (int d = 100; d > 0; d /= 10) {
         final byte digit = (byte) (timeInMillis % (d * 10) / d);
-        if (digit > 0 || timeInMillis % d > 0)
+        if (digit > 0 || timeInMillis % d > 0) {
           result.append(String.valueOf(digit));
+        }
       }
     }
     if (facets != null && facets.getPrecision() != null) {
       final int precision = facets.getPrecision();
-      if (digits > precision)
+      if (digits > precision) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      if (digits == 0 && precision > 0)
+      }
+      if (digits == 0 && precision > 0) {
         result.append('.');
-      for (int i = digits; i < precision; i++)
+      }
+      for (int i = digits; i < precision; i++) {
         result.append('0');
+      }
     }
 
     return result.toString();

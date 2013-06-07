@@ -27,14 +27,14 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
     return super.getCallback(callbackInterface);
   }
 
-  private static Map<String, ODataService> HOST_2_SERVICE = Collections.synchronizedMap(new HashMap<String, ODataService>());
+  private static Map<String, ODataService> PORT_2_SERVICE = Collections.synchronizedMap(new HashMap<String, ODataService>());
 
   public static void bindService(final TestServer server, final ODataService service) {
-    HOST_2_SERVICE.put(createId(server), service);
+    PORT_2_SERVICE.put(createId(server), service);
   }
 
   public static void unbindService(final TestServer server) {
-    HOST_2_SERVICE.remove(createId(server));
+    PORT_2_SERVICE.remove(createId(server));
   }
 
   @Override
@@ -45,9 +45,13 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
 
     final Map<String, List<String>> requestHeaders = ctx.getRequestHeaders();
     final String host = requestHeaders.get("Host").get(0);
+
+    String tmp[] = host.split(":", 2);
+    String port = (tmp.length == 2 && tmp[1] != null) ? tmp[1] : "80";
+
     // access and validation in synchronized block
-    synchronized (HOST_2_SERVICE) {
-      final ODataService service = HOST_2_SERVICE.get(host);
+    synchronized (PORT_2_SERVICE) {
+      final ODataService service = PORT_2_SERVICE.get(port);
       if (service == null) {
         throw new IllegalArgumentException("no static service set for JUnit test");
       }
@@ -60,6 +64,6 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
     if (endpoint == null) {
       throw new IllegalArgumentException("Got TestServer without endpoint.");
     }
-    return endpoint.getHost() + ":" + endpoint.getPort();
+    return "" + endpoint.getPort();
   }
 }

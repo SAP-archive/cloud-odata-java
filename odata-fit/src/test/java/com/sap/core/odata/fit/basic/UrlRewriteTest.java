@@ -38,7 +38,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 public class UrlRewriteTest extends AbstractBasicTest {
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());

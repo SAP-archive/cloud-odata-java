@@ -130,8 +130,9 @@ public class EdmDecimal extends AbstractSimpleType {
     if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte || value instanceof BigInteger) {
       result = value.toString();
       final int digits = result.startsWith("-") ? result.length() - 1 : result.length();
-      if (digits > MAX_DIGITS)
+      if (digits > MAX_DIGITS) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+      }
       if (facets != null && facets.getPrecision() != null && facets.getPrecision() < digits) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
       }
@@ -151,8 +152,9 @@ public class EdmDecimal extends AbstractSimpleType {
       }
 
       if (bigDecimalValue.precision() - bigDecimalValue.scale() > MAX_DIGITS
-          || bigDecimalValue.scale() > MAX_DIGITS)
+          || bigDecimalValue.scale() > MAX_DIGITS) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+      }
 
       final int digits = bigDecimalValue.scale() >= 0 ?
           Math.max(bigDecimalValue.precision(), bigDecimalValue.scale()) :

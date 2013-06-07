@@ -211,10 +211,9 @@ public class ProviderFacadeImplTest {
     final ODataResponse result = new ProviderFacadeImpl().writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, null);
     assertNull(result.getEntity());
     assertNull(result.getContentHeader());
-    assertEquals(HttpStatusCodes.NO_CONTENT,result.getStatus());
+    assertEquals(HttpStatusCodes.NO_CONTENT, result.getStatus());
   }
 
-  
   @Test
   @Ignore
   public void writeFunctionImport() {

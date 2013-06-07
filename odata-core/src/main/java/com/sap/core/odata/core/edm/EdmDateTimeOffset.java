@@ -57,8 +57,9 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
         String timeZone = "GMT";
         if (matcher.group(2) != null) {
           final int offsetInMinutes = Integer.parseInt(matcher.group(3));
-          if (offsetInMinutes >= 24 * 60)
+          if (offsetInMinutes >= 24 * 60) {
             throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+          }
           if (offsetInMinutes != 0) {
             timeZone += matcher.group(2) + String.valueOf(offsetInMinutes / 60)
                 + ":" + String.format("%02d", offsetInMinutes % 60);
@@ -74,13 +75,15 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
 
     if (dateTimeValue == null) {
       final Matcher matcher = PATTERN.matcher(value);
-      if (!matcher.matches())
+      if (!matcher.matches()) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
 
       final String timeZoneOffset = matcher.group(1) != null && matcher.group(2) != null && !matcher.group(2).matches("[-+]0+:0+") ? matcher.group(2) : null;
       dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT" + timeZoneOffset));
-      if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0 && timeZoneOffset != null)
+      if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0 && timeZoneOffset != null) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
       dateTimeValue.clear();
       EdmDateTime.parseLiteral(value.substring(0, matcher.group(1) == null ? value.length() : matcher.start(1)), facets, dateTimeValue);
     }

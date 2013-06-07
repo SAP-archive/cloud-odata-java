@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -124,7 +125,7 @@ public class RestUtil {
          * consider first header value only
          * avoid using jax-rs 2.0 (getHeaderString())
          */
-        String value = header.get(0); 
+        String value = header.get(0);
         if (value != null && !"".equals(value)) {
           headerMap.put(key, value);
         }
@@ -137,7 +138,7 @@ public class RestUtil {
   public static PathInfoImpl buildODataPathInfo(final SubLocatorParameter param) throws ODataException {
     final UriInfo uriInfo = param.getUriInfo();
     PathInfoImpl pathInfo = splitPath(param);
-    pathInfo.setServiceRoot(buildBaseUri(uriInfo, pathInfo.getPrecedingSegments()));
+    pathInfo.setServiceRoot(buildBaseUri(param.getServletRequest(), uriInfo, pathInfo.getPrecedingSegments()));
     pathInfo.setRequestUri(uriInfo.getRequestUri());
 
     return pathInfo;
@@ -180,7 +181,7 @@ public class RestUtil {
     return pathInfo;
   }
 
-  private static URI buildBaseUri(final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
+  private static URI buildBaseUri(final HttpServletRequest request, final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
       for (final PathSegment ps : precedingPathSegments) {
@@ -190,6 +191,11 @@ public class RestUtil {
           uriBuilder = uriBuilder.matrixParam(key, v);
         }
       }
+
+      /*
+       * workaround because of host name is cached by uriInfo
+       */
+      uriBuilder.host(request.getServerName());
 
       String uriString = uriBuilder.build().toString();
       if (!uriString.endsWith("/")) {

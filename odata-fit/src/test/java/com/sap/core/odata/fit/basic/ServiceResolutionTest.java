@@ -1,4 +1,4 @@
-package com.sap.core.odata.fit.serviceresolution;
+package com.sap.core.odata.fit.basic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

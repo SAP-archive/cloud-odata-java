@@ -26,7 +26,7 @@ import com.sap.core.odata.testutil.mock.EdmTestProvider;
 public class RequestContentTypeTest extends AbstractBasicTest {
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     return mock(ODataSingleProcessor.class);
   }
 

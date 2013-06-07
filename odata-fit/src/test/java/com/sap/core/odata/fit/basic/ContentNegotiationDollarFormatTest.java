@@ -36,7 +36,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
     final String contentType = HttpContentType.APPLICATION_ATOM_SVC_UTF8;
     final ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
