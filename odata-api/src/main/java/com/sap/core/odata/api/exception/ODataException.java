@@ -101,6 +101,7 @@ public class ODataException extends Exception {
    * Returns the last Throwable in the chain of caused exceptions or null if there is no cause.
    * @return null or the root cause of this exception
    */
+  @Deprecated
   public Throwable getRootCause() {
     Throwable rootCause = getCause();
 
