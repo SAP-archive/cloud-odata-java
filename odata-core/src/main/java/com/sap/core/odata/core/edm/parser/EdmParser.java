@@ -29,6 +29,7 @@ import com.sap.core.odata.api.edm.EdmAction;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
@@ -542,7 +543,7 @@ public class EdmParser {
     }
     FullQualifiedName fqName = extractFQName(type);
 
-    if ("Edm".equals(fqName.getNamespace())) {
+    if (EdmSimpleType.EDM_NAMESPACE.equals(fqName.getNamespace())) {
       property = readSimpleProperty(reader, fqName);
     } else {
       property = readComplexProperty(reader, fqName);
