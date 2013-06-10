@@ -58,6 +58,7 @@ import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import org.apache.cxf.common.util.StringUtils;
 
 public class EdmParser {
 
@@ -771,7 +772,9 @@ public class EdmParser {
 
   private FullQualifiedName validateEntityTypeWithAlias(final FullQualifiedName aliasName) throws EntityProviderException {
     String namespace = aliasNamespaceMap.get(aliasName.getNamespace());
-    FullQualifiedName fqName = new FullQualifiedName(namespace, aliasName.getName());
+    FullQualifiedName fqName = StringUtils.isEmpty(namespace)
+            ? aliasName 
+            : new FullQualifiedName(namespace, aliasName.getName());
     if (!entityTypesMap.containsKey(fqName)) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Type"));
     }
@@ -826,7 +829,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (AssociationSet associationSet : container.getValue().getAssociationSets()) {
         FullQualifiedName association = associationSet.getAssociation();
-        if (associationsMap.containsKey(association) && container.getKey().getNamespace().equals(association.getNamespace())) {
+        if (associationsMap.containsKey(association)) {
           validateAssociationEnd(associationSet.getEnd1(), associationsMap.get(association));
           validateAssociationEnd(associationSet.getEnd2(), associationsMap.get(association));
           boolean end1 = false;
