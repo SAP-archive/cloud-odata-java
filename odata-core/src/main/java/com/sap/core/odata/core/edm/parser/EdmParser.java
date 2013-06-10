@@ -848,7 +848,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (AssociationSet associationSet : container.getValue().getAssociationSets()) {
         FullQualifiedName association = associationSet.getAssociation();
-        if (associationsMap.containsKey(association) && container.getKey().getNamespace().equals(association.getNamespace())) {
+        if (associationsMap.containsKey(association)) {
           validateAssociationEnd(associationSet.getEnd1(), associationsMap.get(association));
           validateAssociationEnd(associationSet.getEnd2(), associationsMap.get(association));
           boolean end1 = false;
@@ -882,8 +882,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (EntitySet entitySet : container.getValue().getEntitySets()) {
         FullQualifiedName entityType = entitySet.getEntityType();
-        if (!(entityTypesMap.containsKey(entityType)
-        && container.getKey().getNamespace().equals(entityType.getNamespace()))) {
+        if (!(entityTypesMap.containsKey(entityType))) {
           validateEntityTypeWithAlias(entityType);
         }
       }
