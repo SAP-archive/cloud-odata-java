@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  * @author SAP AG 
  */
 @SuppressWarnings("javadoc")
-class ParameterSet {
+public class ParameterSet {
   private EdmType returnType = null;
   public ArrayList<EdmSimpleType> types = new ArrayList<EdmSimpleType>();
   private EdmSimpleType furtherType = null;

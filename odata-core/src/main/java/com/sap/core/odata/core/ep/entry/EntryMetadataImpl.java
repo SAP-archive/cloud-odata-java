@@ -63,9 +63,6 @@ public class EntryMetadataImpl implements EntryMetadata {
     associationUris.put(navigationPropertyName, uris);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return "EntryMetadataImpl [id=" + id + ", etag=" + etag + ", uri=" + uri + ", associationUris=" + associationUris + "]";

@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.sap.core.odata.core.uri.UriType;
 
 /**
- * 
+ * @author SAP AG
  */
 public class ContentNegotiationPostRequestTest extends AbstractContentNegotiationTest {
 

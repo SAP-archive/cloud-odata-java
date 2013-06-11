@@ -13,7 +13,6 @@ import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.core.commons.ContentType;
 
 /**
- * 
  * @author SAP AG
  */
 public class ODataRequestImpl implements ODataRequest {
@@ -69,63 +68,39 @@ public class ODataRequestImpl implements ODataRequest {
     this.pathInfo = pathInfo;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   @Deprecated
   public String getHeaderValue(final String name) {
     return headers.get(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   @Deprecated
   public Map<String, String> getHeaders() {
     return Collections.unmodifiableMap(headers);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public String getRequestHeaderValue(final String name) {
-    List<String> headerList = requestHeaders.get(name);
-    if (headerList != null && headerList.size() > 0) {
-      return headerList.get(0);
-    }
-    return null;
+    final List<String> headerList = requestHeaders.get(name);
+    return headerList == null || headerList.isEmpty() ? null : headerList.get(0);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public Map<String, List<String>> getRequestHeaders() {
     return Collections.unmodifiableMap(requestHeaders);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public InputStream getBody() {
     return body;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public ODataHttpMethod getMethod() {
     return method;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public PathInfo getPathInfo() {
     return pathInfo;

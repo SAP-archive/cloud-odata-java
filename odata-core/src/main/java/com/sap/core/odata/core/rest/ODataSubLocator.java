@@ -26,11 +26,9 @@ import com.sap.core.odata.core.ODataRequestImpl;
  */
 public final class ODataSubLocator implements ODataLocator {
 
-  private ODataRequestImpl request;
-
-  private ODataRequestHandler requestHandler;
-
   private ODataServiceFactory serviceFactory;
+  private ODataRequestHandler requestHandler;
+  private ODataRequestImpl request;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -118,8 +116,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handle(final ODataHttpMethod method) throws ODataException {
-
-    request.setMethod(method); // TODO skl refactor after JAX-RS elimination
+    request.setMethod(method); // TODO: refactor after JAX-RS elimination
 
     final ODataResponse odataResponse = requestHandler.handle(request);
     final Response response = RestUtil.convertResponse(odataResponse);

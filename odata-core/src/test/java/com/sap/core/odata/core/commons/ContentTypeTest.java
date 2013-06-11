@@ -37,6 +37,9 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 // accept-params = ";" "q" "=" qvalue *( accept-extension )
 // accept-extension = ";" token [ "=" ( token | quoted-string ) ]
 
+/**
+ * @author SAP AG
+ */
 public class ContentTypeTest extends BaseTest {
 
   @Test

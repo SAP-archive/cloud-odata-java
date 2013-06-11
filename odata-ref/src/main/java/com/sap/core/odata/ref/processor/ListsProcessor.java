@@ -318,10 +318,6 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse createEntity(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
-    if (!uriInfo.getNavigationSegments().isEmpty()) {
-      throw new ODataNotImplementedException(ODataNotImplementedException.COMMON);
-    }
-
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
 
@@ -347,6 +343,21 @@ public class ListsProcessor extends ODataSingleProcessor {
       createInlinedEntities(entitySet, data, entryValues);
 
       expandSelectTree = entryValues.getExpandSelectTree();
+    }
+
+    // Link back to the entity the target entity set is related to, if any.
+    final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
+    if (!navigationSegments.isEmpty()) {
+      final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
+      final Object sourceData = retrieveData(
+          uriInfo.getStartEntitySet(),
+          uriInfo.getKeyPredicates(),
+          uriInfo.getFunctionImport(),
+          mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+          previousSegments);
+      final EdmEntitySet previousEntitySet = previousSegments.isEmpty() ?
+        uriInfo.getStartEntitySet() : previousSegments.get(previousSegments.size() - 1).getEntitySet();
+      dataSource.writeRelation(previousEntitySet, sourceData, entitySet, getStructuralTypeValueMap(data, entityType));
     }
 
     return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTree, data, contentType)).eTag(constructETag(entitySet, data)).build();

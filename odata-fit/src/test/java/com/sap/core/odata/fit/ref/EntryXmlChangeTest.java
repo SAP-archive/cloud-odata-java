@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpResponse;
 import org.custommonkey.xmlunit.XMLAssert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -82,7 +81,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
-  public void createMediaResourceUriType1() throws Exception {
+  public void createMediaResource() throws Exception {
     HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
@@ -103,10 +102,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
-  @Ignore("Currently not supported in reference scenario implementation - missing linking back to previous entity")
-  public void createMediaResourceUriType6b() throws Exception {
+  public void createMediaResourceWithNavigation() throws Exception {
     HttpResponse response = postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
 

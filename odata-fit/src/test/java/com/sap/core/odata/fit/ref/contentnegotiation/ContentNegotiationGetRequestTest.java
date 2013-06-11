@@ -20,7 +20,7 @@ import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
- * 
+ * @author SAP AG
  */
 @Ignore
 public class ContentNegotiationGetRequestTest extends AbstractContentNegotiationTest {

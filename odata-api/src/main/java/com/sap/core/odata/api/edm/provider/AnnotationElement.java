@@ -5,7 +5,7 @@ import java.util.List;
 import com.sap.core.odata.api.edm.EdmAnnotationElement;
 
 /**
- * Objects of this class represent an annotation element
+ * Objects of this class represent an annotation element.
  * @author SAP AG
  */
 public class AnnotationElement implements EdmAnnotationElement {
@@ -17,56 +17,38 @@ public class AnnotationElement implements EdmAnnotationElement {
   private List<AnnotationElement> childElements;
   private List<AnnotationAttribute> attributes;
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getNamespace()
-   */
   @Override
   public String getNamespace() {
     return namespace;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getPrefix()
-   */
   @Override
   public String getPrefix() {
     return prefix;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getName()
-   */
   @Override
   public String getName() {
     return name;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getXmlData()
-   */
   @Override
   public String getText() {
     return text;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getChildElements()
-   */
   @Override
   public List<AnnotationElement> getChildElements() {
     return childElements;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getAttributes()
-   */
   @Override
   public List<AnnotationAttribute> getAttributes() {
     return attributes;
   }
 
   /**
-   * Sets the attributes for this {@link AnnotationElement}
+   * Sets the attributes for this {@link AnnotationElement}.
    * @param attributes
    * @return {@link AnnotationElement} for method chaining
    */
@@ -76,7 +58,8 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the child elements for this {@link AnnotationElement}. Do not set child elements and characterData for one element.
+   * Sets the child elements for this {@link AnnotationElement}.
+   * Does not set child elements and characterData for one element.
    * @param childElements
    * @return {@link AnnotationElement} for method chaining
    */
@@ -86,7 +69,7 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the namespace for this {@link AnnotationElement}
+   * Sets the namespace for this {@link AnnotationElement}.
    * @param namespace
    * @return {@link AnnotationElement} for method chaining
    */
@@ -96,7 +79,7 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the prefix for this {@link AnnotationElement}
+   * Sets the prefix for this {@link AnnotationElement}.
    * @param prefix
    * @return {@link AnnotationElement} for method chaining
    */
@@ -106,7 +89,7 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the name for this {@link AnnotationElement}
+   * Sets the name for this {@link AnnotationElement}.
    * @param name
    * @return {@link AnnotationElement} for method chaining
    */
@@ -116,7 +99,8 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the text for this {@link AnnotationElement} which will be displayed inside the tags. Must NOT be set if child elements are set!
+   * Sets the text for this {@link AnnotationElement} which will be displayed inside the tags.
+   * Must NOT be set if child elements are set!
    * @param text
    * @return {@link AnnotationElement} for method chaining
    */

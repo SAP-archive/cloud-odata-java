@@ -2,6 +2,9 @@ package com.sap.core.odata.core.ep.entry;
 
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 
+/**
+ * @author SAP AG
+ */
 public class MediaMetadataImpl implements MediaMetadata {
 
   private String sourceLink;
@@ -45,9 +48,6 @@ public class MediaMetadataImpl implements MediaMetadata {
     this.editLink = editLink;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return "MediaMetadataImpl [sourceLink=" + sourceLink + ", etag=" + etag + ", contentType=" + contentType + ", editLink=" + editLink + "]";
