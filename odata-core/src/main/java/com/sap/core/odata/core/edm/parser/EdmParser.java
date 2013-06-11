@@ -58,13 +58,16 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.api.edm.provider.Using;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import org.apache.cxf.common.util.StringUtils;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EdmParser {
 
+  private Map<String, Set<String>> inscopeMap = new HashMap<String, Set<String>>();
   private Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
-  private Map<String, String> namespaceMap;
+  private Map<String, String> xmlNamespaceMap;
   private Map<String, String> mandatoryNamespaces;
   private Map<FullQualifiedName, EntityType> entityTypesMap = new HashMap<FullQualifiedName, EntityType>();
   private Map<FullQualifiedName, Association> associationsMap = new HashMap<FullQualifiedName, Association>();
@@ -110,6 +113,7 @@ public class EdmParser {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_EDM_2008_09, EdmParserConstants.EDM_SCHEMA);
 
     Schema schema = new Schema();
+    List<Using> usings = new ArrayList<Using>();
     List<ComplexType> complexTypes = new ArrayList<ComplexType>();
     List<EntityType> entityTypes = new ArrayList<EntityType>();
     List<Association> associations = new ArrayList<Association>();
@@ -117,6 +121,7 @@ public class EdmParser {
     List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
 
     schema.setNamespace(reader.getAttributeValue(null, EdmParserConstants.EDM_SCHEMA_NAMESPACE));
+    this.inscopeMap.put(schema.getNamespace(), new HashSet<String>());
     schema.setAlias(reader.getAttributeValue(null, EdmParserConstants.EDM_SCHEMA_ALIAS));
     schema.setAnnotationAttributes(readAnnotationAttribute(reader));
     currentNamespace = schema.getNamespace();
@@ -125,7 +130,9 @@ public class EdmParser {
       if (reader.isStartElement()) {
         extractNamespaces(reader);
         currentHandledStartTagName = reader.getLocalName();
-        if (EdmParserConstants.EDM_ENTITY_TYPE.equals(currentHandledStartTagName)) {
+        if (EdmParserConstants.EDM_USING.equals(currentHandledStartTagName)) {
+          usings.add(readUsing(reader, schema.getNamespace()));
+        } else if (EdmParserConstants.EDM_ENTITY_TYPE.equals(currentHandledStartTagName)) {
           entityTypes.add(readEntityType(reader));
         } else if (EdmParserConstants.EDM_COMPLEX_TYPE.equals(currentHandledStartTagName)) {
           complexTypes.add(readComplexType(reader));
@@ -141,10 +148,41 @@ public class EdmParser {
     if (schema.getAlias() != null) {
       aliasNamespaceMap.put(schema.getAlias(), schema.getNamespace());
     }
-    schema.setEntityTypes(entityTypes).setComplexTypes(complexTypes).setAssociations(associations).setEntityContainers(entityContainers).setAnnotationElements(annotationElements);
+    schema.setUsings(usings).setEntityTypes(entityTypes).setComplexTypes(complexTypes).setAssociations(associations).setEntityContainers(entityContainers).setAnnotationElements(annotationElements);
     return schema;
   }
 
+    private Using readUsing(final XMLStreamReader reader, final String schemaNamespace) 
+            throws XMLStreamException, EntityProviderException {
+        
+        reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_EDM_2008_09, EdmParserConstants.EDM_USING);
+
+        Using using = new Using();
+        using.setNamespace(reader.getAttributeValue(null, EdmParserConstants.EDM_SCHEMA_NAMESPACE));
+        this.inscopeMap.get(schemaNamespace).add(using.getNamespace());
+        using.setAlias(reader.getAttributeValue(null, EdmParserConstants.EDM_SCHEMA_ALIAS));
+        using.setAnnotationAttributes(readAnnotationAttribute(reader));
+
+        List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
+        while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_EDM_2008_09.equals(reader.getNamespaceURI())
+                && EdmParserConstants.EDM_USING.equals(reader.getLocalName()))) {
+            
+            reader.next();
+            if (reader.isStartElement()) {
+                extractNamespaces(reader);
+                currentHandledStartTagName = reader.getLocalName();
+                annotationElements.add(readAnnotationElement(reader));
+            }
+        }
+        using.setAnnotationElements(annotationElements);
+
+        if (using.getAlias() != null) {
+            aliasNamespaceMap.put(using.getAlias(), using.getNamespace());
+        }
+
+        return using;
+    }
+  
   private EntityContainer readEntityContainer(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_EDM_2008_09, EdmParserConstants.EDM_ENTITY_CONTAINER);
     EntityContainer container = new EntityContainer();
@@ -738,11 +776,11 @@ public class EdmParser {
   }
 
   private void checkAllMandatoryNamespacesAvailable() throws EntityProviderException {
-    if (!namespaceMap.containsValue(Edm.NAMESPACE_EDMX_2007_06)) {
+    if (!xmlNamespaceMap.containsValue(Edm.NAMESPACE_EDMX_2007_06)) {
       throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_EDMX_2007_06));
-    } else if (!namespaceMap.containsValue(Edm.NAMESPACE_M_2007_08)) {
+    } else if (!xmlNamespaceMap.containsValue(Edm.NAMESPACE_M_2007_08)) {
       throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_EDMX_2007_06));
-    } else if (!namespaceMap.containsValue(Edm.NAMESPACE_EDM_2008_09)) {
+    } else if (!xmlNamespaceMap.containsValue(Edm.NAMESPACE_EDM_2008_09)) {
       throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_EDMX_2007_06));
     }
   }
@@ -755,7 +793,7 @@ public class EdmParser {
       if (namespacePrefix == null || DEFAULT_NAMESPACE.equals(namespacePrefix)) {
         namespacePrefix = Edm.PREFIX_EDM;
       }
-      namespaceMap.put(namespacePrefix, namespaceUri);
+      xmlNamespaceMap.put(namespacePrefix, namespaceUri);
     }
   }
 
@@ -768,14 +806,11 @@ public class EdmParser {
     } else {
       return new FullQualifiedName(names[0], names[1]);
     }
-
   }
 
   private FullQualifiedName validateEntityTypeWithAlias(final FullQualifiedName aliasName) throws EntityProviderException {
     String namespace = aliasNamespaceMap.get(aliasName.getNamespace());
-    FullQualifiedName fqName = StringUtils.isEmpty(namespace)
-            ? aliasName 
-            : new FullQualifiedName(namespace, aliasName.getName());
+    FullQualifiedName fqName = new FullQualifiedName(namespace, aliasName.getName());
     if (!entityTypesMap.containsKey(fqName)) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Type"));
     }
@@ -830,7 +865,10 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (AssociationSet associationSet : container.getValue().getAssociationSets()) {
         FullQualifiedName association = associationSet.getAssociation();
-        if (associationsMap.containsKey(association) && container.getKey().getNamespace().equals(association.getNamespace())) {
+        if (associationsMap.containsKey(association) 
+                && (container.getKey().getNamespace().equals(association.getNamespace())
+                || this.inscopeMap.get(container.getKey().getNamespace()).contains(association.getNamespace()))) {
+            
           validateAssociationEnd(associationSet.getEnd1(), associationsMap.get(association));
           validateAssociationEnd(associationSet.getEnd2(), associationsMap.get(association));
           boolean end1 = false;
@@ -881,7 +919,7 @@ public class EdmParser {
   }
 
   private void initialize() {
-    namespaceMap = new HashMap<String, String>();
+    xmlNamespaceMap = new HashMap<String, String>();
     mandatoryNamespaces = new HashMap<String, String>();
     mandatoryNamespaces.put(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX_2007_06);
     mandatoryNamespaces.put(Edm.PREFIX_EDM, Edm.NAMESPACE_EDM_2008_09);

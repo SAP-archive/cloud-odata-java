@@ -58,7 +58,6 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
-import org.junit.Ignore;
 
 public class EdmParserTest {
 
@@ -1098,7 +1097,6 @@ public class EdmParserTest {
   }
 
   @Test(expected = EntityProviderException.class)
-  @Ignore
   public void testInvalidEntitySet2() throws XMLStreamException,
       EntityProviderException {
     final String xmWithEntityContainer = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
