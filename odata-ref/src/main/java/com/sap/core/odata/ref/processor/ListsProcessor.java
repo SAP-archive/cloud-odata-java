@@ -443,19 +443,17 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = previousSegments.isEmpty() ?
         uriInfo.getStartEntitySet() : previousSegments.get(previousSegments.size() - 1).getEntitySet();
+    final EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
+    final Map<String, Object> keys = mapKey(uriInfo.getTargetKeyPredicates());
 
-    final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
-    final Map<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
-
-    final Object targetData = dataSource.readRelatedData(
-        entitySet, sourceData, navigationSegment.getEntitySet(), keys);
+    final Object targetData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, keys);
 
     // if (!appliesFilter(targetData, uriInfo.getFilter()))
     if (targetData == null) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
 
-    dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
+    dataSource.deleteRelation(entitySet, sourceData, targetEntitySet, keys);
 
     return ODataResponse.newBuilder().build();
   }
@@ -497,9 +495,8 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = previousSegments.isEmpty() ?
         uriInfo.getStartEntitySet() : previousSegments.get(previousSegments.size() - 1).getEntitySet();
-    final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
-    final Map<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
     final EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
+    final Map<String, Object> keys = mapKey(uriInfo.getTargetKeyPredicates());
 
     final Object targetData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, keys);
 
@@ -1073,6 +1070,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet relatedEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
+      final EdmEntityType relatedEntityType = relatedEntitySet.getEntityType();
 
       final Object relatedValue = entryValues.getProperties().get(navigationPropertyName);
       if (relatedValue == null) {
@@ -1089,17 +1087,17 @@ public class ListsProcessor extends ODataSingleProcessor {
           final List<ODataEntry> relatedValueList = feed.getEntries();
           for (final ODataEntry relatedValues : relatedValueList) {
             Object relatedData = dataSource.newDataObject(relatedEntitySet);
-            setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValues.getProperties(), true);
+            setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValues.getProperties(), true);
             dataSource.createData(relatedEntitySet, relatedData);
-            dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
+            dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntityType));
             createInlinedEntities(relatedEntitySet, relatedData, relatedValues);
           }
         } else if (relatedValue instanceof ODataEntry) {
           final ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
           Object relatedData = dataSource.newDataObject(relatedEntitySet);
-          setStructuralTypeValuesFromMap(relatedData, relatedEntitySet.getEntityType(), relatedValueEntry.getProperties(), true);
+          setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValueEntry.getProperties(), true);
           dataSource.createData(relatedEntitySet, relatedData);
-          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntitySet.getEntityType()));
+          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntityType));
           createInlinedEntities(relatedEntitySet, relatedData, relatedValueEntry);
         } else {
           throw new ODataException("Unexpected class for a related value: " + relatedValue.getClass().getSimpleName());

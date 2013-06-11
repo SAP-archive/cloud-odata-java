@@ -114,6 +114,13 @@ public class UriInfoImpl implements UriInfo {
     return keyPredicates;
   }
 
+  @Override
+  public List<KeyPredicate> getTargetKeyPredicates() {
+    return navigationSegments.isEmpty() ?
+        keyPredicates :
+        navigationSegments.get(navigationSegments.size() - 1).getKeyPredicates();
+  }
+
   public void addNavigationSegment(final NavigationSegment navigationSegment) {
     if (navigationSegments.equals(Collections.EMPTY_LIST)) {
       navigationSegments = new ArrayList<NavigationSegment>();

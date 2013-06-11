@@ -58,6 +58,16 @@ public interface DeleteUriInfo {
   public List<KeyPredicate> getKeyPredicates();
 
   /**
+   * Gets the key predicates used to select a single entity out of the target entity set,
+   * or an empty list if not used - identical to the key predicates from the last entry
+   * retrieved from {@link #getNavigationSegments()} or, if no navigation has been used,
+   * to the result of {@link #getKeyPredicates()}.
+   * @return List of {@link KeyPredicate}
+   * @see #getTargetEntitySet()
+   */
+  public List<KeyPredicate> getTargetKeyPredicates();
+
+  /**
    * Gets the navigation segments, or an empty list if no navigation has been used.
    * @return List of {@link NavigationSegment}
    */
