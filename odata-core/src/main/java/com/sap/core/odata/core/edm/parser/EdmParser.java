@@ -830,7 +830,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (AssociationSet associationSet : container.getValue().getAssociationSets()) {
         FullQualifiedName association = associationSet.getAssociation();
-        if (associationsMap.containsKey(association)) {
+        if (associationsMap.containsKey(association) && container.getKey().getNamespace().equals(association.getNamespace())) {
           validateAssociationEnd(associationSet.getEnd1(), associationsMap.get(association));
           validateAssociationEnd(associationSet.getEnd2(), associationsMap.get(association));
           boolean end1 = false;
