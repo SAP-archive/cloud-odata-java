@@ -122,17 +122,11 @@ public class EdmDouble extends AbstractSimpleType {
     } else if (value instanceof Integer || value instanceof Short || value instanceof Byte) {
       return value.toString();
     } else if (value instanceof Double) {
-      if (((Double) value).isInfinite()) {
-        return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
-      } else {
-        return value.toString();
-      }
+      final String result = value.toString();
+      return ((Double) value).isInfinite() ? result.toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5) : result;
     } else if (value instanceof Float) {
-      if (((Float) value).isInfinite()) {
-        return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
-      } else {
-        return value.toString();
-      }
+      final String result = value.toString();
+      return ((Float) value).isInfinite() ? result.toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5) : result;
     } else if (value instanceof BigDecimal) {
       if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE) {
         return ((BigDecimal) value).toString();

@@ -25,7 +25,6 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
@@ -57,7 +56,8 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
- * Tests for the validation of URI path, query options, and request-body content type.
+ * Tests for the validation of HTTP method, URI path, query options,
+ * and request-body content type.
  * @author SAP AG
  */
 public class ODataRequestHandlerValidationTest extends BaseTest {
@@ -319,31 +319,22 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) throws ODataException {
-    EdmProperty property = null;
-    try {
-      if (ofComplex) {
-        property = (EdmProperty) edm.getEntityType("RefScenario", "Employee").getProperty("Age");
-      } else {
-        property = (EdmProperty) edm.getComplexType("RefScenario", "c_Location").getProperty("Country");
-      }
-      EdmFacets facets = mock(EdmFacets.class);
-      when(facets.isNullable()).thenReturn(nullable);
-      when(property.getFacets()).thenReturn(facets);
-    } catch (final EdmException e) {
-      fail();
-    }
+    EdmProperty property = (EdmProperty) (ofComplex ?
+        edm.getComplexType("RefScenario", "c_Location").getProperty("Country") :
+        edm.getEntityType("RefScenario", "Employee").getProperty("Age"));
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isNullable()).thenReturn(nullable);
+    when(property.getFacets()).thenReturn(facets);
+
     List<String> pathSegments = new ArrayList<String>();
     pathSegments.add("Employees('1')");
     if (ofComplex) {
       pathSegments.add("Location");
-    }
-    if (ofComplex) {
       pathSegments.add("Country");
-    } else if (key) {
-      pathSegments.add("EmployeeId");
     } else {
-      pathSegments.add("Age");
+      pathSegments.add(key ? "EmployeeId" : "Age");
     }
+    pathSegments.add("$value");
 
     wrongRequest(method, pathSegments, null);
   }
@@ -425,6 +416,41 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   @Test
+  public void allowedMethods() throws Exception {
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI0, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI1, false, false), null, null);
+    executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI2, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI4, false, false), null, null);
+    executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI9, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI15, false, false), null, null);
+  }
+
+  @Test
+  public void notAllowedMethod() throws Exception {
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI0, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI1, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI2, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI3, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI4, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI5, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI6A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI6B, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI7A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI7B, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI8, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI9, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI15, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI16, false, false), null);
+    wrongRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI17, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI50A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI50B, false, false), null);
+  }
+
+  @Test
   public void notAllowedOptions() throws Exception {
     wrongOptions(ODataHttpMethod.POST, UriType.URI1, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, true, false, false, false, false, false, false, false);
@@ -472,6 +498,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, true, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, true, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, true, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, true, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, true, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, false, true, false, false);
@@ -497,7 +524,6 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
 
     wrongProperty(ODataHttpMethod.PUT, false, true, false);
     wrongProperty(ODataHttpMethod.PATCH, false, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, false, true, true);
     wrongProperty(ODataHttpMethod.DELETE, false, true, false);
     wrongProperty(ODataHttpMethod.DELETE, false, false, false);
   }

@@ -56,9 +56,7 @@ public class ODataRequestHandler {
 
     final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
 
-    UriInfoImpl uriInfo = null;
     ODataResponse odataResponse;
-    Exception exception = null;
     try {
       service = serviceFactory.createService(context);
       context.setService(service);
@@ -71,7 +69,7 @@ public class ODataRequestHandler {
       UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
       final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
       int timingHandle2 = context.startRuntimeMeasurement("UriParserImpl", "parse");
-      uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
+      final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
       context.stopRuntimeMeasurement(timingHandle2);
 
       final ODataHttpMethod method = request.getMethod();
@@ -93,7 +91,7 @@ public class ODataRequestHandler {
 
       Dispatcher dispatcher = new Dispatcher(service);
       timingHandle2 = context.startRuntimeMeasurement("Dispatcher", "dispatch");
-      odataResponse = dispatcher.dispatch(request.getMethod(), uriInfo, request.getBody(), request.getContentType(), acceptContentType);
+      odataResponse = dispatcher.dispatch(method, uriInfo, request.getBody(), request.getContentType(), acceptContentType);
       context.stopRuntimeMeasurement(timingHandle2);
 
       final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
@@ -115,9 +113,8 @@ public class ODataRequestHandler {
       odataResponse = extendedResponse.build();
 
     } catch (final Exception e) {
-      exception = e;
       ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(context, request.getQueryParameters(), request.getAcceptHeaders());
-      odataResponse = exceptionWrapper.wrapInExceptionResponse(exception);
+      odataResponse = exceptionWrapper.wrapInExceptionResponse(e);
     }
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -166,65 +163,45 @@ public class ODataRequestHandler {
   private static void validateUriMethod(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
-      if (method != ODataHttpMethod.GET) {
+    case URI8:
+      if (method != ODataHttpMethod.GET)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI1:
     case URI6B:
-      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
-    case URI2:
-      if (method == ODataHttpMethod.POST) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
-    case URI3:
-      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
-    case URI4:
-    case URI5:
-      if (method == ODataHttpMethod.DELETE && !uriInfo.isValue()) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      } else if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
-    case URI6A:
-      if (method == ODataHttpMethod.POST) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      } else if (method != ODataHttpMethod.GET) {
-        throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
-      }
-      break;
-
-    case URI7A:
-      if (method == ODataHttpMethod.POST) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
     case URI7B:
       if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
 
-    case URI8:
-      if (method != ODataHttpMethod.GET) {
+    case URI2:
+    case URI6A:
+    case URI7A:
+      if (method != ODataHttpMethod.GET
+          && method != ODataHttpMethod.PUT
+          && method != ODataHttpMethod.DELETE
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
+      break;
+
+    case URI3:
+      if (method != ODataHttpMethod.GET
+          && method != ODataHttpMethod.PUT
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI4:
+    case URI5:
+      if (method != ODataHttpMethod.GET
+          && method != ODataHttpMethod.PUT
+          && method != ODataHttpMethod.DELETE
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue())
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       break;
 
     case URI9:
@@ -242,20 +219,17 @@ public class ODataRequestHandler {
 
     case URI15:
     case URI16:
+    case URI50A:
+    case URI50B:
       if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
 
     case URI17:
-      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.PUT && method != ODataHttpMethod.DELETE) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
-    case URI50A:
-    case URI50B:
-      if (method != ODataHttpMethod.GET) {
+      if (method != ODataHttpMethod.GET
+          && method != ODataHttpMethod.PUT
+          && method != ODataHttpMethod.DELETE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
@@ -373,29 +347,18 @@ public class ODataRequestHandler {
   }
 
   private static void checkProperty(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
-    switch (uriInfo.getUriType()) {
-    case URI4:
-    case URI5:
-      if (isPropertyKey(uriInfo)) {
+    if (uriInfo.getUriType() == UriType.URI4 || uriInfo.getUriType() == UriType.URI5) {
+      if (isPropertyKey(uriInfo))
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      if (method == ODataHttpMethod.DELETE) {
-        if (!isPropertyNullable(getProperty(uriInfo))) {
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-        }
-      }
-      break;
-
-    default:
-      break;
+      if (method == ODataHttpMethod.DELETE
+          && !isPropertyNullable(getProperty(uriInfo)))
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
     }
   }
 
   private static EdmProperty getProperty(final UriInfo uriInfo) {
-    if (uriInfo.getPropertyPath() == null || uriInfo.getPropertyPath().isEmpty()) {
-      return null;
-    }
-    return uriInfo.getPropertyPath().get(uriInfo.getPropertyPath().size() - 1);
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
+    return propertyPath == null || propertyPath.isEmpty() ? null : propertyPath.get(propertyPath.size() - 1);
   }
 
   private static boolean isPropertyKey(final UriInfo uriInfo) throws EdmException {
