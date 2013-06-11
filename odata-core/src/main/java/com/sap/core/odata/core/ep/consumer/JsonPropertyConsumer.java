@@ -47,9 +47,9 @@ public class JsonPropertyConsumer {
 
       return result;
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -68,9 +68,9 @@ public class JsonPropertyConsumer {
           readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping) :
           readSimpleProperty(reader, entityPropertyInfo, typeMapping);
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -87,6 +87,7 @@ public class JsonPropertyConsumer {
           value = reader.nextBoolean();
           value = value.toString();
         } else {
+          //TODO: I18N
           throw new EntityProviderException(EntityProviderException.COMMON);
         }
         break;
@@ -98,6 +99,7 @@ public class JsonPropertyConsumer {
           value = reader.nextInt();
           value = value.toString();
         } else {
+          //TODO: I18N
           throw new EntityProviderException(EntityProviderException.COMMON);
         }
         break;
@@ -105,6 +107,7 @@ public class JsonPropertyConsumer {
         if (tokenType == JsonToken.STRING) {
           value = reader.nextString();
         } else {
+          //TODO: I18N
           throw new EntityProviderException(EntityProviderException.COMMON);
         }
         break;

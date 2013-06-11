@@ -67,11 +67,11 @@ public class JsonEntryConsumer {
         throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     return entryResult;
@@ -227,7 +227,7 @@ public class JsonEntryConsumer {
           }
 
         } catch (ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
       reader.endObject();
@@ -243,7 +243,7 @@ public class JsonEntryConsumer {
         try {
           inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
         } catch (final ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
       ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readInlineFeedStandalone();
@@ -256,7 +256,7 @@ public class JsonEntryConsumer {
         try {
           callback.handleReadFeed(result);
         } catch (final ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
     }

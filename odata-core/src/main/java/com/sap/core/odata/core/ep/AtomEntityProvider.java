@@ -159,7 +159,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       return response;
     } catch (UnsupportedEncodingException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (writer != null) {
@@ -169,7 +169,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -201,10 +201,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .idLiteral(as.getLocation());
       return response.build();
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -214,7 +214,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -247,10 +247,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
       return response;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -260,7 +260,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -289,10 +289,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -302,7 +302,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -334,10 +334,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -347,7 +347,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -374,10 +374,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -387,7 +387,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -414,10 +414,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -427,7 +427,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -453,7 +453,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
         return writeSingleTypedElement(info, data);
       }
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 

@@ -74,9 +74,9 @@ public class XmlEntryConsumer {
 
       return readEntryResult;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -424,7 +424,7 @@ public class XmlEntryConsumer {
         callback.handleReadEntry(callbackInfo);
       }
     } catch (ODataApplicationException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -447,7 +447,7 @@ public class XmlEntryConsumer {
       try {
         return callback.receiveReadProperties(currentReadProperties, navigationProperty);
       } catch (ODataApplicationException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
     }
   }

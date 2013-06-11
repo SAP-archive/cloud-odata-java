@@ -14,6 +14,8 @@ public class EntityProviderException extends ODataMessageException {
 
   /** INVALID_STATE requires no content value */
   public static final MessageReference COMMON = createMessageReference(EntityProviderException.class, "COMMON");
+  /** EXCEPTION_OCCURRED requires 1 content value ('exception name') */
+  public static final MessageReference EXCEPTION_OCCURRED = createMessageReference(EntityProviderException.class, "EXCEPTION_OCCURRED");
   /** INVALIDMAPPING requires 1 content value ('propertyName') */
   public static final MessageReference INVALID_MAPPING = createMessageReference(EntityProviderException.class, "INVALID_MAPPING");
   /** INVALIDMAPPING requires 2 content values ('supplied entity type' and 'content entity type') */
@@ -44,11 +46,11 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference NOT_SET_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "NOT_SET_CHARACTER_ENCODING");
   /** UNSUPPORTED_CHARACTER_ENCODING requires 1 content value ('found but unsupported character encoding') */
   public static final MessageReference UNSUPPORTED_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "UNSUPPORTED_CHARACTER_ENCODING");
-  /** INVALID_STATE requires no content value */
+  /** MEDIA_DATA_NOT_INITIAL requires no content value */
   public static final MessageReference MEDIA_DATA_NOT_INITIAL = createMessageReference(EntityProviderException.class, "MEDIA_DATA_NOT_INITIAL");
-  /** INVALID_STATE requires 1 content value ('actual token') */
+  /** END_DOCUMENT_EXPECTED requires 1 content value ('actual token') */
   public static final MessageReference END_DOCUMENT_EXPECTED = createMessageReference(EntityProviderException.class, "END_DOCUMENT_EXPECTED");
-  /** INVALID_STATE requires no content value */
+  /** MISSING_RESULTS_ARRAY requires no content value */
   public static final MessageReference MISSING_RESULTS_ARRAY = createMessageReference(EntityProviderException.class, "MISSING_RESULTS_ARRAY");
 
   public EntityProviderException(final MessageReference messageReference) {

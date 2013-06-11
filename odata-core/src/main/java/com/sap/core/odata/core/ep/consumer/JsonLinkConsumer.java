@@ -48,9 +48,9 @@ public class JsonLinkConsumer {
 
       return result;
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -108,9 +108,9 @@ public class JsonLinkConsumer {
 
       reader.peek(); // to assert end of document
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     return links;

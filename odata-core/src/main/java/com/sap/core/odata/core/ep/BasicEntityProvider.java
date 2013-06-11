@@ -65,7 +65,7 @@ public class BasicEntityProvider {
       buffer.flush();
       return buffer.toByteArray();
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -85,7 +85,7 @@ public class BasicEntityProvider {
       }
       bufferedReader.close();
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return stringBuilder.toString();
   }
@@ -103,7 +103,7 @@ public class BasicEntityProvider {
     try {
       type = (EdmSimpleType) edmProperty.getType();
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -116,7 +116,7 @@ public class BasicEntityProvider {
           return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), typeMapping);
         }
       } catch (EdmException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
     }
   }
@@ -156,7 +156,7 @@ public class BasicEntityProvider {
       }
 
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -173,7 +173,7 @@ public class BasicEntityProvider {
       try {
         stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
       builder.entity(stream);
     }
@@ -221,11 +221,11 @@ public class BasicEntityProvider {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
       XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, predefinedNamespaces);
     } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (FactoryConfigurationError e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     builder.entity(csb.getInputStream());
     builder.contentHeader(ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString());

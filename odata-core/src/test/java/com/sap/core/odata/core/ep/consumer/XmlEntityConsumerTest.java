@@ -1122,7 +1122,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.EXCEPTION_OCCURRED.addContent("WstxParsingException"));
   }
 
   /**
@@ -1288,7 +1288,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.EXCEPTION_OCCURRED.addContent("WstxParsingException"));
   }
 
   /**

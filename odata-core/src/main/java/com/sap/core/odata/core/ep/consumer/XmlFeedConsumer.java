@@ -54,7 +54,7 @@ public class XmlFeedConsumer {
       // read feed data (metadata and entries)
       return readFeedData(reader, eia, entryReadProperties);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 

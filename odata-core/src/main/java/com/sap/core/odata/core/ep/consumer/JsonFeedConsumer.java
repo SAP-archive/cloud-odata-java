@@ -43,11 +43,11 @@ public class JsonFeedConsumer {
       }
 
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return new ODataFeedImpl(entries, feedMetadata);
   }

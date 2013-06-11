@@ -81,10 +81,11 @@ public class ODataRequestHandler {
       if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
           || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE) {
         final ContentType requestContentType = ContentType.parse(request.getContentType());
-        if (requestContentType == null)
+        if (requestContentType == null) {
           throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.CONTENT_TYPE, request.getContentType()));
-        else
+        } else {
           checkRequestContentType(uriInfo, requestContentType);
+        }
       }
 
       final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));

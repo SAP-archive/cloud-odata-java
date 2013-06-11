@@ -124,7 +124,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -134,7 +134,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -162,7 +162,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           .idLiteral(producer.getLocation())
           .build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -172,7 +172,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -201,7 +201,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -211,7 +211,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -233,7 +233,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.close();
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -243,7 +243,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -264,7 +264,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -274,7 +274,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -300,7 +300,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -335,7 +335,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (outStream != null) {
@@ -345,7 +345,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -370,7 +370,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
         return writeSingleTypedElement(info, data);
       }
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
