@@ -141,6 +141,12 @@ public class EdmParserTest {
       + "</End>"
       + "<End Type=\"RefScenario.Manager\" Multiplicity=\"1\" Role=\"r_Manager\"/>"
       + "</Association>"
+      + "</Schema>"
+      + "<Schema Namespace=\""
+      + NAMESPACE2
+      + "\" xmlns=\""
+      + Edm.NAMESPACE_EDM_2008_09
+      + "\">"
       + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
       + "<EntitySet Name=\"Employees\" EntityType=\"RefScenario.Employee\"/>"
       + "<EntitySet Name=\"Managers\" EntityType=\"RefScenario.Manager\"/>"
@@ -567,14 +573,13 @@ public class EdmParserTest {
     DataServices result = parser.readMetadata(reader, true);
     for (Schema schema : result.getSchemas()) {
       for (EntityContainer container : schema.getEntityContainers()) {
+        assertEquals(NAMESPACE2, schema.getNamespace());
         assertEquals("Container1", container.getName());
         assertEquals(Boolean.TRUE, container.isDefaultEntityContainer());
         for (AssociationSet assocSet : container.getAssociationSets()) {
           assertEquals(ASSOCIATION, assocSet.getName());
-          assertEquals(ASSOCIATION, assocSet.getAssociation()
-              .getName());
-          assertEquals(NAMESPACE, assocSet.getAssociation()
-              .getNamespace());
+          assertEquals(ASSOCIATION, assocSet.getAssociation().getName());
+          assertEquals(NAMESPACE, assocSet.getAssociation().getNamespace());
           AssociationSetEnd end;
           if ("Employees".equals(assocSet.getEnd1().getEntitySet())) {
             end = assocSet.getEnd1();
@@ -1190,9 +1195,8 @@ public class EdmParserTest {
 
   }
 
-  @Test(expected = EntityProviderException.class)
-  public void testInvalidEntitySet2() throws XMLStreamException,
-      EntityProviderException {
+  @Test
+  public void testEntityTypeInOtherSchema() throws XMLStreamException, EntityProviderException {
     final String xmWithEntityContainer = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\""
         + Edm.NAMESPACE_EDMX_2007_06
         + "\">"
@@ -1224,8 +1228,17 @@ public class EdmParserTest {
         + "</edmx:Edmx>";
     EdmParser parser = new EdmParser();
     XMLStreamReader reader = createStreamReader(xmWithEntityContainer);
-    parser.readMetadata(reader, true);
-
+    DataServices result = parser.readMetadata(reader, true);
+    assertEquals("2.0", result.getDataServiceVersion());
+    for (Schema schema : result.getSchemas()) {
+      for (EntityContainer container : schema.getEntityContainers()) {
+        assertEquals("Container1", container.getName());
+        for (EntitySet entitySet : container.getEntitySets()) {
+          assertEquals(NAMESPACE2, entitySet.getEntityType().getNamespace());
+          assertEquals("Photo", entitySet.getEntityType().getName());
+        }
+      }
+    }
   }
 
   @Test
