@@ -6,6 +6,9 @@ import com.sap.core.odata.api.servicedocument.Categories;
 import com.sap.core.odata.api.servicedocument.Category;
 import com.sap.core.odata.api.servicedocument.Fixed;
 
+/**
+ * @author SAP AG
+ */
 public class CategoriesImpl implements Categories {
   private String href;
   private Fixed fixed;

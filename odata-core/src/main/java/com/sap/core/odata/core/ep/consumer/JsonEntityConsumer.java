@@ -21,7 +21,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class JsonEntityConsumer {
 
-  /** Default used charset for writer and response content header */
+  /** Default used charset for reader */
   private static final String DEFAULT_CHARSET = "UTF-8";
 
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {

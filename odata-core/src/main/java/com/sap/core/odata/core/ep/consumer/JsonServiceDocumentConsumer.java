@@ -14,7 +14,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.provider.EdmEntitySetInfoImplProv;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.servicedocument.ServiceDocumentImpl;
@@ -49,8 +48,6 @@ public class JsonServiceDocumentConsumer {
     } catch (final IllegalStateException e) {
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-    } catch (final ODataException e) {
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return new ServiceDocumentImpl().setEntitySetsInfo(entitySets);
@@ -93,8 +90,8 @@ public class JsonServiceDocumentConsumer {
     InputStreamReader isReader;
     try {
       isReader = new InputStreamReader(in, DEFAULT_CHARSET);
-    } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()));
+    } catch (final UnsupportedEncodingException e) {
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return new JsonReader(isReader);
   }

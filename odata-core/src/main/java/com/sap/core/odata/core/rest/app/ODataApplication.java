@@ -9,6 +9,9 @@ import javax.ws.rs.core.Application;
 import com.sap.core.odata.core.rest.ODataExceptionMapperImpl;
 import com.sap.core.odata.core.rest.ODataRootLocator;
 
+/**
+ * @author SAP AG
+ */
 public class ODataApplication extends Application {
 
   @Override

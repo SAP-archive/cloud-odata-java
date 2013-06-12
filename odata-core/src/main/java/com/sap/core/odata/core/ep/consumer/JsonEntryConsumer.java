@@ -29,6 +29,9 @@ import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
+/**
+ * @author SAP AG
+ */
 public class JsonEntryConsumer {
 
   private final Map<String, Object> properties = new HashMap<String, Object>();
@@ -90,7 +93,7 @@ public class JsonEntryConsumer {
       handleName(name);
     }
 
-    //TODO: Ca validate created entry
+    //TODO: validate created entry
   }
 
   private void handleName(final String name) throws IOException, EdmException, EntityProviderException {
@@ -271,7 +274,6 @@ public class JsonEntryConsumer {
       expandSelectTree.setExplicitlySelected();
       expandSelectTree.putLink(navigationPropertyName, new ExpandSelectTreeNodeImpl());
     }
-
   }
 
   private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {

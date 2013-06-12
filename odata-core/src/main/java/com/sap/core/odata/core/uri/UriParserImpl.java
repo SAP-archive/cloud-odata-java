@@ -48,7 +48,7 @@ import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 
 /**
- * Parser for the OData part of the URL
+ * Parser for the OData part of the URL.
  * @author SAP AG
  */
 public class UriParserImpl extends UriParser {

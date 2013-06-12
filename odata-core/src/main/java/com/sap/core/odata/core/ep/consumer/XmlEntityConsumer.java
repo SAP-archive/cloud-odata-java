@@ -26,8 +26,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class XmlEntityConsumer {
 
-  /** Default used charset for writer and response content header */
-  private static final String DEFAULT_CHARSET = "utf-8";
+  /** Default used charset for reader */
+  private static final String DEFAULT_CHARSET = "UTF-8";
 
   public XmlEntityConsumer() throws EntityProviderException {
     super();

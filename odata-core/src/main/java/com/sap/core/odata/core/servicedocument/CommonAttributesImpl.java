@@ -6,6 +6,9 @@ import java.util.List;
 import com.sap.core.odata.api.servicedocument.CommonAttributes;
 import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
 
+/**
+ * @author SAP AG
+ */
 public class CommonAttributesImpl implements CommonAttributes {
   private String base;
   private String lang;

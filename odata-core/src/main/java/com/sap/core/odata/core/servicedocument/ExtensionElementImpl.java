@@ -5,6 +5,9 @@ import java.util.List;
 import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
 import com.sap.core.odata.api.servicedocument.ExtensionElement;
 
+/**
+ * @author SAP AG
+ */
 public class ExtensionElementImpl implements ExtensionElement {
   private String namespace;
   private String prefix;

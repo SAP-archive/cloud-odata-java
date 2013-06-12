@@ -13,12 +13,17 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.MatchResult;
 
+import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.commons.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class BatchRequestParser {
   private static final String ANY_CHARACTERS = ".*";
   private Scanner scanner;
@@ -116,24 +121,24 @@ public class BatchRequestParser {
       nextLineNumber();
       mimeHeaders = getHeaders();//NO header fields are required in multipart
 
-      String contentType = mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TYPE);
+      String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE);
       if (contentType == null) {
         throw new ODataException("No Content-Type field for MIME-header is present");
       }
       if (isChangeSet) {
-        if (BatchRequestConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TRANSFER_ENCODING));
+        if (HttpContentType.APPLICATION_HTTP.equals(contentType)) {
+          validateEncoding(mimeHeaders.get(BatchRequestConstants.CONTENT_TRANSFER_ENCODING));
           parseNewLine();// mandatory
           object = parseRequest(isChangeSet);
         } else {
           throw new ODataException("Invalid Content-Type field for MIME-header");
         }
       } else {
-        if (BatchRequestConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TRANSFER_ENCODING));
+        if (HttpContentType.APPLICATION_HTTP.equals(contentType)) {
+          validateEncoding(mimeHeaders.get(BatchRequestConstants.CONTENT_TRANSFER_ENCODING));
           parseNewLine();// mandatory
           object = parseRequest(isChangeSet);
-        } else if (contentType.matches(OPTIONAL_WHITESPACE_REG_EX + BatchRequestConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
+        } else if (contentType.matches(OPTIONAL_WHITESPACE_REG_EX + HttpContentType.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
           List<Object> changeSetRequests = new LinkedList<Object>();
           parseNewLine();// mandatory
@@ -185,14 +190,14 @@ public class BatchRequestParser {
       request.setMethod(ODataHttpMethod.valueOf(method));
       request.setRequestHeaders(getRequestHeaders());
       request.setHeaders(getHeaders());
-      if (request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE) != null) {
-        request.setContentType(ContentType.create(request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_TYPE)));
+      if (request.getRequestHeaderValue(HttpHeaders.CONTENT_TYPE) != null) {
+        request.setContentType(ContentType.create(request.getRequestHeaderValue(HttpHeaders.CONTENT_TYPE)));
       }
-      if (request.getRequestHeaderValue(BatchRequestConstants.ACCEPT) != null) {
-        request.setAcceptHeaders(parseAcceptHeaders(request.getRequestHeaderValue(BatchRequestConstants.ACCEPT)));
+      if (request.getRequestHeaderValue(HttpHeaders.ACCEPT) != null) {
+        request.setAcceptHeaders(parseAcceptHeaders(request.getRequestHeaderValue(HttpHeaders.ACCEPT)));
       }
-      if (request.getRequestHeaderValue("Accept-Language") != null) {
-        request.setAcceptableLanguages(parseAcceptableLanguages(request.getRequestHeaderValue("Accept-Language")));
+      if (request.getRequestHeaderValue(HttpHeaders.ACCEPT_LANGUAGE) != null) {
+        request.setAcceptableLanguages(parseAcceptableLanguages(request.getRequestHeaderValue(HttpHeaders.ACCEPT_LANGUAGE)));
       }
 
       parseNewLine();
@@ -346,11 +351,11 @@ public class BatchRequestParser {
   private String getBoundary(final String contentType) throws ODataException {
     Scanner contentTypeScanner = new Scanner(contentType);
     contentTypeScanner = contentTypeScanner.useDelimiter(";\\s?");
-    if (contentTypeScanner.hasNext(OPTIONAL_WHITESPACE_REG_EX + BatchRequestConstants.MULTIPART_MIXED)) {
-      contentTypeScanner.next(OPTIONAL_WHITESPACE_REG_EX + BatchRequestConstants.MULTIPART_MIXED);
+    if (contentTypeScanner.hasNext(OPTIONAL_WHITESPACE_REG_EX + HttpContentType.MULTIPART_MIXED)) {
+      contentTypeScanner.next(OPTIONAL_WHITESPACE_REG_EX + HttpContentType.MULTIPART_MIXED);
     } else {
       contentTypeScanner.close();
-      throw new ODataException("Content-Type of the batch request should be " + BatchRequestConstants.MULTIPART_MIXED + " line: " + linenumber);
+      throw new ODataException("Content-Type of the batch request should be " + HttpContentType.MULTIPART_MIXED + " line: " + linenumber);
     }
     if (contentTypeScanner.hasNext(OPTIONAL_WHITESPACE_REG_EX + "boundary=" + ANY_CHARACTERS + ZERO_OR_MORE_WHITESPACES_REG_EX)) {
       contentTypeScanner.next(OPTIONAL_WHITESPACE_REG_EX + "boundary=(\".*\"|.*)" + ZERO_OR_MORE_WHITESPACES_REG_EX);
