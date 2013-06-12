@@ -1211,14 +1211,10 @@ public class EdmParserTest {
         + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
         + "</EntityType>"
         + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
-        + "<EntitySet Name=\"Photos\" EntityType=\"RefScenario2.Photo\"/>"
+        + "<EntitySet Name=\"Photos\" EntityType=\"" + NAMESPACE2 + ".Photo\"/>"
         + "</EntityContainer>"
         + "</Schema>"
-        + "<Schema Namespace=\""
-        + NAMESPACE2
-        + "\" xmlns=\""
-        + Edm.NAMESPACE_EDM_2008_09
-        + "\">"
+        + "<Schema Namespace=\"" + NAMESPACE2 + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">"
         + "<EntityType Name= \"Photo\">"
         + "<Key><PropertyRef Name=\"Id\"/></Key>"
         + "<Property Name=\"Id\" Type=\"Edm.Int32\" Nullable=\"false\"/>"

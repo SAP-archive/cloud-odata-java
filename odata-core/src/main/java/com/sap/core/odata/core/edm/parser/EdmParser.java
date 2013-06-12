@@ -895,8 +895,8 @@ public class EdmParser {
     validateEntityTypes();
     validateComplexTypes();
     validateRelationship();
-    validateAssociation();
     validateEntitySet();
+    validateAssociation();
   }
 
   private void initialize() {
