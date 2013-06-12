@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.edm;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -12,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type DateTime
+ * Implementation of the EDM simple type DateTime.
  * @author SAP AG
  */
 public class EdmDateTime extends AbstractSimpleType {
@@ -22,11 +21,6 @@ public class EdmDateTime extends AbstractSimpleType {
           + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.(\\p{Digit}{0,3}?)0*)?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
-  private static final SimpleDateFormat DATE_FORMAT;
-  static {
-    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-  }
 
   public static EdmDateTime getInstance() {
     return instance;
@@ -153,32 +147,64 @@ public class EdmDateTime extends AbstractSimpleType {
       return "/Date(" + timeInMillis + ")/";
     }
 
-    StringBuilder result = new StringBuilder(DATE_FORMAT.format(timeInMillis));
+    Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    dateTimeValue.setTimeInMillis(timeInMillis);
 
-    final int digits = timeInMillis % 1000 == 0 ? 0 : timeInMillis % 100 == 0 ? 1 : timeInMillis % 10 == 0 ? 2 : 3;
-    if (digits > 0) {
-      result.append('.');
-      for (int d = 100; d > 0; d /= 10) {
-        final byte digit = (byte) (timeInMillis % (d * 10) / d);
-        if (digit > 0 || timeInMillis % d > 0) {
-          result.append(String.valueOf(digit));
-        }
-      }
-    }
-    if (facets != null && facets.getPrecision() != null) {
-      final int precision = facets.getPrecision();
-      if (digits > precision) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-      if (digits == 0 && precision > 0) {
-        result.append('.');
-      }
-      for (int i = digits; i < precision; i++) {
-        result.append('0');
-      }
+    StringBuilder result = new StringBuilder(23); // 23 characters are enough for millisecond precision.
+    final int year = dateTimeValue.get(Calendar.YEAR);
+    appendTwoDigits(result, year / 100);
+    appendTwoDigits(result, year % 100);
+    result.append('-');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.MONTH) + 1); // month is zero-based
+    result.append('-');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.DAY_OF_MONTH));
+    result.append('T');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.HOUR_OF_DAY));
+    result.append(':');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.MINUTE));
+    result.append(':');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.SECOND));
+
+    try {
+      appendMilliseconds(result, timeInMillis, facets);
+    } catch (final IllegalArgumentException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets), e);
     }
 
     return result.toString();
+  }
+
+  /**
+   * Appends the given number to the given string builder,
+   * assuming that the number has at most two digits, performance-optimized.
+   * @param result a {@link StringBuilder}
+   * @param number an integer that must satisfy <code>0 <= number <= 99</code>
+   */
+  private static void appendTwoDigits(StringBuilder result, final int number) {
+    result.append((char) ('0' + number / 10));
+    result.append((char) ('0' + number % 10));
+  }
+
+  protected static void appendMilliseconds(StringBuilder result, final long milliseconds, final EdmFacets facets) throws IllegalArgumentException {
+    final int digits = milliseconds % 1000 == 0 ? 0 : milliseconds % 100 == 0 ? 1 : milliseconds % 10 == 0 ? 2 : 3;
+    if (digits > 0) {
+      result.append('.');
+      for (int d = 100; d > 0; d /= 10) {
+        final byte digit = (byte) (milliseconds % (d * 10) / d);
+        if (digit > 0 || milliseconds % d > 0)
+          result.append((char) ('0' + digit));
+      }
+    }
+
+    if (facets != null && facets.getPrecision() != null) {
+      final int precision = facets.getPrecision();
+      if (digits > precision)
+        throw new IllegalArgumentException();
+      if (digits == 0 && precision > 0)
+        result.append('.');
+      for (int i = digits; i < precision; i++)
+        result.append('0');
+    }
   }
 
   @Override
