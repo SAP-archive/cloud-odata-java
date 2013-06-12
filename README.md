@@ -15,6 +15,20 @@ The OData Library (Java) is a library which enables developers to implement ODat
 - Clear separation between Core and API 
 - Option to build extensions on top
 
+### Some more Background ###
+
+The basic idea bhind this project is to have a code base that can continue development to support future OData 4.0 standard. OData 4.0 is expected to be release by OAISI in 2013. For that the code is modular and has following components:
+
+- URI parser: currently a OData 2.0 parser
+- Dispatcher: is handling OData 2.0 URI types
+- Processor interfaces: to support server side implementations
+- EDM model API: OData 2.0 compliant, supports lazy and partial loading of metadata
+- Entity provider: for JSON and Atom default formats and extendible to support future formats
+
+The support of OData 2.0 is just mandatory because of there is already a wide adoption of this standard version. It is also an option to extend the OData 2.0 library to support features of OData 3.0 ir required. Contributions to this are welcome.
+
+For OData 4.0 development could happen in a new branch and we target that OData 2.0 (3.0) and OData 4.0 can exist in parallel. 
+
 Maven
 -----
 
