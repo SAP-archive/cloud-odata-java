@@ -1117,7 +1117,7 @@ public class EdmParserTest {
         + "\" Type=\"Edm.String\" Nullable=\"false\"/>"
         + "</EntityType>"
         + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">"
-        + "<EntitySet Name=\"Photos\" EntityType=\"RefScenario2.Photo\"/>"
+        + "<EntitySet Name=\"Photos\" EntityType=\"" + NAMESPACE2 + ".Photo\"/>"
         + "</EntityContainer>"
         + "</Schema>"
         + "<Schema Namespace=\""
@@ -1135,7 +1135,6 @@ public class EdmParserTest {
     EdmParser parser = new EdmParser();
     XMLStreamReader reader = createStreamReader(xmWithEntityContainer);
     parser.readMetadata(reader, true);
-
   }
 
   @Test
