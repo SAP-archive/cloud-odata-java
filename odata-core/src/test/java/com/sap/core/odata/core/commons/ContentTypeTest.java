@@ -80,6 +80,17 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test
+  public void creationContentTypeImageJpeg() {
+    ContentType mt = ContentType.create("image/jpeg");
+
+    assertEquals("image", mt.getType());
+    assertEquals("jpeg", mt.getSubtype());
+    assertEquals("image/jpeg", mt.toString());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
+  }
+
+  
+  @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
 
@@ -100,7 +111,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("multipart", mt.getType());
     assertEquals("mixed", mt.getSubtype());
     assertEquals("multipart/mixed", mt.toString());
-    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
     assertEquals(0, mt.getParameters().size());
     assertEquals(ContentType.MULTIPART_MIXED, mt);
   }

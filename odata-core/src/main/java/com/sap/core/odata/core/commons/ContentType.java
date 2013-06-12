@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -55,7 +57,15 @@ import java.util.TreeMap;
 public class ContentType {
 
   public enum ODataFormat {
-    ATOM, XML, JSON, CUSTOM
+    ATOM, XML, JSON, MIME, CUSTOM
+  }
+  private static final Set<String> KNOWN_MIME_TYPES = new HashSet<String>();
+  static {
+    KNOWN_MIME_TYPES.add("audio");
+    KNOWN_MIME_TYPES.add("image");
+    KNOWN_MIME_TYPES.add("video");
+    KNOWN_MIME_TYPES.add("multipart");
+    KNOWN_MIME_TYPES.add("text");
   }
 
   private static final char WHITESPACE_CHAR = ' ';
@@ -155,7 +165,7 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(final String type, final String subtype) {
-    return new ContentType(type, subtype, mapToODataFormat(subtype), null);
+    return new ContentType(type, subtype, mapToODataFormat(type, subtype), null);
   }
 
   /**
@@ -166,7 +176,7 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(final String type, final String subtype, final Map<String, String> parameters) {
-    return new ContentType(type, subtype, mapToODataFormat(subtype), parameters);
+    return new ContentType(type, subtype, mapToODataFormat(type, subtype), parameters);
   }
 
   /**
@@ -266,19 +276,22 @@ public class ContentType {
    * @param subtype
    * @return
    */
-  private static ODataFormat mapToODataFormat(final String subtype) {
-    ODataFormat odataFormat = null;
-    if (subtype.contains("atom")) {
-      odataFormat = ODataFormat.ATOM;
-    } else if (subtype.contains("xml")) {
-      odataFormat = ODataFormat.XML;
-    } else if (subtype.contains("json")) {
-      odataFormat = ODataFormat.JSON;
-    } else {
-      odataFormat = ODataFormat.CUSTOM;
+  private static ODataFormat mapToODataFormat(final String type, final String subtype) {
+    ODataFormat odataFormat = ODataFormat.CUSTOM;
+    if(type.contains("application")) {
+      if (subtype.contains("atom")) {
+        odataFormat = ODataFormat.ATOM;
+      } else if (subtype.contains("xml")) {
+        odataFormat = ODataFormat.XML;
+      } else if (subtype.contains("json")) {
+        odataFormat = ODataFormat.JSON;
+      }
+    } else if(KNOWN_MIME_TYPES.contains(type)) {
+      odataFormat = ODataFormat.MIME;
     }
     return odataFormat;
   }
+
 
   /**
    * 
