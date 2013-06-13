@@ -10,23 +10,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
@@ -55,7 +48,6 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class DispatcherTest extends BaseTest {
 
-  @SuppressWarnings("unchecked")
   public static ODataService getMockService() throws ODataException {
     ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
     when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -126,8 +118,6 @@ public class DispatcherTest extends BaseTest {
     when(service.getFunctionImportProcessor()).thenReturn(functionImport);
     when(service.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
     when(service.getEntityMediaProcessor()).thenReturn(entityMedia);
-    //
-    when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList("*/*"));
 
     return service;
   }
@@ -153,29 +143,12 @@ public class DispatcherTest extends BaseTest {
     UriInfoImpl uriInfo = mock(UriInfoImpl.class);
     when(uriInfo.getUriType()).thenReturn(uriType);
     when(uriInfo.isValue()).thenReturn(isValue);
-    when(uriInfo.getSkip()).thenReturn(null);
-    when(uriInfo.getTop()).thenReturn(null);
-    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
-    when(uriInfo.getFunctionImport()).thenReturn(functionImport);
-    EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
-    EdmEntityType entityType = mock(EdmEntityType.class);
-    when(entityType.hasStream()).thenReturn(Boolean.FALSE);
-    when(edmEntitySet.getEntityType()).thenReturn(entityType);
-    when(uriInfo.getTargetEntitySet()).thenReturn(edmEntitySet);
-
-    if (isValue) {
-      EdmProperty edmProp = Mockito.mock(EdmProperty.class);
-      when(edmProp.getMimeType()).thenReturn("*/*");
-      List<EdmProperty> properties = Arrays.asList(edmProp);
-      when(uriInfo.getPropertyPath()).thenReturn(properties);
-    }
-
     return uriInfo;
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     final ODataResponse response = new Dispatcher(getMockService())
-        .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", null);
+        .dispatch(method, mockUriInfo(uriType, isValue), null, HttpContentType.APPLICATION_XML, null);
     assertEquals(expectedMethodName, response.getEntity());
   }
 

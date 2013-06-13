@@ -3,6 +3,7 @@ package com.sap.core.odata.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,8 +16,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
@@ -27,6 +26,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -69,7 +69,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     edm = MockFacade.getMockEdm();
   }
 
-  private List<String> mockPathSegments(final UriType uriType, final boolean moreNavigation, final boolean isValue) {
+  private List<String> createPathSegments(final UriType uriType, final boolean moreNavigation, final boolean isValue) {
     List<String> segments = new ArrayList<String>();
 
     if (uriType == UriType.URI1 || uriType == UriType.URI15) {
@@ -156,7 +156,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     return segments;
   }
 
-  private Map<String, String> mockOptions(
+  private static Map<String, String> createOptions(
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
@@ -221,57 +221,57 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     ODataService service = DispatcherTest.getMockService();
     when(service.getEntityDataModel()).thenReturn(edm);
     when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
-    when(serviceFactory.createService(Matchers.any(ODataContext.class))).thenReturn(service);
+    when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
 
-    Mockito.when(service.getSupportedContentTypes(BatchProcessor.class)).thenReturn(
+    when(service.getSupportedContentTypes(BatchProcessor.class)).thenReturn(
         Arrays.asList(HttpContentType.MULTIPART_MIXED));
 
-    Mockito.when(service.getSupportedContentTypes(EntityProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntityProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8,
         HttpContentType.APPLICATION_ATOM_XML_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
-    Mockito.when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
-    Mockito.when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
-    Mockito.when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
-    Mockito.when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
-    Mockito.when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
-    Mockito.when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.WILDCARD));
-    Mockito.when(service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.WILDCARD));
-    Mockito.when(service.getSupportedContentTypes(FunctionImportValueProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(FunctionImportValueProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.WILDCARD));
 
-    Mockito.when(service.getSupportedContentTypes(EntitySetProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(EntitySetProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8,
         HttpContentType.APPLICATION_ATOM_XML_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
-    Mockito.when(service.getSupportedContentTypes(MetadataProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(MetadataProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_XML_UTF8));
 
-    Mockito.when(service.getSupportedContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList(
+    when(service.getSupportedContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_ATOM_SVC_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
@@ -286,12 +286,12 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       final String requestContentType) throws ODataException {
     ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
     final ODataService service = mockODataService(serviceFactory);
-    when(serviceFactory.createService(Matchers.any(ODataContext.class))).thenReturn(service);
+    when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
     return new ODataRequestHandler(serviceFactory).handle(mockODataRequest(method, pathSegments, queryParameters, requestContentType));
   }
 
   private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
-    executeRequest(method, mockPathSegments(uriType, false, true), null, requestContentType);
+    executeRequest(method, createPathSegments(uriType, false, true), null, requestContentType);
   }
 
   private void wrongRequest(final ODataHttpMethod method, final List<String> pathSegments, final Map<String, String> queryParameters) throws ODataException {
@@ -306,24 +306,22 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       final boolean skipToken, final boolean skip, final boolean top,
       final boolean expand, final boolean select) throws ODataException {
     wrongRequest(method,
-        mockPathSegments(uriType, false, false),
-        mockOptions(format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select));
+        createPathSegments(uriType, false, false),
+        createOptions(format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select));
   }
 
   private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) throws ODataException {
-    if (uriType == UriType.URI1) {
-      wrongRequest(method, Arrays.asList("EmployeeSearch"), null);
-    } else {
-      wrongRequest(method, mockPathSegments(uriType, false, false), null);
-    }
+    wrongRequest(method,
+        uriType == UriType.URI1 ? Arrays.asList("EmployeeSearch") : createPathSegments(uriType, false, false),
+        null);
   }
 
-  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) throws ODataException {
+  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final Boolean key) throws ODataException {
     EdmProperty property = (EdmProperty) (ofComplex ?
         edm.getComplexType("RefScenario", "c_Location").getProperty("Country") :
         edm.getEntityType("RefScenario", "Employee").getProperty("Age"));
     EdmFacets facets = mock(EdmFacets.class);
-    when(facets.isNullable()).thenReturn(nullable);
+    when(facets.isNullable()).thenReturn(false);
     when(property.getFacets()).thenReturn(facets);
 
     List<String> pathSegments = new ArrayList<String>();
@@ -340,7 +338,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType, final HttpStatusCodes expectedStatusCode) throws ODataException {
-    final ODataResponse response = executeRequest(method, mockPathSegments(uriType, true, false), null, null);
+    final ODataResponse response = executeRequest(method, createPathSegments(uriType, true, false), null, null);
     assertNotNull(response);
     assertEquals(expectedStatusCode, response.getStatus());
   }
@@ -354,13 +352,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws ODataException {
-    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
-    assertNotNull(response);
-    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
-  }
-
-  private void unsupportedRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws ODataException {
-    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+    ODataResponse response = executeRequest(method, createPathSegments(uriType, false, isValue), null, requestContentType);
     assertNotNull(response);
     assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
   }
@@ -368,86 +360,44 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws ODataException {
     Map<String, String> options = new HashMap<String, String>(3);
     options.put("$format", dollarFormatOption);
-    ODataResponse response = executeRequest(method, mockPathSegments(uriType, false, isValue), options, null);
+    ODataResponse response = executeRequest(method, createPathSegments(uriType, false, isValue), options, null);
     assertNotNull(response);
     assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
   }
 
   @Test
-  public void requestContentType() throws Exception {
-    executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
-
-    executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
-
-    executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
-  }
-
-  @Test
-  public void requestContentTypeMediaResource() throws Exception {
-    executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, "image/jpeg");
-
-    executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI17, false, true), null, "image/jpeg");
-  }
-
-  @Test
-  public void requestValueContentType() throws Exception {
-    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
-    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
-    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
-    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
-
-    checkValueContentType(ODataHttpMethod.PUT, UriType.URI5, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI5, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI5, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI5, HttpContentType.TEXT_PLAIN);
-
-    checkValueContentType(ODataHttpMethod.PUT, UriType.URI17, HttpContentType.TEXT_PLAIN);
-    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI17, HttpContentType.TEXT_PLAIN);
-  }
-
-  @Test
   public void allowedMethods() throws Exception {
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI0, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI1, false, false), null, null);
-    executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI2, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI4, false, false), null, null);
-    executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI9, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, mockPathSegments(UriType.URI15, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI0, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI1, false, false), null, null);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI2, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI4, false, false), null, null);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI15, false, false), null, null);
   }
 
   @Test
   public void notAllowedMethod() throws Exception {
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI0, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI1, false, false), null);
-    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI2, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI3, false, false), null);
-    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI4, false, false), null);
-    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI5, false, false), null);
-    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI6A, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI6B, false, false), null);
-    wrongRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI7A, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI7B, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI8, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI9, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI15, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI16, false, false), null);
-    wrongRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI17, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI50A, false, false), null);
-    wrongRequest(ODataHttpMethod.DELETE, mockPathSegments(UriType.URI50B, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI0, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI1, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI2, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI3, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI4, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI5, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI6A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI6B, false, false), null);
+    wrongRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI7A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI7B, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI8, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI9, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI15, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI16, false, false), null);
+    wrongRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI17, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI50A, false, false), null);
+    wrongRequest(ODataHttpMethod.DELETE, createPathSegments(UriType.URI50B, false, false), null);
   }
 
   @Test
@@ -520,12 +470,12 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
 
   @Test
   public void wrongProperty() throws Exception {
-    wrongProperty(ODataHttpMethod.DELETE, true, false, false);
+    wrongProperty(ODataHttpMethod.DELETE, true, false);
 
-    wrongProperty(ODataHttpMethod.PUT, false, true, false);
-    wrongProperty(ODataHttpMethod.PATCH, false, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, false, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, false, false, false);
+    wrongProperty(ODataHttpMethod.PUT, false, true);
+    wrongProperty(ODataHttpMethod.PATCH, false, true);
+    wrongProperty(ODataHttpMethod.DELETE, false, true);
+    wrongProperty(ODataHttpMethod.DELETE, false, false);
   }
 
   @Test
@@ -554,6 +504,75 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   @Test
+  public void requestContentType() throws Exception {
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI6B, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI7B, false, false), null, HttpContentType.APPLICATION_XML);
+
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, HttpContentType.MULTIPART_MIXED);
+  }
+
+  @Test
+  public void requestContentTypeMediaResource() throws Exception {
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, "image/jpeg");
+
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI17, false, true), null, "image/jpeg");
+  }
+
+  @Test
+  public void requestValueContentType() throws Exception {
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI5, HttpContentType.TEXT_PLAIN);
+
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI17, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI17, HttpContentType.TEXT_PLAIN);
+  }
+
+  @Test
+  public void requestBinaryValueContentType() throws Exception {
+    EdmProperty property = (EdmProperty) edm.getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
+    when(property.getType()).thenReturn(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    when(property.getMimeType()).thenReturn("image/png");
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI5, "image/png");
+  }
+
+  @Test
   public void wrongRequestContentType() throws Exception {
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
@@ -566,6 +585,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       wrongRequestContentType(oDataHttpMethod, UriType.URI2, ContentType.create("image/jpeg"));
 
       wrongRequestContentType(oDataHttpMethod, UriType.URI3, ContentType.TEXT_PLAIN);
+
       wrongRequestContentType(oDataHttpMethod, UriType.URI4, false, ContentType.TEXT_PLAIN);
 
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
@@ -583,27 +603,20 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       wrongRequestContentType(oDataHttpMethod, UriType.URI7A, ContentType.APPLICATION_ATOM_SVC);
     }
 
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI7B, ContentType.APPLICATION_ATOM_SVC);
+
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI9, ContentType.APPLICATION_OCTET_STREAM);
+  }
+
+  @Test
+  public void unsupportedRequestContentTypeNoMediaResource() throws Exception {
     EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
     when(entityType.hasStream()).thenReturn(false);
+
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_OCTET_STREAM);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI6B, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI7B, ContentType.APPLICATION_ATOM_SVC);
-  }
-
-  @Test
-  public void unsupportedRequestContentTypeNoneMediaResource() throws Exception {
-    EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
-    when(entityType.hasStream()).thenReturn(false);
-
-    unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "application/octet-stream");
-  }
-
-  @Test
-  public void notAllowedMethodRequests() throws Exception {
-    ODataResponse response = executeRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI1, false, false), null, "application/xml");
-    assertNotNull(response);
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED, response.getStatus());
   }
 
   @Test
