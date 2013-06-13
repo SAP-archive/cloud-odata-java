@@ -297,6 +297,33 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
   }
 
+  @Test
+  public void readDeltaLink() throws Exception {
+    // prepare
+    String content = readFile("feed_with_delta_link.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false).build();
+
+    ODataFeed feed = xec.readFeed(entitySet, reqContent, consumerProperties);
+    assertNotNull(feed);
+
+    FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+
+    String deltaLink = feedMetadata.getDeltaLink();
+    //Null means no deltaLink found
+    assertNotNull(deltaLink);
+
+    assertEquals("http://thisisadeltalink", deltaLink);
+  }
+
   /** Teams('1')?$expand=nt_Employees */
   @Test
   public void readWithInlineContentAndCallback() throws Exception {
@@ -386,7 +413,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   @Test
   public void readInlineBuildingEntry() throws Exception {
     // prepare
-
     String content = readFile("expandedBuilding.xml");
     assertNotNull(content);
 
@@ -1445,6 +1471,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     FeedMetadata metadata = feedResult.getFeedMetadata();
     assertNull(metadata.getInlineCount());
     assertNull(metadata.getNextLink());
+    assertNull(metadata.getDeltaLink());
     // entries
     List<ODataEntry> entries = feedResult.getEntries();
     assertEquals(6, entries.size());
@@ -1489,6 +1516,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     FeedMetadata metadata = feedResult.getFeedMetadata();
     assertEquals(Integer.valueOf(6), metadata.getInlineCount());
     assertEquals("http://thisisanextlink", metadata.getNextLink());
+    assertNull(metadata.getDeltaLink());
     // entries
     List<ODataEntry> entries = feedResult.getEntries();
     assertEquals(6, entries.size());

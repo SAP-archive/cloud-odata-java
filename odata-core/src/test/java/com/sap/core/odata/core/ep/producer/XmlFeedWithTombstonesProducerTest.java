@@ -86,7 +86,7 @@ public class XmlFeedWithTombstonesProducerTest extends AbstractProviderTest {
 
     String xmlString = execute(properties, entitySet);
     assertXpathExists("/a:feed/at:deleted-entry", xmlString);
-    assertXpathExists("/a:feed/a:link[@rel=\"http://odata.org/delta\" and @href=\"" + BASE_URI.toASCIIString() + "Rooms?!deltatoken=1234" + "\"]", xmlString);
+    assertXpathExists("/a:feed/a:link[@rel=\"delta\" and @href=\"" + BASE_URI.toASCIIString() + "Rooms?!deltatoken=1234" + "\"]", xmlString);
   }
 
   @Test

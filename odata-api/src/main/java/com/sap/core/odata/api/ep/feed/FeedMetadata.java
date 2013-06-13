@@ -16,5 +16,10 @@ public interface FeedMetadata {
    * @return nextLink may be null if no next link is set
    */
   public String getNextLink();
+  
+  /**
+   * @return deltaLink may be null if no delta link is set
+   */
+  public String getDeltaLink();
 
 }

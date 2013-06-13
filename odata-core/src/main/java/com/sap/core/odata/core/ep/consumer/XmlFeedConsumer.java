@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.callback.TombstoneCallback;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -92,6 +93,9 @@ public class XmlFeedConsumer {
         if (FormatXml.ATOM_NEXT_LINK.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setNextLink(uri);
+        }else if(TombstoneCallback.REL_DELTA.equals(rel)){
+          final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
+          metadata.setDeltaLink(uri);
         }
 
         reader.next();
