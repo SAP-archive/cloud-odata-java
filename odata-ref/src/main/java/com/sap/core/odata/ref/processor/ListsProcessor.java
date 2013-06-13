@@ -100,6 +100,7 @@ import com.sap.core.odata.ref.processor.ListsDataSource.BinaryData;
  */
 public class ListsProcessor extends ODataSingleProcessor {
 
+  // TODO: Paging size should be configurable.
   private static final int SERVER_PAGING_SIZE = 100;
 
   private final ListsDataSource dataSource;
@@ -138,37 +139,31 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if there are further entities.
     // Almost all system query options in the current request must be carried
     // over to the URI for the "next" link, with the exception of $skiptoken
-    // and $skip; currently, this is done only for $inlinecount. If one of
-    // the not supported system query options is present, paging does not take place.
+    // and $skip.
     String nextLink = null;
     if (data.size() > SERVER_PAGING_SIZE
-        && uriInfo.getFilter() == null
-        /*
-         * Take orderby into account of next link. 
-         * Actually there is no sorting implemented yet. 
-         */
-        && uriInfo.getTop() == null
+        // Currently, $expand and $select are not supported; if one of these is
+        // present, paging does not take place.
         && uriInfo.getExpand().isEmpty()
         && uriInfo.getSelect().isEmpty()) {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
-          && uriInfo.getTop() == null) {
+          && uriInfo.getTop() == null)
         sortInDefaultOrder(entitySet, data);
-      }
+
       final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
-      // TODO: Percent-encode "next" link and add navigation path
+      // TODO: Percent-encode "next" link and add navigation path.
       nextLink = (entityContainer.isDefaultEntityContainer() ? "" : entityContainer.getName() + Edm.DELIMITER)
           + entitySet.getName()
           + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
-          + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT));
-      if (uriInfo.getOrderBy() != null) {
-        nextLink += "&$orderby=" + uriInfo.getOrderBy().getUriLiteral();
-      }
+          + (uriInfo.getFilter() == null ? "" : "&$filter=" + uriInfo.getFilter().getUriLiteral())
+          + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT))
+          + (uriInfo.getOrderBy() == null ? "" : "&$orderby=" + uriInfo.getOrderBy().getUriLiteral())
+          + (uriInfo.getTop() == null ? "" : "&$top=" + uriInfo.getTop());
 
-      while (data.size() > SERVER_PAGING_SIZE) {
+      while (data.size() > SERVER_PAGING_SIZE)
         data.remove(SERVER_PAGING_SIZE);
-      }
     }
 
     final EdmEntityType entityType = entitySet.getEntityType();

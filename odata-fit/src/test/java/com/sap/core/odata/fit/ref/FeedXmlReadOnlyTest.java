@@ -223,4 +223,11 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("Rooms?$skiptoken=97&$orderby=Name", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 
+  @Test
+  public void nextLinkQueryOptions() throws Exception {
+    final HttpResponse response = callUri("Rooms()?$filter=true&$inlinecount=none&$orderby=Name&$top=200");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("Rooms?$skiptoken=97&$filter=true&$inlinecount=none&$orderby=Name&$top=200", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
 }
