@@ -88,7 +88,7 @@ public class ODataRequestHandler {
         }
       }
 
-      final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
+      final String acceptContentType = doContentNegotiation(request, uriInfo);
 
       Dispatcher dispatcher = new Dispatcher(service);
       timingHandle2 = context.startRuntimeMeasurement("Dispatcher", "dispatch");
@@ -120,6 +120,11 @@ public class ODataRequestHandler {
     context.stopRuntimeMeasurement(timingHandle);
 
     return odataResponse;
+  }
+
+  private String doContentNegotiation(final ODataRequest request, final UriInfoImpl uriInfo) throws ODataException {
+    final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
+    return acceptContentType;
   }
 
   private ODataContextImpl buildODataContext(final ODataRequest request) {

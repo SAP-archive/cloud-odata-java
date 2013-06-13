@@ -387,22 +387,6 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("type/subtype;key=value", mt.toString());
   }
 
-  //  private Map<String, String> addParameter(String key, String value) {
-  //    Map<String, String> map = new HashMap<String, String>();
-  //    map.put(key, value);
-  //    return map;
-  //  }
-
-  private Map<String, String> addParameters(final String... content) {
-    Map<String, String> map = new HashMap<String, String>();
-    for (int i = 0; i < content.length - 1; i += 2) {
-      String key = content[i];
-      String value = content[i + 1];
-      map.put(key, value);
-    }
-    return map;
-  }
-
   @Test
   public void testContentTypeWithParametersCreation() {
     ContentType mt = ContentType.create("type", "subtype", addParameters("key1", "value1", "key2", "value2"));
@@ -463,6 +447,36 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("aaa", t.getType());
     assertEquals("*", t.getSubtype());
     assertEquals(2, t.getParameters().size());
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithSpaces() {
+    ContentType.create("aaa/bbb;x= y;a");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithLineFeed() {
+    ContentType.create("aaa/bbb;x=\ny;a");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithCarriageReturn() {
+    ContentType.create("aaa/bbb;x=\ry;a");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithTabs() {
+    ContentType.create("aaa/bbb;x=\ty;a");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithAllLws() {
+    ContentType.create("aaa/bbb;x=\t \n \ry;a");
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithAllLws2() {
+    ContentType.create("aaa/bbb;x=\n \ry;a= \tbla  ");
   }
 
   @Test
@@ -870,5 +884,15 @@ public class ContentTypeTest extends BaseTest {
     assertTrue(ContentType.create("aaa/*;x=y;a").hasWildcard());
     assertTrue(ContentType.create("*/*;x=y;a").hasWildcard());
     assertTrue(ContentType.create("*/*").hasWildcard());
+  }
+
+  private Map<String, String> addParameters(final String... content) {
+    Map<String, String> map = new HashMap<String, String>();
+    for (int i = 0; i < content.length - 1; i += 2) {
+      String key = content[i];
+      String value = content[i + 1];
+      map.put(key, value);
+    }
+    return map;
   }
 }

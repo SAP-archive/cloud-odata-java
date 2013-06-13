@@ -59,6 +59,7 @@ public class ContentType {
   public enum ODataFormat {
     ATOM, XML, JSON, MIME, CUSTOM
   }
+
   private static final Set<String> KNOWN_MIME_TYPES = new HashSet<String>();
   static {
     KNOWN_MIME_TYPES.add("audio");
@@ -278,7 +279,7 @@ public class ContentType {
    */
   private static ODataFormat mapToODataFormat(final String type, final String subtype) {
     ODataFormat odataFormat = ODataFormat.CUSTOM;
-    if(type.contains("application")) {
+    if (type.contains("application")) {
       if (subtype.contains("atom")) {
         odataFormat = ODataFormat.ATOM;
       } else if (subtype.contains("xml")) {
@@ -286,12 +287,11 @@ public class ContentType {
       } else if (subtype.contains("json")) {
         odataFormat = ODataFormat.JSON;
       }
-    } else if(KNOWN_MIME_TYPES.contains(type)) {
+    } else if (KNOWN_MIME_TYPES.contains(type)) {
       odataFormat = ODataFormat.MIME;
     }
     return odataFormat;
   }
-
 
   /**
    * 
@@ -309,7 +309,16 @@ public class ContentType {
   }
 
   /**
-   * Valid input are <code>;</code> separated <code>key = value</code> pairs.
+   * Valid input are <code>;</code> separated <code>key=value</code> pairs 
+   * without spaces between key and value.
+   * 
+   * <p>
+   * See RFC 2616:
+   * The type, subtype, and parameter attribute names are case-insensitive. 
+   * Parameter values might or might not be case-sensitive, depending on the 
+   * semantics of the parameter name. <b>Linear white space (LWS) MUST NOT be used 
+   * between the type and subtype, nor between an attribute and its value</b>. 
+   * </p>
    * 
    * @param parameters
    * @return Map with keys mapped to values
@@ -322,12 +331,33 @@ public class ContentType {
         String[] keyValue = parameter.split("=");
         String key = keyValue[0].trim().toLowerCase(Locale.ENGLISH);
         if (isParameterAllowed(key)) {
-          String value = keyValue.length > 1 ? keyValue[1].trim() : null;
+          String value = keyValue.length > 1 ? keyValue[1] : null;
+          if (value != null && isLws(value.charAt(0))) {
+            throw new IllegalArgumentException("Value of parameter '" + key + "' starts with a LWS ('" + parameters + "').");
+          }
           parameterMap.put(key, value);
         }
       }
     }
     return parameterMap;
+  }
+
+  /** 
+   * Validate if given character is a linear whitepace (includes <code>horizontal-tab, linefeed, carriage return and space</code>).
+   * 
+   * @param character to be checked
+   * @return <code>true</code> if character is a LWS, otherwise <code>false</code>.
+   */
+  private static boolean isLws(char character) {
+    switch (character) {
+    case 9: // HT = <US-ASCII HT, horizontal-tab (9)>
+    case 10: // LF = <US-ASCII LF, linefeed (10)>
+    case 13: // CR = <US-ASCII CR, carriage return (13)>
+    case 32: // SP = <US-ASCII SP, space (32)>
+      return true;
+    default:
+      return false;
+    }
   }
 
   private static boolean isParameterAllowed(final String key) {

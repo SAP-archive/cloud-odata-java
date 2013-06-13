@@ -47,7 +47,7 @@ public class RestUtil {
     return responseBuilder.build();
   }
 
-  public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataUnsupportedMediaTypeException {
+  public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataUnsupportedMediaTypeException, ODataBadRequestException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     if (requestMediaType == null) {
       // RFC 2616, 7.2.1:
@@ -67,7 +67,11 @@ public class RestUtil {
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(param.getHttpHeaders().getRequestHeader(HttpHeaders.CONTENT_TYPE).get(0)));
     } else {
       try {
-        return ContentType.create(requestMediaType.toString());
+        final String contentType = param.getHttpHeaders().getHeaderString(HttpHeaders.CONTENT_TYPE);
+        if (ContentType.isParseable(contentType)) {
+          return ContentType.create(contentType);
+        }
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.CONTENT_TYPE, contentType));
       } catch (IllegalArgumentException e) {
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestMediaType.toString()), e);
       }
@@ -109,9 +113,21 @@ public class RestUtil {
   }
 
   public static List<String> extractAcceptHeaders(final SubLocatorParameter param) throws ODataBadRequestException {
-    final List<MediaType> acceptableMediaTypes = param.getHttpHeaders().getAcceptableMediaTypes();
-    final List<String> mediaTypes = new ArrayList<String>();
+    // first validate all accept header content types are 'parseable' and valif from our point of view
+    List<String> acceptHeaders = param.getHttpHeaders().getRequestHeader(HttpHeaders.ACCEPT);
+    
+    for (String acceptHeader : acceptHeaders) {
+      String[] contentTypes = acceptHeader.split(",");
+      for (String contentType: contentTypes) {
+        if (!ContentType.isParseable(contentType.trim())) {
+          throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.ACCEPT, acceptHeader));
+        }
+      }
+    }
 
+    // then get sorted list of acceptable media type from jax-rs
+    final List<String> mediaTypes = new ArrayList<String>();
+    final List<MediaType> acceptableMediaTypes = param.getHttpHeaders().getAcceptableMediaTypes();
     for (final MediaType mediaType : acceptableMediaTypes) {
       mediaTypes.add(mediaType.toString());
     }
@@ -119,6 +135,7 @@ public class RestUtil {
     return mediaTypes;
   }
 
+  
   public static Map<String, String> extractRequestHeaders(final javax.ws.rs.core.HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
     Map<String, String> headerMap = new HashMap<String, String>();
