@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
@@ -55,6 +56,7 @@ public class ODataExceptionWrapper {
     httpRequestHeaders = context.getRequestHeaders();
     try {
       requestUri = context.getPathInfo().getRequestUri();
+      errorContext.setPathInfo(context.getPathInfo());
       callback = getErrorHandlerCallbackFromContext(context);
     } catch (Exception e) {
       throw new ODataRuntimeException("Exception occurred", e);
@@ -76,7 +78,7 @@ public class ODataExceptionWrapper {
   public ODataResponse wrapInExceptionResponse(final Exception exception) {
     try {
       final Exception toHandleException = extractException(exception);
-      createDefaultErrorContext(toHandleException);
+      fillErrorContext(toHandleException);
       if (toHandleException instanceof ODataApplicationException) {
         enhanceContextWithApplicationException((ODataApplicationException) toHandleException);
       } else if (toHandleException instanceof ODataMessageException) {
@@ -87,7 +89,7 @@ public class ODataExceptionWrapper {
       if (callback != null) {
         oDataResponse = handleErrorCallback(callback);
       } else {
-        oDataResponse = new ProviderFacadeImpl().writeErrorDocument(errorContext);
+        oDataResponse = EntityProvider.writeErrorDocument(errorContext);
       }
       return oDataResponse;
     } catch (Exception e) {
@@ -103,7 +105,7 @@ public class ODataExceptionWrapper {
     try {
       oDataResponse = callback.handleError(errorContext);
     } catch (ODataApplicationException e) {
-      createDefaultErrorContext(e);
+      fillErrorContext(e);
       enhanceContextWithApplicationException(e);
       oDataResponse = new ProviderFacadeImpl().writeErrorDocument(errorContext);
     }
@@ -131,12 +133,17 @@ public class ODataExceptionWrapper {
 
   }
 
-  private void createDefaultErrorContext(final Exception toHandleException) {
+  /**
+   * Fill current error context ({@link #errorContext}) with values from given {@link Exception} parameter.
+   * 
+   * @param exception exception with values to be set on error context
+   */
+  private void fillErrorContext(final Exception exception) {
     errorContext.setContentType(contentType);
-    errorContext.setException(toHandleException);
+    errorContext.setException(exception);
     errorContext.setHttpStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
     errorContext.setErrorCode(null);
-    errorContext.setMessage(toHandleException.getMessage());
+    errorContext.setMessage(exception.getMessage());
     errorContext.setLocale(DEFAULT_RESPONSE_LOCALE);
     errorContext.setRequestUri(requestUri);
 
