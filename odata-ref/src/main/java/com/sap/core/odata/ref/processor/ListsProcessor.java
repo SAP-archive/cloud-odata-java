@@ -149,9 +149,8 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
-          && uriInfo.getTop() == null) {
+          && uriInfo.getTop() == null)
         sortInDefaultOrder(entitySet, data);
-      }
 
       final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
       // TODO: Percent-encode "next" link and add navigation path.
@@ -163,9 +162,8 @@ public class ListsProcessor extends ODataSingleProcessor {
           + (uriInfo.getOrderBy() == null ? "" : "&$orderby=" + uriInfo.getOrderBy().getUriLiteral())
           + (uriInfo.getTop() == null ? "" : "&$top=" + uriInfo.getTop());
 
-      while (data.size() > SERVER_PAGING_SIZE) {
+      while (data.size() > SERVER_PAGING_SIZE)
         data.remove(SERVER_PAGING_SIZE);
-      }
     }
 
     final EdmEntityType entityType = entitySet.getEntityType();

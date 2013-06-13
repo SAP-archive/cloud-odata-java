@@ -563,7 +563,10 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     ODataHttpMethod[] methodsToTest = { ODataHttpMethod.PUT, ODataHttpMethod.PATCH, ODataHttpMethod.MERGE };
 
     for (ODataHttpMethod oDataHttpMethod : methodsToTest) {
-      wrongRequestContentType(oDataHttpMethod, UriType.URI2, false, ContentType.create("image/jpeg"));
+      wrongRequestContentType(oDataHttpMethod, UriType.URI2, ContentType.create("image/jpeg"));
+
+      wrongRequestContentType(oDataHttpMethod, UriType.URI3, ContentType.TEXT_PLAIN);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI4, false, ContentType.TEXT_PLAIN);
 
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
@@ -573,14 +576,19 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_XML_CS_UTF_8);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON_CS_UTF_8);
-
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.create("image/jpeg"));
+
+      wrongRequestContentType(oDataHttpMethod, UriType.URI6A, ContentType.APPLICATION_ATOM_SVC);
+
+      wrongRequestContentType(oDataHttpMethod, UriType.URI7A, ContentType.APPLICATION_ATOM_SVC);
     }
 
     EdmEntityType entityType = edm.getDefaultEntityContainer().getEntitySet("Employees").getEntityType();
     when(entityType.hasStream()).thenReturn(false);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI6B, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI7B, ContentType.APPLICATION_ATOM_SVC);
   }
 
   @Test
@@ -589,13 +597,6 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     when(entityType.hasStream()).thenReturn(false);
 
     unsupportedRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "application/octet-stream");
-  }
-
-  @Test
-  public void invalidRequestContentType() throws Exception {
-    ODataResponse response = executeRequest(ODataHttpMethod.POST, mockPathSegments(UriType.URI1, false, false), null, "app/app/xml");
-    assertNotNull(response);
-    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
   }
 
   @Test

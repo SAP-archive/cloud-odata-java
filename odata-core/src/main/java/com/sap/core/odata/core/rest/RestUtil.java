@@ -25,7 +25,6 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
@@ -47,34 +46,19 @@ public class RestUtil {
     return responseBuilder.build();
   }
 
-  public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataUnsupportedMediaTypeException, ODataBadRequestException {
-    final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
-    if (requestMediaType == null) {
+  public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataBadRequestException {
+    final String contentType = param.getHttpHeaders().getHeaderString(HttpHeaders.CONTENT_TYPE);
+    if (contentType == null || contentType.isEmpty()) {
       // RFC 2616, 7.2.1:
       // "Any HTTP/1.1 message containing an entity-body SHOULD include a
       // Content-Type header field defining the media type of that body. [...]
       // If the media type remains unknown, the recipient SHOULD treat it
       // as type "application/octet-stream"."
       return ContentType.APPLICATION_OCTET_STREAM;
-    } else if (requestMediaType == MediaType.WILDCARD_TYPE
-        || requestMediaType == MediaType.TEXT_PLAIN_TYPE
-        || requestMediaType == MediaType.APPLICATION_XML_TYPE) {
-      // The JAX-RS implementation of media-type parsing decided to
-      // return one of the known constants for the special case of
-      // an invalid content type that has no subtype;
-      // at least CXF 2.7 is known to do that.
-      // The "==" comparison above is optimized for this case.
-      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(param.getHttpHeaders().getRequestHeader(HttpHeaders.CONTENT_TYPE).get(0)));
+    } else if (ContentType.isParseable(contentType)) {
+      return ContentType.create(contentType);
     } else {
-      try {
-        final String contentType = param.getHttpHeaders().getHeaderString(HttpHeaders.CONTENT_TYPE);
-        if (ContentType.isParseable(contentType)) {
-          return ContentType.create(contentType);
-        }
-        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.CONTENT_TYPE, contentType));
-      } catch (IllegalArgumentException e) {
-        throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestMediaType.toString()), e);
-      }
+      throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.CONTENT_TYPE, contentType));
     }
   }
 
