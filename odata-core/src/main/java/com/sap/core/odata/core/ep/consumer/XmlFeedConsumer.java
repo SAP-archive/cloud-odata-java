@@ -93,7 +93,7 @@ public class XmlFeedConsumer {
         if (FormatXml.ATOM_NEXT_LINK.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setNextLink(uri);
-        }else if(TombstoneCallback.REL_DELTA.equals(rel)){
+        } else if (TombstoneCallback.REL_DELTA.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setDeltaLink(uri);
         }

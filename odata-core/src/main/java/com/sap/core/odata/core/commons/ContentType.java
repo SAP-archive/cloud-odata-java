@@ -348,7 +348,7 @@ public class ContentType {
    * @param character to be checked
    * @return <code>true</code> if character is a LWS, otherwise <code>false</code>.
    */
-  private static boolean isLws(char character) {
+  private static boolean isLws(final char character) {
     switch (character) {
     case 9: // HT = <US-ASCII HT, horizontal-tab (9)>
     case 10: // LF = <US-ASCII LF, linefeed (10)>

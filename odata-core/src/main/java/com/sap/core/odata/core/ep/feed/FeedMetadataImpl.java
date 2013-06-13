@@ -25,7 +25,7 @@ public class FeedMetadataImpl implements FeedMetadata {
   public String getNextLink() {
     return nextLink;
   }
-  
+
   public void setDeltaLink(final String deltaLink) {
     this.deltaLink = deltaLink;
   }

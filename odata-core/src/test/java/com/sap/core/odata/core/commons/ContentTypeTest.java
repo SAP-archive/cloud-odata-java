@@ -89,7 +89,6 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(ODataFormat.MIME, mt.getODataFormat());
   }
 
-  
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
@@ -449,32 +448,32 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(2, t.getParameters().size());
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithSpaces() {
     ContentType.create("aaa/bbb;x= y;a");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithLineFeed() {
     ContentType.create("aaa/bbb;x=\ny;a");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithCarriageReturn() {
     ContentType.create("aaa/bbb;x=\ry;a");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithTabs() {
     ContentType.create("aaa/bbb;x=\ty;a");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithAllLws() {
     ContentType.create("aaa/bbb;x=\t \n \ry;a");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFormatParserInvalidParameterWithAllLws2() {
     ContentType.create("aaa/bbb;x=\n \ry;a= \tbla  ");
   }

@@ -170,8 +170,9 @@ public class ODataRequestHandler {
     switch (uriInfo.getUriType()) {
     case URI0:
     case URI8:
-      if (method != ODataHttpMethod.GET)
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI1:
@@ -188,15 +189,17 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI3:
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI4:
@@ -204,10 +207,11 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue())
+      } else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue()) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI9:
@@ -354,11 +358,13 @@ public class ODataRequestHandler {
 
   private static void checkProperty(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     if (uriInfo.getUriType() == UriType.URI4 || uriInfo.getUriType() == UriType.URI5) {
-      if (isPropertyKey(uriInfo))
+      if (isPropertyKey(uriInfo)) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       if (method == ODataHttpMethod.DELETE
-          && !isPropertyNullable(getProperty(uriInfo)))
+          && !isPropertyNullable(getProperty(uriInfo))) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
     }
   }
 

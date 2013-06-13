@@ -30,14 +30,14 @@ import com.sap.core.odata.testutil.mock.EdmTestProvider;
 public class AcceptHeaderTypeTest extends AbstractBasicTest {
 
   private ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-  
+
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
     String contentType = "application/atom+xml";
     ODataResponse response = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenReturn(response);
     when(processor.readEntitySet(any(GetEntitySetUriInfo.class), any(String.class))).thenReturn(response);
-    
+
     return processor;
   }
 
@@ -46,19 +46,19 @@ public class AcceptHeaderTypeTest extends AbstractBasicTest {
     return new EdmTestProvider();
   }
 
-  private HttpResponse testGetRequest(String uriExtension, String acceptHeader, HttpStatusCodes expectedStatus, String expectedContentType) 
-          throws ClientProtocolException, IOException, ODataException {
+  private HttpResponse testGetRequest(final String uriExtension, final String acceptHeader, final HttpStatusCodes expectedStatus, final String expectedContentType)
+      throws ClientProtocolException, IOException, ODataException {
     // prepare
     ODataResponse expectedResponse = ODataResponse.contentHeader(expectedContentType).entity("Test passed.").build();
     when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenReturn(expectedResponse);
     when(processor.readEntitySet(any(GetEntitySetUriInfo.class), any(String.class))).thenReturn(expectedResponse);
-    
+
     HttpGet getRequest = new HttpGet(URI.create(getEndpoint().toString() + uriExtension));
     getRequest.setHeader(HttpHeaders.ACCEPT, acceptHeader);
-    
+
     // execute
     HttpResponse response = getHttpClient().execute(getRequest);
-    
+
     // validate
     assertEquals(expectedStatus.getStatusCode(), response.getStatusLine().getStatusCode());
     Header[] contentTypeHeaders = response.getHeaders("Content-Type");
@@ -68,7 +68,7 @@ public class AcceptHeaderTypeTest extends AbstractBasicTest {
     //
     return response;
   }
-  
+
   @Test
   public void contentTypeApplicationAtomXml() throws Exception {
     HttpGet getRequest = new HttpGet(URI.create(getEndpoint().toString() + "Employees('1')"));
@@ -106,7 +106,7 @@ public class AcceptHeaderTypeTest extends AbstractBasicTest {
   public void illegalSpaceInContentSubType() throws Exception {
     testGetRequest("Employees('1')", "application/    xml", HttpStatusCodes.BAD_REQUEST, "application/xml");
   }
-  
+
   @Test
   public void illegalSpacesInAcceptHeader() throws Exception {
     testGetRequest("Employees('1')", "    applic  ation/    xml   ", HttpStatusCodes.BAD_REQUEST, "application/xml");

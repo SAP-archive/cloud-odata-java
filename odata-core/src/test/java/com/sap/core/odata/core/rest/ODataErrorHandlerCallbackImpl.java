@@ -21,7 +21,7 @@ public class ODataErrorHandlerCallbackImpl implements ODataErrorCallback {
     if (context.getRequestUri() != null) {
       responseBuilder.header("RequestUri", context.getRequestUri().toASCIIString());
       PathInfo pathInfo = context.getPathInfo();
-      if(pathInfo == null) {
+      if (pathInfo == null) {
         responseBuilder.header("PathInfo", "NULL");
       } else {
         responseBuilder.header("PathInfo", "TRUE");

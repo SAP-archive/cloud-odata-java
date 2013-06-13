@@ -180,30 +180,34 @@ public class EdmDateTime extends AbstractSimpleType {
    * @param result a {@link StringBuilder}
    * @param number an integer that must satisfy <code>0 <= number <= 99</code>
    */
-  private static void appendTwoDigits(StringBuilder result, final int number) {
+  private static void appendTwoDigits(final StringBuilder result, final int number) {
     result.append((char) ('0' + number / 10));
     result.append((char) ('0' + number % 10));
   }
 
-  protected static void appendMilliseconds(StringBuilder result, final long milliseconds, final EdmFacets facets) throws IllegalArgumentException {
+  protected static void appendMilliseconds(final StringBuilder result, final long milliseconds, final EdmFacets facets) throws IllegalArgumentException {
     final int digits = milliseconds % 1000 == 0 ? 0 : milliseconds % 100 == 0 ? 1 : milliseconds % 10 == 0 ? 2 : 3;
     if (digits > 0) {
       result.append('.');
       for (int d = 100; d > 0; d /= 10) {
         final byte digit = (byte) (milliseconds % (d * 10) / d);
-        if (digit > 0 || milliseconds % d > 0)
+        if (digit > 0 || milliseconds % d > 0) {
           result.append((char) ('0' + digit));
+        }
       }
     }
 
     if (facets != null && facets.getPrecision() != null) {
       final int precision = facets.getPrecision();
-      if (digits > precision)
+      if (digits > precision) {
         throw new IllegalArgumentException();
-      if (digits == 0 && precision > 0)
+      }
+      if (digits == 0 && precision > 0) {
         result.append('.');
-      for (int i = digits; i < precision; i++)
+      }
+      for (int i = digits; i < precision; i++) {
         result.append('0');
+      }
     }
   }
 

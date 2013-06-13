@@ -7,7 +7,7 @@ package com.sap.core.odata.api.commons;
  */
 public interface HttpContentType {
 
-  public static final  String APPLICATION_XML = "application/xml";
+  public static final String APPLICATION_XML = "application/xml";
   public static final String APPLICATION_XML_UTF8 = APPLICATION_XML + ";charset=utf-8";
 
   public static final String APPLICATION_ATOM_XML = "application/atom+xml";

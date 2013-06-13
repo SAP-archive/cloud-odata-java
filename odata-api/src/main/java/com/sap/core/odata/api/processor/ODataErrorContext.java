@@ -199,13 +199,13 @@ public class ODataErrorContext {
   public PathInfo getPathInfo() {
     return pathInfo;
   }
-  
+
   /**
    * Set {@link PathInfo} object.
    * 
    * @param pathInfo path info
    */
-  public void setPathInfo(PathInfo pathInfo) {
+  public void setPathInfo(final PathInfo pathInfo) {
     this.pathInfo = pathInfo;
   }
 }

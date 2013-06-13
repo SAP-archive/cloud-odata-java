@@ -115,10 +115,10 @@ public class RestUtil {
   public static List<String> extractAcceptHeaders(final SubLocatorParameter param) throws ODataBadRequestException {
     // first validate all accept header content types are 'parseable' and valif from our point of view
     List<String> acceptHeaders = param.getHttpHeaders().getRequestHeader(HttpHeaders.ACCEPT);
-    
+
     for (String acceptHeader : acceptHeaders) {
       String[] contentTypes = acceptHeader.split(",");
-      for (String contentType: contentTypes) {
+      for (String contentType : contentTypes) {
         if (!ContentType.isParseable(contentType.trim())) {
           throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent(HttpHeaders.ACCEPT, acceptHeader));
         }
@@ -135,7 +135,6 @@ public class RestUtil {
     return mediaTypes;
   }
 
-  
   public static Map<String, String> extractRequestHeaders(final javax.ws.rs.core.HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
     Map<String, String> headerMap = new HashMap<String, String>();

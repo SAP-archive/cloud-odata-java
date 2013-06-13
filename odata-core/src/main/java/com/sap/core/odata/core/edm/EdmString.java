@@ -39,8 +39,9 @@ public class EdmString extends AbstractSimpleType {
 
     if (facets != null
         && (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()
-        || facets.getMaxLength() != null && facets.getMaxLength() < result.length()))
+        || facets.getMaxLength() != null && facets.getMaxLength() < result.length())) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
     if (returnType.isAssignableFrom(String.class)) {
       return returnType.cast(result);
@@ -55,8 +56,9 @@ public class EdmString extends AbstractSimpleType {
 
     if (facets != null
         && (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()
-        || facets.getMaxLength() != null && facets.getMaxLength() < result.length()))
+        || facets.getMaxLength() != null && facets.getMaxLength() < result.length())) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
     return result;
   }
@@ -69,8 +71,9 @@ public class EdmString extends AbstractSimpleType {
     uriLiteral.append('\'');
     for (int i = 0; i < length; i++) {
       final char c = literal.charAt(i);
-      if (c == '\'')
+      if (c == '\'') {
         uriLiteral.append(c);
+      }
       uriLiteral.append(c);
     }
     uriLiteral.append('\'');

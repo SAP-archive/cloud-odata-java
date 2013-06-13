@@ -44,7 +44,7 @@ public class ODataExceptionWrapperTest extends BaseTest {
     ODataContextImpl context = getMockedContext("http://localhost:80/test", "ODataServiceRoot");
     ODataErrorCallback errorCallback = new ODataErrorCallback() {
       @Override
-      public ODataResponse handleError(ODataErrorContext context) throws ODataApplicationException {
+      public ODataResponse handleError(final ODataErrorContext context) throws ODataApplicationException {
         PathInfo pathInfo = context.getPathInfo();
         assertEquals("ODataServiceRoot", pathInfo.getServiceRoot().toString());
         assertEquals("http://localhost:80/test", pathInfo.getRequestUri().toString());
@@ -68,13 +68,13 @@ public class ODataExceptionWrapperTest extends BaseTest {
     assertEquals("text/html", contentTypeHeader);
   }
 
-  private ODataExceptionWrapper createWrapper(ODataContextImpl context, Map<String, String> queryParameters, List<String> acceptContentTypes) throws URISyntaxException {
+  private ODataExceptionWrapper createWrapper(final ODataContextImpl context, final Map<String, String> queryParameters, final List<String> acceptContentTypes) throws URISyntaxException {
     ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(context, queryParameters, acceptContentTypes);
 
     return exceptionWrapper;
   }
 
-  private ODataContextImpl getMockedContext(String requestUri, String serviceRoot) throws ODataException, URISyntaxException {
+  private ODataContextImpl getMockedContext(final String requestUri, final String serviceRoot) throws ODataException, URISyntaxException {
     ODataContextImpl context = Mockito.mock(ODataContextImpl.class);
     PathInfoImpl pathInfo = new PathInfoImpl();
     pathInfo.setRequestUri(new URI(requestUri));
@@ -87,8 +87,8 @@ public class ODataExceptionWrapperTest extends BaseTest {
   public static final class MapperServiceFactory extends ODataServiceFactory {
     private ODataErrorCallback errorCallback;
 
-    public MapperServiceFactory(ODataErrorCallback callback) {
-      this.errorCallback = callback;
+    public MapperServiceFactory(final ODataErrorCallback callback) {
+      errorCallback = callback;
     }
 
     @Override
