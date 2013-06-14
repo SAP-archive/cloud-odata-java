@@ -21,6 +21,7 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -233,33 +234,20 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
         HttpContentType.APPLICATION_XML_UTF8));
 
-    when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(Arrays.asList(
+    final List<String> jsonAndXml = Arrays.asList(
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
-        HttpContentType.APPLICATION_XML_UTF8));
-    when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.APPLICATION_JSON_UTF8,
-        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
-        HttpContentType.APPLICATION_XML_UTF8));
-    when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.APPLICATION_JSON_UTF8,
-        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
-        HttpContentType.APPLICATION_XML_UTF8));
-    when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.APPLICATION_JSON_UTF8,
-        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
-        HttpContentType.APPLICATION_XML_UTF8));
-    when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.APPLICATION_JSON_UTF8,
-        HttpContentType.APPLICATION_JSON_UTF8_VERBOSE,
-        HttpContentType.APPLICATION_XML_UTF8));
+        HttpContentType.APPLICATION_XML_UTF8);
+    when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(jsonAndXml);
+    when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(jsonAndXml);
+    when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(jsonAndXml);
+    when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(jsonAndXml);
+    when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(jsonAndXml);
 
-    when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.WILDCARD));
-    when(service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.WILDCARD));
-    when(service.getSupportedContentTypes(FunctionImportValueProcessor.class)).thenReturn(Arrays.asList(
-        HttpContentType.WILDCARD));
+    final List<String> wildcard = Arrays.asList(HttpContentType.WILDCARD);
+    when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(wildcard);
+    when(service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class)).thenReturn(wildcard);
+    when(service.getSupportedContentTypes(FunctionImportValueProcessor.class)).thenReturn(wildcard);
 
     when(service.getSupportedContentTypes(EntitySetProcessor.class)).thenReturn(Arrays.asList(
         HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8,
@@ -324,15 +312,14 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     when(facets.isNullable()).thenReturn(false);
     when(property.getFacets()).thenReturn(facets);
 
-    List<String> pathSegments = new ArrayList<String>();
-    pathSegments.add("Employees('1')");
+    List<String> pathSegments;
     if (ofComplex) {
-      pathSegments.add("Location");
-      pathSegments.add("Country");
+      pathSegments = createPathSegments(UriType.URI4, false, true);
     } else {
+      pathSegments = createPathSegments(UriType.URI2, false, false);
       pathSegments.add(key ? "EmployeeId" : "Age");
+      pathSegments.add("$value");
     }
-    pathSegments.add("$value");
 
     wrongRequest(method, pathSegments, null);
   }
@@ -357,13 +344,38 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
   }
 
-  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws ODataException {
-    Map<String, String> options = new HashMap<String, String>(3);
-    options.put("$format", dollarFormatOption);
-    ODataResponse response = executeRequest(method, createPathSegments(uriType, false, isValue), options, null);
-    assertNotNull(response);
+  @Test
+  public void dataServiceVersion() throws Exception {
+    ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
+    final ODataService service = mockODataService(serviceFactory);
+    when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
+    final ODataRequestHandler handler = new ODataRequestHandler(serviceFactory);
+    ODataRequest request = mockODataRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI0, false, false), null, null);
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("1.0");
+    ODataResponse response = handler.handle(request);
+    assertEquals(HttpStatusCodes.PAYMENT_REQUIRED, response.getStatus());
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("2.0");
+    response = handler.handle(request);
+    assertEquals(HttpStatusCodes.PAYMENT_REQUIRED, response.getStatus());
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("3.0");
+    response = handler.handle(request);
     assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
-  }
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("4.2");
+    response = handler.handle(request);
+    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("42");
+    response = handler.handle(request);
+    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
+
+    when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("test.2.0");
+    response = handler.handle(request);
+    assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
+}
 
   @Test
   public void allowedMethods() throws Exception {
@@ -377,6 +389,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI4, false, false), null, null);
     executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, null);
     executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI15, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI17, false, false), null, null);
   }
 
   @Test
@@ -617,12 +630,5 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_OCTET_STREAM);
     wrongRequestContentType(ODataHttpMethod.POST, UriType.URI6B, ContentType.APPLICATION_ATOM_SVC);
-  }
-
-  @Test
-  public void invalidRequestDollarFormatSyntax() throws Exception {
-    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "xml");
-    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "atom+xml");
-    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "json");
   }
 }

@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class is a container for the supported ODataServiceVersions
+ * This class is a container for the supported ODataServiceVersions.
  * @author SAP AG
  *
  */
@@ -26,34 +26,27 @@ public class ODataServiceVersion {
   public static final String V30 = "3.0";
 
   /**
-   * Validates format and range of a data service version string
+   * Validates format and range of a data service version string.
    * @param version version string
-   * @return true for a valid version
+   * @return <code>true</code> for a valid version
    */
   public static boolean validateDataServiceVersion(final String version) {
     final Matcher matcher = DATASERVICEVERSIONPATTERN.matcher(version);
-    if (!matcher.matches()) {
+    if (matcher.matches()) {
+      final String possibleDataServiceVersion = matcher.group(1);
+      return V10.equals(possibleDataServiceVersion)
+          || V20.equals(possibleDataServiceVersion)
+          || V30.equals(possibleDataServiceVersion);
+    } else {
       throw new IllegalArgumentException(version);
     }
-
-    final String possibleDataServiceVersion = matcher.group(1);
-
-    if (V10.equals(possibleDataServiceVersion)) {
-      return true;
-    } else if (V20.equals(possibleDataServiceVersion)) {
-      return true;
-    } else if (V30.equals(possibleDataServiceVersion)) {
-      return true;
-    }
-
-    return false;
   }
 
   /**
    * actual > comparedTo
    * @param actual
    * @param comparedTo
-   * @return true if actual is bigger than comaredTo
+   * @return <code>true</code> if actual is bigger than comparedTo
    */
   public static boolean isBiggerThan(final String actual, final String comparedTo) {
     if (!validateDataServiceVersion(comparedTo) || !validateDataServiceVersion(actual)) {
