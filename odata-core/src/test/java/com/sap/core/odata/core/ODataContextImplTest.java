@@ -1,18 +1,28 @@
 package com.sap.core.odata.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.ODataHttpMethod;
+
+/**
+ * @author SAP AG
+ */
 public class ODataContextImplTest {
 
-  private static final String HTTP_GET = "GET";
+  @Test
+  public void httpMethod() {
+    ODataContextImpl context = new ODataContextImpl();
+    context.setHttpMethod(ODataHttpMethod.GET.name());
+    assertEquals(ODataHttpMethod.GET.name(), context.getHttpMethod());
+  }
 
   @Test
-  public void httpMethodTest() {
+  public void debugMode() {
     ODataContextImpl context = new ODataContextImpl();
-    context.setHttpMethod(HTTP_GET);
-
-    assertEquals(HTTP_GET, context.getHttpMethod());
+    context.setDebugMode(true);
+    assertTrue(context.isInDebugMode());
   }
 }

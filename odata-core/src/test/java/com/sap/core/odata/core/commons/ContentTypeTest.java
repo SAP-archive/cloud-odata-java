@@ -150,15 +150,13 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardType() {
-    ContentType mt = ContentType.create("*", "subtype");
+    ContentType.create("*", "subtype");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardTypeSingleFormat() {
-    ContentType mt = ContentType.create("*/subtype");
+    ContentType.create("*/subtype");
   }
 
   /**
@@ -179,10 +177,9 @@ public class ContentTypeTest extends BaseTest {
     failContentTypeCreation("app    /   space", IllegalArgumentException.class);
   }
 
-  @SuppressWarnings("unused")
   private void failContentTypeCreation(final String contentType, final Class<? extends Exception> expectedExceptionClass) throws Exception {
     try {
-      ContentType mt = ContentType.create(contentType);
+      ContentType.create(contentType);
       Assert.fail("Expected exception class " + expectedExceptionClass +
           " was not thrown for creation of content type based on '" + contentType + "'.");
     } catch (Exception e) {

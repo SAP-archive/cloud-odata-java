@@ -15,6 +15,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.testutil.server.TestServer;
 
+/**
+ * @author SAP AG
+ */
 public class FitStaticServiceFactory extends ODataServiceFactory {
 
   @SuppressWarnings("unchecked")
