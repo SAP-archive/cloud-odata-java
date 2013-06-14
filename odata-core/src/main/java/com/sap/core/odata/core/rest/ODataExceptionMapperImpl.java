@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -47,6 +48,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   HttpHeaders httpHeaders;
   @Context
   ServletConfig servletConfig;
+  @Context
+  HttpServletRequest servletRequest;
 
   @Override
   public Response toResponse(final Exception exception) {
@@ -67,7 +70,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private ODataResponse handleException(final Exception exception) {
-    ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(uriInfo, httpHeaders, servletConfig);
+    ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(uriInfo, httpHeaders, servletConfig, servletRequest);
     ODataResponse oDataResponse = exceptionWrapper.wrapInExceptionResponse(exception);
     return oDataResponse;
   }
@@ -168,7 +171,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ODataErrorCallback callback = null;
     final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
     if (factoryClassName != null) {
-      Class<?> factoryClass = Class.forName(factoryClassName);
+      ClassLoader cl = (ClassLoader) servletRequest.getAttribute(ODataServiceFactory.FACTORY_CLASSLOADER_LABEL);
+      Class<?> factoryClass;
+      if (cl == null) {
+        factoryClass = Class.forName(factoryClassName);
+      } else {
+        factoryClass = Class.forName(factoryClassName, true, cl);
+      }
       final ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
 
       callback = serviceFactory.getCallback(ODataErrorCallback.class);
