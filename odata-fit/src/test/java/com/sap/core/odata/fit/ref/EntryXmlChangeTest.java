@@ -13,6 +13,7 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * Tests employing the reference scenario changing entities in XML format.
@@ -65,6 +66,23 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Seats", getBody(response));
     checkUri("Rooms('104')/nr_Employees('4')");
     checkUri("Rooms('104')/nr_Employees('5')");
+  }
+
+  @Test
+  public void createWithLargeProperty() throws Exception {
+    String largeTeamName = StringHelper.generateData(888888);
+    // Create an entry for a type that has no media resource.
+    String requestBody = getBody(callUri("Teams('1')"))
+        .replace("'1'", "'9'")
+        .replace("Id>1", "Id>9")
+        .replace("Team 1", largeTeamName)
+        .replaceAll("<link.+?/>", "");
+    
+    HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
+    assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertNull(response.getFirstHeader(HttpHeaders.ETAG));
+    assertXpathEvaluatesTo(largeTeamName, "/atom:entry/atom:content/m:properties/d:Name", getBody(response));
   }
 
   @Test

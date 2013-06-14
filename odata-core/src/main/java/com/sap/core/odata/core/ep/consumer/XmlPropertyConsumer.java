@@ -25,6 +25,8 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlPropertyConsumer {
 
+  public static final String TRUE = "true";
+
   public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge) throws EntityProviderException {
     return readProperty(reader, property, merge, null);
   }
@@ -89,7 +91,7 @@ public class XmlPropertyConsumer {
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
       final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
-      if ("true".equals(nullAttribute)) {
+      if (TRUE.equals(nullAttribute)) {
         reader.nextTag();
       } else if (propertyInfo.isComplex()) {
         reader.nextTag();
@@ -102,24 +104,8 @@ public class XmlPropertyConsumer {
           reader.nextTag();
         }
       } else {
-        String value = null;
-        while (!reader.isEndElement() && reader.hasNext()) {
-          reader.next();
-          if (reader.isCharacters()) {
-            if (value == null) {
-              value = reader.getText();
-            } else {
-              value = value + reader.getText();
-            }
-          }
-          //TODO: should we throw exceptions for events: COMMENT, CDATA
-          //TODO: JUnit Test
-        }
-
-        if (value != null) {
-          Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
-          result = convert(propertyInfo, value, mapping);
-        }
+        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName()); 
+        result = convert(propertyInfo, reader.getElementText(), mapping); 
       }
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
 

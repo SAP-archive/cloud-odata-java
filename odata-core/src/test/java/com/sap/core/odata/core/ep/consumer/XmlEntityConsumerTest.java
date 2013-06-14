@@ -40,6 +40,7 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
@@ -1585,6 +1586,41 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryWithLargeProperty() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String newName = StringHelper.generateData(81920);
+    InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML.replaceAll("Walter Winter", newName));
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals(newName, properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
   /**
    * Missing 'key' properties are allowed for validation against Edm model.
    * @throws Exception
@@ -2018,6 +2054,18 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     Object result = new XmlEntityConsumer().readPropertyValue(property, content, String.class);
 
     assertEquals("Max Mustermann", result);
+  }
+
+  @Test
+  public void readLargeStringPropertyValue() throws Exception {
+    String name = StringHelper.generateData(77777);
+    String xml = "<EmployeeName xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">" + name + "</EmployeeName>";
+    InputStream content = createContentAsStream(xml);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
+
+    Object result = new XmlEntityConsumer().readPropertyValue(property, content, String.class);
+
+    assertEquals(name, result);
   }
 
   @Test
