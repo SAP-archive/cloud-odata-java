@@ -630,7 +630,7 @@ public final class EntityProvider {
     return createEntityProvider().readServiceDocument(serviceDocument, contentType);
   }
 
-  public static ODataResponse writeBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException {
+  public static ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
     return createEntityProvider().writeBatch(contentType, content, properties);
   }
 

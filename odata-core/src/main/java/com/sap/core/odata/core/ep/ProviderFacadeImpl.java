@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -169,19 +169,19 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   public ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return create(contentType).readServiceDocument(serviceDocument);
   }
-
-  /*  public ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+  @Override
+  public ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
      ODataRequestHandler requestHandler = new ODataRequestHandler(properties.getServiceFactory());
+     BatchWriter batchWriter = new BatchWriter();
      List<Batchpart> batchParts = new BatchRequestParser2(contentType, properties).parse(content);
      List<ODataResponse> responses = new ArrayList<ODataResponse>();
      for (Batchpart batchPart: batchParts) {
-       batchPart.process(requestHandler);
+       responses.add(batchPart.processWithResponse(requestHandler, batchWriter));
      }
-     ODataResponse response = BatchWriter.write(responses);
-     return response;
-   }*/
+     return batchWriter.write(responses);
+   }
 
-  @Override
+  /*@Override
   public ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
     ODataRequestHandler requestHandler = new ODataRequestHandler(properties.getServiceFactory());
     List<Batchpart> batchParts = new BatchRequestParser2(contentType, properties).parse(content);
@@ -192,5 +192,5 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     }
     ODataResponse response = batchWriter.createResponse(boundary);
     return response;
-  }
+  }*/
 }

@@ -88,6 +88,11 @@ public class BasicBatchTest extends AbstractBasicTest {
     assertEquals(202, response.getStatusLine().getStatusCode());
     assertEquals("HTTP/1.1", response.getProtocolVersion().toString());
     assertEquals(true, response.getEntity().getContentType().getValue().contains("multipart/mixed"));
+    Scanner scanner = new Scanner((InputStream) response.getEntity().getContent()).useDelimiter("\n");
+    while (scanner.hasNext()) {
+      System.out.println(scanner.next());
+    }
+    scanner.close();
   }
 
   static class TestSingleProc extends ODataSingleProcessor {

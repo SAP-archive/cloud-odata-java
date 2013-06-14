@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ODataRequestHandler;
 
 public class ChangeSet implements Batchpart {
@@ -19,16 +20,16 @@ public class ChangeSet implements Batchpart {
     batchRequests = requests;
   }
 
-  /* @Override
-   public ODataResponse process(final ODataRequestHandler requestHandler) throws EntityProviderException {
-     List<ODataResponse> responses = new ArrayList<ODataResponse>();
-     for (BatchRequest batchRequest : batchRequests) {
-       // ChangeSet Callback
-       responses.add(batchRequest.process(requestHandler));
-       // ChangeSet Callback
-     }
-     return BatchWriter.writeChangeSet(responses);
-   }*/
+  @Override
+  public ODataResponse processWithResponse(final ODataRequestHandler requestHandler, final BatchWriter batchWriter) throws EntityProviderException {
+    List<ODataResponse> responses = new ArrayList<ODataResponse>();
+    for (BatchRequest batchRequest : batchRequests) {
+      // ChangeSet Callback
+      responses.add(batchRequest.processWithResponse(requestHandler, batchWriter));
+      // ChangeSet Callback
+    }
+    return batchWriter.writeChangeSet(responses);
+  }
 
   @Override
   public void process(final ODataRequestHandler requestHandler, final BatchWriter batchWriter, final String boundary) throws EntityProviderException {

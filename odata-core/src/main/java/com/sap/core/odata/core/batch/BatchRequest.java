@@ -35,14 +35,14 @@ public class BatchRequest implements Batchpart {
     }
   }
 
-  /*@Override
-  public ODataResponse process(final ODataRequestHandler requestHandler) throws EntityProviderException {
+  @Override
+  public ODataResponse processWithResponse(final ODataRequestHandler requestHandler, final BatchWriter batchWriter) throws EntityProviderException {
     ODataResponse response;
     try {
-     // response = BatchWriter.writeResponse(requestHandler.handle(getOdataRequest()));
+      response = requestHandler.handle(getOdataRequest());
     } catch (ODataException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
     return response;
-  }*/
+  }
 }
