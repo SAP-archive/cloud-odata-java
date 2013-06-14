@@ -22,6 +22,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
 
 /**
@@ -50,6 +51,7 @@ public class AcceptHeaderTypeTest extends AbstractBasicTest {
       throws ClientProtocolException, IOException, ODataException {
     // prepare
     ODataResponse expectedResponse = ODataResponse.contentHeader(expectedContentType).entity("Test passed.").build();
+    when(processor.readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(expectedResponse);
     when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenReturn(expectedResponse);
     when(processor.readEntitySet(any(GetEntitySetUriInfo.class), any(String.class))).thenReturn(expectedResponse);
 
@@ -95,6 +97,16 @@ public class AcceptHeaderTypeTest extends AbstractBasicTest {
   @Test
   public void contentTypeApplicationJsononSet() throws Exception {
     testGetRequest("Rooms", "application/json", HttpStatusCodes.OK, "application/json");
+  }
+
+  @Test
+  public void contentTypeApplicationXmlOnMetadata() throws Exception {
+    testGetRequest("$metadata", "application/xml", HttpStatusCodes.OK, "application/xml");
+  }
+
+  @Test
+  public void contentTypeApplicationXmlOnMetadataMultiAccept() throws Exception {
+    testGetRequest("$metadata", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", HttpStatusCodes.OK, "application/xml");
   }
 
   @Test
