@@ -64,12 +64,40 @@ public class CircleStreamBuffer {
   // #
   // #############################################
 
+  /**
+   * Close the write (input) part of the {@link CircleStreamBuffer}.
+   * After this call the buffer can only be read out.
+   * 
+   * @throws IOException
+   */
   public void closeWrite() {
     writeClosed = true;
   }
 
+  /**
+   * Close the read (output) part of the {@link CircleStreamBuffer}.
+   * After this call it is possible to write into the buffer (but can never be read out).
+   * 
+   * @throws IOException
+   */
   public void closeRead() {
     readClosed = true;
+    // clear references to byte buffers
+    ByteBuffer buffer = bufferQueue.poll();
+    while(buffer != null) {
+      buffer.clear();
+      buffer = bufferQueue.poll();
+    }
+  }
+  
+  /**
+   * Close write and read part (and hence the complete buffer).
+   * 
+   * @throws IOException
+   */
+  public void close() {
+    closeWrite();
+    closeRead();
   }
 
   private int remaining() throws IOException {
