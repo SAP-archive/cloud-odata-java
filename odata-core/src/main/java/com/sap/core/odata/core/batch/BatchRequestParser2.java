@@ -18,8 +18,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.commons.ODataHttpMethod;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
@@ -28,7 +28,7 @@ import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 
-public class BatchRequestParser {
+public class BatchRequestParser2 {
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
   private static final String REG_EX_ZERO_OR_MORE_WHITESPACES = "\\s*";
   private static final String ANY_CHARACTERS = ".*";
@@ -42,7 +42,8 @@ public class BatchRequestParser {
 
   private static final String REG_EX_BOUNDARY = "([a-zA-Z0-9_\\-\\.'\\+]{1,70})|\"([a-zA-Z0-9_\\-\\.'\\+\\s\\(\\),/:=\\?]{1,69}[a-zA-Z0-9_\\-\\.'\\+\\(\\),/:=\\?])\""; // See RFC 2046
   private String baseUri;
-  private ODataContext odataContext;
+  private PathInfo batchRequestPathInfo;
+  private String contentTypeMime;
   private String boundary;
   private int linenumber = 0;
   private String currentContentId;
@@ -59,34 +60,34 @@ public class BatchRequestParser {
     HTTP_BATCH_METHODS.add("GET");
   }
 
-  public BatchRequestParser(final ODataContext odataContext) {
-    this.odataContext = odataContext;
-
+  public BatchRequestParser2(final String contentType, final EntityProviderBatchProperties properties) {
+    contentTypeMime = contentType;
+    batchRequestPathInfo = properties.getPathInfo();
   }
 
-  public List<Object> parse(final InputStream in) throws ODataException {
+  public List<Batchpart> parse(final InputStream in) throws EntityProviderException {
     Scanner scanner = new Scanner(in).useDelimiter("\n");
     baseUri = getBaseUri();
-    List<Object> requestList;
+    List<Batchpart> requestList;
     try {
       requestList = parseBatchRequest(scanner);
-    } catch (ODataException e) {
-      throw new ODataException(e.getMessage(), e);
+    } catch (EntityProviderException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       scanner.close();
       try {
         in.close();
       } catch (IOException e) {
-        throw new ODataException(e);
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
     }
     return requestList;
   }
 
-  private List<Object> parseBatchRequest(final Scanner scanner) throws ODataException {
-    List<Object> requests = new LinkedList<Object>();
-    if (odataContext != null) {
-      boundary = getBoundary(odataContext.getRequestHeader(BatchRequestConstants.HTTP_CONTENT_TYPE));
+  private List<Batchpart> parseBatchRequest(final Scanner scanner) throws EntityProviderException {
+    List<Batchpart> requests = new LinkedList<Batchpart>();
+    if (contentTypeMime != null) {
+      boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
       Pattern closeDelimiter = Pattern.compile("--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
       while (scanner.hasNext() && !scanner.hasNext(closeDelimiter)) {
@@ -96,10 +97,10 @@ public class BatchRequestParser {
       if (scanner.hasNext(closeDelimiter)) {
         scanner.next(closeDelimiter);
       } else {
-        throw new ODataException("The close delimiter is expected: line " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("The close delimiter is expected: line " + linenumber));
       }
     } else {
-      throw new ODataException();
+      throw new EntityProviderException(EntityProviderException.COMMON);
     }
     return requests;
 
@@ -112,9 +113,9 @@ public class BatchRequestParser {
     }
   }
 
-  private Object parseMultipart(final Scanner scanner, final String boundary, final boolean isChangeSet) throws ODataException {
+  private Batchpart parseMultipart(final Scanner scanner, final String boundary, final boolean isChangeSet) throws EntityProviderException {
     Map<String, String> mimeHeaders = new HashMap<String, String>();
-    Object object = null;
+    Batchpart multipart = null;
     if (scanner.hasNext("--" + boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
       scanner.next();
       nextLineNumber();
@@ -122,56 +123,62 @@ public class BatchRequestParser {
 
       String contentType = mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TYPE);
       if (contentType == null) {
-        throw new ODataException("No Content-Type field for MIME-header is present");
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("No Content-Type field for MIME-header is present"));
       }
       if (isChangeSet) {
         if (BatchRequestConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
           validateEncoding(mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TRANSFER_ENCODING));
           currentContentId = mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_ID);
           parseNewLine(scanner);// mandatory
-          object = parseRequest(scanner, isChangeSet);
+          BatchRequest part = new BatchRequest();
+          part.setOdataRequest(parseRequest(scanner, isChangeSet));
+          multipart = part;
         } else {
-          throw new ODataException("Invalid Content-Type field for MIME-header");
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Content-Type field for MIME-header"));
         }
       } else {
         if (mimeHeaders.containsKey(BatchRequestConstants.HTTP_CONTENT_ID)) {
-          throw new ODataException("A Content-ID header can be included just for an Insert request within a ChangeSet ");
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("A Content-ID header can be included just for an Insert request within a ChangeSet"));
         }
         if (BatchRequestConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
           validateEncoding(mimeHeaders.get(BatchRequestConstants.HTTP_CONTENT_TRANSFER_ENCODING));
           parseNewLine(scanner);// mandatory
-          object = parseRequest(scanner, isChangeSet);
+          BatchRequest part = new BatchRequest();
+          part.setOdataRequest(parseRequest(scanner, isChangeSet));
+          multipart = part;
         } else if (contentType.matches(REG_EX_OPTIONAL_WHITESPACE + BatchRequestConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
-          List<Object> changeSetRequests = new LinkedList<Object>();
+          List<BatchRequest> changeSetRequests = new LinkedList<BatchRequest>();
           parseNewLine(scanner);// mandatory
           Pattern changeSetCloseDelimiter = Pattern.compile("--" + changeSetBoundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
           while (!scanner.hasNext(changeSetCloseDelimiter)) {
-            changeSetRequests.add(parseMultipart(scanner, changeSetBoundary, true));
+            changeSetRequests.add((BatchRequest) parseMultipart(scanner, changeSetBoundary, true));
           }
           scanner.next(changeSetCloseDelimiter);
           nextLineNumber();
-          object = changeSetRequests;
+          ChangeSet changeSet = new ChangeSet();
+          changeSet.setBatchRequests(changeSetRequests);
+          multipart = changeSet;
         } else {
-          throw new ODataException("Invalid Content-Type: line " + linenumber);
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Content-Type: line " + linenumber));
         }
       }
     } else if (scanner.hasNext(boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
       nextLineNumber();
-      throw new ODataException("The boundary delimiter must begin with two hyphen(\"-\") characters: line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The boundary delimiter must begin with two hyphen(\"-\") characters: line " + linenumber));
     } else if (scanner.hasNext(ANY_BOUNDARY_STRING)) {
       nextLineNumber();
-      throw new ODataException("The boundary string doesn't match the boundary from Content-Type header field " + boundary + ": line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The boundary string doesn't match the boundary from Content-Type header field " + boundary + ": line " + linenumber));
     } else {
       nextLineNumber();
-      throw new ODataException("The boundary delimiter is expected: line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The boundary delimiter is expected: line " + linenumber));
     }
-    return object;
+    return multipart;
 
   }
 
   @SuppressWarnings("deprecation")
-  private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws ODataException {
+  private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws EntityProviderException {
     ODataRequestImpl request = new ODataRequestImpl();
     if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
       scanner.next(REG_EX_REQUEST_LINE);
@@ -183,16 +190,16 @@ public class BatchRequestParser {
         method = result.group(1);
         uri = result.group(2).trim();
       } else {
-        throw new ODataException();
+        throw new EntityProviderException(EntityProviderException.COMMON);
       }
-      request.setPathInfo(parseRequestUri(scanner, uri));
-      request.setQueryParameters(parseQueryParameters(scanner, uri));
+      request.setPathInfo(parseRequestUri(uri));
+      request.setQueryParameters(parseQueryParameters(uri));
       if (isChangeSet) {
         if (!HTTP_CHANGESET_METHODS.contains(method)) {
-          throw new ODataException("Invalid method.  A ChangeSet cannot contain retrieve requests: line " + linenumber);
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid method.  A ChangeSet cannot contain retrieve requests: line " + linenumber));
         }
       } else if (!HTTP_BATCH_METHODS.contains(method)) {
-        throw new ODataException("Invalid method.  A Batch Request cannot contain insert, update or delete requests: line " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid method.  A Batch Request cannot contain insert, update or delete requests: line " + linenumber));
       }
       request.setMethod(ODataHttpMethod.valueOf(method));
       Map<String, List<String>> headers = parseRequestHeaders(scanner);
@@ -222,7 +229,7 @@ public class BatchRequestParser {
 
     } else {
       nextLineNumber();
-      throw new ODataException("line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("line " + linenumber));
     }
     return request;
   }
@@ -245,7 +252,7 @@ public class BatchRequestParser {
     return headers;
   }
 
-  private Map<String, List<String>> parseRequestHeaders(final Scanner scanner) throws ODataException {
+  private Map<String, List<String>> parseRequestHeaders(final Scanner scanner) throws EntityProviderException {
     Map<String, List<String>> headers = new HashMap<String, List<String>>();
     while (scanner.hasNext() && !scanner.hasNext("")) {
       if (scanner.hasNext(REG_EX_HEADER)) {
@@ -265,21 +272,21 @@ public class BatchRequestParser {
         nextLineNumber();
       } else {
         nextLineNumber();
-        throw new ODataException("Invalid header: " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid header: " + linenumber));
       }
     }
     return headers;
   }
 
-  private PathInfo parseRequestUri(final Scanner scanner, final String uri) throws ODataException {
+  private PathInfo parseRequestUri(final String uri) throws EntityProviderException {
     PathInfoImpl pathInfo = new PathInfoImpl();
-    pathInfo.setServiceRoot(odataContext.getPathInfo().getServiceRoot());
-    pathInfo.setPrecedingPathSegment(odataContext.getPathInfo().getPrecedingSegments());
+    pathInfo.setServiceRoot(batchRequestPathInfo.getServiceRoot());
+    pathInfo.setPrecedingPathSegment(batchRequestPathInfo.getPrecedingSegments());
     Scanner uriScanner = new Scanner(uri);
     Pattern requestUri = Pattern.compile("(?:" + baseUri + "/)?([^?]+)(\\?.*)?");
     if (uriScanner.hasNext("\\$[^/]/([^?]+)(?:\\?.*)?")) {
       // TODO: Content-ID reference 
-      scanner.next("\\$[^/]/([^?]+)(?:\\?.*)?");
+      uriScanner.next("\\$[^/]/([^?]+)(?:\\?.*)?");
     } else if (uriScanner.hasNext(requestUri)) {
       uriScanner.next(requestUri);
       MatchResult result = uriScanner.match();
@@ -291,23 +298,23 @@ public class BatchRequestParser {
           pathInfo.setRequestUri(new URI(baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString));
         } catch (URISyntaxException e) {
           uriScanner.close();
-          throw new ODataException("Invalid URI");
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URI"));
         }
       } else {
         uriScanner.close();
-        throw new ODataException("Invalid URI: line " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URI: line " + linenumber));
       }
     } else {
       uriScanner.close();
-      throw new ODataException("Invalid URI: line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URI: line " + linenumber));
     }
     uriScanner.close();
     return pathInfo;
   }
 
-  private Map<String, String> parseQueryParameters(final Scanner scanner, final String uri) throws ODataException {
+  private Map<String, String> parseQueryParameters(final String uri) throws EntityProviderException {
     Scanner uriScanner = new Scanner(uri);
-    Map<String, String> queryParametersMap = null;
+    Map<String, String> queryParametersMap = new HashMap<String, String>();
     Pattern regex = Pattern.compile("(?:" + baseUri + "/)?" + "[^?]+" + "\\?(.*)");
     if (uriScanner.hasNext(regex)) {
       uriScanner.next(regex);
@@ -315,7 +322,6 @@ public class BatchRequestParser {
       if (uriResult.groupCount() == 1) {
         String queryParams = uriResult.group(1);
         Scanner queryParamsScanner = new Scanner(queryParams).useDelimiter("&");
-        queryParametersMap = new HashMap<String, String>();
         while (queryParamsScanner.hasNext("((?:\\$[a-z]+)|(?:[^\\$][^=]))=([^=]+)")) {
           queryParamsScanner.next("((?:\\$[a-z]+)|(?:[^\\$][^=]))=([^=]+)");
           MatchResult result = queryParamsScanner.match();
@@ -325,14 +331,14 @@ public class BatchRequestParser {
             queryParametersMap.put(systemQueryOption, value);
           } else {
             queryParamsScanner.close();
-            throw new ODataException("Invalid query parameters: line " + linenumber);
+            throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid query parameters: line " + linenumber));
           }
         }
         queryParamsScanner.close();
 
       } else {
         uriScanner.close();
-        throw new ODataException("Invalid URL: line " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URL: line " + linenumber));
       }
     }
     uriScanner.close();
@@ -349,11 +355,11 @@ public class BatchRequestParser {
     return odataPathSegments;
   }
 
-  private List<String> parseAcceptHeaders(final String headerValue) throws ODataException {
+  private List<String> parseAcceptHeaders(final String headerValue) throws EntityProviderException {
     return AcceptParser.parseAcceptHeaders(headerValue);
   }
 
-  private List<Locale> parseAcceptableLanguages(final String headerValue) throws ODataException {
+  private List<Locale> parseAcceptableLanguages(final String headerValue) throws EntityProviderException {
     return AcceptParser.parseAcceptableLanguages(headerValue);
   }
 
@@ -374,13 +380,13 @@ public class BatchRequestParser {
     return new ByteArrayInputStream(body.getBytes());
   }
 
-  private String getBoundary(final String contentType) throws ODataException {
+  private String getBoundary(final String contentType) throws EntityProviderException {
     Scanner contentTypeScanner = new Scanner(contentType).useDelimiter(";\\s?");
     if (contentTypeScanner.hasNext(REG_EX_CONTENT_TYPE)) {
       contentTypeScanner.next(REG_EX_CONTENT_TYPE);
     } else {
       contentTypeScanner.close();
-      throw new ODataException("Content-Type of the batch request should be " + BatchRequestConstants.MULTIPART_MIXED);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Content-Type of the batch request should be " + BatchRequestConstants.MULTIPART_MIXED));
     }
     if (contentTypeScanner.hasNext(REG_EX_BOUNDARY_PARAMETER)) {
       contentTypeScanner.next(REG_EX_BOUNDARY_PARAMETER);
@@ -389,21 +395,21 @@ public class BatchRequestParser {
       if (result.groupCount() == 1 && result.group(1).trim().matches(REG_EX_BOUNDARY)) {
         return trimQuota(result.group(1).trim());
       } else {
-        throw new ODataException("Invalid boundary");
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid boundary"));
       }
     } else {
       contentTypeScanner.close();
-      throw new ODataException("The Content-Type field for multipart entities requires \"boundary\" parameter");
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The Content-Type field for multipart entities requires \"boundary\" parameter"));
     }
   }
 
-  private void validateEncoding(final String encoding) throws ODataException {
+  private void validateEncoding(final String encoding) throws EntityProviderException {
     if (!BatchRequestConstants.BINARY_ENCODING.equals(encoding)) {
-      throw new ODataException("The Content-Transfer-Encoding isn't binary");
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The Content-Transfer-Encoding isn't binary"));
     }
   }
 
-  private Map<String, String> parseHeaders(final Scanner scanner) throws ODataException {
+  private Map<String, String> parseHeaders(final Scanner scanner) throws EntityProviderException {
     Map<String, String> headers = new HashMap<String, String>();
     while (scanner.hasNext() && !scanner.hasNext("")) {
       if (scanner.hasNext(REG_EX_HEADER)) {
@@ -417,19 +423,19 @@ public class BatchRequestParser {
         nextLineNumber();
       } else {
         nextLineNumber();
-        throw new ODataException("Invalid header: " + linenumber);
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid header: " + linenumber));
       }
     }
     return headers;
   }
 
-  private void parseNewLine(final Scanner scanner) throws ODataException {
+  private void parseNewLine(final Scanner scanner) throws EntityProviderException {
     if (scanner.hasNext("")) {
       scanner.next();
       nextLineNumber();
     } else {
       nextLineNumber();
-      throw new ODataException("Expected blank line: line " + linenumber);
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Expected blank line: line " + linenumber));
     }
   }
 
@@ -437,15 +443,17 @@ public class BatchRequestParser {
     linenumber++;
   }
 
-  private String getBaseUri() throws ODataException {
-    if (odataContext.getPathInfo() != null) {
-      if (odataContext.getPathInfo().getServiceRoot() != null) {
-        String baseUri = odataContext.getPathInfo().getServiceRoot().toString();
-        for (PathSegment precedingPS : odataContext.getPathInfo().getPrecedingSegments()) {
+  private String getBaseUri() throws EntityProviderException {
+    if (batchRequestPathInfo != null) {
+      if (batchRequestPathInfo.getServiceRoot() != null) {
+        String baseUri = batchRequestPathInfo.getServiceRoot().toString();
+        for (PathSegment precedingPS : batchRequestPathInfo.getPrecedingSegments()) {
           baseUri = baseUri + "/" + precedingPS.getPath();
         }
         return baseUri;
       }
+    } else {
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("PathInfo should not be null"));
     }
     return null;
   }

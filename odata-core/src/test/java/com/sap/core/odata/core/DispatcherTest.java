@@ -99,7 +99,7 @@ public class DispatcherTest extends BaseTest {
     when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(anyString())).thenAnswer(getAnswer());
+    when(batch.executeBatch(anyString(),any(InputStream.class))).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());

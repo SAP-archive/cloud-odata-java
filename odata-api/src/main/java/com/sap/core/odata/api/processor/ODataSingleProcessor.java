@@ -84,7 +84,7 @@ public abstract class ODataSingleProcessor implements MetadataProcessor, Service
    * @see BatchProcessor
    */
   @Override
-  public ODataResponse executeBatch(final String contentType) throws ODataException {
+  public ODataResponse executeBatch(final String contentType, final InputStream content) throws ODataException {
     throw new ODataNotImplementedException();
   }
 

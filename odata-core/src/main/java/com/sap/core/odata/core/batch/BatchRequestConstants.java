@@ -12,4 +12,10 @@ public class BatchRequestConstants {
   public static final String HTTP_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
 
   public static final String ACCEPT = "Accept";
+
+  public static final String ACCEPT_LANGUAGE = "Accept-Language";
+
+  public static final String HTTP_CONTENT_ID = "Content-ID";
+
+  public static final String HTTP_CONTENT_LENGTH = "Content-Length";
 }

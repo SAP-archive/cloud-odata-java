@@ -496,7 +496,7 @@ public class Dispatcher {
 
     case URI9:
       if (method == ODataHttpMethod.POST) {
-        return service.getBatchProcessor().executeBatch(contentType);
+        return service.getBatchProcessor().executeBatch(contentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

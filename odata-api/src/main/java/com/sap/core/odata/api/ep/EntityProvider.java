@@ -300,6 +300,8 @@ public final class EntityProvider {
      * @throws EntityProviderException  if reading of data (de-serialization) fails
      */
     ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
+
+    ODataResponse writeBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
   }
 
   /**
@@ -626,6 +628,10 @@ public final class EntityProvider {
    */
   public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return createEntityProvider().readServiceDocument(serviceDocument, contentType);
+  }
+
+  public static ODataResponse writeBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException {
+    return createEntityProvider().writeBatch(contentType, content, properties);
   }
 
 }
