@@ -123,8 +123,7 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponseBuilder contentHeader(final String value) {
-      header.put(HttpHeaders.CONTENT_TYPE, value);
-      return this;
+      return header(HttpHeaders.CONTENT_TYPE, value);
     }
 
     @Override

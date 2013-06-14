@@ -6,12 +6,14 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * An <code>ODataResponse</code> is usually created by a {@link ODataProcessor} during request handling. The handler can use a serializer to create an 
- * OData body (== response entity) and can set various response headers.<p>
- * A respons can be created using the builder pattern:
+ * <p>An <code>ODataResponse</code> is usually created by an {@link ODataProcessor}
+ * during request handling.</p>
+ * <p>The handler can use a serializer to create an 
+ * OData body (== response entity) and can set various response headers.
+ * A response can be created using the builder pattern:
  * <pre>
  * {@code
- * ODataResponse response = ODataResponse.entity("hello world").setStatus(200).build();
+ * ODataResponse response = ODataResponse.entity("hello world").setStatus(HttpStatusCodes.OK).build();
  * }
  * </pre>
  * @author SAP AG
@@ -24,17 +26,17 @@ public abstract class ODataResponse {
   protected ODataResponse() {}
 
   /**
-   * @return http status code of this response
+   * @return HTTP status code of this response
    */
   public abstract HttpStatusCodes getStatus();
 
   /**
-   * @return a response entity which become the body part of a response message
+   * @return a response entity which becomes the body part of a response message
    */
   public abstract Object getEntity();
 
   /**
-   * @param name http response header name
+   * @param name HTTP response header name
    * @return a header value or null if not set
    */
   public abstract String getHeader(String name);
@@ -47,7 +49,7 @@ public abstract class ODataResponse {
   public abstract String getIdLiteral();
 
   /**
-   * @return etag value or null if not available
+   * @return entity tag value or null if not available
    */
   public abstract String getETag();
 
@@ -64,13 +66,11 @@ public abstract class ODataResponse {
   public abstract boolean containsHeader(String header);
 
   /**
-   * @param status http status code
+   * @param status HTTP status code
    * @return a builder object
    */
   public static ODataResponseBuilder status(final HttpStatusCodes status) {
-    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
-    b.status(status);
-    return b;
+    return newBuilder().status(status);
   }
 
   /**
@@ -78,9 +78,7 @@ public abstract class ODataResponse {
    * @return a new builder object
    */
   public static ODataResponseBuilder fromResponse(final ODataResponse response) {
-    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
-    b.fromResponse(response);
-    return b;
+    return newBuilder().fromResponse(response);
   }
 
   /**
@@ -88,20 +86,16 @@ public abstract class ODataResponse {
    * @return a builder object
    */
   public static ODataResponseBuilder entity(final Object entity) {
-    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
-    b.entity(entity);
-    return b;
+    return newBuilder().entity(entity);
   }
 
   /**
-   * @param name http header name
+   * @param name  HTTP header name
    * @param value associated value
    * @return a builder object
    */
   public static ODataResponseBuilder header(final String name, final String value) {
-    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
-    b.header(name, value);
-    return b;
+    return newBuilder().header(name, value);
   }
 
   /**
@@ -109,9 +103,7 @@ public abstract class ODataResponse {
    * @return a builder object
    */
   public static ODataResponseBuilder contentHeader(final String value) {
-    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
-    b.contentHeader(value);
-    return b;
+    return newBuilder().contentHeader(value);
   }
 
   /**
@@ -130,8 +122,7 @@ public abstract class ODataResponse {
     protected ODataResponseBuilder() {}
 
     private static ODataResponseBuilder newInstance() {
-      final ODataResponseBuilder b = RuntimeDelegate.createODataResponseBuilder();
-      return b;
+      return RuntimeDelegate.createODataResponseBuilder();
     }
 
     public abstract ODataResponse build();
