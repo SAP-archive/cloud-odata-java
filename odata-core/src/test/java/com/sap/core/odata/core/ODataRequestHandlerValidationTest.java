@@ -375,7 +375,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("test.2.0");
     response = handler.handle(request);
     assertEquals(HttpStatusCodes.BAD_REQUEST, response.getStatus());
-}
+  }
 
   @Test
   public void allowedMethods() throws Exception {

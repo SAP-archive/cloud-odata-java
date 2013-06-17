@@ -80,12 +80,12 @@ public class CircleStreamBuffer {
     readClosed = true;
     // clear references to byte buffers
     ByteBuffer buffer = bufferQueue.poll();
-    while(buffer != null) {
+    while (buffer != null) {
       buffer.clear();
       buffer = bufferQueue.poll();
     }
   }
-  
+
   /**
    * Closes write and read part (and hence the complete buffer).
    */

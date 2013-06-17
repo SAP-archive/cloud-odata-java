@@ -100,7 +100,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals("[AcceptValue]", response.getHeaderString("Accept"));
     assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
   }
-  
+
   @Test
   public void servletRequestWithClassloader() throws Exception {
     MultivaluedMap<String, String> value = new MultivaluedHashMap<String, String>();

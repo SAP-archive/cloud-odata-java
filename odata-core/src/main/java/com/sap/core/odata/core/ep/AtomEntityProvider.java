@@ -242,7 +242,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       writer.flush();
       buffer.closeWrite();
-      
+
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (Exception e) {
       buffer.close();
@@ -266,7 +266,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       writer.flush();
       buffer.closeWrite();
-      
+
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (Exception e) {
       buffer.close();

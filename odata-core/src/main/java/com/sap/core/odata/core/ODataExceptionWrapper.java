@@ -297,7 +297,7 @@ public class ODataExceptionWrapper {
     return callback;
   }
 
-  private ODataErrorCallback getErrorHandlerCallbackFromServletConfig(final ServletConfig servletConfig, HttpServletRequest servletRequest) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+  private ODataErrorCallback getErrorHandlerCallbackFromServletConfig(final ServletConfig servletConfig, final HttpServletRequest servletRequest) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     ODataErrorCallback callback = null;
     final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
     if (factoryClassName != null) {
