@@ -15,8 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class CircleStreamBuffer {
 
-  private final static int DEFAULT_CAPACITY = 8192;
-  private final static int MAX_CAPACITY = DEFAULT_CAPACITY * 32;
+  private static final int NEW_BUFFER_RESIZE_FACTOR = 2;
+  private static final int READ_EOF = -1;
+  private static final int DEFAULT_CAPACITY = 8192;
+  private static final int MAX_CAPACITY = DEFAULT_CAPACITY * 32;
+
   private int currentAllocateCapacity = DEFAULT_CAPACITY;
 
   private boolean writeMode = true;
@@ -29,10 +32,18 @@ public class CircleStreamBuffer {
   private InternalInputStream inStream;
   private InternalOutputStream outStream;
 
+  /**
+   * Create a {@link CircleStreamBuffer} with default buffer size ({@value #DEFAULT_CAPACITY} bytes).
+   */
   public CircleStreamBuffer() {
     this(DEFAULT_CAPACITY);
   }
 
+  /**
+   * Create a {@link CircleStreamBuffer} with given buffer size in bytes.
+   * 
+   * @param bufferSize
+   */
   public CircleStreamBuffer(final int bufferSize) {
     currentAllocateCapacity = bufferSize;
     createNewWriteBuffer();
@@ -142,23 +153,23 @@ public class CircleStreamBuffer {
   }
 
   private int read(final byte[] b, final int off, int len) throws IOException {
-    ByteBuffer toRead = getReadBuffer();
-    if (toRead == null) {
-      return -1;
+    ByteBuffer readBuffer = getReadBuffer();
+    if (readBuffer == null) {
+      return READ_EOF;
     }
 
-    final int remaining = toRead.remaining();
-    if (remaining <= len) {
-      len = remaining;
+    int toReadLenght = readBuffer.remaining();
+    if (len < toReadLenght) {
+      toReadLenght = len;
     }
-    toRead.get(b, off, len);
-    return len;
+    readBuffer.get(b, off, toReadLenght);
+    return toReadLenght;
   }
 
   private int read() throws IOException {
     ByteBuffer readBuffer = getReadBuffer();
     if (readBuffer == null) {
-      return -1;
+      return READ_EOF;
     }
 
     return readBuffer.get();
@@ -219,13 +230,16 @@ public class CircleStreamBuffer {
    * @return the buffer
    */
   private ByteBuffer allocateBuffer(int requestedCapacity) {
-    if (requestedCapacity < currentAllocateCapacity) {
-      requestedCapacity = currentAllocateCapacity * 2;
+    int allocateCapacity = requestedCapacity;
+    if (allocateCapacity < currentAllocateCapacity) {
+      allocateCapacity = currentAllocateCapacity * NEW_BUFFER_RESIZE_FACTOR;
     }
-    if (currentAllocateCapacity > MAX_CAPACITY) {
-      currentAllocateCapacity = MAX_CAPACITY;
+    if (allocateCapacity > MAX_CAPACITY) {
+      allocateCapacity = MAX_CAPACITY;
     }
-    return ByteBuffer.allocateDirect(requestedCapacity);
+    // update current
+    currentAllocateCapacity = allocateCapacity;
+    return ByteBuffer.allocate(allocateCapacity);
   }
 
   // #############################################
