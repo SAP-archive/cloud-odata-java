@@ -73,6 +73,7 @@ public class ODataResponseTest extends BaseTest {
     assertEquals("x", response.getETag());
     assertEquals(HttpContentType.TEXT_PLAIN, response.getContentHeader());
     assertEquals("id", response.getIdLiteral());
+    assertEquals(4, response.getHeaderNames().size());
     assertEquals("body", response.getEntity());
 
     final ODataResponse responseCopy = ODataResponse.fromResponse(response).build();

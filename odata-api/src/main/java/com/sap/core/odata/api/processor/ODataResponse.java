@@ -42,14 +42,17 @@ public abstract class ODataResponse {
   public abstract String getHeader(String name);
 
   /**
-   * @return content header value or null if not set
+   * @return Content-Type header value or null if not set
    */
   public abstract String getContentHeader();
 
+  /**
+   * @return Location header value or null if not set
+   */
   public abstract String getIdLiteral();
 
   /**
-   * @return entity tag value or null if not available
+   * @return ETag header value or null if not available
    */
   public abstract String getETag();
 
@@ -60,7 +63,7 @@ public abstract class ODataResponse {
 
   /**
    * Case insensitive check if the header is available in this ODataResponse
-   * @param header
+   * @param header header name
    * @return true/false
    */
   public abstract boolean containsHeader(String header);
@@ -114,7 +117,7 @@ public abstract class ODataResponse {
   }
 
   /**
-   * Implementation of the builder pattern to create instances of these type of object. 
+   * Implementation of the builder pattern to create instances of this type of object. 
    * @author SAP AG
    */
   public static abstract class ODataResponseBuilder {
