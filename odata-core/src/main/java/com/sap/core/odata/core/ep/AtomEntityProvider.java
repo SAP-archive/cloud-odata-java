@@ -136,6 +136,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .build();
 
       return response;
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
       csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
@@ -163,6 +166,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
           .eTag(as.getETag())
           .idLiteral(as.getLocation());
       return response.build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
       csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
@@ -190,6 +196,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       csb.closeWrite();
 
       return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
       csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
@@ -214,6 +223,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (XMLStreamException e) {
       csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
@@ -229,10 +241,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      OutputStream outStream = buffer.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -241,11 +253,14 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       entity.append(writer, entityInfo, data, true);
 
       writer.flush();
-      buffer.closeWrite();
+      csb.closeWrite();
 
-      return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
-      buffer.close();
+      csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
@@ -253,10 +268,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      OutputStream outStream = buffer.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -265,31 +280,37 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       entity.append(writer, entityInfo, data);
 
       writer.flush();
-      buffer.closeWrite();
+      csb.closeWrite();
 
-      return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
-      buffer.close();
+      csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
-    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      OutputStream outStream = buffer.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlCollectionEntityProducer.append(writer, propertyInfo, data);
 
       writer.flush();
-      buffer.closeWrite();
+      csb.closeWrite();
 
-      return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (Exception e) {
-      buffer.close();
+      csb.close();
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
