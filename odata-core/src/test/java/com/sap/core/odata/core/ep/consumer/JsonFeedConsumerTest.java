@@ -112,7 +112,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getInlineCount());
     assertNull(feedMetadata.getNextLink());
   }
-
+  
   @Test(expected = EntityProviderException.class)
   public void invalidDoubleClosingBrackets() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
@@ -283,9 +283,9 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
-  public void feedWithInlineCountAndNext() throws Exception {
+  public void feedWithInlineCountAndNextAndDelta() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-    String content = "{\"d\":{\"__count\":\"3\",\"results\":[{\"__metadata\":{\"id\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')\",\"uri\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')\",\"type\":\"RefScenario.Team\"},\"Id\":\"1\",\"Name\":\"Team 1\",\"isScrumTeam\":false,\"nt_Employees\":{\"__deferred\":{\"uri\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees\"}}}],\"__next\":\"Rooms?$skiptoken=98&$inlinecount=allpages\"}}";
+    String content = "{\"d\":{\"__count\":\"3\",\"results\":[{\"__metadata\":{\"id\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')\",\"uri\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')\",\"type\":\"RefScenario.Team\"},\"Id\":\"1\",\"Name\":\"Team 1\",\"isScrumTeam\":false,\"nt_Employees\":{\"__deferred\":{\"uri\":\"http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees\"}}}],\"__next\":\"Rooms?$skiptoken=98&$inlinecount=allpages\",\"__delta\":\"deltalink\"}}";
     assertNotNull(content);
     InputStream contentBody = createContentAsStream(content);
 
@@ -302,6 +302,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNotNull(feedMetadata);
     assertEquals(Integer.valueOf(3), feedMetadata.getInlineCount());
     assertEquals("Rooms?$skiptoken=98&$inlinecount=allpages", feedMetadata.getNextLink());
+    assertEquals("deltalink", feedMetadata.getDeltaLink());
   }
 
   private void checkMediaDataInitial(final MediaMetadata mediaMetadata) {

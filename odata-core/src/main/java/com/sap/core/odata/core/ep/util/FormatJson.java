@@ -31,4 +31,5 @@ public class FormatJson {
   public static final String LANG = "lang";
   public static final String VALUE = "value";
   public static final String INNER_ERROR = "innererror";
+  public static final String DELTA = "__delta";
 }

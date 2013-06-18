@@ -102,6 +102,13 @@ public class JsonFeedConsumer {
         throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
       }
 
+    } else if (FormatJson.DELTA.equals(nextName)) {
+      if (reader.peek() == JsonToken.STRING && feedMetadata.getDeltaLink() == null) {
+        String deltaLink = reader.nextString();
+        feedMetadata.setDeltaLink(deltaLink);
+      } else {
+        throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
+      }
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_CONTENT.addContent(nextName).addContent("JsonFeed"));
     }
