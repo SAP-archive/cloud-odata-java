@@ -36,7 +36,7 @@ public class AtomFeedProducer {
 
   public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data, final boolean isInline) throws EntityProviderException {
     try {
-      writer.writeStartElement("feed");
+      writer.writeStartElement(FormatXml.ATOM_FEED);
       TombstoneCallback callback = null;
       if (!isInline) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
@@ -47,7 +47,7 @@ public class AtomFeedProducer {
           writer.writeNamespace(TombstoneCallback.PREFIX_TOMBSTONE, TombstoneCallback.NAMESPACE_TOMBSTONE);
         }
       }
-      writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
+      writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_BASE, properties.getServiceRoot().toASCIIString());
 
       // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia);
@@ -93,7 +93,7 @@ public class AtomFeedProducer {
     if (deltaLink != null) {
       try {
         writer.writeStartElement(FormatXml.ATOM_LINK);
-        writer.writeAttribute(FormatXml.ATOM_REL, TombstoneCallback.REL_DELTA);
+        writer.writeAttribute(FormatXml.ATOM_REL, FormatXml.ATOM_DELTA_LINK);
         writer.writeAttribute(FormatXml.ATOM_HREF, deltaLink);
         writer.writeEndElement();
       } catch (XMLStreamException e) {
@@ -106,7 +106,7 @@ public class AtomFeedProducer {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
-      writer.writeAttribute(FormatXml.ATOM_REL, "next");
+      writer.writeAttribute(FormatXml.ATOM_REL, FormatXml.ATOM_NEXT_LINK);
       writer.writeEndElement();
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -145,7 +145,7 @@ public class AtomFeedProducer {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, selfLink);
-      writer.writeAttribute(FormatXml.ATOM_REL, "self");
+      writer.writeAttribute(FormatXml.ATOM_REL, Edm.LINK_REL_SELF);
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntitySetName());
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -171,7 +171,7 @@ public class AtomFeedProducer {
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
-      writer.writeAttribute(FormatXml.M_TYPE, "text");
+      writer.writeAttribute(FormatXml.M_TYPE, FormatXml.ATOM_TEXT);
       writer.writeCharacters(eia.getEntitySetName());
       writer.writeEndElement();
 

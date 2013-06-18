@@ -33,7 +33,7 @@ public class CircleStreamBuffer {
   private InternalOutputStream outStream;
 
   /**
-   * Create a {@link CircleStreamBuffer} with default buffer size ({@value #DEFAULT_CAPACITY} bytes).
+   * Creates a {@link CircleStreamBuffer} with default buffer size.
    */
   public CircleStreamBuffer() {
     this(DEFAULT_CAPACITY);

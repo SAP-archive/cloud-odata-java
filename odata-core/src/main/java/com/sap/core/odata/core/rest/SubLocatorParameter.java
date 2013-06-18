@@ -7,6 +7,9 @@ import javax.ws.rs.core.Request;
 
 import com.sap.core.odata.api.ODataServiceFactory;
 
+/**
+ * @author SAP AG
+ */
 public class SubLocatorParameter {
 
   private List<javax.ws.rs.core.PathSegment> pathSegments;

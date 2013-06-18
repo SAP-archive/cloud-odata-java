@@ -65,7 +65,7 @@ public class AtomEntryEntityProducer {
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
       }
       if (!isFeedPart) {
-        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
+        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_BASE, properties.getServiceRoot().toASCIIString());
       }
 
       etag = createETag(eia, data);
@@ -259,7 +259,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
-      writer.writeAttribute(FormatXml.ATOM_REL, "edit");
+      writer.writeAttribute(FormatXml.ATOM_REL, Edm.LINK_REL_EDIT);
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityType().getName());
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -279,7 +279,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
-      writer.writeAttribute(FormatXml.ATOM_REL, "edit-media");
+      writer.writeAttribute(FormatXml.ATOM_REL, Edm.LINK_REL_EDIT_MEDIA);
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -312,7 +312,7 @@ public class AtomEntryEntityProducer {
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
-      writer.writeAttribute(FormatXml.M_TYPE, "text");
+      writer.writeAttribute(FormatXml.ATOM_TYPE, FormatXml.ATOM_TEXT);
       EntityPropertyInfo titleInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_TITLE);
       if (titleInfo != null) {
         EdmSimpleType st = (EdmSimpleType) titleInfo.getType();
