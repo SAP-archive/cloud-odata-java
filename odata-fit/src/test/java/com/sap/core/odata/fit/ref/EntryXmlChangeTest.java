@@ -78,7 +78,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         .replace("Id>1", "Id>9")
         .replace("Team 1", largeTeamName)
         .replaceAll("<link.+?/>", "");
-    
+
     HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());

@@ -31,14 +31,14 @@ public class StringHelper {
   public static String httpEntityToString(final HttpEntity entity) throws IOException, IllegalStateException {
     return inputStreamToString(entity.getContent());
   }
-  
+
   /**
    * Generate a string with given length containing random upper case characters ([A-Z]).
    * 
    * @param len length of to generated string
    * @return random upper case characters ([A-Z]).
    */
-  public static String generateData(int len) {
+  public static String generateData(final int len) {
     StringBuilder b = new StringBuilder(len);
     for (int j = 0; j < len; j++) {
       char c = (char) (Math.random() * 26 + 65);

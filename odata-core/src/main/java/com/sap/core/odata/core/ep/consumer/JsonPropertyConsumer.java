@@ -149,8 +149,8 @@ public class JsonPropertyConsumer {
           throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(FormatJson.TYPE).addContent(FormatJson.METADATA));
         }
         String actualTypeName = reader.nextString();
-        String expectedTypeName = complexPropertyInfo.getType().getNamespace() + Edm.DELIMITER+complexPropertyInfo.getType().getName();
-        if(!expectedTypeName.equals(actualTypeName)){
+        String expectedTypeName = complexPropertyInfo.getType().getNamespace() + Edm.DELIMITER + complexPropertyInfo.getType().getName();
+        if (!expectedTypeName.equals(actualTypeName)) {
           throw new EntityProviderException(EntityProviderException.INVALID_ENTITYTYPE.addContent(expectedTypeName).addContent(actualTypeName));
         }
         reader.endObject();

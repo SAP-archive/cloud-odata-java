@@ -146,8 +146,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
-          && uriInfo.getTop() == null)
+          && uriInfo.getTop() == null) {
         sortInDefaultOrder(entitySet, data);
+      }
 
       // TODO: Percent-encode "next" link.
       nextLink = context.getPathInfo().getServiceRoot().relativize(context.getPathInfo().getRequestUri()).toString()
@@ -157,8 +158,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       nextLink += (nextLink.contains("?") ? "&" : "?")
           + "$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
 
-      while (data.size() > SERVER_PAGING_SIZE)
+      while (data.size() > SERVER_PAGING_SIZE) {
         data.remove(SERVER_PAGING_SIZE);
+      }
     }
 
     final EdmEntityType entityType = entitySet.getEntityType();
