@@ -12,6 +12,9 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
  * Implementation of the EDM simple type DateTimeOffset.
+ * 
+ * Details about parsing of time strings to {@link EdmDateTimeOffset} objects can be found in {@link com.sap.core.odata.api.edm.EdmSimpleType} documentation.
+ * 
  * @author SAP AG
  */
 public class EdmDateTimeOffset extends AbstractSimpleType {
