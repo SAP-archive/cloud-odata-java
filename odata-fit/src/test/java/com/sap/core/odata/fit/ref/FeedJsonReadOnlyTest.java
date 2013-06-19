@@ -40,7 +40,7 @@ public class FeedJsonReadOnlyTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_JSON);
     final String json = getBody(response);
     assertTrue(json.startsWith("{\"d\":{\"__count\":\"103\",\"results\":["));
-    assertTrue(json.endsWith("],\"__next\":\"Rooms?$skiptoken=97&$inlinecount=allpages\"}}"));
+    assertTrue(json.endsWith("],\"__next\":\"Rooms()?$inlinecount=allpages&$format=json&$skiptoken=97\"}}"));
   }
 
   @Test

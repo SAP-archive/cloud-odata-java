@@ -10,7 +10,7 @@ import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 
 /**
- * Tests employing the reference scenario changing links in XML format
+ * Tests employing the reference scenario changing links in XML format.
  * @author SAP AG
  */
 public final class LinksXmlChangeTest extends AbstractRefTest {
