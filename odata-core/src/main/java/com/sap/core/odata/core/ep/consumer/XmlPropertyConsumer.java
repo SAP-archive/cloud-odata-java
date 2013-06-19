@@ -104,8 +104,8 @@ public class XmlPropertyConsumer {
           reader.nextTag();
         }
       } else {
-        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName()); 
-        result = convert(propertyInfo, reader.getElementText(), mapping); 
+        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
+        result = convert(propertyInfo, reader.getElementText(), mapping);
       }
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
 

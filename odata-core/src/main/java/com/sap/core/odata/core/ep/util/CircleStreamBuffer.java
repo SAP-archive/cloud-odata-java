@@ -152,7 +152,7 @@ public class CircleStreamBuffer {
     return tmp;
   }
 
-  private int read(final byte[] b, final int off, int len) throws IOException {
+  private int read(final byte[] b, final int off, final int len) throws IOException {
     ByteBuffer readBuffer = getReadBuffer();
     if (readBuffer == null) {
       return READ_EOF;
@@ -229,7 +229,7 @@ public class CircleStreamBuffer {
    * @param requestedCapacity
    * @return the buffer
    */
-  private ByteBuffer allocateBuffer(int requestedCapacity) {
+  private ByteBuffer allocateBuffer(final int requestedCapacity) {
     int allocateCapacity = requestedCapacity;
     if (allocateCapacity < currentAllocateCapacity) {
       allocateCapacity = currentAllocateCapacity * NEW_BUFFER_RESIZE_FACTOR;

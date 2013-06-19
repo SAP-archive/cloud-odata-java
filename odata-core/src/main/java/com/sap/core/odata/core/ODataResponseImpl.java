@@ -54,11 +54,12 @@ public class ODataResponseImpl extends ODataResponse {
   @Override
   public boolean containsHeader(final String header) {
     boolean contains = false;
-    for (String containedHeader : headers.keySet())
+    for (String containedHeader : headers.keySet()) {
       if (containedHeader.equalsIgnoreCase(header)) {
         contains = true;
         break;
       }
+    }
     return contains;
   }
 
@@ -120,8 +121,9 @@ public class ODataResponseImpl extends ODataResponse {
       entity = response.getEntity();
 
       headers = new HashMap<String, String>();
-      for (String key : response.getHeaderNames())
+      for (String key : response.getHeaderNames()) {
         headers.put(key, response.getHeader(key));
+      }
 
       return this;
     }

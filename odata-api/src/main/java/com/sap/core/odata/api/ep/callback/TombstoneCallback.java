@@ -18,7 +18,7 @@ public interface TombstoneCallback extends ODataCallback {
   public static final String CALLBACK_KEY_TOMBSTONE = "~tombstoneCallback";
   public static final String PREFIX_TOMBSTONE = "at";
   public static final String NAMESPACE_TOMBSTONE = "http://purl.org/atompub/tombstones/1.0";
-  
+
   @Deprecated
   public static final String REL_DELTA = "delta";
 

@@ -87,8 +87,7 @@ public class JsonPropertyConsumer {
           value = reader.nextBoolean();
           value = value.toString();
         } else {
-          //TODO: I18N
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       case Byte:
@@ -99,16 +98,14 @@ public class JsonPropertyConsumer {
           value = reader.nextInt();
           value = value.toString();
         } else {
-          //TODO: I18N
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       default:
         if (tokenType == JsonToken.STRING) {
           value = reader.nextString();
         } else {
-          //TODO: I18N
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       }

@@ -112,7 +112,7 @@ public class JsonFeedConsumerTest extends AbstractConsumerTest {
     assertNull(feedMetadata.getInlineCount());
     assertNull(feedMetadata.getNextLink());
   }
-  
+
   @Test(expected = EntityProviderException.class)
   public void invalidDoubleClosingBrackets() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");

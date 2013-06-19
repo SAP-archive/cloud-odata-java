@@ -86,8 +86,9 @@ public class ODataRequestHandler {
       context.stopRuntimeMeasurement(timingHandle2);
 
       if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
-          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE) {
         checkRequestContentType(uriInfo, request.getContentType());
+      }
 
       final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
 
@@ -100,12 +101,15 @@ public class ODataRequestHandler {
       final HttpStatusCodes s = odataResponse.getStatus() == null ? method == ODataHttpMethod.POST ? uriType == UriType.URI9 ? HttpStatusCodes.OK : uriType == UriType.URI7B ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.CREATED : method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE || method == ODataHttpMethod.DELETE ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.OK : odataResponse.getStatus();
 
       ODataResponseBuilder extendedResponse = ODataResponse.fromResponse(odataResponse);
-      if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION))
+      if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION)) {
         extendedResponse = extendedResponse.header(ODataHttpHeaders.DATASERVICEVERSION, serverDataServiceVersion);
-      if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null)
+      }
+      if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null) {
         extendedResponse = extendedResponse.idLiteral(location);
-      if (odataResponse.getStatus() != s)
+      }
+      if (odataResponse.getStatus() != s) {
         extendedResponse = extendedResponse.status(s);
+      }
       odataResponse = extendedResponse.build();
 
     } catch (final Exception e) {
@@ -160,15 +164,17 @@ public class ODataRequestHandler {
     switch (uriInfo.getUriType()) {
     case URI0:
     case URI8:
-      if (method != ODataHttpMethod.GET)
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI1:
     case URI6B:
     case URI7B:
-      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST)
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI2:
@@ -177,15 +183,17 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI3:
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI4:
@@ -193,15 +201,17 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue())
+      } else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue()) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI9:
-      if (method != ODataHttpMethod.POST)
+      if (method != ODataHttpMethod.POST) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI10:
@@ -215,15 +225,17 @@ public class ODataRequestHandler {
     case URI16:
     case URI50A:
     case URI50B:
-      if (method != ODataHttpMethod.GET)
+      if (method != ODataHttpMethod.GET) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     case URI17:
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.DELETE)
+          && method != ODataHttpMethod.DELETE) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       break;
 
     default:
@@ -340,11 +352,13 @@ public class ODataRequestHandler {
 
   private static void checkProperty(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     if (uriInfo.getUriType() == UriType.URI4 || uriInfo.getUriType() == UriType.URI5) {
-      if (isPropertyKey(uriInfo))
+      if (isPropertyKey(uriInfo)) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
       if (method == ODataHttpMethod.DELETE
-          && !isPropertyNullable(getProperty(uriInfo)))
+          && !isPropertyNullable(getProperty(uriInfo))) {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
     }
   }
 
@@ -364,24 +378,28 @@ public class ODataRequestHandler {
 
   private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentTypeString) throws ODataException {
     final ContentType contentType = ContentType.parse(contentTypeString);
-    if (contentType == null || contentType.hasWildcard())
+    if (contentType == null || contentType.hasWildcard()) {
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+    }
 
     Class<? extends ODataProcessor> processorFeature = Dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     // Adjust processor feature.
-    if (processorFeature == EntitySetProcessor.class)
+    if (processorFeature == EntitySetProcessor.class) {
       processorFeature = uriInfo.getTargetEntitySet().getEntityType().hasStream() ?
           EntityMediaProcessor.class : // A media resource can have any type.
           EntityProcessor.class; // The request must contain a single entity!
-    else if (processorFeature == EntityLinksProcessor.class)
+    } else if (processorFeature == EntityLinksProcessor.class)
+    {
       processorFeature = EntityLinkProcessor.class; // The request must contain a single link!
+    }
 
     final List<ContentType> supportedContentTypes = processorFeature == EntitySimplePropertyValueProcessor.class ?
         getSupportedContentTypes(getProperty(uriInfo)) :
         getSupportedContentTypes(processorFeature);
 
-    if (!isValidRequestContentType(contentType, supportedContentTypes))
+    if (!isValidRequestContentType(contentType, supportedContentTypes)) {
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+    }
   }
 
   private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
