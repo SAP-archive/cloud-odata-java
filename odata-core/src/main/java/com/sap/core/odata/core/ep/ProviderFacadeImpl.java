@@ -1,10 +1,10 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -22,10 +22,8 @@ import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
-import com.sap.core.odata.core.ODataRequestHandler;
-import com.sap.core.odata.core.batch.BatchRequestParser2;
+import com.sap.core.odata.core.batch.BatchRequestParser;
 import com.sap.core.odata.core.batch.BatchWriter;
-import com.sap.core.odata.core.batch.Batchpart;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
@@ -169,28 +167,23 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   public ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return create(contentType).readServiceDocument(serviceDocument);
   }
-  @Override
-  public ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
-     ODataRequestHandler requestHandler = new ODataRequestHandler(properties.getServiceFactory());
-     BatchWriter batchWriter = new BatchWriter();
-     List<Batchpart> batchParts = new BatchRequestParser2(contentType, properties).parse(content);
-     List<ODataResponse> responses = new ArrayList<ODataResponse>();
-     for (Batchpart batchPart: batchParts) {
-       responses.add(batchPart.processWithResponse(requestHandler, batchWriter));
-     }
-     return batchWriter.write(responses);
-   }
 
-  /*@Override
-  public ODataResponse writeBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
-    ODataRequestHandler requestHandler = new ODataRequestHandler(properties.getServiceFactory());
-    List<Batchpart> batchParts = new BatchRequestParser2(contentType, properties).parse(content);
+  @Override
+  public BatchResult parseBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    BatchResult result = new BatchRequestParser(contentType, properties).parse(content);
+    return result;
+  }
+
+  @Override
+  public ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
     BatchWriter batchWriter = new BatchWriter();
-    String boundary = "batch_" + UUID.randomUUID().toString();
-    for (Batchpart batchPart : batchParts) {
-      batchPart.process(requestHandler, batchWriter, boundary);
-    }
-    ODataResponse response = batchWriter.createResponse(boundary);
-    return response;
-  }*/
+    return batchWriter.write(responses);
+  }
+
+  @Override
+  public ODataResponse writeChangeSet(final List<ODataResponse> responses) {
+    BatchWriter batchWriter = new BatchWriter();
+    return batchWriter.writeChangeSet(responses);
+  }
+
 }

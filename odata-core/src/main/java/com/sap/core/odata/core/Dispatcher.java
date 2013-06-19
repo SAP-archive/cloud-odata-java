@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -41,10 +42,12 @@ public class Dispatcher {
 
   private final ODataService service;
   private final ContentNegotiator contentNegotiator;
+  private final ODataServiceFactory serviceFactory;
 
-  public Dispatcher(final ODataService service, final ContentNegotiator contentNegotiator) {
+  public Dispatcher(ODataServiceFactory serviceFactory, final ODataService service, final ContentNegotiator contentNegotiator) {
     this.service = service;
     this.contentNegotiator = contentNegotiator;
+    this.serviceFactory = serviceFactory;
   }
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final List<String> acceptHeaderContentTypes) throws ODataException {
@@ -496,7 +499,8 @@ public class Dispatcher {
 
     case URI9:
       if (method == ODataHttpMethod.POST) {
-        return service.getBatchProcessor().executeBatch(contentType, content);
+        ODataRequestHandler handler = new ODataRequestHandler(serviceFactory);
+        return service.getBatchProcessor().executeBatch(handler, contentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

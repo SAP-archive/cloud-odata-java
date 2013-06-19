@@ -5,6 +5,10 @@ import java.util.List;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchQueryPart;
+import com.sap.core.odata.api.batch.BatchChangesetPart;
+import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -23,7 +27,7 @@ import com.sap.core.odata.core.uri.UriType;
 /**
  * @author SAP AG
  */
-public class ODataRequestHandler {
+public class ODataRequestHandler implements ODataRequestHandlerInterface {
 
   private ODataServiceFactory serviceFactory;
 
@@ -41,6 +45,7 @@ public class ODataRequestHandler {
    * @return the corresponding result
    * @throws ODataException
    */
+  @Override
   public ODataResponse handle(final ODataRequest request) throws ODataException {
     ODataContextImpl context = buildODataContext(request);
 
@@ -55,7 +60,7 @@ public class ODataRequestHandler {
       service.getProcessor().setContext(context);
 
       UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
-      Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
+      Dispatcher dispatcher = new Dispatcher(serviceFactory, service, new ContentNegotiator());
 
       final String serverDataServiceVersion = getServerDataServiceVersion();
       final String requestDataServiceVersion = context.getRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
@@ -134,4 +139,16 @@ public class ODataRequestHandler {
     }
   }
 
+  @Override
+  public ODataResponse handle(BatchPart batchPart) throws ODataException{
+    if (batchPart.isChangeSet()) {
+      BatchChangesetPart changeset = (BatchChangesetPart) batchPart;
+      
+      return service.getBatchProcessor().executeChangeSet(this, changeset);
+    } else {
+      BatchQueryPart batchQueryPart = (BatchQueryPart) batchPart;
+     return handle(batchQueryPart.getRequest());
+    }
+  }
+  
 }

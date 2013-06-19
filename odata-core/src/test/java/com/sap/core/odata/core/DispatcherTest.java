@@ -20,6 +20,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -99,7 +101,7 @@ public class DispatcherTest extends BaseTest {
     when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(anyString(),any(InputStream.class))).thenAnswer(getAnswer());
+    when(batch.executeBatch(any(ODataRequestHandlerInterface.class),anyString(),any(InputStream.class))).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -174,7 +176,9 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    final ODataResponse response = new Dispatcher(getMockService(), getMockContentNegotiator())
+    ODataServiceFactory factory=mock(ODataServiceFactory.class);
+    
+    final ODataResponse response = new Dispatcher(factory, getMockService(), getMockContentNegotiator())
         .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", Arrays.asList("*/*"));
     assertEquals(expectedMethodName, response.getEntity());
   }
@@ -376,7 +380,8 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
-    assertEquals(feature, new Dispatcher(getMockService(), getMockContentNegotiator()).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    ODataServiceFactory factory=mock(ODataServiceFactory.class);
+    assertEquals(feature, new Dispatcher(factory, getMockService(), getMockContentNegotiator()).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
   }
 
   @Test
@@ -432,8 +437,9 @@ public class DispatcherTest extends BaseTest {
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
 
+    ODataServiceFactory factory=mock(ODataServiceFactory.class);
     ODataService service = Mockito.mock(ODataService.class);
-    Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
+    Dispatcher dispatcher = new Dispatcher(factory, service, new ContentNegotiator());
 
     UriInfoImpl uriInfo = new UriInfoImpl();
     uriInfo.setUriType(UriType.URI1); // 

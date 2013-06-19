@@ -2,6 +2,7 @@ package com.sap.core.odata.core.batch;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,7 +17,12 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.batch.BatchChangesetPart;
+import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchQueryPart;
+import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
+import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataContextImpl;
@@ -26,23 +32,15 @@ import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 public class BatchRequestParserTest {
-  private static ODataContextImpl odataContext;
+  private static EntityProviderBatchProperties batchProperties;
+  private static final String contentType = "multipart/mixed;boundary=batch_8194-cf13-1f56";
 
   @BeforeClass
-  public static void setODataContext() throws URISyntaxException {
+  public static void setProperties() throws URISyntaxException {
     PathInfoImpl pathInfo = new PathInfoImpl();
     pathInfo.setServiceRoot(new URI("http://localhost/sap/bc/odata"));
-    odataContext = new ODataContextImpl();
-    odataContext.setPathInfo(pathInfo);
-    odataContext.setHttpMethod("POST");
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
-    headerValues.add("multipart/mixed;boundary=batch_8194-cf13-1f56");
-    requestHeaders.put(BatchRequestConstants.HTTP_CONTENT_TYPE, headerValues);
+    batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
 
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
-    odataContext.setRequest(postRequest);
   }
 
   @Test
@@ -53,14 +51,15 @@ public class BatchRequestParserTest {
       throw new IOException("Requested file '" + fileName + "' was not found.");
     }
 
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
-    List<Object> requests = parser.parse(in);
-    assertEquals(false, requests.isEmpty());
-    for (Object object : requests) {
-      if (object instanceof ODataRequest) {
-        ODataRequest retrieveRequest = (ODataRequest) object;
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
+    for (BatchPart object : batchResult.getBatchParts()) {
+      if (!object.isChangeSet()) {
+        ODataRequest retrieveRequest = ((BatchQueryPart) object).getRequest();
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
-        if (retrieveRequest.getAcceptableLanguages() != null) {
+        if (!retrieveRequest.getAcceptableLanguages().isEmpty()) {
           assertEquals(3, retrieveRequest.getAcceptableLanguages().size());
         }
         assertEquals(new URI("http://localhost/sap/bc/odata"), retrieveRequest.getPathInfo().getServiceRoot());
@@ -71,22 +70,22 @@ public class BatchRequestParserTest {
         }
         assertEquals("http://localhost/sap/bc/odata/Employees('2')/EmployeeName?$format=json", retrieveRequest.getPathInfo().getRequestUri().toASCIIString());
       } else {
-        @SuppressWarnings("unchecked")
-        List<Object> list = (List<Object>) object;
-        for (Object obj2 : list) {
-          if (obj2 instanceof ODataRequest) {
-            ODataRequest request = (ODataRequest) obj2;
-            assertEquals(ODataHttpMethod.PUT, request.getMethod());
-            assertEquals("100000", request.getRequestHeaderValue("Content-Length"));
-            assertEquals("application/json;odata=verbose", request.getContentType());
-            assertEquals(3, request.getAcceptHeaders().size());
-            assertEquals("*/*", request.getAcceptHeaders().get(2));
-            assertEquals("application/atomsvc+xml", request.getAcceptHeaders().get(0));
-            ODataPathSegmentImpl pathSegment = new ODataPathSegmentImpl("Employees('2')", null);
-            assertEquals(pathSegment.getPath(), request.getPathInfo().getODataSegments().get(0).getPath());
-            ODataPathSegmentImpl pathSegment2 = new ODataPathSegmentImpl("EmployeeName", null);
-            assertEquals(pathSegment2.getPath(), request.getPathInfo().getODataSegments().get(1).getPath());
-          }
+        List<ODataRequest> requests = ((BatchChangesetPart) object).getRequests();
+        for (ODataRequest request : requests) {
+
+          assertEquals(ODataHttpMethod.PUT, request.getMethod());
+          assertEquals("100000", request.getRequestHeaderValue("Content-Length"));
+          assertEquals("application/json;odata=verbose", request.getContentType());
+          assertEquals(3, request.getAcceptHeaders().size());
+          assertNotNull(request.getAcceptableLanguages());
+          assertTrue(request.getAcceptableLanguages().isEmpty());
+          assertEquals("*/*", request.getAcceptHeaders().get(2));
+          assertEquals("application/atomsvc+xml", request.getAcceptHeaders().get(0));
+          ODataPathSegmentImpl pathSegment = new ODataPathSegmentImpl("Employees('2')", null);
+          assertEquals(pathSegment.getPath(), request.getPathInfo().getODataSegments().get(0).getPath());
+          ODataPathSegmentImpl pathSegment2 = new ODataPathSegmentImpl("EmployeeName", null);
+          assertEquals(pathSegment2.getPath(), request.getPathInfo().getODataSegments().get(1).getPath());
+
         }
       }
     }
@@ -127,40 +126,38 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
-    List<Object> requests = parser.parse(in);
-    assertEquals(false, requests.isEmpty());
-    for (Object object : requests) {
-      if (object instanceof ODataRequest) {
-        ODataRequest retrieveRequest = (ODataRequest) object;
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
+    for (BatchPart object : batchResult.getBatchParts()) {
+      if (!object.isChangeSet()) {
+        ODataRequest retrieveRequest = ((BatchQueryPart) object).getRequest();
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
       } else {
-        @SuppressWarnings("unchecked")
-        List<Object> list = (List<Object>) object;
-        for (Object obj2 : list) {
-          if (obj2 instanceof ODataRequest) {
-            ODataRequest request = (ODataRequest) obj2;
-            assertEquals(ODataHttpMethod.POST, request.getMethod());
-            assertEquals("100000", request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_LENGTH));
-            assertEquals("1", request.getRequestHeaderValue(BatchRequestConstants.HTTP_CONTENT_ID));
-            assertEquals("application/octet-stream", request.getContentType());
-            InputStream body = request.getBody();
-            assertEquals(content, StringHelper.inputStreamToString(body));
-          }
+        List<ODataRequest> requests = ((BatchChangesetPart) object).getRequests();
+        for (ODataRequest request : requests) {
+          assertEquals(ODataHttpMethod.POST, request.getMethod());
+          assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH));
+          assertEquals("1", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_ID));
+          assertEquals("application/octet-stream", request.getContentType());
+          InputStream body = request.getBody();
+          assertEquals(content, StringHelper.inputStreamToString(body));
+
         }
 
       }
     }
   }
 
-  @Test(expected = ODataException.class)
-  public void testBatchWithInvalidContentType() throws ODataException {
+  @Test
+  public void testBoundaryParameterWithQuotas() throws ODataException {
     ODataContextImpl odataContextWithInvaliContentType = new ODataContextImpl();
     odataContextWithInvaliContentType.setHttpMethod("POST");
     Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
     List<String> headerValues = new ArrayList<String>();
-    headerValues.add("multipart;boundary=batch_1740-bb84-2f7f");
-    requestHeaders.put(BatchRequestConstants.HTTP_CONTENT_TYPE, headerValues);
+    String contentType = "multipart/mixed; boundary=\"batch_1740-bb84-2f7f\"";
+    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
     ODataRequestImpl postRequest = new ODataRequestImpl();
     postRequest.setRequestHeaders(requestHeaders);
@@ -174,22 +171,24 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_1740-bb84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContextWithInvaliContentType);
-    parser.parse(in);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
   }
 
   @Test(expected = ODataException.class)
-  public void testBatchWithoutBoundaryParameter() throws ODataException {
-    ODataContextImpl odataContextWithoutBoundaryParameter = new ODataContextImpl();
-    odataContextWithoutBoundaryParameter.setHttpMethod("POST");
+  public void testBatchWithInvalidContentType() throws ODataException {
+    ODataContextImpl odataContextWithInvaliContentType = new ODataContextImpl();
+    odataContextWithInvaliContentType.setHttpMethod("POST");
     Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
     List<String> headerValues = new ArrayList<String>();
-    headerValues.add("multipart/mixed");
-    requestHeaders.put(BatchRequestConstants.HTTP_CONTENT_TYPE, headerValues);
+    String invalidContentType = "multipart;boundary=batch_1740-bb84-2f7f";
+    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
     ODataRequestImpl postRequest = new ODataRequestImpl();
     postRequest.setRequestHeaders(requestHeaders);
-    odataContextWithoutBoundaryParameter.setRequest(postRequest);
+    odataContextWithInvaliContentType.setRequest(postRequest);
     String batch = "--batch_1740-bb84-2f7f" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
@@ -199,22 +198,29 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_1740-bb84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContextWithoutBoundaryParameter);
+    BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
+    parser.parse(in);
+  }
+
+  @Test(expected = ODataException.class)
+  public void testBatchWithoutBoundaryParameter() throws ODataException {
+    String invalidContentType = "multipart/mixed";
+    String batch = "--batch_1740-bb84-2f7f" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "\n"
+        + "--batch_1740-bb84-2f7f--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
     parser.parse(in);
   }
 
   @Test(expected = ODataException.class)
   public void testBoundaryWithoutQuota() throws ODataException {
-    ODataContextImpl odataContextWithoutQuota = new ODataContextImpl();
-    odataContextWithoutQuota.setHttpMethod("POST");
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
-    headerValues.add("multipart;boundary=batch_1740-bb:84-2f7f");
-    requestHeaders.put(BatchRequestConstants.HTTP_CONTENT_TYPE, headerValues);
-
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
-    odataContextWithoutQuota.setRequest(postRequest);
+    String invalidContentType = "multipart;boundary=batch_1740-bb:84-2f7f";
     String batch = "--batch_1740-bb:84-2f7f" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
@@ -224,7 +230,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_1740-bb:84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContextWithoutQuota);
+    BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
     parser.parse(in);
   }
 
@@ -239,7 +245,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -261,7 +267,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -274,7 +280,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -288,7 +294,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -302,7 +308,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -317,7 +323,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -331,7 +337,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -345,7 +351,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -362,7 +368,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -381,7 +387,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -400,7 +406,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -413,7 +419,7 @@ public class BatchRequestParserTest {
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -425,7 +431,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -440,7 +446,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56-";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     parser.parse(in);
   }
 
@@ -458,11 +464,13 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
-    List<Object> requests = parser.parse(in);
-    for (Object object : requests) {
-      if (object instanceof ODataRequest) {
-        ODataRequest retrieveRequest = (ODataRequest) object;
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
+    for (BatchPart multipart : batchResult.getBatchParts()) {
+      if (!multipart.isChangeSet()) {
+        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(4, retrieveRequest.getAcceptHeaders().size());
@@ -487,11 +495,13 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
-    List<Object> requests = parser.parse(in);
-    for (Object object : requests) {
-      if (object instanceof ODataRequest) {
-        ODataRequest retrieveRequest = (ODataRequest) object;
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
+    for (BatchPart multipart : batchResult.getBatchParts()) {
+      if (!multipart.isChangeSet()) {
+        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(3, retrieveRequest.getAcceptHeaders().size());
@@ -517,11 +527,13 @@ public class BatchRequestParserTest {
         + "\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(odataContext);
-    List<Object> requests = parser.parse(in);
-    for (Object object : requests) {
-      if (object instanceof ODataRequest) {
-        ODataRequest retrieveRequest = (ODataRequest) object;
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    BatchResult batchResult = parser.parse(in);
+    assertNotNull(batchResult);
+    assertEquals(false, batchResult.getBatchParts().isEmpty());
+    for (BatchPart multipart : batchResult.getBatchParts()) {
+      if (!multipart.isChangeSet()) {
+        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(4, retrieveRequest.getAcceptHeaders().size());

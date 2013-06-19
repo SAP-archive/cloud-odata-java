@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.batch;
 
-public class BatchRequestConstants {
+public class BatchConstants {
   public static final String HTTP_CONTENT_TYPE = "Content-Type";
 
   public static final String HTTP_APPLICATION_HTTP = "application/http";
