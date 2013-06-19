@@ -2,6 +2,7 @@ package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpResponse;
@@ -193,7 +194,8 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         .replace("EmployeeId>1", "EmployeeId>9")
         .replace(EMPLOYEE_1_NAME, "Mister X")
         .replaceAll("<link.+?/>", "");
-    putUri("Employees('2')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
+    final HttpResponse response = callUri(ODataHttpMethod.PUT, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
+    assertFalse(response.containsHeader(HttpHeaders.LOCATION));
     assertXpathEvaluatesTo("Mister X", "/atom:entry/m:properties/d:EmployeeName", getBody(callUri("Employees('2')")));
   }
 
