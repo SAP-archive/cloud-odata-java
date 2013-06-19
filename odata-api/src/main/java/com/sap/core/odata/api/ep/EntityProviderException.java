@@ -20,6 +20,8 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_MAPPING = createMessageReference(EntityProviderException.class, "INVALID_MAPPING");
   /** INVALID_ENTITYTYPE requires 2 content values ('supplied entity type' and 'content entity type') */
   public static final MessageReference INVALID_ENTITYTYPE = createMessageReference(EntityProviderException.class, "INVALID_ENTITYTYPE");
+  /** INVALID_COMPLEX_TYPE requires 2 content values ('supplied complex type' and 'content complex type') */
+  public static final MessageReference INVALID_COMPLEX_TYPE = createMessageReference(EntityProviderException.class, "INVALID_COMPLEX_TYPE");
   /** INVALID_CONTENT requires 2 content values ('invalid tag' and 'parent tag') */
   public static final MessageReference INVALID_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_CONTENT");
   /** INVALID_PROPERTY_VALUE requires 1 content value ('invalid value') */
