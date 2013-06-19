@@ -210,24 +210,39 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     HttpResponse response = callUri("Rooms()");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
+    assertXpathEvaluatesTo("Rooms()?$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
 
+    response = callUri("Rooms?$skiptoken=1");
+    body = getBody(response);
     assertXpathEvaluatesTo("Rooms?$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 
   @Test
   public void nextLinkOrderBy() throws Exception {
-    HttpResponse response = callUri("Rooms()?$orderby=Name");
+    HttpResponse response = callUri("Rooms?$orderby=Name");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
-
-    assertXpathEvaluatesTo("Rooms?$skiptoken=97&$orderby=Name", "/atom:feed/atom:link[@rel='next']/@href", body);
+    assertXpathEvaluatesTo("Rooms?$orderby=Name&$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 
   @Test
   public void nextLinkQueryOptions() throws Exception {
-    final HttpResponse response = callUri("Rooms()?$filter=true&$inlinecount=none&$orderby=Name&$top=200");
+    final HttpResponse response = callUri("Rooms?$format=atom&$filter=true&$inlinecount=none&$orderby=Name&$skiptoken=1&$skip=0&$top=200&$expand=nr_Building&$select=Seats");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     final String body = getBody(response);
-    assertXpathEvaluatesTo("Rooms?$skiptoken=97&$filter=true&$inlinecount=none&$orderby=Name&$top=200", "/atom:feed/atom:link[@rel='next']/@href", body);
+    assertXpathEvaluatesTo("Rooms?$format=atom&$filter=true&$inlinecount=none&$orderby=Name&$top=200&$expand=nr_Building&$select=Seats&$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
+
+  @Test
+  public void nextLinkNavigation() throws Exception {
+    // We have to create one entry to have one more than the paging size.
+    final String requestBody = getBody(callUri("Rooms('1')")).replaceAll("<link.+?/>", "");
+    HttpResponse response = postUri("Buildings('3')/nb_Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    getBody(response);
+
+    response = callUri("Buildings('3')/nb_Rooms");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("Buildings('3')/nb_Rooms?$skiptoken=99", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 }

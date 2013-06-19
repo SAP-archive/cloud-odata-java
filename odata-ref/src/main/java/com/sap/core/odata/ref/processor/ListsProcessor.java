@@ -18,7 +18,6 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -135,32 +134,28 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getSkip(),
         uriInfo.getTop());
 
+    ODataContext context = getContext();
+    String nextLink = null;
+
     // Limit the number of returned entities and provide a "next" link
     // if there are further entities.
     // Almost all system query options in the current request must be carried
     // over to the URI for the "next" link, with the exception of $skiptoken
     // and $skip.
-    String nextLink = null;
-    if (data.size() > SERVER_PAGING_SIZE
-        // Currently, $expand and $select are not supported; if one of these is
-        // present, paging does not take place.
-        && uriInfo.getExpand().isEmpty()
-        && uriInfo.getSelect().isEmpty()) {
+    if (data.size() > SERVER_PAGING_SIZE) {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
           && uriInfo.getTop() == null)
         sortInDefaultOrder(entitySet, data);
 
-      final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
-      // TODO: Percent-encode "next" link and add navigation path.
-      nextLink = (entityContainer.isDefaultEntityContainer() ? "" : entityContainer.getName() + Edm.DELIMITER)
-          + entitySet.getName()
-          + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
-          + (uriInfo.getFilter() == null ? "" : "&$filter=" + uriInfo.getFilter().getUriLiteral())
-          + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT))
-          + (uriInfo.getOrderBy() == null ? "" : "&$orderby=" + uriInfo.getOrderBy().getUriLiteral())
-          + (uriInfo.getTop() == null ? "" : "&$top=" + uriInfo.getTop());
+      // TODO: Percent-encode "next" link.
+      nextLink = context.getPathInfo().getServiceRoot().relativize(context.getPathInfo().getRequestUri()).toString()
+          .replaceAll("\\$skiptoken=.+?&?", "")
+          .replaceAll("\\$skip=.+?&?", "")
+          .replaceFirst("(?:\\?|&)$", ""); // Remove potentially trailing "?" or "&" left over from remove actions above.
+      nextLink += (nextLink.contains("?") ? "&" : "?")
+          + "$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
 
       while (data.size() > SERVER_PAGING_SIZE)
         data.remove(SERVER_PAGING_SIZE);
@@ -172,7 +167,6 @@ public class ListsProcessor extends ODataSingleProcessor {
       values.add(getStructuralTypeValueMap(entryData, entityType));
     }
 
-    ODataContext context = getContext();
     final EntityProviderWriteProperties feedProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
