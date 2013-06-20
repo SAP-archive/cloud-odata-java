@@ -35,6 +35,7 @@ import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -413,6 +414,9 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
 
   private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
     final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
+    if(requested.getODataFormat() == ODataFormat.CUSTOM || requested.getODataFormat() == ODataFormat.MIME) {
+      return requested.hasCompatible(allowedContentTypes);
+    }
     return requested.hasMatch(allowedContentTypes);
   }
 
