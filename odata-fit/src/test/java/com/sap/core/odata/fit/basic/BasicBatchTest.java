@@ -18,7 +18,6 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
-import com.sap.core.odata.api.batch.BatchChangesetPart;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
@@ -79,7 +78,7 @@ public class BasicBatchTest extends AbstractBasicTest {
   @Test
   public void testBatch() throws Exception {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "$batch"));
-    post.setHeader("Content-Type", "multipart/mixed");
+    post.setHeader("Content-Type", "multipart/mixed;boundary=batch_98c1-8b13-36bb");
     HttpEntity entity = new StringEntity(REQUEST_PAYLOAD);
     post.setEntity(entity);
     HttpResponse response = getHttpClient().execute(post);
@@ -101,17 +100,14 @@ public class BasicBatchTest extends AbstractBasicTest {
 
   static class TestSingleProc extends ODataSingleProcessor {
     @Override
-    public ODataResponse executeBatch(final ODataRequestHandlerInterface handler, final String contentType, final InputStream content) {
+    public ODataResponse executeBatch(final ODataRequestHandlerInterface handler, final String requestContentType, final InputStream content) {
       ODataResponse batchResponse;
-
-      String tempContentType = "multipart/mixed;boundary=batch_98c1-8b13-36bb";
-
       PathInfoImpl pathInfo = new PathInfoImpl();
       try {
         pathInfo.setServiceRoot(new URI("http://localhost:19000/odata"));
 
         EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-        BatchResult batch = EntityProvider.parseBatch(tempContentType, content, batchProperties);
+        BatchResult batch = EntityProvider.parseBatch(requestContentType, content, batchProperties);
         List<ODataResponse> responses = new ArrayList<ODataResponse>();
         for (BatchPart batchPart : batch.getBatchParts()) {
           ODataResponse response = handler.handle(batchPart);
@@ -127,16 +123,16 @@ public class BasicBatchTest extends AbstractBasicTest {
     }
 
     @Override
-    public ODataResponse executeChangeSet(final ODataRequestHandlerInterface handler, final BatchChangesetPart changeset) {
+    public ODataResponse executeChangeSet(final ODataRequestHandlerInterface handler, final List<ODataRequest> requests) {
       ODataResponse changeSetResponse;
       List<ODataResponse> responses = new ArrayList<ODataResponse>();
-      try {
-        for (ODataRequest request : changeset.getRequests()) {
+      for (ODataRequest request : requests) {
           ODataResponse response = handler.handle(request);
+          if(response.getStatus().getStatusCode()>=400){
+            // Rollback
+            return response;
+          }
           responses.add(response);
-        }
-      } catch (ODataException e) {
-        throw new RuntimeException(e);
       }
       changeSetResponse = EntityProvider.writeChangeSet(responses);
       return changeSetResponse;

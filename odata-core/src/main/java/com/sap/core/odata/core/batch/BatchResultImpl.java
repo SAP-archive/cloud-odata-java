@@ -7,6 +7,7 @@ import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResult;
 
 public class BatchResultImpl implements BatchResult {
+
   private List<BatchPart> batchParts = new ArrayList<BatchPart>();
 
   @Override

@@ -162,7 +162,7 @@ public class Dispatcher {
     case URI9:
       if (method == ODataHttpMethod.POST) {
         ODataRequestHandler handler = new ODataRequestHandler(serviceFactory);
-        return service.getBatchProcessor().executeBatch(handler, contentType, content);
+        return service.getBatchProcessor().executeBatch(handler, requestContentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

@@ -6,9 +6,7 @@ import java.util.List;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
-import com.sap.core.odata.api.batch.BatchChangesetPart;
 import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.batch.BatchQueryPart;
 import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -62,7 +60,7 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
    * @throws ODataException
    */
   @Override
-  public ODataResponse handle(final ODataRequest request) throws ODataException {
+  public ODataResponse handle(final ODataRequest request) {
     ODataContextImpl context = buildODataContext(request);
 
     final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
@@ -149,17 +147,20 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
   }
 
   @Override
-  public ODataResponse handle(BatchPart batchPart) throws ODataException{
+  public ODataResponse handle(final BatchPart batchPart) throws ODataException {
+    ODataResponse response;
     if (batchPart.isChangeSet()) {
-      BatchChangesetPart changeset = (BatchChangesetPart) batchPart;
-      
-      return service.getBatchProcessor().executeChangeSet(this, changeset);
+      List<ODataRequest> changeSetRequests = batchPart.getRequests();
+      response = service.getBatchProcessor().executeChangeSet(this, changeSetRequests);
     } else {
-      BatchQueryPart batchQueryPart = (BatchQueryPart) batchPart;
-     return handle(batchQueryPart.getRequest());
+      if (batchPart.getRequests().size() != 1) {
+        throw new ODataException("Query Operation should contain one request");
+      }
+      response = handle(batchPart.getRequests().get(0));
     }
+    return response;
   }
-  
+
   private static void validateMethodAndUri(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     validateUriMethod(method, uriInfo);
     checkFunctionImport(method, uriInfo);
@@ -414,7 +415,7 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
 
   private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
     final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
-    if(requested.getODataFormat() == ODataFormat.CUSTOM || requested.getODataFormat() == ODataFormat.MIME) {
+    if (requested.getODataFormat() == ODataFormat.CUSTOM || requested.getODataFormat() == ODataFormat.MIME) {
       return requested.hasCompatible(allowedContentTypes);
     }
     return requested.hasMatch(allowedContentTypes);

@@ -17,9 +17,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sap.core.odata.api.batch.BatchChangesetPart;
 import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.batch.BatchQueryPart;
 import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
@@ -57,7 +55,8 @@ public class BatchRequestParserTest {
     assertEquals(false, batchResult.getBatchParts().isEmpty());
     for (BatchPart object : batchResult.getBatchParts()) {
       if (!object.isChangeSet()) {
-        ODataRequest retrieveRequest = ((BatchQueryPart) object).getRequest();
+        assertEquals(1, object.getRequests().size());
+        ODataRequest retrieveRequest = object.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         if (!retrieveRequest.getAcceptableLanguages().isEmpty()) {
           assertEquals(3, retrieveRequest.getAcceptableLanguages().size());
@@ -70,7 +69,7 @@ public class BatchRequestParserTest {
         }
         assertEquals("http://localhost/sap/bc/odata/Employees('2')/EmployeeName?$format=json", retrieveRequest.getPathInfo().getRequestUri().toASCIIString());
       } else {
-        List<ODataRequest> requests = ((BatchChangesetPart) object).getRequests();
+        List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
 
           assertEquals(ODataHttpMethod.PUT, request.getMethod());
@@ -132,10 +131,11 @@ public class BatchRequestParserTest {
     assertEquals(false, batchResult.getBatchParts().isEmpty());
     for (BatchPart object : batchResult.getBatchParts()) {
       if (!object.isChangeSet()) {
-        ODataRequest retrieveRequest = ((BatchQueryPart) object).getRequest();
+        assertEquals(1, object.getRequests().size());
+        ODataRequest retrieveRequest = object.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
       } else {
-        List<ODataRequest> requests = ((BatchChangesetPart) object).getRequests();
+        List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
           assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH));
@@ -470,7 +470,8 @@ public class BatchRequestParserTest {
     assertEquals(false, batchResult.getBatchParts().isEmpty());
     for (BatchPart multipart : batchResult.getBatchParts()) {
       if (!multipart.isChangeSet()) {
-        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
+        assertEquals(1, multipart.getRequests().size());
+        ODataRequest retrieveRequest = multipart.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(4, retrieveRequest.getAcceptHeaders().size());
@@ -501,7 +502,8 @@ public class BatchRequestParserTest {
     assertEquals(false, batchResult.getBatchParts().isEmpty());
     for (BatchPart multipart : batchResult.getBatchParts()) {
       if (!multipart.isChangeSet()) {
-        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
+        assertEquals(1, multipart.getRequests().size());
+        ODataRequest retrieveRequest = multipart.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(3, retrieveRequest.getAcceptHeaders().size());
@@ -533,7 +535,8 @@ public class BatchRequestParserTest {
     assertEquals(false, batchResult.getBatchParts().isEmpty());
     for (BatchPart multipart : batchResult.getBatchParts()) {
       if (!multipart.isChangeSet()) {
-        ODataRequest retrieveRequest = ((BatchQueryPart) multipart).getRequest();
+        assertEquals(1, multipart.getRequests().size());
+        ODataRequest retrieveRequest = multipart.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
         assertNotNull(retrieveRequest.getAcceptHeaders());
         assertEquals(4, retrieveRequest.getAcceptHeaders().size());

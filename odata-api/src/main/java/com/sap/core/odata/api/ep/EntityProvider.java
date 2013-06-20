@@ -303,18 +303,31 @@ public final class EntityProvider {
     ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
 
     /**
-     * Parse batch request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+     * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
      * 
      * @param contentType format of content in the given input stream
-     * @param content request payload
+     * @param content request body
      * @param properties additional properties necessary for parsing content. Must not be null.
      * @return BatchResult as {@link BatchResult}
      * @throws EntityProviderException  if parsing fails
      */
     BatchResult parseBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
 
+    /**
+     * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+     * Batch Response body matches one-to-one with the corresponding Batch Request body
+     * 
+     * @param responses a list of {@link ODataResponses}
+     * @return Batch Response as {@link ODataResponse}
+     */
     ODataResponse writeBatchResponse(List<ODataResponse> responses);
 
+    /**
+     * Write responses of single change requests in Change Set Response {@link ODataResponse}
+     * 
+     * @param changeSetResponses a list of {@link ODataResponses}
+     * @return Change Set Response as {@link ODataResponse}
+     */
     ODataResponse writeChangeSet(List<ODataResponse> changeSetResponses);
   }
 
@@ -645,11 +658,11 @@ public final class EntityProvider {
   }
 
   /**
-   * Parse batch request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
    * 
    * @param contentType format of content in the given input stream
-   * @param content request payload
-   * @param properties additional properties necessary for parsing content. Must not be null.
+   * @param content request body
+   * @param properties additional properties necessary for parsing. Must not be null.
    * @return BatchResult as {@link BatchResult}
    * @throws EntityProviderException  if parsing fails
    */
@@ -657,10 +670,23 @@ public final class EntityProvider {
     return createEntityProvider().parseBatch(contentType, content, properties);
   }
 
+  /**
+   * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+   * Batch Response body matches one-to-one with the corresponding Batch Request body
+   * 
+   * @param responses a list of {@link ODataResponses}
+   * @return Batch Response as {@link ODataResponse}
+   */
   public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
     return createEntityProvider().writeBatchResponse(responses);
   }
 
+  /**
+   * Write responses of single change requests in Change Set Response {@link ODataResponse}
+   * 
+   * @param changeSetResponses a list of {@link ODataResponses}
+   * @return Change Set Response as {@link ODataResponse}
+   */
   public static ODataResponse writeChangeSet(final List<ODataResponse> changeSetResponses) {
     return createEntityProvider().writeChangeSet(changeSetResponses);
   }
