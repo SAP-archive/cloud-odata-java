@@ -158,12 +158,12 @@ public class CircleStreamBuffer {
       return READ_EOF;
     }
 
-    int toReadLenght = readBuffer.remaining();
-    if (len < toReadLenght) {
-      toReadLenght = len;
+    int toReadLength = readBuffer.remaining();
+    if (len < toReadLength) {
+      toReadLength = len;
     }
-    readBuffer.get(b, off, toReadLenght);
-    return toReadLenght;
+    readBuffer.get(b, off, toReadLength);
+    return toReadLength;
   }
 
   private int read() throws IOException {

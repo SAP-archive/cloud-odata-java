@@ -68,14 +68,14 @@ public class JsonStreamWriterTest extends BaseTest {
     jsonStreamWriter.separator();
     jsonStreamWriter.namedStringValue("outsideBMP", outsideBMP);
     jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("control", "\b\t\n\f\r\u001F " + "€ \uFDFC " + outsideBMP);
+    jsonStreamWriter.namedStringValue("control", "\b\t\n\f\r\u0001\u000B\u0011\u001F " + "€ \uFDFC " + outsideBMP);
     jsonStreamWriter.separator();
     jsonStreamWriter.namedStringValue("escaped", "\"\\");
     jsonStreamWriter.endObject();
     writer.flush();
     assertEquals("{\"normal\":\"abc / ? \u007F € \uFDFC\","
         + "\"outsideBMP\":\"\uD83D\uDE03\","
-        + "\"control\":\"\\b\\t\\n\\f\\r\\u001F € \uFDFC \uD83D\uDE03\","
+        + "\"control\":\"\\b\\t\\n\\f\\r\\u0001\\u000B\\u0011\\u001F € \uFDFC \uD83D\uDE03\","
         + "\"escaped\":\"\\\"\\\\\"}",
         writer.toString());
   }

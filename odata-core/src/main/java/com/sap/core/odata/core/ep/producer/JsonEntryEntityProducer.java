@@ -150,6 +150,8 @@ public class JsonEntryEntityProducer {
         jsonStreamWriter.endObject();
       }
 
+      writer.flush();
+
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {
