@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -113,6 +114,21 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(ODataFormat.MIME, mt.getODataFormat());
     assertEquals(0, mt.getParameters().size());
     assertEquals(ContentType.MULTIPART_MIXED, mt);
+    assertTrue(ContentType.MULTIPART_MIXED.isCompatible(mt));
+  }
+
+  @Test
+  public void creationFromHttpContentTypeMultipartMixedWithParameters() {
+    String boundary = UUID.randomUUID().toString();
+    ContentType mt = ContentType.create(HttpContentType.MULTIPART_MIXED + "; boundary=" + boundary);
+
+    assertEquals("multipart", mt.getType());
+    assertEquals("mixed", mt.getSubtype());
+    assertEquals("multipart/mixed;boundary="+boundary, mt.toString());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
+    assertEquals(1, mt.getParameters().size());
+    assertEquals(boundary, mt.getParameters().get("boundary"));
+    assertTrue(ContentType.MULTIPART_MIXED.isCompatible(mt));
   }
 
   @Test
