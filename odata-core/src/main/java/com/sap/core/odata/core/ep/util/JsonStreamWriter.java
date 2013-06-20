@@ -39,10 +39,11 @@ public class JsonStreamWriter {
   }
 
   public void stringValueRaw(final String value) throws IOException {
-    if (value == null)
+    if (value == null) {
       writer.append(FormatJson.NULL);
-    else
+    } else {
       writer.append('"').append(value).append('"');
+    }
   }
 
   public void stringValue(final String value) throws IOException {

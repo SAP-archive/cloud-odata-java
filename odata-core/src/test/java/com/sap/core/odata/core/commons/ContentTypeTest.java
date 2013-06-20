@@ -124,7 +124,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("multipart", mt.getType());
     assertEquals("mixed", mt.getSubtype());
-    assertEquals("multipart/mixed;boundary="+boundary, mt.toString());
+    assertEquals("multipart/mixed;boundary=" + boundary, mt.toString());
     assertEquals(ODataFormat.MIME, mt.getODataFormat());
     assertEquals(1, mt.getParameters().size());
     assertEquals(boundary, mt.getParameters().get("boundary"));
