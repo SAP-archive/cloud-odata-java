@@ -98,7 +98,9 @@ public class XmlPropertyConsumer {
         while (reader.hasNext() && !reader.isEndElement()) {
           String childName = reader.getLocalName();
           EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
-
+          if (childProperty == null) {
+            throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
+          }
           Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
           name2Value.put(childName, value);
           reader.nextTag();

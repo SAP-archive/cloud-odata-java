@@ -101,6 +101,15 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     assertNull(resultMap.get("EntryDate"));
   }
 
+  @Test(expected = EntityProviderException.class)
+  public void invalidSimplePropertyName() throws Exception {
+    String xml = "<Invalid xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">67</Invalid>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    new XmlPropertyConsumer().readProperty(reader, property, false);
+  }
+
   @Test
   @SuppressWarnings("unchecked")
   public void testReadComplexProperty() throws Exception {
@@ -257,6 +266,57 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     Map<String, Object> cityMap = (Map<String, Object>) locationMap.get("City");
     assertEquals("69124", cityMap.get("PostalCode"));
     assertEquals("Heidelberg", cityMap.get("CityName"));
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void readComplexPropertyWithInvalidChild() throws Exception {
+    String xml =
+        "<Location xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+            + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\" m:type=\"RefScenario.c_Location\">" +
+            "<Invalid>Germany</Invalid>" +
+            "<City m:type=\"RefScenario.c_City\">" +
+            "<PostalCode>69124</PostalCode>" +
+            "<CityName>Heidelberg</CityName>" +
+            "</City>" +
+            "</Location>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    new XmlPropertyConsumer().readProperty(reader, property, false);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void readComplexPropertyWithInvalidDeepChild() throws Exception {
+    String xml =
+        "<Location xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+            + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\" m:type=\"RefScenario.c_Location\">" +
+            "<Country>Germany</Country>" +
+            "<City m:type=\"RefScenario.c_City\">" +
+            "<Invalid>69124</Invalid>" +
+            "<CityName>Heidelberg</CityName>" +
+            "</City>" +
+            "</Location>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    new XmlPropertyConsumer().readProperty(reader, property, false);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void readComplexPropertyWithInvalidName() throws Exception {
+    String xml =
+        "<Invalid xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+            + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\" m:type=\"RefScenario.c_Location\">" +
+            "<Country>Germany</Country>" +
+            "<City m:type=\"RefScenario.c_City\">" +
+            "<PostalCode>69124</PostalCode>" +
+            "<CityName>Heidelberg</CityName>" +
+            "</City>" +
+            "</Invalid>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    new XmlPropertyConsumer().readProperty(reader, property, false);
   }
 
   private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {
