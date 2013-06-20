@@ -3,6 +3,7 @@ package com.sap.core.odata.core;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -32,9 +33,11 @@ import com.sap.core.odata.core.uri.UriInfoImpl;
 public class Dispatcher {
 
   private final ODataService service;
+  private final ODataServiceFactory serviceFactory;
 
-  public Dispatcher(final ODataService service) {
+  public Dispatcher(ODataServiceFactory serviceFactory, final ODataService service) {
     this.service = service;
+    this.serviceFactory = serviceFactory;
   }
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
@@ -158,7 +161,8 @@ public class Dispatcher {
 
     case URI9:
       if (method == ODataHttpMethod.POST) {
-        return service.getBatchProcessor().executeBatch(contentType);
+        ODataRequestHandler handler = new ODataRequestHandler(serviceFactory);
+        return service.getBatchProcessor().executeBatch(handler, contentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

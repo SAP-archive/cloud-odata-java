@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -11,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
+import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
@@ -20,6 +22,8 @@ import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
+import com.sap.core.odata.core.batch.BatchRequestParser;
+import com.sap.core.odata.core.batch.BatchWriter;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
@@ -163,4 +167,23 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   public ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return create(contentType).readServiceDocument(serviceDocument);
   }
+
+  @Override
+  public BatchResult parseBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    BatchResult result = new BatchRequestParser(contentType, properties).parse(content);
+    return result;
+  }
+
+  @Override
+  public ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
+    BatchWriter batchWriter = new BatchWriter();
+    return batchWriter.write(responses);
+  }
+
+  @Override
+  public ODataResponse writeChangeSet(final List<ODataResponse> responses) {
+    BatchWriter batchWriter = new BatchWriter();
+    return batchWriter.writeChangeSet(responses);
+  }
+
 }

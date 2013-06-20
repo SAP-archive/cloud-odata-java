@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -300,6 +301,21 @@ public final class EntityProvider {
      * @throws EntityProviderException  if reading of data (de-serialization) fails
      */
     ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
+
+    /**
+     * Parse batch request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+     * 
+     * @param contentType format of content in the given input stream
+     * @param content request payload
+     * @param properties additional properties necessary for parsing content. Must not be null.
+     * @return BatchResult as {@link BatchResult}
+     * @throws EntityProviderException  if parsing fails
+     */
+    BatchResult parseBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
+
+    ODataResponse writeBatchResponse(List<ODataResponse> responses);
+
+    ODataResponse writeChangeSet(List<ODataResponse> changeSetResponses);
   }
 
   /**
@@ -626,6 +642,27 @@ public final class EntityProvider {
    */
   public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return createEntityProvider().readServiceDocument(serviceDocument, contentType);
+  }
+
+  /**
+   * Parse batch request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+   * 
+   * @param contentType format of content in the given input stream
+   * @param content request payload
+   * @param properties additional properties necessary for parsing content. Must not be null.
+   * @return BatchResult as {@link BatchResult}
+   * @throws EntityProviderException  if parsing fails
+   */
+  public static BatchResult parseBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    return createEntityProvider().parseBatch(contentType, content, properties);
+  }
+
+  public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
+    return createEntityProvider().writeBatchResponse(responses);
+  }
+
+  public static ODataResponse writeChangeSet(final List<ODataResponse> changeSetResponses) {
+    return createEntityProvider().writeChangeSet(changeSetResponses);
   }
 
 }

@@ -6,6 +6,10 @@ import java.util.List;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.batch.BatchChangesetPart;
+import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchQueryPart;
+import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
@@ -39,7 +43,7 @@ import com.sap.core.odata.core.uri.UriType;
 /**
  * @author SAP AG
  */
-public class ODataRequestHandler {
+public class ODataRequestHandler implements ODataRequestHandlerInterface {
 
   private ODataServiceFactory serviceFactory;
   private ODataService service;
@@ -56,6 +60,7 @@ public class ODataRequestHandler {
    * @return the corresponding result
    * @throws ODataException
    */
+  @Override
   public ODataResponse handle(final ODataRequest request) throws ODataException {
     ODataContextImpl context = buildODataContext(request);
 
@@ -67,11 +72,13 @@ public class ODataRequestHandler {
       context.setService(service);
       service.getProcessor().setContext(context);
 
+      UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
+      Dispatcher dispatcher = new Dispatcher(serviceFactory, service);
+
       final String serverDataServiceVersion = getServerDataServiceVersion();
       final String requestDataServiceVersion = context.getRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
       validateDataServiceVersion(serverDataServiceVersion, requestDataServiceVersion);
 
-      UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
       final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
       int timingHandle2 = context.startRuntimeMeasurement("UriParserImpl", "parse");
       final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
@@ -88,7 +95,6 @@ public class ODataRequestHandler {
 
       final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
 
-      Dispatcher dispatcher = new Dispatcher(service);
       timingHandle2 = context.startRuntimeMeasurement("Dispatcher", "dispatch");
       odataResponse = dispatcher.dispatch(method, uriInfo, request.getBody(), request.getContentType(), acceptContentType);
       context.stopRuntimeMeasurement(timingHandle2);
@@ -141,6 +147,18 @@ public class ODataRequestHandler {
     }
   }
 
+  @Override
+  public ODataResponse handle(BatchPart batchPart) throws ODataException{
+    if (batchPart.isChangeSet()) {
+      BatchChangesetPart changeset = (BatchChangesetPart) batchPart;
+      
+      return service.getBatchProcessor().executeChangeSet(this, changeset);
+    } else {
+      BatchQueryPart batchQueryPart = (BatchQueryPart) batchPart;
+     return handle(batchQueryPart.getRequest());
+    }
+  }
+  
   private static void validateMethodAndUri(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     validateUriMethod(method, uriInfo);
     checkFunctionImport(method, uriInfo);
@@ -413,5 +431,4 @@ public class ODataRequestHandler {
     List<String> contentTypeStrings = service.getSupportedContentTypes(processorFeature);
     return ContentType.create(contentTypeStrings);
   }
-
 }
