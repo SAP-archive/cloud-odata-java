@@ -215,7 +215,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
 
     final EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-    when(cityComplexType.getName()).thenReturn("City");
+    when(cityComplexType.getName()).thenReturn("c_City");
     when(cityComplexType.getNamespace()).thenReturn("RefScenario");
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
 
@@ -317,6 +317,47 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
 
     new XmlPropertyConsumer().readProperty(reader, property, false);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void readComplexPropertyWithInvalidTypeAttribute() throws Exception {
+    String xml =
+        "<Location xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+            + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\" m:type=\"Invalid\">" +
+            "<Country>Germany</Country>" +
+            "<City m:type=\"RefScenario.c_City\">" +
+            "<PostalCode>69124</PostalCode>" +
+            "<CityName>Heidelberg</CityName>" +
+            "</City>" +
+            "</Location>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    new XmlPropertyConsumer().readProperty(reader, property, false);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void readComplexPropertyWithoutTypeAttribute() throws Exception {
+    String xml =
+        "<Location xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\""
+            + " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">" +
+            "<Country>Germany</Country>" +
+            "<City m:type=\"RefScenario.c_City\">" +
+            "<PostalCode>69124</PostalCode>" +
+            "<CityName>Heidelberg</CityName>" +
+            "</City>" +
+            "</Location>";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    Map<String, Object> resultMap = new XmlPropertyConsumer().readProperty(reader, property, false);
+
+    Map<String, Object> locationMap = (Map<String, Object>) resultMap.get("Location");
+    assertEquals("Germany", locationMap.get("Country"));
+    Map<String, Object> cityMap = (Map<String, Object>) locationMap.get("City");
+    assertEquals("69124", cityMap.get("PostalCode"));
+    assertEquals("Heidelberg", cityMap.get("CityName"));
   }
 
   private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {

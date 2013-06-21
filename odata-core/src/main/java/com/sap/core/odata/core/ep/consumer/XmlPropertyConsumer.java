@@ -94,6 +94,12 @@ public class XmlPropertyConsumer {
       if (TRUE.equals(nullAttribute)) {
         reader.nextTag();
       } else if (propertyInfo.isComplex()) {
+        final String typeAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_TYPE);
+        String expectedTypeAttributeValue = propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
+        if (typeAttribute != null && !expectedTypeAttributeValue.equals(typeAttribute)) {
+          throw new EntityProviderException(EntityProviderException.INVALID_COMPLEX_TYPE.addContent(expectedTypeAttributeValue).addContent(typeAttribute));
+        }
+
         reader.nextTag();
         while (reader.hasNext() && !reader.isEndElement()) {
           String childName = reader.getLocalName();
