@@ -265,7 +265,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName != null) {
-          //          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
           propName2Context.put(navigationPropertyName, context);
         } else {
           throw new RuntimeException("Invalid title");
@@ -1573,13 +1572,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
-    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
-    //    //"1999-01-01T00:00:00"
-    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    //    cal.set(1999, 0, 1, 0, 0, 0);
-    //    cal.setTimeInMillis(915148800000l);
-    //    System.out.println(cal);
-    //    System.out.println(result.get("EntryDate"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
@@ -1816,13 +1808,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
-    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
-    //    //"1999-01-01T00:00:00"
-    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    //    cal.set(1999, 0, 1, 0, 0, 0);
-    //    cal.setTimeInMillis(915148800000l);
-    //    System.out.println(cal);
-    //    System.out.println(result.get("EntryDate"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
@@ -2114,8 +2099,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML
         .replace("<title type=\"text\">Walter Winter</title>",
             "<title type=\"text\"><title>Walter Winter</title></title>"));
-    //        .replace("<id>http://localhost:19000/Employees('1')</id>", 
-    //            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());

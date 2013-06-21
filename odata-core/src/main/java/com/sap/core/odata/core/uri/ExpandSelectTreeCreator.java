@@ -36,7 +36,7 @@ public class ExpandSelectTreeCreator {
     }
   }
 
-  public ExpandSelectTreeNode create() throws EdmException {
+  public ExpandSelectTreeNodeImpl create() throws EdmException {
 
     //Initial node
     ExpandSelectTreeNodeImpl root = new ExpandSelectTreeNodeImpl();
