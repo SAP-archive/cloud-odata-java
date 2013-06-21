@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.sap.core.odata.api.ODataServiceVersion;
-import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
+import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -85,7 +85,7 @@ public abstract class ODataSingleProcessor implements MetadataProcessor, Service
    * @see BatchProcessor
    */
   @Override
-  public ODataResponse executeBatch(final ODataRequestHandlerInterface handler, final String contentType, final InputStream content) throws ODataException {
+  public ODataResponse executeBatch(final BatchHandler handler, final String contentType, final InputStream content) throws ODataException {
     throw new ODataNotImplementedException();
   }
   
@@ -95,7 +95,7 @@ public abstract class ODataSingleProcessor implements MetadataProcessor, Service
    */
   @Override
   public
-  ODataResponse executeChangeSet(final ODataRequestHandlerInterface handler, final List<ODataRequest> requests) throws ODataException{
+  ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException{
     throw new ODataNotImplementedException();
   }
 

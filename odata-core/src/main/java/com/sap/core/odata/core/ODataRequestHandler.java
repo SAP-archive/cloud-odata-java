@@ -6,8 +6,6 @@ import java.util.List;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
-import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
@@ -42,7 +40,7 @@ import com.sap.core.odata.core.uri.UriType;
 /**
  * @author SAP AG
  */
-public class ODataRequestHandler implements ODataRequestHandlerInterface {
+public class ODataRequestHandler {
 
   private ODataServiceFactory serviceFactory;
   private ODataService service;
@@ -59,7 +57,6 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
    * @return the corresponding result
    * @throws ODataException
    */
-  @Override
   public ODataResponse handle(final ODataRequest request) {
     ODataContextImpl context = buildODataContext(request);
 
@@ -144,21 +141,6 @@ public class ODataRequestHandler implements ODataRequestHandlerInterface {
         throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(requestDataServiceVersion), e);
       }
     }
-  }
-
-  @Override
-  public ODataResponse handle(final BatchPart batchPart) throws ODataException {
-    ODataResponse response;
-    if (batchPart.isChangeSet()) {
-      List<ODataRequest> changeSetRequests = batchPart.getRequests();
-      response = service.getBatchProcessor().executeChangeSet(this, changeSetRequests);
-    } else {
-      if (batchPart.getRequests().size() != 1) {
-        throw new ODataException("Query Operation should contain one request");
-      }
-      response = handle(batchPart.getRequests().get(0));
-    }
-    return response;
   }
 
   private static void validateMethodAndUri(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {

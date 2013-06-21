@@ -18,9 +18,9 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResult;
-import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -46,34 +46,35 @@ public class BasicBatchTest extends AbstractBasicTest {
   private static final String REG_EX_BOUNDARY = "(([a-zA-Z0-9_\\-\\.'\\+]{1,70})|\"([a-zA-Z0-9_\\-\\.'\\+\\s\\(\\),/:=\\?]{1,69}[a-zA-Z0-9_\\-\\.'\\+\\(\\),/:=\\?])\")";
   private static final String REG_EX = "multipart/mixed;\\s*boundary=" + REG_EX_BOUNDARY + "\\s*";
 
-  private static final String REQUEST_PAYLOAD = "--batch_98c1-8b13-36bb" + LF
-      + "Content-Type: application/http" + LF
-      + "Content-Transfer-Encoding: binary" + LF
-      + LF
-      + "GET Employees('1')/EmployeeName HTTP/1.1" + LF
-      + "Host: localhost:19000" + LF
-      + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + LF
-      + "Accept-Language: en" + LF
-      + "MaxDataServiceVersion: 2.0" + LF
-      + LF
-      + LF
-      + "--batch_98c1-8b13-36bb" + LF
-      + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + LF
-      + LF
-      + "--changeset_f980-1cb6-94dd" + LF
-      + "Content-Type: application/http" + LF
-      + "Content-Transfer-Encoding: binary" + LF
-      + LF
-      + "PUT Employees('1')/EmployeeName HTTP/1.1" + LF
-      + "Host: localhost:19000" + LF
-      + "Content-Type: application/json;odata=verbose" + LF
-      + "MaxDataServiceVersion: 2.0" + LF
-      + LF
-      + "{\"EmployeeName\":\"Walter Winter MODIFIED\"}" + LF
-      + LF
-      + "--changeset_f980-1cb6-94dd--" + LF
-      + LF
-      + "--batch_98c1-8b13-36bb--";
+  private static final String REQUEST_PAYLOAD =
+      "--batch_98c1-8b13-36bb" + LF
+          + "Content-Type: application/http" + LF
+          + "Content-Transfer-Encoding: binary" + LF
+          + LF
+          + "GET Employees('1')/EmployeeName HTTP/1.1" + LF
+          + "Host: localhost:19000" + LF
+          + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + LF
+          + "Accept-Language: en" + LF
+          + "MaxDataServiceVersion: 2.0" + LF
+          + LF
+          + LF
+          + "--batch_98c1-8b13-36bb" + LF
+          + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + LF
+          + LF
+          + "--changeset_f980-1cb6-94dd" + LF
+          + "Content-Type: application/http" + LF
+          + "Content-Transfer-Encoding: binary" + LF
+          + LF
+          + "PUT Employees('1')/EmployeeName HTTP/1.1" + LF
+          + "Host: localhost:19000" + LF
+          + "Content-Type: application/json;odata=verbose" + LF
+          + "MaxDataServiceVersion: 2.0" + LF
+          + LF
+          + "{\"EmployeeName\":\"Walter Winter MODIFIED\"}" + LF
+          + LF
+          + "--changeset_f980-1cb6-94dd--" + LF
+          + LF
+          + "--batch_98c1-8b13-36bb--";
 
   @Test
   public void testBatch() throws Exception {
@@ -100,7 +101,7 @@ public class BasicBatchTest extends AbstractBasicTest {
 
   static class TestSingleProc extends ODataSingleProcessor {
     @Override
-    public ODataResponse executeBatch(final ODataRequestHandlerInterface handler, final String requestContentType, final InputStream content) {
+    public ODataResponse executeBatch(final BatchHandler handler, final String requestContentType, final InputStream content) {
       ODataResponse batchResponse;
       PathInfoImpl pathInfo = new PathInfoImpl();
       try {
@@ -110,7 +111,7 @@ public class BasicBatchTest extends AbstractBasicTest {
         BatchResult batch = EntityProvider.parseBatch(requestContentType, content, batchProperties);
         List<ODataResponse> responses = new ArrayList<ODataResponse>();
         for (BatchPart batchPart : batch.getBatchParts()) {
-          ODataResponse response = handler.handle(batchPart);
+          ODataResponse response = handler.handleBatchPart(batchPart);
           responses.add(response);
         }
         batchResponse = EntityProvider.writeBatchResponse(responses);
@@ -123,16 +124,16 @@ public class BasicBatchTest extends AbstractBasicTest {
     }
 
     @Override
-    public ODataResponse executeChangeSet(final ODataRequestHandlerInterface handler, final List<ODataRequest> requests) {
+    public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) {
       ODataResponse changeSetResponse;
       List<ODataResponse> responses = new ArrayList<ODataResponse>();
       for (ODataRequest request : requests) {
-          ODataResponse response = handler.handle(request);
-          if(response.getStatus().getStatusCode()>=400){
-            // Rollback
-            return response;
-          }
-          responses.add(response);
+        ODataResponse response = handler.handleRequest(request);
+        if (response.getStatus().getStatusCode() >= 400) {
+          // Rollback
+          return response;
+        }
+        responses.add(response);
       }
       changeSetResponse = EntityProvider.writeChangeSet(responses);
       return changeSetResponse;

@@ -7,22 +7,20 @@ import com.sap.core.odata.api.processor.ODataResponse;
 /**
  * @author SAP AG
  */
-public interface ODataRequestHandlerInterface {
+public interface BatchHandler {
   /**
    * <p>Handles the {@link BatchPart} in a way that it results in a corresponding {@link ODataResponse}.</p>
    * @param batchPart the incoming batchPart
    * @return the corresponding result
    * @throws ODataException
    */
-  public ODataResponse handle(BatchPart batchPart) throws ODataException;
+  public ODataResponse handleBatchPart(BatchPart batchPart) throws ODataException;
 
   /**
-   * <p>Handles the {@link ODataRequest} in a way that it results in a corresponding {@link ODataResponse}.</p>
-   * <p>This includes building of the {@link com.sap.core.odata.api.processor.ODataContext ODataContext},
-   * delegation of URI parsing and dispatching of the request internally.</p>
+   * <p>Delegates a handling of the request {@link ODataRequest} to the request handler and provides ODataResponse {@link ODataResponse}.</p>
    * @param request the incoming request
    * @return the corresponding result
    * @throws ODataException
    */
-  public ODataResponse handle(ODataRequest request);
+  public ODataResponse handleRequest(ODataRequest request);
 }

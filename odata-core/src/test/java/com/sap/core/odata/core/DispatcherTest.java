@@ -20,7 +20,7 @@ import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
-import com.sap.core.odata.api.batch.ODataRequestHandlerInterface;
+import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.EdmException;
@@ -95,7 +95,7 @@ public class DispatcherTest extends BaseTest {
     when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(any(ODataRequestHandlerInterface.class),anyString(),any(InputStream.class))).thenAnswer(getAnswer());
+    when(batch.executeBatch(any(BatchHandler.class),anyString(),any(InputStream.class))).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
