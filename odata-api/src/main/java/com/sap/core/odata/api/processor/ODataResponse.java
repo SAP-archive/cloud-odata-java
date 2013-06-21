@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.processor;
 
+import java.io.IOException;
 import java.util.Set;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -34,6 +35,13 @@ public abstract class ODataResponse {
    * @return a response entity which becomes the body part of a response message
    */
   public abstract Object getEntity();
+  
+  /**
+   * Close the underlying entity input stream (if such a stream is available) and release all with this repsonse associated resources.
+   * 
+   * @throws IOException if something goes wrong during close of {@link ODataResponse}
+   */
+  public abstract void close() throws IOException;
 
   /**
    * @param name HTTP response header name

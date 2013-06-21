@@ -1,5 +1,7 @@
 package com.sap.core.odata.core;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -24,6 +26,14 @@ public class ODataResponseImpl extends ODataResponse {
   @Override
   public Object getEntity() {
     return entity;
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (entity != null && entity instanceof Closeable) {
+      Closeable closeableEntity = (Closeable) entity;
+      closeableEntity.close();
+    }
   }
 
   @Override
