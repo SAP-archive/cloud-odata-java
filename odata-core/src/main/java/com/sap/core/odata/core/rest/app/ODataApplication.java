@@ -6,8 +6,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.ws.rs.Produces;
@@ -60,12 +58,7 @@ public class ODataApplication extends Application {
     @Override
     public void writeTo(String t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       StringBuilder b = new StringBuilder();
-      Set<Entry<String, List<Object>>> headersEntries = httpHeaders.entrySet();
-      for (Entry<String, List<Object>> entry: headersEntries) {
-//        b.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-      }
       b.append(t);
-      
       entityStream.write(b.toString().getBytes("UTF-8"));
       entityStream.flush();
     }

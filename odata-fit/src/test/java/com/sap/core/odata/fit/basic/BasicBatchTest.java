@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,7 +19,6 @@ import org.junit.Test;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -92,11 +90,6 @@ public class BasicBatchTest extends AbstractBasicTest {
     assertTrue(response.containsHeader("DataServiceVersion"));
     assertTrue(response.getEntity().getContentType().getValue().matches(REG_EX));
     assertNotNull(response.getEntity().getContent());
-    Scanner scanner = new Scanner((InputStream) response.getEntity().getContent()).useDelimiter(LF);
-    while (scanner.hasNext()) {
-      System.out.println(scanner.next());
-    }
-    scanner.close();
   }
 
   static class TestSingleProc extends ODataSingleProcessor {
@@ -108,9 +101,9 @@ public class BasicBatchTest extends AbstractBasicTest {
         pathInfo.setServiceRoot(new URI("http://localhost:19000/odata"));
 
         EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-        BatchResult batch = EntityProvider.parseBatch(requestContentType, content, batchProperties);
+        List<BatchPart> batchParts = EntityProvider.parseBatchRequest(requestContentType, content, batchProperties);
         List<ODataResponse> responses = new ArrayList<ODataResponse>();
-        for (BatchPart batchPart : batch.getBatchParts()) {
+        for (BatchPart batchPart : batchParts) {
           ODataResponse response = handler.handleBatchPart(batchPart);
           responses.add(response);
         }
@@ -135,7 +128,7 @@ public class BasicBatchTest extends AbstractBasicTest {
         }
         responses.add(response);
       }
-      changeSetResponse = EntityProvider.writeChangeSet(responses);
+      changeSetResponse = EntityProvider.writeChangeSetResponse(responses);
       return changeSetResponse;
     }
 

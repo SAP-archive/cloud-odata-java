@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.batch.BatchResult;
+import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -303,15 +303,15 @@ public final class EntityProvider {
     ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
 
     /**
-     * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+     * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Parts as {@link BatchPart}
      * 
      * @param contentType format of content in the given input stream
      * @param content request body
-     * @param properties additional properties necessary for parsing content. Must not be null.
-     * @return BatchResult as {@link BatchResult}
+     * @param properties additional properties necessary for parsing. Must not be null.
+     * @return list of {@link BatchPart}
      * @throws EntityProviderException  if parsing fails
      */
-    BatchResult parseBatch(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
+    List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
 
     /**
      * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
@@ -328,7 +328,7 @@ public final class EntityProvider {
      * @param changeSetResponses a list of {@link ODataResponses}
      * @return Change Set Response as {@link ODataResponse}
      */
-    ODataResponse writeChangeSet(List<ODataResponse> changeSetResponses);
+    ODataResponse writeChangeSetResponse(List<ODataResponse> changeSetResponses);
   }
 
   /**
@@ -658,16 +658,16 @@ public final class EntityProvider {
   }
 
   /**
-   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide BatchResult as {@link BatchResult}
+   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Parts as {@link BatchPart}
    * 
    * @param contentType format of content in the given input stream
    * @param content request body
    * @param properties additional properties necessary for parsing. Must not be null.
-   * @return BatchResult as {@link BatchResult}
+   * @return list of {@link BatchPart}
    * @throws EntityProviderException  if parsing fails
    */
-  public static BatchResult parseBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
-    return createEntityProvider().parseBatch(contentType, content, properties);
+  public static List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    return createEntityProvider().parseBatchRequest(contentType, content, properties);
   }
 
   /**
@@ -687,8 +687,8 @@ public final class EntityProvider {
    * @param changeSetResponses a list of {@link ODataResponses}
    * @return Change Set Response as {@link ODataResponse}
    */
-  public static ODataResponse writeChangeSet(final List<ODataResponse> changeSetResponses) {
-    return createEntityProvider().writeChangeSet(changeSetResponses);
+  public static ODataResponse writeChangeSetResponse(final List<ODataResponse> changeSetResponses) {
+    return createEntityProvider().writeChangeSetResponse(changeSetResponses);
   }
 
 }

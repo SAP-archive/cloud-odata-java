@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
-public class BatchWriter {
+public class BatchResponseWriter {
   private static final String COLON = ":";
   private static final String SP = " ";
   private static final String LF = "\n";

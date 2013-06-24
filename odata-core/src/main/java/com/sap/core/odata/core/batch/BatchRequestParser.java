@@ -18,7 +18,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.batch.BatchResult;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -67,14 +66,12 @@ public class BatchRequestParser {
     batchRequestPathInfo = properties.getPathInfo();
   }
 
-  public BatchResult parse(final InputStream in) throws EntityProviderException {
+  public List<BatchPart> parse(final InputStream in) throws EntityProviderException {
     Scanner scanner = new Scanner(in).useDelimiter("\n");
     baseUri = getBaseUri();
-    BatchResultImpl result = new BatchResultImpl();
     List<BatchPart> requestList;
     try {
       requestList = parseBatchRequest(scanner);
-      result.setBatchParts(requestList);
     } catch (EntityProviderException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
@@ -85,7 +82,7 @@ public class BatchRequestParser {
         throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
     }
-    return result;
+    return requestList;
   }
 
   private List<BatchPart> parseBatchRequest(final Scanner scanner) throws EntityProviderException {

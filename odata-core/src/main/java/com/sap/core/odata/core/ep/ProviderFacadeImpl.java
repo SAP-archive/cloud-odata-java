@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.batch.BatchResult;
+import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -23,7 +23,7 @@ import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
 import com.sap.core.odata.core.batch.BatchRequestParser;
-import com.sap.core.odata.core.batch.BatchWriter;
+import com.sap.core.odata.core.batch.BatchResponseWriter;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
@@ -169,20 +169,20 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public BatchResult parseBatch(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
-    BatchResult result = new BatchRequestParser(contentType, properties).parse(content);
-    return result;
+  public List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    List<BatchPart> batchParts = new BatchRequestParser(contentType, properties).parse(content);
+    return batchParts;
   }
 
   @Override
   public ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
-    BatchWriter batchWriter = new BatchWriter();
+    BatchResponseWriter batchWriter = new BatchResponseWriter();
     return batchWriter.write(responses);
   }
 
   @Override
-  public ODataResponse writeChangeSet(final List<ODataResponse> responses) {
-    BatchWriter batchWriter = new BatchWriter();
+  public ODataResponse writeChangeSetResponse(final List<ODataResponse> responses) {
+    BatchResponseWriter batchWriter = new BatchResponseWriter();
     return batchWriter.writeChangeSet(responses);
   }
 
