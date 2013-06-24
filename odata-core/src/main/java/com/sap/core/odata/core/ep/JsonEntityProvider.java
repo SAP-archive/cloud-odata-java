@@ -1,7 +1,6 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -66,36 +65,21 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   @Override
   public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    ODataRuntimeException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       new JsonErrorDocumentProducer().writeErrorDocument(writer, errorCode, message, locale, innerError);
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      buffer.closeWrite();
 
       return ODataResponse.status(status)
           .entity(buffer.getInputStream())
           .contentHeader(HttpContentType.APPLICATION_JSON)
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
-    } catch (final IOException e) {
-      cachedException = new ODataRuntimeException(e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new ODataRuntimeException(e);
-          }
-        }
-      }
+    } catch (Exception e) {
+      buffer.close();
+      throw new ODataRuntimeException(e);
     }
   }
 
@@ -109,35 +93,20 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   @Override
   public ODataResponse writeServiceDocument(final Edm edm, final String serviceRoot) throws EntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       JsonServiceDocumentProducer.writeServiceDocument(writer, edm);
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      buffer.closeWrite();
 
       return ODataResponse.entity(buffer.getInputStream())
           .contentHeader(HttpContentType.APPLICATION_JSON)
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
+    } catch (Exception e) {
+      buffer.close();
+      throw new ODataRuntimeException(e);
     }
   }
 
@@ -145,37 +114,25 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   public ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       JsonEntryEntityProducer producer = new JsonEntryEntityProducer(properties);
       producer.append(writer, entityInfo, data, true);
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      buffer.closeWrite();
 
       return ODataResponse.entity(buffer.getInputStream())
           .contentHeader(HttpContentType.APPLICATION_JSON)
           .eTag(producer.getETag())
           .idLiteral(producer.getLocation())
           .build();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -186,35 +143,24 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   private ODataResponse writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
+      OutputStream outStream = buffer.getOutputStream();
       BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
       new JsonPropertyEntityProducer().append(writer, propertyInfo, value);
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      buffer.closeWrite();
 
       return ODataResponse.entity(buffer.getInputStream())
           .contentHeader(HttpContentType.APPLICATION_JSON)
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .build();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -222,31 +168,20 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       new JsonFeedEntityProducer(properties).append(writer, entityInfo, data, true);
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      buffer.closeWrite();
+
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -254,104 +189,68 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
   public ODataResponse writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       new JsonLinkEntityProducer(properties).append(writer, entityInfo, data);
       writer.flush();
-      outStream.flush();
-      outStream.close();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
-    }
+      buffer.closeWrite();
 
-    return ODataResponse.entity(buffer.getInputStream())
-        .contentHeader(HttpContentType.APPLICATION_JSON)
-        .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
-        .build();
+      return ODataResponse.entity(buffer.getInputStream())
+          .contentHeader(HttpContentType.APPLICATION_JSON)
+          .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+          .build();
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+    }
   }
 
   @Override
   public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
     final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       new JsonLinksEntityProducer(properties).append(writer, entityInfo, data);
       writer.flush();
-      outStream.flush();
-      outStream.close();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
-    }
+      buffer.closeWrite();
 
-    ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
-    if (properties.getInlineCountType() != InlineCount.ALLPAGES) {
-      response = response.header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
+      ODataResponseBuilder response = ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON);
+      if (properties.getInlineCountType() != InlineCount.ALLPAGES) {
+        response = response.header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
+      }
+      return response.build();
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
-    return response.build();
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream, DEFAULT_CHARSET));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream(), DEFAULT_CHARSET));
       new JsonCollectionEntityProducer().append(writer, propertyInfo, data);
       writer.flush();
-      outStream.flush();
-      outStream.close();
-    } catch (final IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (final IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
-          }
-        }
-      }
-    }
+      buffer.closeWrite();
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
+      return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();
+    } catch (EntityProviderException e) {
+      buffer.close();
+      throw e;
+    } catch (Exception e) {
+      buffer.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+    }
   }
 
   @Override

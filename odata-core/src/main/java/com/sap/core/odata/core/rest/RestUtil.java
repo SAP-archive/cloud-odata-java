@@ -37,13 +37,25 @@ import com.sap.core.odata.core.commons.Decoder;
  */
 public class RestUtil {
   public static Response convertResponse(final ODataResponse odataResponse) {
-    ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
+    try {
+      ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
 
-    for (final String name : odataResponse.getHeaderNames()) {
-      responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+      for (final String name : odataResponse.getHeaderNames()) {
+        responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+      }
+
+      return responseBuilder.build();
+    } catch (RuntimeException e) {
+      if (odataResponse != null) {
+        try {
+          odataResponse.close();
+        } catch (IOException inner) {
+          // if close throw an exception we ignore these and re-theow our exception
+          throw e;
+        }
+      }
+      throw e;
     }
-
-    return responseBuilder.build();
   }
 
   public static ContentType extractRequestContentType(final SubLocatorParameter param) throws ODataBadRequestException {

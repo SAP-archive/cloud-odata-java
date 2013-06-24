@@ -157,7 +157,7 @@ public class JsonPropertyConsumer {
       } else {
         EntityPropertyInfo childPropertyInfo = complexPropertyInfo.getPropertyInfo(childName);
         if (childPropertyInfo == null) {
-          throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent(childName));
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
         }
         Object childData = readPropertyValue(reader, childPropertyInfo, mapping.get(childName));
         if (data.containsKey(childName)) {

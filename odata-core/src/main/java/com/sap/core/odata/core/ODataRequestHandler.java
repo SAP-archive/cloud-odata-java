@@ -2,7 +2,9 @@ package com.sap.core.odata.core;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -17,6 +19,7 @@ import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -32,6 +35,7 @@ import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
+import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -55,13 +59,14 @@ public class ODataRequestHandler {
    * delegation of URI parsing and dispatching of the request internally.</p>
    * @param request the incoming request
    * @return the corresponding result
-   * @throws ODataException
    */
   public ODataResponse handle(final ODataRequest request) {
     ODataContextImpl context = buildODataContext(request);
 
     final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
 
+    UriInfoImpl uriInfo = null;
+    Exception exception = null;
     ODataResponse odataResponse;
     try {
       service = serviceFactory.createService(context);
@@ -77,7 +82,7 @@ public class ODataRequestHandler {
 
       final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
       int timingHandle2 = context.startRuntimeMeasurement("UriParserImpl", "parse");
-      final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
+      uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
       context.stopRuntimeMeasurement(timingHandle2);
 
       final ODataHttpMethod method = request.getMethod();
@@ -106,12 +111,15 @@ public class ODataRequestHandler {
       odataResponse = extendedResponse.build();
 
     } catch (final Exception e) {
-      ODataExceptionWrapper exceptionWrapper = new ODataExceptionWrapper(context, request.getQueryParameters(), request.getAcceptHeaders());
-      odataResponse = exceptionWrapper.wrapInExceptionResponse(e);
+      exception = e;
+      odataResponse = new ODataExceptionWrapper(context, request.getQueryParameters(), request.getAcceptHeaders())
+          .wrapInExceptionResponse(e);
     }
     context.stopRuntimeMeasurement(timingHandle);
 
-    return odataResponse;
+    final String debugValue = getDebugValue(context, request.getQueryParameters());
+    return debugValue == null ?
+        odataResponse : new ODataDebugResponseWrapper(context, odataResponse, uriInfo, exception, debugValue).wrapResponse();
   }
 
   private ODataContextImpl buildODataContext(final ODataRequest request) {
@@ -122,6 +130,7 @@ public class ODataRequestHandler {
     context.setPathInfo(request.getPathInfo());
     context.setHttpMethod(request.getMethod().name());
     context.setAcceptableLanguages(request.getAcceptableLanguages());
+    context.setDebugMode(checkDebugMode(request.getQueryParameters()));
 
     return context;
   }
@@ -417,5 +426,24 @@ public class ODataRequestHandler {
   private List<ContentType> getSupportedContentTypes(final Class<? extends ODataProcessor> processorFeature) throws ODataException {
     List<String> contentTypeStrings = service.getSupportedContentTypes(processorFeature);
     return ContentType.create(contentTypeStrings);
+  }
+
+  private static String getDebugValue(final ODataContext context, final Map<String, String> queryParameters) {
+    return context.isInDebugMode() ? getQueryDebugValue(queryParameters) : null;
+  }
+
+  private boolean checkDebugMode(final Map<String, String> queryParameters) {
+    if (getQueryDebugValue(queryParameters) == null) {
+      return false;
+    } else {
+      final ODataDebugCallback callback = serviceFactory.getCallback(ODataDebugCallback.class);
+      return callback != null && callback.isDebugEnabled();
+    }
+  }
+
+  private static String getQueryDebugValue(final Map<String, String> queryParameters) {
+    final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
+    return ODataDebugResponseWrapper.ODATA_DEBUG_JSON.equals(debugValue) ?
+        debugValue : null;
   }
 }

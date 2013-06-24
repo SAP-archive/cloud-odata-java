@@ -19,6 +19,14 @@ public class MessageServiceTest extends BaseTest {
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
 
   @Test
+  public void testResourceBundleException() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "COMMON");
+    Message ms = MessageService.getMessage(null, context);
+
+    assertEquals("MessageService could not be created because of exception 'IllegalArgumentException with message 'Parameter locale MUST NOT be NULL.'.", ms.getText());
+  }
+
+  @Test
   public void test() throws Exception {
     MessageReference context = MessageReference.create(ODataMessageException.class, "COMMON");
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
