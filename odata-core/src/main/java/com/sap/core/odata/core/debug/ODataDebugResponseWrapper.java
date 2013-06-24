@@ -49,9 +49,9 @@ public class ODataDebugResponseWrapper {
           .contentHeader(isJson ? HttpContentType.APPLICATION_JSON : null)
           .build();
     } catch (final ODataException e) {
-      throw new ODataRuntimeException("Should not happen");
+      throw new ODataRuntimeException("Should not happen", e);
     } catch (final IOException e) {
-      throw new ODataRuntimeException("Should not happen");
+      throw new ODataRuntimeException("Should not happen", e);
     }
   }
 
