@@ -28,7 +28,7 @@ public class DebugInfoRequest implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
     jsonStreamWriter.namedStringValueRaw("method", method);
     jsonStreamWriter.separator();
@@ -38,13 +38,15 @@ public class DebugInfoRequest implements DebugInfo {
     jsonStreamWriter.name("headers");
     jsonStreamWriter.beginObject();
     boolean first = true;
-    for (final String name : headers.keySet())
+    for (final String name : headers.keySet()) {
       for (final String value : headers.get(name)) {
-        if (!first)
+        if (!first) {
           jsonStreamWriter.separator();
+        }
         first = false;
         jsonStreamWriter.namedStringValue(name, value);
       }
+    }
     jsonStreamWriter.endObject();
     jsonStreamWriter.endObject();
   }

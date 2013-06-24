@@ -20,7 +20,7 @@ public class DebugInfoRuntime implements DebugInfo {
 
   private final List<RuntimeTree> tree;
 
-  public DebugInfoRuntime(List<RuntimeMeasurement> runtimeMeasurements) {
+  public DebugInfoRuntime(final List<RuntimeMeasurement> runtimeMeasurements) {
     combineRuntimeMeasurements(runtimeMeasurements);
     tree = createRuntimeTree(runtimeMeasurements);
   }
@@ -30,7 +30,7 @@ public class DebugInfoRuntime implements DebugInfo {
    * names into one measurement, assuming that they originate from a loop
    * or a similar construct where a summary measurement has been intended.
    */
-  private static void combineRuntimeMeasurements(List<RuntimeMeasurement> runtimeMeasurements) {
+  private static void combineRuntimeMeasurements(final List<RuntimeMeasurement> runtimeMeasurements) {
     RuntimeMeasurement preceding = null;
     for (Iterator<RuntimeMeasurement> iterator = runtimeMeasurements.iterator(); iterator.hasNext();) {
       final RuntimeMeasurement runtimeMeasurement = iterator.next();
@@ -70,8 +70,9 @@ public class DebugInfoRuntime implements DebugInfo {
       treeNode.runtimeMeasurement = runtimeMeasurement;
       while (previous != null
           && previous.runtimeMeasurement.getTimeStopped() > 0
-          && previous.runtimeMeasurement.getTimeStopped() <= runtimeMeasurement.getTimeStarted())
+          && previous.runtimeMeasurement.getTimeStopped() <= runtimeMeasurement.getTimeStarted()) {
         previous = previous.parent;
+      }
       treeNode.parent = previous;
       tree.add(treeNode);
       previous = treeNode;
@@ -85,15 +86,17 @@ public class DebugInfoRuntime implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginArray();
-    for (final RuntimeTree runtimeTree : tree)
-      if (runtimeTree.parent == null)
+    for (final RuntimeTree runtimeTree : tree) {
+      if (runtimeTree.parent == null) {
         appendJsonTreeNode(jsonStreamWriter, runtimeTree);
+      }
+    }
     jsonStreamWriter.endArray();
   }
 
-  private void appendJsonTreeNode(JsonStreamWriter jsonStreamWriter, final RuntimeTree node) throws IOException {
+  private void appendJsonTreeNode(final JsonStreamWriter jsonStreamWriter, final RuntimeTree node) throws IOException {
     jsonStreamWriter.beginObject();
     jsonStreamWriter.namedStringValueRaw("class", node.runtimeMeasurement.getClassName());
     jsonStreamWriter.separator();
@@ -106,14 +109,16 @@ public class DebugInfoRuntime implements DebugInfo {
     jsonStreamWriter.name("children");
     jsonStreamWriter.beginArray();
     boolean first = true;
-    for (final RuntimeTree childNode : tree)
+    for (final RuntimeTree childNode : tree) {
       if (childNode.parent != null
           && childNode.parent.runtimeMeasurement.getTimeStarted() == node.runtimeMeasurement.getTimeStarted()) {
-        if (!first)
+        if (!first) {
           jsonStreamWriter.separator();
+        }
         first = false;
         appendJsonTreeNode(jsonStreamWriter, childNode);
       }
+    }
     jsonStreamWriter.endArray();
     jsonStreamWriter.endObject();
   }

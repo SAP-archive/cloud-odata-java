@@ -48,14 +48,16 @@ public class MessageService {
     } catch (final Exception e) {
       bundle = new ResourceBundle() {
         @Override
-        protected Object handleGetObject(String key) {
-          return "MessageService could not be created because of exception '" + 
-                  e.getClass().getSimpleName() + " with message '" + e.getMessage() + "'.";
+        protected Object handleGetObject(final String key) {
+          return "MessageService could not be created because of exception '" +
+              e.getClass().getSimpleName() + " with message '" + e.getMessage() + "'.";
         }
+
         @Override
         public Locale getLocale() {
           return Locale.ENGLISH;
         }
+
         @SuppressWarnings("unchecked")
         @Override
         public Enumeration<String> getKeys() {

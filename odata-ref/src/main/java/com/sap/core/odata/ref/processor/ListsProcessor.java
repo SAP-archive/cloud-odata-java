@@ -146,8 +146,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (uriInfo.getOrderBy() == null
           && uriInfo.getSkipToken() == null
           && uriInfo.getSkip() == null
-          && uriInfo.getTop() == null)
+          && uriInfo.getTop() == null) {
         sortInDefaultOrder(entitySet, data);
+      }
 
       // TODO: Percent-encode "next" link.
       nextLink = context.getPathInfo().getServiceRoot().relativize(context.getPathInfo().getRequestUri()).toString()
@@ -157,14 +158,16 @@ public class ListsProcessor extends ODataSingleProcessor {
       nextLink += (nextLink.contains("?") ? "&" : "?")
           + "$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
 
-      while (data.size() > SERVER_PAGING_SIZE)
+      while (data.size() > SERVER_PAGING_SIZE) {
         data.remove(SERVER_PAGING_SIZE);
+      }
     }
 
     final EdmEntityType entityType = entitySet.getEntityType();
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-    for (final Object entryData : data)
+    for (final Object entryData : data) {
       values.add(getStructuralTypeValueMap(entryData, entityType));
+    }
 
     final EntityProviderWriteProperties feedProperties = EntityProviderWriteProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
@@ -1005,8 +1008,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     context.stopRuntimeMeasurement(timingHandle);
 
     final Map<String, Object> targetKeys = parseLinkUri(entitySet, uriString);
-    if (targetKeys == null)
+    if (targetKeys == null) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY);
+    }
     return targetKeys;
   }
 
@@ -1039,15 +1043,16 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    if (uri == null)
+    if (uri == null) {
       return null;
-    else if (uri.getTargetEntitySet() == null
+    } else if (uri.getTargetEntitySet() == null
         || uri.getTargetEntitySet() != targetEntitySet
         || !uri.getNavigationSegments().isEmpty()
-        || uri.getKeyPredicates().isEmpty())
+        || uri.getKeyPredicates().isEmpty()) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY);
-    else
+    } else {
       return mapKey(uri.getKeyPredicates());
+    }
   }
 
   private <T> void createInlinedEntities(final EdmEntitySet entitySet, final T data, final ODataEntry entryValues) throws ODataException {
@@ -1062,8 +1067,9 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (relatedValue == null) {
         for (final String uriString : entryValues.getMetadata().getAssociationUris(navigationPropertyName)) {
           final Map<String, Object> key = parseLinkUri(relatedEntitySet, uriString);
-          if (key != null)
+          if (key != null) {
             dataSource.writeRelation(entitySet, data, relatedEntitySet, key);
+          }
         }
 
       } else {
@@ -1096,34 +1102,45 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
 
-    if (filter != null)
+    if (filter != null) {
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
-      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();)
-        if (!appliesFilter(iterator.next(), filter))
+      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
+        if (!appliesFilter(iterator.next(), filter)) {
           iterator.remove();
+        }
+      }
+    }
 
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
-    if (orderBy != null)
+    if (orderBy != null) {
       sort(data, orderBy);
-    else if (skipToken != null || skip != null || top != null)
+    } else if (skipToken != null || skip != null || top != null) {
       sortInDefaultOrder(entitySet, data);
+    }
 
-    if (skipToken != null)
-      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken))
+    if (skipToken != null) {
+      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken)) {
         data.remove(0);
+      }
+    }
 
-    if (skip != null)
-      if (skip >= data.size())
+    if (skip != null) {
+      if (skip >= data.size()) {
         data.clear();
-      else
-        for (int i = 0; i < skip; i++)
+      } else {
+        for (int i = 0; i < skip; i++) {
           data.remove(0);
+        }
+      }
+    }
 
-    if (top != null)
-      while (data.size() > top)
+    if (top != null) {
+      while (data.size() > top) {
         data.remove(top.intValue());
+      }
+    }
 
     context.stopRuntimeMeasurement(timingHandle);
 

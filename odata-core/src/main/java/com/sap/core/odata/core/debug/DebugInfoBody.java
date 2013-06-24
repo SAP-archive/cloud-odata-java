@@ -30,16 +30,17 @@ public class DebugInfoBody implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     final String contentType = response.getContentHeader();
     if (contentType.startsWith("image/")) {
       jsonStreamWriter.stringValueRaw(Base64.encodeBase64String(getBinaryFromInputStream((InputStream) response.getEntity())));
     } else {
       final String content = getStringFromInputStream((InputStream) response.getEntity());
-      if (contentType.startsWith(HttpContentType.APPLICATION_JSON))
+      if (contentType.startsWith(HttpContentType.APPLICATION_JSON)) {
         jsonStreamWriter.unquotedValue(content);
-      else
+      } else {
         jsonStreamWriter.stringValue(content);
+      }
     }
   }
 
@@ -51,8 +52,9 @@ public class DebugInfoBody implements DebugInfo {
     ByteArrayOutputStream result = new ByteArrayOutputStream();
     int b = -1;
     try {
-      while ((b = inputStream.read()) > -1)
+      while ((b = inputStream.read()) > -1) {
         result.write(b);
+      }
       inputStream.close();
     } catch (final IOException e) {
       return null;

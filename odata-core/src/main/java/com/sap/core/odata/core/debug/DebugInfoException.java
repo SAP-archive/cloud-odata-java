@@ -26,7 +26,7 @@ public class DebugInfoException implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
     jsonStreamWriter.name("exceptions");
     if (exception == null) {
@@ -57,8 +57,9 @@ public class DebugInfoException implements DebugInfo {
 
         jsonStreamWriter.endObject();
         throwable = throwable.getCause();
-        if (throwable != null)
+        if (throwable != null) {
           jsonStreamWriter.separator();
+        }
       }
       jsonStreamWriter.endArray();
     }
@@ -71,8 +72,9 @@ public class DebugInfoException implements DebugInfo {
       jsonStreamWriter.beginArray();
       boolean first = true;
       for (final StackTraceElement stackTraceElement : exception.getStackTrace()) {
-        if (!first)
+        if (!first) {
           jsonStreamWriter.separator();
+        }
         first = false;
         jsonStreamWriter.beginObject();
         jsonStreamWriter.namedStringValueRaw("class", stackTraceElement.getClassName());

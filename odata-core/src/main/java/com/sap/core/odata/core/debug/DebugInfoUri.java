@@ -26,8 +26,9 @@ public class DebugInfoUri implements DebugInfo {
     this.uriInfo = uriInfo;
 
     Throwable candidate = exception;
-    while (candidate != null && !(candidate instanceof ExpressionParserException))
+    while (candidate != null && !(candidate instanceof ExpressionParserException)) {
       candidate = candidate.getCause();
+    }
     this.exception = (ExpressionParserException) candidate;
   }
 
@@ -37,7 +38,7 @@ public class DebugInfoUri implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
     if (exception != null) {
       jsonStreamWriter.name("error");
