@@ -207,16 +207,16 @@ public class BatchRequestParser {
       request.setRequestHeaders(headers);
 
       request.setHeaders(mapHeaderListToString(headers));
-      if (request.getHeaderValue(BatchConstants.HTTP_CONTENT_TYPE) != null) {
-        request.setContentType(ContentType.create(request.getHeaderValue(BatchConstants.HTTP_CONTENT_TYPE)));
+      if (request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE) != null) {
+        request.setContentType(ContentType.create(request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE)));
       }
-      if (request.getHeaderValue(BatchConstants.ACCEPT) != null) {
-        request.setAcceptHeaders(parseAcceptHeaders(request.getHeaderValue(BatchConstants.ACCEPT)));
+      if (request.getRequestHeaderValue(BatchConstants.ACCEPT) != null) {
+        request.setAcceptHeaders(parseAcceptHeaders(request.getRequestHeaderValue(BatchConstants.ACCEPT)));
       } else {
         request.setAcceptHeaders(new ArrayList<String>());
       }
-      if (request.getHeaderValue(BatchConstants.ACCEPT_LANGUAGE) != null) {
-        request.setAcceptableLanguages(parseAcceptableLanguages(request.getHeaderValue(BatchConstants.ACCEPT_LANGUAGE)));
+      if (request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE) != null) {
+        request.setAcceptableLanguages(parseAcceptableLanguages(request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE)));
       } else {
         request.setAcceptableLanguages(new ArrayList<Locale>());
       }
@@ -362,6 +362,7 @@ public class BatchRequestParser {
 
   private InputStream parseBody(final Scanner scanner) {
     String body = null;
+    InputStream requestBody = null;
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
         if (body == null) {
@@ -373,7 +374,10 @@ public class BatchRequestParser {
         scanner.next();
       }
     }
-    return new ByteArrayInputStream(body.getBytes());
+    if (body != null) {
+      requestBody = new ByteArrayInputStream(body.getBytes());
+    }
+    return requestBody;
   }
 
   private String getBoundary(final String contentType) throws EntityProviderException {
