@@ -26,9 +26,8 @@ public class DebugInfoUri implements DebugInfo {
     this.uriInfo = uriInfo;
 
     Throwable candidate = exception;
-    while (candidate != null && !(candidate instanceof ExpressionParserException)) {
+    while (candidate != null && !(candidate instanceof ExpressionParserException))
       candidate = candidate.getCause();
-    }
     this.exception = (ExpressionParserException) candidate;
   }
 

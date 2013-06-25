@@ -22,5 +22,5 @@ public interface BatchHandler {
    * @return the corresponding result
    * @throws ODataException
    */
-  public ODataResponse handleRequest(ODataRequest request);
+  public ODataResponse handleRequest(ODataRequest request) throws ODataException;
 }

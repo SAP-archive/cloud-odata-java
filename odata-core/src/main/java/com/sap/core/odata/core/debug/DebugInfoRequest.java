@@ -38,15 +38,13 @@ public class DebugInfoRequest implements DebugInfo {
     jsonStreamWriter.name("headers");
     jsonStreamWriter.beginObject();
     boolean first = true;
-    for (final String name : headers.keySet()) {
+    for (final String name : headers.keySet())
       for (final String value : headers.get(name)) {
-        if (!first) {
+        if (!first)
           jsonStreamWriter.separator();
-        }
         first = false;
         jsonStreamWriter.namedStringValue(name, value);
       }
-    }
     jsonStreamWriter.endObject();
     jsonStreamWriter.endObject();
   }

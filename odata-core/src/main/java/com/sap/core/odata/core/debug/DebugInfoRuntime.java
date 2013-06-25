@@ -13,71 +13,71 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class DebugInfoRuntime implements DebugInfo {
 
-  private class RuntimeTree {
-    private RuntimeMeasurement runtimeMeasurement;
-    private RuntimeTree parent;
+  private class RuntimeNode {
+    public String className;
+    public String methodName;
+    public long timeStarted;
+    public long timeStopped;
+    public List<RuntimeNode> children = new ArrayList<RuntimeNode>();
+
+    public RuntimeNode() {
+      timeStarted = 0;
+      timeStopped = Long.MAX_VALUE;
+    }
+
+    private RuntimeNode(final RuntimeMeasurement runtimeMeasurement) {
+      className = runtimeMeasurement.getClassName();
+      methodName = runtimeMeasurement.getMethodName();
+      timeStarted = runtimeMeasurement.getTimeStarted();
+      timeStopped = runtimeMeasurement.getTimeStopped();
+    }
+
+    public boolean add(final RuntimeMeasurement runtimeMeasurement) {
+      if (timeStarted <= runtimeMeasurement.getTimeStarted()
+          && timeStopped != 0 && timeStopped >= runtimeMeasurement.getTimeStopped()) {
+        for (RuntimeNode candidate : children)
+          if (candidate.add(runtimeMeasurement))
+            return true;
+        children.add(new RuntimeNode(runtimeMeasurement));
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /**
+     * Combines runtime measurements with identical class names and method
+     * names into one measurement, assuming that they originate from a loop
+     * or a similar construct where a summary measurement has been intended.
+     */
+    private void combineRuntimeMeasurements() {
+      RuntimeNode preceding = null;
+      for (Iterator<RuntimeNode> iterator = children.iterator(); iterator.hasNext();) {
+        final RuntimeNode child = iterator.next();
+        if (preceding != null
+            && preceding.timeStopped != 0 && child.timeStopped != 0
+            && preceding.timeStopped <= child.timeStarted
+            && preceding.children.isEmpty() && child.children.isEmpty()
+            && preceding.methodName.equals(child.methodName)
+            && preceding.className.equals(child.className)) {
+          preceding.timeStarted = child.timeStarted - (preceding.timeStopped - preceding.timeStarted);
+          preceding.timeStopped = child.timeStopped;
+          iterator.remove();
+        } else {
+          preceding = child;
+          child.combineRuntimeMeasurements();
+        }
+      }
+    }
   }
 
-  private final List<RuntimeTree> tree;
+  private final RuntimeNode rootNode;
 
   public DebugInfoRuntime(final List<RuntimeMeasurement> runtimeMeasurements) {
-    combineRuntimeMeasurements(runtimeMeasurements);
-    tree = createRuntimeTree(runtimeMeasurements);
-  }
-
-  /**
-   * Combines runtime measurements with identical class names and method
-   * names into one measurement, assuming that they originate from a loop
-   * or a similar construct where a summary measurement has been intended.
-   */
-  private static void combineRuntimeMeasurements(final List<RuntimeMeasurement> runtimeMeasurements) {
-    RuntimeMeasurement preceding = null;
-    for (Iterator<RuntimeMeasurement> iterator = runtimeMeasurements.iterator(); iterator.hasNext();) {
-      final RuntimeMeasurement runtimeMeasurement = iterator.next();
-      if (preceding != null
-          && preceding.getTimeStopped() > 0 && runtimeMeasurement.getTimeStopped() > 0
-          && preceding.getTimeStopped() <= runtimeMeasurement.getTimeStarted()
-          && preceding.getMethodName().equals(runtimeMeasurement.getMethodName())
-          && preceding.getClassName().equals(runtimeMeasurement.getClassName())
-          && getParent(preceding, runtimeMeasurements) == getParent(runtimeMeasurement, runtimeMeasurements)) {
-        preceding.setTimeStarted(preceding.getTimeStarted()
-            + runtimeMeasurement.getTimeStarted() - preceding.getTimeStopped());
-        preceding.setTimeStopped(runtimeMeasurement.getTimeStopped());
-        iterator.remove();
-      } else {
-        preceding = runtimeMeasurement;
-      }
-    }
-  }
-
-  private static RuntimeMeasurement getParent(final RuntimeMeasurement runtimeMeasurement, final List<RuntimeMeasurement> runtimeMeasurements) {
-    RuntimeMeasurement result = null;
-    for (final RuntimeMeasurement candidate : runtimeMeasurements) {
-      if (runtimeMeasurement != candidate
-          && runtimeMeasurement.getTimeStarted() >= candidate.getTimeStarted()
-          && runtimeMeasurement.getTimeStopped() <= candidate.getTimeStopped()) {
-        result = candidate;
-      }
-    }
-    return result;
-  }
-
-  private List<RuntimeTree> createRuntimeTree(final List<RuntimeMeasurement> runtimeMeasurements) {
-    List<RuntimeTree> tree = new ArrayList<RuntimeTree>();
-    RuntimeTree previous = null;
-    for (final RuntimeMeasurement runtimeMeasurement : runtimeMeasurements) {
-      RuntimeTree treeNode = new RuntimeTree();
-      treeNode.runtimeMeasurement = runtimeMeasurement;
-      while (previous != null
-          && previous.runtimeMeasurement.getTimeStopped() > 0
-          && previous.runtimeMeasurement.getTimeStopped() <= runtimeMeasurement.getTimeStarted()) {
-        previous = previous.parent;
-      }
-      treeNode.parent = previous;
-      tree.add(treeNode);
-      previous = treeNode;
-    }
-    return tree;
+    rootNode = new RuntimeNode();
+    for (final RuntimeMeasurement runtimeMeasurement : runtimeMeasurements)
+      rootNode.add(runtimeMeasurement);
+    rootNode.combineRuntimeMeasurements();
   }
 
   @Override
@@ -87,39 +87,33 @@ public class DebugInfoRuntime implements DebugInfo {
 
   @Override
   public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
-    jsonStreamWriter.beginArray();
-    for (final RuntimeTree runtimeTree : tree) {
-      if (runtimeTree.parent == null) {
-        appendJsonTreeNode(jsonStreamWriter, runtimeTree);
-      }
-    }
-    jsonStreamWriter.endArray();
+    appendJsonChildren(jsonStreamWriter, rootNode);
   }
 
-  private void appendJsonTreeNode(final JsonStreamWriter jsonStreamWriter, final RuntimeTree node) throws IOException {
+  private static void appendJsonNode(final JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
     jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedStringValueRaw("class", node.runtimeMeasurement.getClassName());
+    jsonStreamWriter.namedStringValueRaw("class", node.className);
     jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValueRaw("method", node.runtimeMeasurement.getMethodName());
+    jsonStreamWriter.namedStringValueRaw("method", node.methodName);
     jsonStreamWriter.separator();
     jsonStreamWriter.name("duration");
-    jsonStreamWriter.unquotedValue(node.runtimeMeasurement.getTimeStopped() == 0 ? null :
-        Long.toString((node.runtimeMeasurement.getTimeStopped() - node.runtimeMeasurement.getTimeStarted()) / 1000));
+    jsonStreamWriter.unquotedValue(node.timeStopped == 0 ? null :
+        Long.toString((node.timeStopped - node.timeStarted) / 1000));
     jsonStreamWriter.separator();
     jsonStreamWriter.name("children");
+    appendJsonChildren(jsonStreamWriter, node);
+    jsonStreamWriter.endObject();
+  }
+
+  private static void appendJsonChildren(final JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
     jsonStreamWriter.beginArray();
     boolean first = true;
-    for (final RuntimeTree childNode : tree) {
-      if (childNode.parent != null
-          && childNode.parent.runtimeMeasurement.getTimeStarted() == node.runtimeMeasurement.getTimeStarted()) {
-        if (!first) {
-          jsonStreamWriter.separator();
-        }
-        first = false;
-        appendJsonTreeNode(jsonStreamWriter, childNode);
-      }
+    for (final RuntimeNode childNode : node.children) {
+      if (!first)
+        jsonStreamWriter.separator();
+      first = false;
+      appendJsonNode(jsonStreamWriter, childNode);
     }
     jsonStreamWriter.endArray();
-    jsonStreamWriter.endObject();
   }
 }

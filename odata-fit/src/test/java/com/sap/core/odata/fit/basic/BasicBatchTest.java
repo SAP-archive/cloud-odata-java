@@ -117,12 +117,12 @@ public class BasicBatchTest extends AbstractBasicTest {
     }
 
     @Override
-    public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) {
+    public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
       ODataResponse changeSetResponse;
       List<ODataResponse> responses = new ArrayList<ODataResponse>();
       for (ODataRequest request : requests) {
         ODataResponse response = handler.handleRequest(request);
-        if (response.getStatus().getStatusCode() >= 400) {
+        if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode()) {
           // Rollback
           return response;
         }

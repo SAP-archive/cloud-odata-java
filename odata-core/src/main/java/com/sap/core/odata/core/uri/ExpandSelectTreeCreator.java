@@ -144,8 +144,8 @@ public class ExpandSelectTreeCreator {
   private void mergeExpandTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     for (ArrayList<NavigationPropertySegment> singleExpand : initialExpand) {
       ExpandSelectTreeNodeImpl actualNode = root;
-      for (NavigationPropertySegment navSegement : singleExpand) {
-        actualNode = addExpandNode(actualNode, navSegement.getNavigationProperty().getName());
+      for (NavigationPropertySegment navSegment : singleExpand) {
+        actualNode = addExpandNode(actualNode, navSegment.getNavigationProperty().getName());
         if (actualNode == null) {
           break;
         }

@@ -3,7 +3,6 @@ package com.sap.core.odata.ref.processor;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
@@ -1653,10 +1653,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     List<ODataResponse> responses = new ArrayList<ODataResponse>();
     for (ODataRequest request : requests) {
       ODataResponse response = handler.handleRequest(request);
-      if (response.getStatus().getStatusCode() >= 400) {
+      if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode())
         // Rollback
         return response;
-      }
       responses.add(response);
     }
     changeSetResponse = EntityProvider.writeChangeSetResponse(responses);

@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.ep.EntityProviderException;
 
+/**
+ * @author SAP AG
+ */
 public class AcceptParser {
   private static final String ALL = "*";
   private static final String REG_EX_QUALITY_FACTOR = "q=((?:1\\.0)|(?:0\\.[0-9]*[1-9]))";
@@ -47,7 +50,7 @@ public class AcceptParser {
       }
     }
     for (Accept accept : acceptTree) {
-      acceptHeaders.add((String) accept.getValue());
+      acceptHeaders.add(accept.getValue());
     }
     acceptHeaderScanner.close();
     return acceptHeaders;

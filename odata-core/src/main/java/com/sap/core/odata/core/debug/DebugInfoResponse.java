@@ -40,9 +40,8 @@ public class DebugInfoResponse implements DebugInfo {
     jsonStreamWriter.beginObject();
     boolean first = true;
     for (final String name : headers.keySet()) {
-      if (!first) {
+      if (!first)
         jsonStreamWriter.separator();
-      }
       first = false;
       jsonStreamWriter.namedStringValue(name, headers.get(name));
     }
