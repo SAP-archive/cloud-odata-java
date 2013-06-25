@@ -1636,18 +1636,14 @@ public class ListsProcessor extends ODataSingleProcessor {
   public ODataResponse executeBatch(BatchHandler handler, String contentType, InputStream content) throws ODataException {
     ODataResponse batchResponse;
     PathInfo pathInfo = this.getContext().getPathInfo();
-    try {
-      EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-      List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
-      List<ODataResponse> responses = new ArrayList<ODataResponse>();
-      for (BatchPart batchPart : batchParts) {
-        ODataResponse response = handler.handleBatchPart(batchPart);
-        responses.add(response);
-      }
-      batchResponse = EntityProvider.writeBatchResponse(responses);
-    } catch (ODataException e) {
-      throw new RuntimeException(e);
+    EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
+    List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
+    List<ODataResponse> responses = new ArrayList<ODataResponse>();
+    for (BatchPart batchPart : batchParts) {
+      ODataResponse response = handler.handleBatchPart(batchPart);
+      responses.add(response);
     }
+    batchResponse = EntityProvider.writeBatchResponse(responses);
     return batchResponse;
   }
 
