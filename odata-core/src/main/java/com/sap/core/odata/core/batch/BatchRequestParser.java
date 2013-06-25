@@ -74,7 +74,7 @@ public class BatchRequestParser {
       requestList = parseBatchRequest(scanner);
     } catch (EntityProviderException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       scanner.close();
       try {
         in.close();
