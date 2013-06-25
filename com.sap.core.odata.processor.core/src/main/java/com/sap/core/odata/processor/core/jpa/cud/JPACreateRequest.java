@@ -23,6 +23,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
@@ -274,7 +275,7 @@ public class JPACreateRequest extends JPAWriteRequest {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       List<ODataEntry> relatedValueList = null;
       if (entryValues.getProperties().get(navigationPropertyName) != null) {
-        relatedValueList = ((com.sap.core.odata.core.ep.feed.ODataFeedImpl) entryValues.getProperties().get(navigationPropertyName)).getEntries();
+        relatedValueList = ((ODataFeed) entryValues.getProperties().get(navigationPropertyName)).getEntries();
       }
       List<Object> relatedDataList = null;
       if (relatedValueList != null) {
