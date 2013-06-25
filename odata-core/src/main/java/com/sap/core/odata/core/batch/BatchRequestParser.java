@@ -295,7 +295,7 @@ public class BatchRequestParser {
           pathInfo.setRequestUri(new URI(baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString));
         } catch (URISyntaxException e) {
           uriScanner.close();
-          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URI"));
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid URI"), e);
         }
       } else {
         uriScanner.close();

@@ -95,7 +95,7 @@ public class DispatcherTest extends BaseTest {
     when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(any(BatchHandler.class),anyString(),any(InputStream.class))).thenAnswer(getAnswer());
+    when(batch.executeBatch(any(BatchHandler.class), anyString(), any(InputStream.class))).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -151,8 +151,8 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    ODataServiceFactory factory=mock(ODataServiceFactory.class);
-    
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
+
     final ODataResponse response = new Dispatcher(factory, getMockService())
         .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", "*/*");
     assertEquals(expectedMethodName, response.getEntity());
@@ -350,10 +350,10 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
-    ODataServiceFactory factory=mock(ODataServiceFactory.class);
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
     new Dispatcher(factory, getMockService());
     assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
-        assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
   }
 
   @Test
@@ -409,7 +409,7 @@ public class DispatcherTest extends BaseTest {
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
 
-    ODataServiceFactory factory=mock(ODataServiceFactory.class);
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
     ODataService service = Mockito.mock(ODataService.class);
     Dispatcher dispatcher = new Dispatcher(factory, service);
 

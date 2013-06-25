@@ -3,6 +3,7 @@ package com.sap.core.odata.ref.processor;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataCallback;
+import com.sap.core.odata.api.batch.BatchHandler;
+import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
@@ -35,6 +38,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
@@ -54,11 +58,13 @@ import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParser;
@@ -1624,5 +1630,40 @@ public class ListsProcessor extends ODataSingleProcessor {
     } catch (InvocationTargetException e) {
       throw new ODataNotFoundException(null, e);
     }
+  }
+
+  @Override
+  public ODataResponse executeBatch(BatchHandler handler, String contentType, InputStream content) throws ODataException {
+    ODataResponse batchResponse;
+    PathInfo pathInfo = this.getContext().getPathInfo();
+    try {
+      EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
+      List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
+      List<ODataResponse> responses = new ArrayList<ODataResponse>();
+      for (BatchPart batchPart : batchParts) {
+        ODataResponse response = handler.handleBatchPart(batchPart);
+        responses.add(response);
+      }
+      batchResponse = EntityProvider.writeBatchResponse(responses);
+    } catch (ODataException e) {
+      throw new RuntimeException(e);
+    }
+    return batchResponse;
+  }
+
+  @Override
+  public ODataResponse executeChangeSet(BatchHandler handler, List<ODataRequest> requests) throws ODataException {
+    ODataResponse changeSetResponse;
+    List<ODataResponse> responses = new ArrayList<ODataResponse>();
+    for (ODataRequest request : requests) {
+      ODataResponse response = handler.handleRequest(request);
+      if (response.getStatus().getStatusCode() >= 400) {
+        // Rollback
+        return response;
+      }
+      responses.add(response);
+    }
+    changeSetResponse = EntityProvider.writeChangeSetResponse(responses);
+    return changeSetResponse;
   }
 }

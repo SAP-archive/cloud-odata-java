@@ -42,21 +42,21 @@ public class ODataApplication extends Application {
   }
 
   @Provider
-  @Produces({"generic/value", "multipart/mixed"})
+  @Produces({ "generic/value", "multipart/mixed" })
   public static final class MyProvider implements MessageBodyWriter<String> {
 
     @Override
-    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
       return (type == String.class);
     }
 
     @Override
-    public long getSize(String t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    public long getSize(final String t, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
       return t.length();
     }
 
     @Override
-    public void writeTo(String t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+    public void writeTo(final String t, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType, final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
       StringBuilder b = new StringBuilder();
       b.append(t);
       entityStream.write(b.toString().getBytes("UTF-8"));

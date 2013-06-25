@@ -124,7 +124,6 @@ public class JsonFeedConsumer {
     reader.endArray();
   }
 
-
   protected static void readInlineCount(final JsonReader reader, final FeedMetadataImpl feedMetadata) throws IOException, EntityProviderException {
     if (reader.peek() == JsonToken.STRING && feedMetadata.getInlineCount() == null) {
       int inlineCount;
@@ -142,7 +141,6 @@ public class JsonFeedConsumer {
       throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(reader.peek()));
     }
   }
-
 
   protected ODataFeed readStartedInlineFeed(final String name) throws EdmException, EntityProviderException, IOException {
     //consume the already started content
