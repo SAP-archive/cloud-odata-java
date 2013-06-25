@@ -165,7 +165,7 @@ public class BatchRequestParserTest {
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
         + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "GET Employees('1')/EmployeeName" + "\n"
         + "\n"
         + "\n"
         + "--batch_1740-bb84-2f7f--";

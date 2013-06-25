@@ -35,9 +35,9 @@ public class BatchRequestParser {
   private static final String ANY_CHARACTERS = ".*";
 
   private static final Pattern REG_EX_HEADER = Pattern.compile("([a-zA-Z\\-]+):" + REG_EX_OPTIONAL_WHITESPACE + "(.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
-  private static final Pattern REG_EX_VERSION = Pattern.compile("HTTP/[0-9]\\.[0-9]");
+  private static final Pattern REG_EX_VERSION = Pattern.compile("(?:HTTP/[0-9]\\.[0-9])?");
   private static final Pattern REG_EX_ANY_BOUNDARY_STRING = Pattern.compile("--" + ANY_CHARACTERS);
-  private static final Pattern REG_EX_REQUEST_LINE = Pattern.compile("(GET|POST|PUT|DELETE|MERGE)\\s(.*)\\s" + REG_EX_VERSION + "?" + REG_EX_ZERO_OR_MORE_WHITESPACES);
+  private static final Pattern REG_EX_REQUEST_LINE = Pattern.compile("(GET|POST|PUT|DELETE|MERGE)\\s(.*)\\s?" + REG_EX_VERSION + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_BOUNDARY_PARAMETER = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + "boundary=(\".*\"|.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_CONTENT_TYPE = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED);
   private static final Pattern REG_EX_QUERY_PARAMETER = Pattern.compile("((?:\\$[a-z]+)|(?:[^\\$][^=]))=([^=]+)");

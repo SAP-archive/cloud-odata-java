@@ -17,11 +17,11 @@ import com.sap.core.odata.api.ep.EntityProviderException;
  */
 public class AcceptParser {
   private static final String ALL = "*";
-  private static final String REG_EX_QUALITY_FACTOR = "q=((?:1\\.0)|(?:0\\.[0-9]*[1-9]))";
+  private static final String REG_EX_QUALITY_FACTOR = "q=((?:1\\.0{0,3})|(?:0\\.[0-9]{0,2}[1-9]))";
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
-  private static final Pattern REG_EX_ACCEPT = Pattern.compile("([a-z\\*]+/[a-z\\+\\*\\-=;]+)");
+  private static final Pattern REG_EX_ACCEPT = Pattern.compile("([a-z\\*]+/[a-z0-9\\+\\*\\-=;\\s]+)");
   private static final Pattern REG_EX_ACCEPT_WITH_Q_FACTOR = Pattern.compile(REG_EX_ACCEPT + "(?:;" + REG_EX_OPTIONAL_WHITESPACE + REG_EX_QUALITY_FACTOR + ")?");
-  private static final Pattern REG_EX_ACCEPT_LANGUAGES = Pattern.compile("((?:[a-z\\*]{2})\\-?(?:[A-Z]{2})?)");
+  private static final Pattern REG_EX_ACCEPT_LANGUAGES = Pattern.compile("((?:(?:[a-z]{1,8})|(?:\\*))\\-?(?:[A-Z]{1,8})?)");
   private static final Pattern REG_EX_ACCEPT_LANGUAGES_WITH_Q_FACTOR = Pattern.compile(REG_EX_ACCEPT_LANGUAGES + "(?:;" + REG_EX_OPTIONAL_WHITESPACE + REG_EX_QUALITY_FACTOR + ")?");
 
   private static final double QUALITY_PARAM_FACTOR = 0.001;
@@ -41,12 +41,14 @@ public class AcceptParser {
           Accept acceptHeader = new Accept().setQuality(qualityFactor).setValue(acceptHeaderValue);
           acceptTree.add(acceptHeader);
         } else {
+          String header = acceptHeaderScanner.next();
           acceptHeaderScanner.close();
-          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + acceptHeaderScanner.next()));
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + header));
         }
       } else {
+        String header = acceptHeaderScanner.next();
         acceptHeaderScanner.close();
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + acceptHeaderScanner.next()));
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + header));
       }
     }
     for (Accept accept : acceptTree) {
@@ -93,12 +95,14 @@ public class AcceptParser {
           double qualityFactor = result.group(2) != null ? Double.parseDouble(result.group(2)) : 1d;
           acceptTree.add(new Accept().setQuality(qualityFactor).setValue(languagerange));
         } else {
+          String acceptLanguage = acceptLanguageScanner.next();
           acceptLanguageScanner.close();
-          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguageScanner.next()));
+          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguage));
         }
       } else {
+        String acceptLanguage = acceptLanguageScanner.next();
         acceptLanguageScanner.close();
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguageScanner.next()));
+        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguage));
       }
     }
     for (Accept accept : acceptTree) {
