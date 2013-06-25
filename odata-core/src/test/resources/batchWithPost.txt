@@ -1,13 +1,8 @@
-POST /service/$batch HTTP/1.1
-Host: host
-MaxDataServiceVersion: 2.0
-Content-Type: multipart/mixed;boundary=batch_8194-cf13-1f56
-
 --batch_8194-cf13-1f56
 Content-Type: application/http
 Content-Transfer-Encoding: binary
 
-GET http://localhost/sap/bc/odata/Employees('2')/EmployeeName HTTP/1.1
+GET http://localhost/sap/bc/odata/Employees('2')/EmployeeName?$format=json HTTP/1.1
 Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
 Accept-Language:en-US,en;q=0.7,en-UK;q=0.9
 MaxDataServiceVersion: 2.0
@@ -35,7 +30,7 @@ MaxDataServiceVersion: 2.0
 Content-Type: application/http
 Content-Transfer-Encoding: binary
 
-GET http://localhost/sap/bc/odata/Employees('2')/EmployeeName HTTP/1.1
+GET Employees('2')/EmployeeName?$format=json HTTP/1.1
 Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
 MaxDataServiceVersion: 2.0
 

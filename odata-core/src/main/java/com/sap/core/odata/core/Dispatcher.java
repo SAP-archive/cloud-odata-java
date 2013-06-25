@@ -3,6 +3,8 @@ package com.sap.core.odata.core;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -22,6 +24,7 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
+import com.sap.core.odata.core.batch.BatchHandlerImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 
@@ -32,9 +35,11 @@ import com.sap.core.odata.core.uri.UriInfoImpl;
 public class Dispatcher {
 
   private final ODataService service;
+  private final ODataServiceFactory serviceFactory;
 
-  public Dispatcher(final ODataService service) {
+  public Dispatcher(final ODataServiceFactory serviceFactory, final ODataService service) {
     this.service = service;
+    this.serviceFactory = serviceFactory;
   }
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
@@ -158,7 +163,8 @@ public class Dispatcher {
 
     case URI9:
       if (method == ODataHttpMethod.POST) {
-        return service.getBatchProcessor().executeBatch(contentType);
+        BatchHandler handler = new BatchHandlerImpl(serviceFactory, service.getBatchProcessor());
+        return service.getBatchProcessor().executeBatch(handler, requestContentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

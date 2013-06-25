@@ -34,6 +34,7 @@ import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -58,9 +59,8 @@ public class ODataRequestHandler {
    * delegation of URI parsing and dispatching of the request internally.</p>
    * @param request the incoming request
    * @return the corresponding result
-   * @throws ODataException
    */
-  public ODataResponse handle(final ODataRequest request) throws ODataException {
+  public ODataResponse handle(final ODataRequest request) {
     ODataContextImpl context = buildODataContext(request);
 
     final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
@@ -73,11 +73,13 @@ public class ODataRequestHandler {
       context.setService(service);
       service.getProcessor().setContext(context);
 
+      UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
+      Dispatcher dispatcher = new Dispatcher(serviceFactory, service);
+
       final String serverDataServiceVersion = getServerDataServiceVersion();
       final String requestDataServiceVersion = context.getRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
       validateDataServiceVersion(serverDataServiceVersion, requestDataServiceVersion);
 
-      UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
       final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
       int timingHandle2 = context.startRuntimeMeasurement("UriParserImpl", "parse");
       uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, request.getQueryParameters());
@@ -94,7 +96,6 @@ public class ODataRequestHandler {
 
       final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
 
-      Dispatcher dispatcher = new Dispatcher(service);
       timingHandle2 = context.startRuntimeMeasurement("Dispatcher", "dispatch");
       odataResponse = dispatcher.dispatch(method, uriInfo, request.getBody(), request.getContentType(), acceptContentType);
       context.stopRuntimeMeasurement(timingHandle2);
@@ -405,6 +406,9 @@ public class ODataRequestHandler {
 
   private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
     final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
+    if (requested.getODataFormat() == ODataFormat.CUSTOM || requested.getODataFormat() == ODataFormat.MIME) {
+      return requested.hasCompatible(allowedContentTypes);
+    }
     return requested.hasMatch(allowedContentTypes);
   }
 

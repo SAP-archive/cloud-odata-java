@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -300,6 +301,34 @@ public final class EntityProvider {
      * @throws EntityProviderException  if reading of data (de-serialization) fails
      */
     ServiceDocument readServiceDocument(InputStream serviceDocument, String contentType) throws EntityProviderException;
+
+    /**
+     * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Parts as {@link BatchPart}
+     * 
+     * @param contentType format of content in the given input stream
+     * @param content request body
+     * @param properties additional properties necessary for parsing. Must not be null.
+     * @return list of {@link BatchPart}
+     * @throws EntityProviderException  if parsing fails
+     */
+    List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
+
+    /**
+     * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+     * Batch Response body matches one-to-one with the corresponding Batch Request body
+     * 
+     * @param responses a list of {@link ODataResponses}
+     * @return Batch Response as {@link ODataResponse}
+     */
+    ODataResponse writeBatchResponse(List<ODataResponse> responses);
+
+    /**
+     * Write responses of single change requests in Change Set Response {@link ODataResponse}
+     * 
+     * @param changeSetResponses a list of {@link ODataResponses}
+     * @return Change Set Response as {@link ODataResponse}
+     */
+    ODataResponse writeChangeSetResponse(List<ODataResponse> changeSetResponses);
   }
 
   /**
@@ -626,6 +655,40 @@ public final class EntityProvider {
    */
   public static ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return createEntityProvider().readServiceDocument(serviceDocument, contentType);
+  }
+
+  /**
+   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Parts as {@link BatchPart}
+   * 
+   * @param contentType format of content in the given input stream
+   * @param content request body
+   * @param properties additional properties necessary for parsing. Must not be null.
+   * @return list of {@link BatchPart}
+   * @throws EntityProviderException  if parsing fails
+   */
+  public static List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+    return createEntityProvider().parseBatchRequest(contentType, content, properties);
+  }
+
+  /**
+   * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+   * Batch Response body matches one-to-one with the corresponding Batch Request body
+   * 
+   * @param responses a list of {@link ODataResponses}
+   * @return Batch Response as {@link ODataResponse}
+   */
+  public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
+    return createEntityProvider().writeBatchResponse(responses);
+  }
+
+  /**
+   * Write responses of single change requests in Change Set Response {@link ODataResponse}
+   * 
+   * @param changeSetResponses a list of {@link ODataResponses}
+   * @return Change Set Response as {@link ODataResponse}
+   */
+  public static ODataResponse writeChangeSetResponse(final List<ODataResponse> changeSetResponses) {
+    return createEntityProvider().writeChangeSetResponse(changeSetResponses);
   }
 
 }

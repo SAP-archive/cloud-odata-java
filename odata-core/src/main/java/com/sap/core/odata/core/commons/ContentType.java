@@ -622,6 +622,19 @@ public class ContentType {
   }
 
   /**
+   * Check if a valid compatible match for this {@link ContentType} exists in given list.
+   * Compatible in this case means that <b>all set parameters are ignored</b>.
+   * For more detail what a valid match is see {@link #matchCompatible(List)}.
+   * 
+   * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
+   * @return <code>true</code> if a compatible content type was found in given list 
+   *          or <code>false</code> if none compatible content type match was found
+   */
+  public boolean hasCompatible(final List<ContentType> toMatchContentTypes) {
+    return matchCompatible(toMatchContentTypes) != null;
+  }
+
+  /**
    * Check if a valid match for this {@link ContentType} exists in given list.
    * For more detail what a valid match is see {@link #match(List)}.
    * 

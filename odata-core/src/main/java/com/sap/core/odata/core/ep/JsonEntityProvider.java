@@ -305,4 +305,5 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     JsonServiceDocumentConsumer serviceDocConsumer = new JsonServiceDocumentConsumer();
     return serviceDocConsumer.parseJson(serviceDocument);
   }
+
 }
