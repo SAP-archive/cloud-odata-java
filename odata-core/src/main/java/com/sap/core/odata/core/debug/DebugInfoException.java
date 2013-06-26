@@ -29,62 +29,54 @@ public class DebugInfoException implements DebugInfo {
   public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
     jsonStreamWriter.name("exceptions");
-    if (exception == null) {
-      jsonStreamWriter.unquotedValue(null);
-    } else {
-      Throwable throwable = exception;
-      jsonStreamWriter.beginArray();
-      while (throwable != null) {
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.namedStringValueRaw("class", throwable.getClass().getCanonicalName());
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValue("message",
-            throwable instanceof ODataMessageException ?
-                MessageService.getMessage(locale, ((ODataMessageException) throwable).getMessageReference()).getText() :
-                throwable.getLocalizedMessage());
-        jsonStreamWriter.separator();
+    jsonStreamWriter.beginArray();
+    Throwable throwable = exception;
+    while (throwable != null) {
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.namedStringValueRaw("class", throwable.getClass().getCanonicalName());
+      jsonStreamWriter.separator();
+      jsonStreamWriter.namedStringValue("message",
+          throwable instanceof ODataMessageException ?
+              MessageService.getMessage(locale, ((ODataMessageException) throwable).getMessageReference()).getText() :
+              throwable.getLocalizedMessage());
+      jsonStreamWriter.separator();
 
-        jsonStreamWriter.name("invocation");
-        jsonStreamWriter.beginObject();
-        final StackTraceElement details = throwable.getStackTrace()[0];
-        jsonStreamWriter.namedStringValueRaw("class", details.getClassName());
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValueRaw("method", details.getMethodName());
-        jsonStreamWriter.separator();
-        jsonStreamWriter.name("line");
-        jsonStreamWriter.unquotedValue(Integer.toString(details.getLineNumber()));
-        jsonStreamWriter.endObject();
+      jsonStreamWriter.name("invocation");
+      jsonStreamWriter.beginObject();
+      final StackTraceElement details = throwable.getStackTrace()[0];
+      jsonStreamWriter.namedStringValueRaw("class", details.getClassName());
+      jsonStreamWriter.separator();
+      jsonStreamWriter.namedStringValueRaw("method", details.getMethodName());
+      jsonStreamWriter.separator();
+      jsonStreamWriter.name("line");
+      jsonStreamWriter.unquotedValue(Integer.toString(details.getLineNumber()));
+      jsonStreamWriter.endObject();
 
-        jsonStreamWriter.endObject();
-        throwable = throwable.getCause();
-        if (throwable != null)
-          jsonStreamWriter.separator();
-      }
-      jsonStreamWriter.endArray();
+      jsonStreamWriter.endObject();
+      throwable = throwable.getCause();
+      if (throwable != null)
+        jsonStreamWriter.separator();
     }
+    jsonStreamWriter.endArray();
     jsonStreamWriter.separator();
 
     jsonStreamWriter.name("stacktrace");
-    if (exception == null) {
-      jsonStreamWriter.unquotedValue(null);
-    } else {
-      jsonStreamWriter.beginArray();
-      boolean first = true;
-      for (final StackTraceElement stackTraceElement : exception.getStackTrace()) {
-        if (!first)
-          jsonStreamWriter.separator();
-        first = false;
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.namedStringValueRaw("class", stackTraceElement.getClassName());
+    jsonStreamWriter.beginArray();
+    boolean first = true;
+    for (final StackTraceElement stackTraceElement : exception.getStackTrace()) {
+      if (!first)
         jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValueRaw("method", stackTraceElement.getMethodName());
-        jsonStreamWriter.separator();
-        jsonStreamWriter.name("line");
-        jsonStreamWriter.unquotedValue(Integer.toString(stackTraceElement.getLineNumber()));
-        jsonStreamWriter.endObject();
-      }
-      jsonStreamWriter.endArray();
+      first = false;
+      jsonStreamWriter.beginObject();
+      jsonStreamWriter.namedStringValueRaw("class", stackTraceElement.getClassName());
+      jsonStreamWriter.separator();
+      jsonStreamWriter.namedStringValueRaw("method", stackTraceElement.getMethodName());
+      jsonStreamWriter.separator();
+      jsonStreamWriter.name("line");
+      jsonStreamWriter.unquotedValue(Integer.toString(stackTraceElement.getLineNumber()));
+      jsonStreamWriter.endObject();
     }
+    jsonStreamWriter.endArray();
     jsonStreamWriter.endObject();
   }
 }

@@ -14,13 +14,13 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 public class DebugInfoRuntime implements DebugInfo {
 
   private class RuntimeNode {
-    public String className;
-    public String methodName;
-    public long timeStarted;
-    public long timeStopped;
-    public List<RuntimeNode> children = new ArrayList<RuntimeNode>();
+    protected String className;
+    protected String methodName;
+    protected long timeStarted;
+    protected long timeStopped;
+    protected List<RuntimeNode> children = new ArrayList<RuntimeNode>();
 
-    public RuntimeNode() {
+    protected RuntimeNode() {
       timeStarted = 0;
       timeStopped = Long.MAX_VALUE;
     }
@@ -32,7 +32,7 @@ public class DebugInfoRuntime implements DebugInfo {
       timeStopped = runtimeMeasurement.getTimeStopped();
     }
 
-    public boolean add(final RuntimeMeasurement runtimeMeasurement) {
+    protected boolean add(final RuntimeMeasurement runtimeMeasurement) {
       if (timeStarted <= runtimeMeasurement.getTimeStarted()
           && timeStopped != 0 && timeStopped >= runtimeMeasurement.getTimeStopped()) {
         for (RuntimeNode candidate : children)
@@ -50,7 +50,7 @@ public class DebugInfoRuntime implements DebugInfo {
      * names into one measurement, assuming that they originate from a loop
      * or a similar construct where a summary measurement has been intended.
      */
-    private void combineRuntimeMeasurements() {
+    protected void combineRuntimeMeasurements() {
       RuntimeNode preceding = null;
       for (Iterator<RuntimeNode> iterator = children.iterator(); iterator.hasNext();) {
         final RuntimeNode child = iterator.next();

@@ -29,9 +29,9 @@ public class ODataDebugResponseWrapper {
   public static final String ODATA_DEBUG_JSON = "json";
 
   private final ODataContext context;
-  private ODataResponse response;
-  private UriInfo uriInfo;
-  private Exception exception;
+  private final ODataResponse response;
+  private final UriInfo uriInfo;
+  private final Exception exception;
   private final boolean isJson;
 
   public ODataDebugResponseWrapper(final ODataContext context, final ODataResponse response, final UriInfo uriInfo, final Exception exception, final String debugValue) {
