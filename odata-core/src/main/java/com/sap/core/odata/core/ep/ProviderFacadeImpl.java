@@ -175,13 +175,13 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
+  public ODataResponse writeBatchResponse(final List<ODataResponse> responses) throws EntityProviderException {
     BatchResponseWriter batchWriter = new BatchResponseWriter();
     return batchWriter.write(responses);
   }
 
   @Override
-  public ODataResponse writeChangeSetResponse(final List<ODataResponse> responses) {
+  public ODataResponse writeChangeSetResponse(final List<ODataResponse> responses) throws EntityProviderException {
     BatchResponseWriter batchWriter = new BatchResponseWriter();
     return batchWriter.writeChangeSet(responses);
   }

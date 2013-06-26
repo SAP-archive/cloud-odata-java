@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -31,6 +34,9 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.core.PathInfoImpl;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
+import com.sap.core.odata.core.ep.util.FormatJson;
+import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -134,7 +140,24 @@ public class BasicBatchTest extends AbstractBasicTest {
 
     @Override
     public ODataResponse readEntitySimpleProperty(final GetSimplePropertyUriInfo uriInfo, final String contentType) throws ODataException {
-      ODataResponse oDataResponse = ODataResponse.entity("{\"d\":{\"EmployeeName\":\"Walter Winter\"}}").status(HttpStatusCodes.OK).contentHeader("application/json").build();
+      CircleStreamBuffer buffer = new CircleStreamBuffer();
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream()));
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+      try {
+        jsonStreamWriter.beginObject();
+        jsonStreamWriter.name(FormatJson.D);
+        jsonStreamWriter.beginObject();
+        jsonStreamWriter.namedStringValue("EmployeeName", "Walter Winter");
+        jsonStreamWriter.endObject();
+        jsonStreamWriter.endObject();
+        writer.flush();
+        buffer.closeWrite();
+      } catch (IOException e) {
+        buffer.close();
+        throw new RuntimeException(e);
+      }
+
+      ODataResponse oDataResponse = ODataResponse.entity(buffer.getInputStream()).status(HttpStatusCodes.OK).contentHeader("application/json").build();
       return oDataResponse;
     }
 

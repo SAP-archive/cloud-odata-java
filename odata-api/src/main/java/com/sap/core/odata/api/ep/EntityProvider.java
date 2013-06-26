@@ -319,16 +319,18 @@ public final class EntityProvider {
      * 
      * @param responses a list of {@link ODataResponses}
      * @return Batch Response as {@link ODataResponse}
+     * @throws EntityProviderException 
      */
-    ODataResponse writeBatchResponse(List<ODataResponse> responses);
+    ODataResponse writeBatchResponse(List<ODataResponse> responses) throws EntityProviderException;
 
     /**
      * Write responses of single change requests in Change Set Response {@link ODataResponse}
      * 
      * @param changeSetResponses a list of {@link ODataResponses}
      * @return Change Set Response as {@link ODataResponse}
+     * @throws EntityProviderException 
      */
-    ODataResponse writeChangeSetResponse(List<ODataResponse> changeSetResponses);
+    ODataResponse writeChangeSetResponse(List<ODataResponse> changeSetResponses) throws EntityProviderException;
   }
 
   /**
@@ -676,8 +678,9 @@ public final class EntityProvider {
    * 
    * @param responses a list of {@link ODataResponses}
    * @return Batch Response as {@link ODataResponse}
+   * @throws EntityProviderException 
    */
-  public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) {
+  public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) throws EntityProviderException {
     return createEntityProvider().writeBatchResponse(responses);
   }
 
@@ -686,8 +689,9 @@ public final class EntityProvider {
    * 
    * @param changeSetResponses a list of {@link ODataResponses}
    * @return Change Set Response as {@link ODataResponse}
+   * @throws EntityProviderException 
    */
-  public static ODataResponse writeChangeSetResponse(final List<ODataResponse> changeSetResponses) {
+  public static ODataResponse writeChangeSetResponse(final List<ODataResponse> changeSetResponses) throws EntityProviderException {
     return createEntityProvider().writeChangeSetResponse(changeSetResponses);
   }
 
