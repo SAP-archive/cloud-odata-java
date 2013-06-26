@@ -37,23 +37,36 @@ public class DebugInfoBody implements DebugInfo {
     } else if (contentType.startsWith("image/")) {
       jsonStreamWriter.stringValueRaw(Base64.encodeBase64String(getBinaryFromInputStream((InputStream) response.getEntity())));
     } else {
-      final String content = getStringFromInputStream((InputStream) response.getEntity());
-      if (contentType.startsWith(HttpContentType.APPLICATION_JSON))
+      Object responseObject = response.getEntity();
+      String content;
+      if (responseObject instanceof String) {
+        content = (String) response.getEntity();
+      } else if (responseObject instanceof InputStream) {
+        content = getStringFromInputStream((InputStream) response.getEntity());
+      }
+      else {
+        throw new ClassCastException("Unsupported content entity class: " + response.getEntity().getClass().getName());
+      }
+
+      if (contentType.startsWith(HttpContentType.APPLICATION_JSON)) {
         jsonStreamWriter.unquotedValue(content);
-      else
+      } else {
         jsonStreamWriter.stringValue(content);
+      }
     }
   }
 
   private static byte[] getBinaryFromInputStream(final InputStream inputStream) {
-    if (inputStream == null)
+    if (inputStream == null) {
       return null;
+    }
 
     ByteArrayOutputStream result = new ByteArrayOutputStream();
     int b = -1;
     try {
-      while ((b = inputStream.read()) > -1)
+      while ((b = inputStream.read()) > -1) {
         result.write(b);
+      }
       inputStream.close();
     } catch (final IOException e) {
       return null;
@@ -66,8 +79,9 @@ public class DebugInfoBody implements DebugInfo {
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
       String line = null;
-      while ((line = reader.readLine()) != null)
+      while ((line = reader.readLine()) != null) {
         result.append(line);
+      }
       reader.close();
       return result.toString();
     } catch (final UnsupportedEncodingException e) {
