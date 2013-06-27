@@ -25,27 +25,32 @@ public class DebugInfoResponse implements DebugInfo {
   }
 
   @Override
-  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
-    jsonStreamWriter.name("status");
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.name("code");
-    jsonStreamWriter.unquotedValue(Integer.toString(status.getStatusCode()));
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValueRaw("info", status.getInfo());
-    jsonStreamWriter.endObject();
-    jsonStreamWriter.separator();
 
-    jsonStreamWriter.name("headers");
-    jsonStreamWriter.beginObject();
-    boolean first = true;
-    for (final String name : headers.keySet()) {
-      if (!first)
+    if (status != null)
+      jsonStreamWriter.name("status")
+          .beginObject()
+          .name("code").unquotedValue(Integer.toString(status.getStatusCode())).separator()
+          .namedStringValueRaw("info", status.getInfo())
+          .endObject();
+
+    if (!headers.isEmpty()) {
+      if (status != null)
         jsonStreamWriter.separator();
-      first = false;
-      jsonStreamWriter.namedStringValue(name, headers.get(name));
+
+      jsonStreamWriter.name("headers")
+          .beginObject();
+      boolean first = true;
+      for (final String name : headers.keySet()) {
+        if (!first)
+          jsonStreamWriter.separator();
+        first = false;
+        jsonStreamWriter.namedStringValue(name, headers.get(name));
+      }
+      jsonStreamWriter.endObject();
     }
-    jsonStreamWriter.endObject();
+
     jsonStreamWriter.endObject();
   }
 }

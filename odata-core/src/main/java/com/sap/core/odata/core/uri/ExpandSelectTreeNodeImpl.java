@@ -104,40 +104,34 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name("all");
-      jsonStreamWriter.unquotedValue(Boolean.toString(isAll()));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("properties");
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.beginObject()
+          .name("all").unquotedValue(Boolean.toString(isAll())).separator()
+          .name("properties")
+          .beginArray();
       boolean first = true;
       for (EdmProperty property : properties) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         jsonStreamWriter.stringValueRaw(property.getName());
       }
-      jsonStreamWriter.endArray();
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("links");
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.endArray().separator()
+          .name("links")
+          .beginArray();
       first = true;
       for (Map.Entry<String, ExpandSelectTreeNodeImpl> entry : links.entrySet()) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         final String nodeString = entry.getValue() == null ? null : entry.getValue().toJsonString();
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.name(entry.getKey());
-        jsonStreamWriter.unquotedValue(nodeString);
-        jsonStreamWriter.endObject();
+        jsonStreamWriter.beginObject()
+            .name(entry.getKey()).unquotedValue(nodeString)
+            .endObject();
       }
-      jsonStreamWriter.endArray();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endArray()
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {

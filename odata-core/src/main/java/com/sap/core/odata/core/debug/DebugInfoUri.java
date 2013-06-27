@@ -37,27 +37,25 @@ public class DebugInfoUri implements DebugInfo {
   }
 
   @Override
-  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
+
     if (exception != null) {
-      jsonStreamWriter.name("error");
-      if (exception.getFilterTree() == null) {
-        jsonStreamWriter.unquotedValue(null);
-      } else {
-        jsonStreamWriter.beginObject();
+      jsonStreamWriter.name("error")
+          .beginObject();
+      if (exception.getFilterTree() != null)
         jsonStreamWriter.namedStringValue("filter", exception.getFilterTree().getUriLiteral());
-        jsonStreamWriter.endObject();
-      }
-      jsonStreamWriter.separator();
+      jsonStreamWriter.endObject();
     }
 
-    if (uriInfo == null) {
-      jsonStreamWriter.name("uriInfo");
-      jsonStreamWriter.unquotedValue(null);
-    } else {
+    if (uriInfo != null) {
+      if (exception != null
+          && (uriInfo.getFilter() != null || uriInfo.getOrderBy() != null
+              || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()))
+        jsonStreamWriter.separator();
+
       final FilterExpression filter = uriInfo.getFilter();
       if (filter != null) {
-        jsonStreamWriter.name("filter");
         String filterString;
         try {
           filterString = (String) filter.accept(new JsonVisitor());
@@ -66,13 +64,14 @@ public class DebugInfoUri implements DebugInfo {
         } catch (final ODataApplicationException e) {
           filterString = null;
         }
-        jsonStreamWriter.unquotedValue(filterString);
-        jsonStreamWriter.separator();
+        jsonStreamWriter.name("filter").unquotedValue(filterString);
+        if (uriInfo.getOrderBy() != null
+            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())
+          jsonStreamWriter.separator();
       }
 
       final OrderByExpression orderBy = uriInfo.getOrderBy();
       if (orderBy != null) {
-        jsonStreamWriter.name("orderby");
         String orderByString;
         try {
           orderByString = (String) orderBy.accept(new JsonVisitor());
@@ -81,17 +80,21 @@ public class DebugInfoUri implements DebugInfo {
         } catch (final ODataApplicationException e) {
           orderByString = null;
         }
-        jsonStreamWriter.unquotedValue(orderByString);
-        jsonStreamWriter.separator();
+        jsonStreamWriter.name("orderby").unquotedValue(orderByString);
+        if (!uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())
+          jsonStreamWriter.separator();
       }
 
-      jsonStreamWriter.name("expand/select");
-      try {
-        ExpandSelectTreeCreator expandSelectCreator = new ExpandSelectTreeCreator(uriInfo.getSelect(), uriInfo.getExpand());
-        final ExpandSelectTreeNodeImpl expandSelectTree = expandSelectCreator.create();
-        jsonStreamWriter.unquotedValue(expandSelectTree == null ? null : expandSelectTree.toJsonString());
-      } catch (final EdmException e) {
-        jsonStreamWriter.unquotedValue(null);
+      if (!uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {
+        String expandSelectString;
+        try {
+          ExpandSelectTreeCreator expandSelectCreator = new ExpandSelectTreeCreator(uriInfo.getSelect(), uriInfo.getExpand());
+          final ExpandSelectTreeNodeImpl expandSelectTree = expandSelectCreator.create();
+          expandSelectString = expandSelectTree.toJsonString();
+        } catch (final EdmException e) {
+          expandSelectString = null;
+        }
+        jsonStreamWriter.name("expand/select").unquotedValue(expandSelectString);
       }
     }
 

@@ -17,30 +17,29 @@ import com.sap.core.odata.core.ep.util.JsonStreamWriter;
  */
 public class JsonServiceDocumentProducer {
 
-  public static void writeServiceDocument(final Writer writer, final Edm edm) throws EntityProviderException {
+  public static void writeServiceDocument(Writer writer, final Edm edm) throws EntityProviderException {
     final EdmServiceMetadata serviceMetadata = edm.getServiceMetadata();
 
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
     try {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.ENTITY_SETS);
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.beginObject()
+          .name(FormatJson.D)
+          .beginObject()
+          .name(FormatJson.ENTITY_SETS)
+          .beginArray();
 
       boolean first = true;
       for (EdmEntitySetInfo info : serviceMetadata.getEntitySetInfos()) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         jsonStreamWriter.stringValue(info.getEntitySetUri().toASCIIString());
       }
 
-      jsonStreamWriter.endArray();
-      jsonStreamWriter.endObject();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endArray()
+          .endObject()
+          .endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final ODataException e) {

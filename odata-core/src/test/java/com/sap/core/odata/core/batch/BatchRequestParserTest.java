@@ -28,6 +28,9 @@ import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
+/**
+ * @author SAP AG
+ */
 public class BatchRequestParserTest {
   private static EntityProviderBatchProperties batchProperties;
   private static final String contentType = "multipart/mixed;boundary=batch_8194-cf13-1f56";

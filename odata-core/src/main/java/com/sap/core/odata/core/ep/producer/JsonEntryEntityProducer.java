@@ -49,54 +49,47 @@ public class JsonEntryEntityProducer {
 
     try {
       jsonStreamWriter = new JsonStreamWriter(writer);
-      if (isRootElement) {
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.name(FormatJson.D);
-      }
+      if (isRootElement)
+        jsonStreamWriter.beginObject().name(FormatJson.D);
 
       jsonStreamWriter.beginObject();
 
-      jsonStreamWriter.name(FormatJson.METADATA);
-      jsonStreamWriter.beginObject();
+      jsonStreamWriter.name(FormatJson.METADATA)
+          .beginObject();
       final String self = AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
       location = (properties.getServiceRoot() == null ? "" : properties.getServiceRoot().toASCIIString()) + self;
-      jsonStreamWriter.namedStringValue(FormatJson.ID, location);
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValue(FormatJson.URI, location);
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw(FormatJson.TYPE,
-          type.getNamespace() + Edm.DELIMITER + type.getName());
+      jsonStreamWriter.namedStringValue(FormatJson.ID, location).separator()
+          .namedStringValue(FormatJson.URI, location).separator()
+          .namedStringValueRaw(FormatJson.TYPE,
+              type.getNamespace() + Edm.DELIMITER + type.getName());
       eTag = AtomEntryEntityProducer.createETag(entityInfo, data);
-      if (eTag != null) {
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValue(FormatJson.ETAG, eTag);
-      }
-      if (type.hasStream()) {
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValueRaw(FormatJson.CONTENT_TYPE,
-            properties.getMediaResourceMimeType() == null ?
-                type.getMapping() == null || type.getMapping().getMimeType() == null || data.get(type.getMapping().getMimeType()) == null ?
-                    HttpContentType.APPLICATION_OCTET_STREAM : data.get(type.getMapping().getMimeType()).toString() :
-                properties.getMediaResourceMimeType());
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValue(FormatJson.MEDIA_SRC, self + "/$value");
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValue(FormatJson.EDIT_MEDIA, location + "/$value");
-      }
+      if (eTag != null)
+        jsonStreamWriter.separator()
+            .namedStringValue(FormatJson.ETAG, eTag);
+      if (type.hasStream())
+        jsonStreamWriter.separator()
+            .namedStringValueRaw(FormatJson.CONTENT_TYPE,
+                properties.getMediaResourceMimeType() == null ?
+                    type.getMapping() == null || type.getMapping().getMimeType() == null || data.get(type.getMapping().getMimeType()) == null ?
+                        HttpContentType.APPLICATION_OCTET_STREAM : data.get(type.getMapping().getMimeType()).toString() :
+                    properties.getMediaResourceMimeType())
+            .separator()
+            .namedStringValue(FormatJson.MEDIA_SRC, self + "/$value").separator()
+            .namedStringValue(FormatJson.EDIT_MEDIA, location + "/$value");
       jsonStreamWriter.endObject();
 
       for (final String propertyName : type.getPropertyNames()) {
         if (entityInfo.getSelectedPropertyNames().contains(propertyName)) {
-          jsonStreamWriter.separator();
-          jsonStreamWriter.name(propertyName);
+          jsonStreamWriter.separator()
+              .name(propertyName);
           JsonPropertyEntityProducer.appendPropertyValue(jsonStreamWriter, entityInfo.getPropertyInfo(propertyName), data.get(propertyName));
         }
       }
 
       for (final String navigationPropertyName : type.getNavigationPropertyNames()) {
         if (entityInfo.getSelectedNavigationPropertyNames().contains(navigationPropertyName)) {
-          jsonStreamWriter.separator();
-          jsonStreamWriter.name(navigationPropertyName);
+          jsonStreamWriter.separator()
+              .name(navigationPropertyName);
           if (entityInfo.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
             if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
               final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) type.getProperty(navigationPropertyName);
@@ -146,9 +139,8 @@ public class JsonEntryEntityProducer {
 
       jsonStreamWriter.endObject();
 
-      if (isRootElement) {
+      if (isRootElement)
         jsonStreamWriter.endObject();
-      }
 
       writer.flush();
 
@@ -160,8 +152,8 @@ public class JsonEntryEntityProducer {
   }
 
   private void writeDeferredUri(final String navigationPropertyName) throws IOException {
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.name(FormatJson.DEFERRED);
+    jsonStreamWriter.beginObject()
+        .name(FormatJson.DEFERRED);
     JsonLinkEntityProducer.appendUri(jsonStreamWriter, location + "/" + Encoder.encode(navigationPropertyName));
     jsonStreamWriter.endObject();
   }

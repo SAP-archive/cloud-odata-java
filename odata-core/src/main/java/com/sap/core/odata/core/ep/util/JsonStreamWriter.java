@@ -10,43 +10,49 @@ import java.io.Writer;
 public class JsonStreamWriter {
   private final Writer writer;
 
-  public JsonStreamWriter(final Writer writer) {
+  public JsonStreamWriter(Writer writer) {
     this.writer = writer;
   }
 
-  public void beginObject() throws IOException {
+  public JsonStreamWriter beginObject() throws IOException {
     writer.append('{');
+    return this;
   }
 
-  public void endObject() throws IOException {
+  public JsonStreamWriter endObject() throws IOException {
     writer.append('}');
+    return this;
   }
 
-  public void beginArray() throws IOException {
+  public JsonStreamWriter beginArray() throws IOException {
     writer.append('[');
+    return this;
   }
 
-  public void endArray() throws IOException {
+  public JsonStreamWriter endArray() throws IOException {
     writer.append(']');
+    return this;
   }
 
-  public void name(final String name) throws IOException {
+  public JsonStreamWriter name(final String name) throws IOException {
     writer.append('"').append(name).append('"').append(':');
+    return this;
   }
 
-  public void unquotedValue(final String value) throws IOException {
+  public JsonStreamWriter unquotedValue(final String value) throws IOException {
     writer.append(value == null ? FormatJson.NULL : value);
+    return this;
   }
 
-  public void stringValueRaw(final String value) throws IOException {
-    if (value == null) {
+  public JsonStreamWriter stringValueRaw(final String value) throws IOException {
+    if (value == null)
       writer.append(FormatJson.NULL);
-    } else {
+    else
       writer.append('"').append(value).append('"');
-    }
+    return this;
   }
 
-  public void stringValue(final String value) throws IOException {
+  public JsonStreamWriter stringValue(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
     } else {
@@ -54,20 +60,24 @@ public class JsonStreamWriter {
       escape(value);
       writer.append('"');
     }
+    return this;
   }
 
-  public void namedStringValueRaw(final String name, final String value) throws IOException {
+  public JsonStreamWriter namedStringValueRaw(final String name, final String value) throws IOException {
     name(name);
     stringValueRaw(value);
+    return this;
   }
 
-  public void namedStringValue(final String name, final String value) throws IOException {
+  public JsonStreamWriter namedStringValue(final String name, final String value) throws IOException {
     name(name);
     stringValue(value);
+    return this;
   }
 
-  public void separator() throws IOException {
+  public JsonStreamWriter separator() throws IOException {
     writer.append(',');
+    return this;
   }
 
   /**

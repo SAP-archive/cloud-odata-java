@@ -70,12 +70,12 @@ public class BasicEntityProvider {
   }
 
   /**
-   * 
-   * @param content
+   * Reads text from an input stream.
+   * @param content the content input stream
    * @return text as string from <code>InputStream</code>
    * @throws EntityProviderException
    */
-  private String readText(final InputStream content) throws EntityProviderException {
+  public String readText(final InputStream content) throws EntityProviderException {
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content, Charset.forName(DEFAULT_CHARSET)));
     StringBuilder stringBuilder = new StringBuilder();
     try {

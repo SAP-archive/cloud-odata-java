@@ -59,7 +59,8 @@ public class ODataDebugResponseWrapper {
     List<DebugInfo> parts = new ArrayList<DebugInfo>();
 
     // body
-    parts.add(new DebugInfoBody(response));
+    if (response.getContentHeader() != null && response.getEntity() != null)
+      parts.add(new DebugInfoBody(response));
 
     // request
     parts.add(new DebugInfoRequest(context.getHttpMethod(),
@@ -73,7 +74,10 @@ public class ODataDebugResponseWrapper {
     parts.add(new DebugInfoResponse(response.getStatus(), responseHeaders));
 
     // URI
-    parts.add(new DebugInfoUri(uriInfo, exception));
+    if (uriInfo != null
+        && (uriInfo.getFilter() != null || uriInfo.getOrderBy() != null
+            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()))
+      parts.add(new DebugInfoUri(uriInfo, exception));
 
     // runtime measurements
     if (context.getRuntimeMeasurements() != null)

@@ -41,7 +41,6 @@ import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
- * 
  * @author SAP AG
  */
 public class BasicBatchTest extends AbstractBasicTest {
@@ -144,12 +143,12 @@ public class BasicBatchTest extends AbstractBasicTest {
       BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(buffer.getOutputStream()));
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
       try {
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.name(FormatJson.D);
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.namedStringValue("EmployeeName", "Walter Winter");
-        jsonStreamWriter.endObject();
-        jsonStreamWriter.endObject();
+        jsonStreamWriter.beginObject()
+            .name(FormatJson.D)
+            .beginObject()
+            .namedStringValue("EmployeeName", "Walter Winter")
+            .endObject()
+            .endObject();
         writer.flush();
         buffer.closeWrite();
       } catch (IOException e) {

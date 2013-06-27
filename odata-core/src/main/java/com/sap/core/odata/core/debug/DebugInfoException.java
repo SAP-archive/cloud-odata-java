@@ -26,31 +26,22 @@ public class DebugInfoException implements DebugInfo {
   }
 
   @Override
-  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.name("exceptions");
-    jsonStreamWriter.beginArray();
+  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+    jsonStreamWriter.beginObject()
+        .name("exceptions")
+        .beginArray();
     Throwable throwable = exception;
     while (throwable != null) {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("class", throwable.getClass().getCanonicalName());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValue("message",
-          throwable instanceof ODataMessageException ?
-              MessageService.getMessage(locale, ((ODataMessageException) throwable).getMessageReference()).getText() :
-              throwable.getLocalizedMessage());
-      jsonStreamWriter.separator();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("class", throwable.getClass().getCanonicalName()).separator()
+          .namedStringValue("message",
+              throwable instanceof ODataMessageException ?
+                  MessageService.getMessage(locale, ((ODataMessageException) throwable).getMessageReference()).getText() :
+                  throwable.getLocalizedMessage())
+          .separator();
 
       jsonStreamWriter.name("invocation");
-      jsonStreamWriter.beginObject();
-      final StackTraceElement details = throwable.getStackTrace()[0];
-      jsonStreamWriter.namedStringValueRaw("class", details.getClassName());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("method", details.getMethodName());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("line");
-      jsonStreamWriter.unquotedValue(Integer.toString(details.getLineNumber()));
-      jsonStreamWriter.endObject();
+      appendJsonStackTraceElement(jsonStreamWriter, throwable.getStackTrace()[0]);
 
       jsonStreamWriter.endObject();
       throwable = throwable.getCause();
@@ -60,23 +51,24 @@ public class DebugInfoException implements DebugInfo {
     jsonStreamWriter.endArray();
     jsonStreamWriter.separator();
 
-    jsonStreamWriter.name("stacktrace");
-    jsonStreamWriter.beginArray();
+    jsonStreamWriter.name("stacktrace")
+        .beginArray();
     boolean first = true;
     for (final StackTraceElement stackTraceElement : exception.getStackTrace()) {
       if (!first)
         jsonStreamWriter.separator();
       first = false;
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("class", stackTraceElement.getClassName());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("method", stackTraceElement.getMethodName());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("line");
-      jsonStreamWriter.unquotedValue(Integer.toString(stackTraceElement.getLineNumber()));
-      jsonStreamWriter.endObject();
+      appendJsonStackTraceElement(jsonStreamWriter, stackTraceElement);
     }
     jsonStreamWriter.endArray();
     jsonStreamWriter.endObject();
+  }
+
+  private static void appendJsonStackTraceElement(JsonStreamWriter jsonStreamWriter, final StackTraceElement stackTraceElement) throws IOException {
+    jsonStreamWriter.beginObject()
+        .namedStringValueRaw("class", stackTraceElement.getClassName()).separator()
+        .namedStringValueRaw("method", stackTraceElement.getMethodName()).separator()
+        .name("line").unquotedValue(Integer.toString(stackTraceElement.getLineNumber()))
+        .endObject();
   }
 }

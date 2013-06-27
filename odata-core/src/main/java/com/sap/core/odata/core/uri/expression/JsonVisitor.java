@@ -41,19 +41,13 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", binaryExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValue("operator", operator.toUriLiteral());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(binaryExpression));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("left");
-      jsonStreamWriter.unquotedValue(leftSide.toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("right");
-      jsonStreamWriter.unquotedValue(rightSide.toString());
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", binaryExpression.getKind().toString()).separator()
+          .namedStringValue("operator", operator.toUriLiteral()).separator()
+          .namedStringValueRaw("type", getType(binaryExpression)).separator()
+          .name("left").unquotedValue(leftSide.toString()).separator()
+          .name("right").unquotedValue(rightSide.toString())
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -66,22 +60,20 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", "order collection");
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("orders");
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", "order collection").separator()
+          .name("orders")
+          .beginArray();
       boolean first = true;
       for (final Object order : orders) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         jsonStreamWriter.unquotedValue(order.toString());
       }
-      jsonStreamWriter.endArray();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endArray()
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -94,14 +86,11 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", orderExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("sortorder", sortOrder.toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("expression");
-      jsonStreamWriter.unquotedValue(filterResult.toString());
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", orderExpression.getKind().toString()).separator()
+          .namedStringValueRaw("sortorder", sortOrder.toString()).separator()
+          .name("expression").unquotedValue(filterResult.toString())
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -114,13 +103,11 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", literal.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(literal));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValue("value", edmLiteral.getLiteral());
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", literal.getKind().toString()).separator()
+          .namedStringValueRaw("type", getType(literal)).separator()
+          .namedStringValue("value", edmLiteral.getLiteral())
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -133,26 +120,22 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", methodExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("operator", method.toUriLiteral());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(methodExpression));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("parameters");
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", methodExpression.getKind().toString()).separator()
+          .namedStringValueRaw("operator", method.toUriLiteral()).separator()
+          .namedStringValueRaw("type", getType(methodExpression)).separator()
+          .name("parameters")
+          .beginArray();
       boolean first = true;
       for (Object parameter : parameters) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         jsonStreamWriter.unquotedValue(parameter.toString());
       }
-      jsonStreamWriter.endArray();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endArray()
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -165,17 +148,12 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", memberExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(memberExpression));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("source");
-      jsonStreamWriter.unquotedValue(path.toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("path");
-      jsonStreamWriter.unquotedValue(property.toString());
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", memberExpression.getKind().toString()).separator()
+          .namedStringValueRaw("type", getType(memberExpression)).separator()
+          .name("source").unquotedValue(path.toString()).separator()
+          .name("path").unquotedValue(property.toString())
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -188,13 +166,11 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", propertyExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValue("name", uriLiteral);
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(propertyExpression));
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", propertyExpression.getKind().toString()).separator()
+          .namedStringValue("name", uriLiteral).separator()
+          .namedStringValueRaw("type", getType(propertyExpression))
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {
@@ -207,16 +183,12 @@ public class JsonVisitor implements ExpressionVisitor {
     try {
       StringWriter writer = new StringWriter();
       JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw("nodeType", unaryExpression.getKind().toString());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("operator", operator.toUriLiteral());
-      jsonStreamWriter.separator();
-      jsonStreamWriter.namedStringValueRaw("type", getType(unaryExpression));
-      jsonStreamWriter.separator();
-      jsonStreamWriter.name("operand");
-      jsonStreamWriter.unquotedValue(operand.toString());
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.beginObject()
+          .namedStringValueRaw("nodeType", unaryExpression.getKind().toString()).separator()
+          .namedStringValueRaw("operator", operator.toUriLiteral()).separator()
+          .namedStringValueRaw("type", getType(unaryExpression)).separator()
+          .name("operand").unquotedValue(operand.toString())
+          .endObject();
       writer.flush();
       return writer.toString();
     } catch (final IOException e) {

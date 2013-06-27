@@ -86,21 +86,19 @@ public class DebugInfoRuntime implements DebugInfo {
   }
 
   @Override
-  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
     appendJsonChildren(jsonStreamWriter, rootNode);
   }
 
-  private static void appendJsonNode(final JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedStringValueRaw("class", node.className);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValueRaw("method", node.methodName);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.name("duration");
-    jsonStreamWriter.unquotedValue(node.timeStopped == 0 ? null :
-        Long.toString((node.timeStopped - node.timeStarted) / 1000));
-    jsonStreamWriter.separator();
-    jsonStreamWriter.name("children");
+  private static void appendJsonNode(JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
+    jsonStreamWriter.beginObject()
+        .namedStringValueRaw("class", node.className).separator()
+        .namedStringValueRaw("method", node.methodName).separator()
+        .name("duration")
+        .unquotedValue(node.timeStopped == 0 ? null :
+            Long.toString((node.timeStopped - node.timeStarted) / 1000))
+        .separator()
+        .name("children");
     appendJsonChildren(jsonStreamWriter, node);
     jsonStreamWriter.endObject();
   }

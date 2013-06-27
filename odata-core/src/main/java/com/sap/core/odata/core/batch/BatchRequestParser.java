@@ -29,6 +29,9 @@ import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class BatchRequestParser {
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
   private static final String REG_EX_ZERO_OR_MORE_WHITESPACES = "\\s*";

@@ -9,13 +9,14 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 
 /**
- * 
  * @author SAP AG
  */
 public class DebugInfoBodyTest {
@@ -23,46 +24,45 @@ public class DebugInfoBodyTest {
   private static final String STRING_CONTENT = "StringContent";
   private static final String STRING_CONTENT_JSON = "\"" + STRING_CONTENT + "\"";
 
-  ODataResponse response = mock(ODataResponse.class);
-  DebugInfoBody dib = new DebugInfoBody(response);
-
   @Test
-  public void testAppendJsonNoContent() throws Exception {
+  public void jsonStringContent() throws Exception {
+    ODataResponse response = mock(ODataResponse.class);
     when(response.getEntity()).thenReturn(STRING_CONTENT);
+    when(response.getContentHeader()).thenReturn(HttpContentType.APPLICATION_OCTET_STREAM);
+    assertEquals(STRING_CONTENT_JSON, appendJson(response));
 
-    assertEquals("null", appendJson());
+    when(response.getContentHeader()).thenReturn("image/png");
+    assertEquals(STRING_CONTENT_JSON, appendJson(response));
   }
 
   @Test
-  public void testAppendJsonStringContent() throws Exception {
-    when(response.getEntity()).thenReturn(STRING_CONTENT);
-    when(response.getContentHeader()).thenReturn("text/html");
-
-    assertEquals(STRING_CONTENT_JSON, appendJson());
-  }
-
-  @Test
-  public void testAppendJsonInputStreamContent() throws Exception {
+  public void jsonInputStreamContent() throws Exception {
+    ODataResponse response = mock(ODataResponse.class);
     ByteArrayInputStream in = new ByteArrayInputStream(STRING_CONTENT.getBytes());
     when(response.getEntity()).thenReturn(in);
-    when(response.getContentHeader()).thenReturn("text/html");
+    when(response.getContentHeader()).thenReturn(HttpContentType.APPLICATION_OCTET_STREAM);
+    assertEquals(STRING_CONTENT_JSON, appendJson(response));
 
-    assertEquals(STRING_CONTENT_JSON, appendJson());
+    in = new ByteArrayInputStream(STRING_CONTENT.getBytes());
+    when(response.getEntity()).thenReturn(in);
+    when(response.getContentHeader()).thenReturn("image/png");
+    assertEquals("\"" + Base64.encodeBase64String(STRING_CONTENT.getBytes()) + "\"",
+        appendJson(response));
   }
 
   @Test(expected = ClassCastException.class)
-  public void testAppendJsonUnsupportedContent() throws Exception {
+  public void jsonUnsupportedContent() throws Exception {
+    ODataResponse response = mock(ODataResponse.class);
     when(response.getEntity()).thenReturn(new Object());
-    when(response.getContentHeader()).thenReturn("text/html");
+    when(response.getContentHeader()).thenReturn(HttpContentType.APPLICATION_OCTET_STREAM);
 
-    appendJson();
+    appendJson(response);
   }
 
-  private String appendJson() throws IOException {
+  private String appendJson(final ODataResponse response) throws IOException {
     Writer writer = new StringWriter();
-    JsonStreamWriter jsw = new JsonStreamWriter(writer);
-    dib.appendJson(jsw);
+    DebugInfoBody body = new DebugInfoBody(response);
+    body.appendJson(new JsonStreamWriter(writer));
     return writer.toString();
   }
-
 }

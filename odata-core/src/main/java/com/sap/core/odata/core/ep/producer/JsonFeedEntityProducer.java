@@ -30,27 +30,24 @@ public class JsonFeedEntityProducer {
     try {
       jsonStreamWriter.beginObject();
 
-      if (isRootElement) {
-        jsonStreamWriter.name(FormatJson.D);
-        jsonStreamWriter.beginObject();
-      }
+      if (isRootElement)
+        jsonStreamWriter.name(FormatJson.D)
+            .beginObject();
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         final int inlineCount = properties.getInlineCount() == null ? 0 : properties.getInlineCount();
-        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount));
-        jsonStreamWriter.separator();
+        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount)).separator();
       }
 
-      jsonStreamWriter.name(FormatJson.RESULTS);
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.name(FormatJson.RESULTS)
+          .beginArray();
       JsonEntryEntityProducer entryProducer = new JsonEntryEntityProducer(properties);
       boolean first = true;
       for (final Map<String, Object> entryData : data) {
-        if (first) {
+        if (first)
           first = false;
-        } else {
+        else
           jsonStreamWriter.separator();
-        }
         entryProducer.append(writer, entityInfo, entryData, false);
       }
       jsonStreamWriter.endArray();
@@ -59,14 +56,12 @@ public class JsonFeedEntityProducer {
       // To be compatible with other implementations out there, the link is
       // written directly after "__next" and not as "{"uri":"next link"}",
       // deviating from the OData 2.0 specification.
-      if (properties.getNextLink() != null) {
-        jsonStreamWriter.separator();
-        jsonStreamWriter.namedStringValue(FormatJson.NEXT, properties.getNextLink());
-      }
+      if (properties.getNextLink() != null)
+        jsonStreamWriter.separator()
+            .namedStringValue(FormatJson.NEXT, properties.getNextLink());
 
-      if (isRootElement) {
+      if (isRootElement)
         jsonStreamWriter.endObject();
-      }
 
       jsonStreamWriter.endObject();
     } catch (final IOException e) {
