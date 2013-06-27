@@ -12,6 +12,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.helper.StringHelper;
+
 /**
  * 
  * @author SAP AG
@@ -68,6 +70,21 @@ public class BatchTest extends AbstractRefTest {
     assertTrue(response.containsHeader("DataServiceVersion"));
     assertTrue(response.getEntity().getContentType().getValue().matches(REG_EX));
     assertNotNull(response.getEntity().getContent());
+  }
+  
+  @Test
+  public void testSimpleBatch() throws Exception {
+    
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "$batch"));
+    post.setHeader("Content-Type", "multipart/mixed;boundary=batch_123");
+
+    String body = StringHelper.inputStreamToString(this.getClass().getResourceAsStream("/simple.batch"), true);
+    HttpEntity entity = new StringEntity(body);
+    post.setEntity(entity);
+    HttpResponse response = getHttpClient().execute(post);
+
+    assertNotNull(response);
+    assertEquals(202, response.getStatusLine().getStatusCode());
   }
 
 }

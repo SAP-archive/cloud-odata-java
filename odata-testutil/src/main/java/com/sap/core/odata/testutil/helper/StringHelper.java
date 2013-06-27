@@ -14,13 +14,16 @@ import org.apache.http.HttpEntity;
  * @author SAP AG
  */
 public class StringHelper {
-  public static String inputStreamToString(final InputStream in) throws IOException {
+  public static String inputStreamToString(final InputStream in, boolean preserveLineBreaks) throws IOException {
     final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     final StringBuilder stringBuilder = new StringBuilder();
     String line = null;
 
     while ((line = bufferedReader.readLine()) != null) {
       stringBuilder.append(line);
+      if (preserveLineBreaks) {
+        stringBuilder.append("\n");
+      }
     }
 
     bufferedReader.close();
@@ -28,6 +31,10 @@ public class StringHelper {
     final String result = stringBuilder.toString();
 
     return result;
+  }
+
+  public static String inputStreamToString(final InputStream in) throws IOException {
+    return inputStreamToString(in, false);
   }
 
   public static String httpEntityToString(final HttpEntity entity) throws IOException, IllegalStateException {
