@@ -12,7 +12,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 public class BatchResponseWriter {
   private static final String COLON = ":";
   private static final String SP = " ";
-  private static final String LF = "\n";
+  private static final String LF = "\r\n";
 
   public ODataResponse writeChangeSet(final List<ODataResponse> responses) throws EntityProviderException {
     String boundary = generateBoundary("changeset");
