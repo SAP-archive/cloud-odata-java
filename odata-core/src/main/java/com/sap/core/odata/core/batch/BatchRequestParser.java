@@ -109,8 +109,7 @@ public class BatchRequestParser {
   //The method parses additional information prior to the first boundary delimiter line
   private void parsePreamble(final Scanner scanner) {
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
-      String preamble = scanner.next();
-      System.out.println(preamble);
+      scanner.next();
     }
   }
 

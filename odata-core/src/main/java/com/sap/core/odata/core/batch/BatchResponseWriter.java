@@ -50,7 +50,7 @@ public class BatchResponseWriter {
       writer.append(BatchConstants.HTTP_CONTENT_TYPE).append(COLON).append(SP).append(BatchConstants.HTTP_APPLICATION_HTTP).append(LF);
       writer.append(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING).append(COLON).append(SP).append("binary").append(LF).append(LF);
 
-      writer.append(response.getStatus().getStatusCode()).append(SP).append(response.getStatus().getInfo()).append(LF);
+      writer.append("HTTP/1.1").append(SP).append(response.getStatus().getStatusCode()).append(SP).append(response.getStatus().getInfo()).append(LF);
       writeHeader(response, writer);
       if (!HttpStatusCodes.NO_CONTENT.equals(response.getStatus())) {
         String body;
