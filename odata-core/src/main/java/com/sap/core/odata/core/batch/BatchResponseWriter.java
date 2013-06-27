@@ -19,7 +19,7 @@ public class BatchResponseWriter {
     StringBuilder writer = new StringBuilder();
     writeResponseBody(responses, boundary, writer);
     return ODataResponse.entity(writer.toString()).
-        header(BatchConstants.HTTP_CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=\"" + boundary + "\"").build();
+        header(BatchConstants.HTTP_CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=" + boundary).build();
   }
 
   public ODataResponse write(final List<ODataResponse> responses) throws EntityProviderException {
@@ -28,7 +28,7 @@ public class BatchResponseWriter {
     writeResponseBody(responses, boundary, writer);
     String batchResponseBody = writer.toString();
     return ODataResponse.entity(batchResponseBody).status(HttpStatusCodes.ACCEPTED).
-        header(BatchConstants.HTTP_CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=\"" + boundary + "\"")
+        header(BatchConstants.HTTP_CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=" + boundary)
         .header(BatchConstants.HTTP_CONTENT_LENGTH, "" + batchResponseBody.length()).build();
 
   }
