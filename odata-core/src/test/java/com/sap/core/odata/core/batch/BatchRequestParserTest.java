@@ -35,7 +35,7 @@ public class BatchRequestParserTest {
   @BeforeClass
   public static void setProperties() throws URISyntaxException {
     PathInfoImpl pathInfo = new PathInfoImpl();
-    pathInfo.setServiceRoot(new URI("http://localhost/sap/bc/odata"));
+    pathInfo.setServiceRoot(new URI("http://localhost/sap/bc/odata/"));
     batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
 
   }
@@ -60,7 +60,7 @@ public class BatchRequestParserTest {
         if (!retrieveRequest.getAcceptableLanguages().isEmpty()) {
           assertEquals(3, retrieveRequest.getAcceptableLanguages().size());
         }
-        assertEquals(new URI("http://localhost/sap/bc/odata"), retrieveRequest.getPathInfo().getServiceRoot());
+        assertEquals(new URI("http://localhost/sap/bc/odata/"), retrieveRequest.getPathInfo().getServiceRoot());
         ODataPathSegmentImpl pathSegment = new ODataPathSegmentImpl("Employees('2')", null);
         assertEquals(pathSegment.getPath(), retrieveRequest.getPathInfo().getODataSegments().get(0).getPath());
         if (retrieveRequest.getQueryParameters().get("$format") != null) {
@@ -79,6 +79,8 @@ public class BatchRequestParserTest {
           assertTrue(request.getAcceptableLanguages().isEmpty());
           assertEquals("*/*", request.getAcceptHeaders().get(2));
           assertEquals("application/atomsvc+xml", request.getAcceptHeaders().get(0));
+          assertEquals(new URI("http://localhost/sap/bc/odata/Employees('2')/EmployeeName").toASCIIString(), request.getPathInfo().getRequestUri().toASCIIString());
+
           ODataPathSegmentImpl pathSegment = new ODataPathSegmentImpl("Employees('2')", null);
           assertEquals(pathSegment.getPath(), request.getPathInfo().getODataSegments().get(0).getPath());
           ODataPathSegmentImpl pathSegment2 = new ODataPathSegmentImpl("EmployeeName", null);
@@ -97,31 +99,32 @@ public class BatchRequestParserTest {
       throw new IOException("Requested file '" + fileName + "' was not found.");
     }
     String content = StringHelper.inputStreamToString(contentInputStream);
-    String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\n"
-        + "\n"
-        + "--changeset_f980-1cb6-94dd" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "Content-ID: 1" + "\n"
-        + "\n"
-        + "POST Employees('2') HTTP/1.1" + "\n"
-        + "Content-Length: 100000" + "\n"
-        + "Content-Type: application/octet-stream" + "\n"
-        + "\n"
-        + content + "\n"
-        + "\n"
-        + "--changeset_f980-1cb6-94dd--" + "\n"
-        + "\n"
-        + "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET http://localhost/sap/bc/odata/Employees('2') HTTP/1.1" + "\n"
-        + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + "\n"
-        + "MaxDataServiceVersion: 2.0" + "\n"
-        + "\n"
-        + "\n"
+    String batch = "\r\n"
+        + "--batch_8194-cf13-1f56" + "\r" + "\n"
+        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\r\n"
+        + "\r\n"
+        + "--changeset_f980-1cb6-94dd" + "\r\n"
+        + "Content-Type: application/http" + "\r\n"
+        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + "Content-ID: 1" + "\r\n"
+        + "\r\n"
+        + "POST Employees('2') HTTP/1.1" + "\r\n"
+        + "Content-Length: 100000" + "\r\n"
+        + "Content-Type: application/octet-stream" + "\r\n"
+        + "\r\n"
+        + content + "\r\n"
+        + "\r\n"
+        + "--changeset_f980-1cb6-94dd--" + "\r\n"
+        + "\r\n"
+        + "--batch_8194-cf13-1f56" + "\r\n"
+        + "Content-Type: application/http" + "\r\n"
+        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + "\r\n"
+        + "GET http://localhost/sap/bc/odata/Employees('2') HTTP/1.1" + "\r\n"
+        + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + "\r\n"
+        + "MaxDataServiceVersion: 2.0" + "\r\n"
+        + "\r\n"
+        + "\r\n"
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);

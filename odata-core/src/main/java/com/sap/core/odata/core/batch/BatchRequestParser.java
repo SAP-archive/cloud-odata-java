@@ -34,9 +34,10 @@ public class BatchRequestParser {
   private static final String REG_EX_ZERO_OR_MORE_WHITESPACES = "\\s*";
   private static final String ANY_CHARACTERS = ".*";
 
+  private static final Pattern REG_EX_BLANK_LINE = Pattern.compile("(|" + REG_EX_ZERO_OR_MORE_WHITESPACES + ")");
   private static final Pattern REG_EX_HEADER = Pattern.compile("([a-zA-Z\\-]+):" + REG_EX_OPTIONAL_WHITESPACE + "(.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_VERSION = Pattern.compile("(?:HTTP/[0-9]\\.[0-9])?");
-  private static final Pattern REG_EX_ANY_BOUNDARY_STRING = Pattern.compile("--" + ANY_CHARACTERS);
+  private static final Pattern REG_EX_ANY_BOUNDARY_STRING = Pattern.compile("--" + ANY_CHARACTERS + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_REQUEST_LINE = Pattern.compile("(GET|POST|PUT|DELETE|MERGE)\\s(.*)\\s?" + REG_EX_VERSION + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_BOUNDARY_PARAMETER = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + "boundary=(\".*\"|.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_CONTENT_TYPE = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED);
@@ -108,7 +109,8 @@ public class BatchRequestParser {
   //The method parses additional information prior to the first boundary delimiter line
   private void parsePreamble(final Scanner scanner) {
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
-      scanner.next();
+      String preamble = scanner.next();
+      System.out.println(preamble);
     }
   }
 
@@ -251,7 +253,7 @@ public class BatchRequestParser {
 
   private Map<String, List<String>> parseRequestHeaders(final Scanner scanner) throws EntityProviderException {
     Map<String, List<String>> headers = new HashMap<String, List<String>>();
-    while (scanner.hasNext() && !scanner.hasNext("")) {
+    while (scanner.hasNext() && !scanner.hasNext(REG_EX_BLANK_LINE)) {
       if (scanner.hasNext(REG_EX_HEADER)) {
         scanner.next(REG_EX_HEADER);
         MatchResult result = scanner.match();
@@ -278,7 +280,7 @@ public class BatchRequestParser {
     pathInfo.setServiceRoot(batchRequestPathInfo.getServiceRoot());
     pathInfo.setPrecedingPathSegment(batchRequestPathInfo.getPrecedingSegments());
     Scanner uriScanner = new Scanner(uri);
-    Pattern requestUri = Pattern.compile("(?:" + baseUri + "/)?([^?]+)(\\?.*)?");
+    Pattern requestUri = Pattern.compile("(?:" + baseUri + ")?/?([^?]+)(\\?.*)?");
     if (uriScanner.hasNext("\\$[^/]/([^?]+)(?:\\?.*)?")) {
       // TODO: Content-ID reference 
       uriScanner.next("\\$[^/]/([^?]+)(?:\\?.*)?");
@@ -409,7 +411,7 @@ public class BatchRequestParser {
 
   private Map<String, String> parseHeaders(final Scanner scanner) throws EntityProviderException {
     Map<String, String> headers = new HashMap<String, String>();
-    while (scanner.hasNext() && !scanner.hasNext("")) {
+    while (scanner.hasNext() && !(scanner.hasNext(REG_EX_BLANK_LINE))) {
       if (scanner.hasNext(REG_EX_HEADER)) {
         scanner.next(REG_EX_HEADER);
         MatchResult result = scanner.match();
@@ -426,7 +428,7 @@ public class BatchRequestParser {
   }
 
   private void parseNewLine(final Scanner scanner) throws EntityProviderException {
-    if (scanner.hasNext("")) {
+    if (scanner.hasNext(REG_EX_BLANK_LINE)) {
       scanner.next();
     } else {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("Expected blank line"));
@@ -436,7 +438,10 @@ public class BatchRequestParser {
   private String getBaseUri() throws EntityProviderException {
     if (batchRequestPathInfo != null) {
       if (batchRequestPathInfo.getServiceRoot() != null) {
-        String baseUri = batchRequestPathInfo.getServiceRoot().toString();
+        String baseUri = batchRequestPathInfo.getServiceRoot().toASCIIString();
+        if (baseUri.lastIndexOf('/') == baseUri.length() - 1) {
+          baseUri = baseUri.substring(0, baseUri.length() - 1);
+        }
         for (PathSegment precedingPS : batchRequestPathInfo.getPrecedingSegments()) {
           baseUri = baseUri + "/" + precedingPS.getPath();
         }
