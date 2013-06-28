@@ -1,6 +1,8 @@
 package com.sap.core.odata.ref.processor;
 
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataContext.RuntimeMeasurement;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -185,12 +188,50 @@ public class ListsProcessor extends ODataSingleProcessor {
         .build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");
+    startMemoryMeasurement(context, "EntityProvider.writeFeed");
 
     final ODataResponse response = EntityProvider.writeFeed(contentType, entitySet, values, feedProperties);
+
+    finishMemoryMeasurement(context, "EntityProvider.writeFeed");
 
     context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).build();
+  }
+
+  private MemoryMeasurement memoryMeasurement;
+
+  private class MemoryMeasurement {
+    String id;
+    long heapInUse;
+    long noneHeapInUse;
+  }
+
+  private void startMemoryMeasurement(ODataContext context, String forMethod) {
+    if (context.isInDebugMode()) {
+      final MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
+      mb.setVerbose(true);
+      memoryMeasurement = new MemoryMeasurement();
+      memoryMeasurement.id = forMethod;
+      memoryMeasurement.heapInUse = mb.getHeapMemoryUsage().getUsed();
+      memoryMeasurement.noneHeapInUse = mb.getNonHeapMemoryUsage().getUsed();
+    }
+  }
+
+  private void finishMemoryMeasurement(ODataContext context, String forMethod) {
+    if (context.isInDebugMode()) {
+      final MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
+
+      memoryMeasurement.heapInUse = mb.getHeapMemoryUsage().getUsed() - memoryMeasurement.heapInUse;
+      memoryMeasurement.noneHeapInUse = mb.getNonHeapMemoryUsage().getUsed() - memoryMeasurement.noneHeapInUse;
+
+      int handle = context.startRuntimeMeasurement(forMethod, memoryMeasurement.id);
+      List<RuntimeMeasurement> rtMeasure = context.getRuntimeMeasurements();
+      RuntimeMeasurement rm = rtMeasure.get(handle);
+      rm.setMethodName(memoryMeasurement.id + " MEMORY(verbose=" + mb.isVerbose() + "): Heap: " +
+          memoryMeasurement.heapInUse + " NoneHeap: " + memoryMeasurement.noneHeapInUse +
+          " MEM:(" + memoryMeasurement.heapInUse + "/" + memoryMeasurement.noneHeapInUse + ")");
+    }
   }
 
   @Override
@@ -289,8 +330,14 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
 
+    startMemoryMeasurement(getContext(), "ListsProcessor.readEntity");
+
     final ExpandSelectTreeNode expandSelectTreeNode = UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand());
-    return ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTreeNode, data, contentType)).build();
+    ODataResponse odr = ODataResponse.fromResponse(writeEntry(uriInfo.getTargetEntitySet(), expandSelectTreeNode, data, contentType)).build();
+
+    finishMemoryMeasurement(getContext(), "ListsProcessor.readEntity");
+
+    return odr;
   }
 
   @Override

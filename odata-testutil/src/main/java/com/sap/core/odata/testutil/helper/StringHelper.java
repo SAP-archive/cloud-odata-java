@@ -1,9 +1,11 @@
 package com.sap.core.odata.testutil.helper;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.apache.http.HttpEntity;
@@ -32,6 +34,43 @@ public class StringHelper {
     return inputStreamToString(entity.getContent());
   }
 
+  /**
+   * Encapsulate given content in an {@link InputStream} with charset <code>UTF-8</code>.
+   * 
+   * @param content to encapsulate content
+   * @return content as stream
+   */
+  public static InputStream encapsulate(String content) {
+    try {
+      return encapsulate(content, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      // we know that UTF-8 is supported
+      throw new RuntimeException("UTF-8 MUST be supported.");
+    }
+  }
+
+  /**
+   * Encapsulate given content in an {@link InputStream} with given charset.
+   * 
+   * @param content to encapsulate content
+   * @param charset to be used charset
+   * @return content as stream
+   * @throws UnsupportedEncodingException if charset is not supported
+   */
+  public static InputStream encapsulate(String content, String charset) throws UnsupportedEncodingException {
+    return new ByteArrayInputStream(content.getBytes(charset));
+  }
+
+  /**
+   * Generate a string with given length containing random upper case characters ([A-Z]).
+   * 
+   * @param len length of to generated string
+   * @return random upper case characters ([A-Z]).
+   */
+  public static InputStream generateDataStream(final int len) {
+    return encapsulate(generateData(len));
+  }
+  
   /**
    * Generate a string with given length containing random upper case characters ([A-Z]).
    * 
