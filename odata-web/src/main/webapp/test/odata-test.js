@@ -252,6 +252,32 @@ equal(data.__batchResponses[1].__changeResponses.length,1,"Expected 1 __changeRe
 equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall MODIFIED", "Second EmployeeName: Frederic Fall MODIFIED");
 });
 
+/* Test 5.3 */
+
+request3 ={
+       method: 'POST',
+resourcePath: "$batch",
+data: { __batchRequests:  [ { requestUri: "Employees('2')/EmployeeName", method: "GET" } ,
+                            {__changeRequests: [ 
+                              { requestUri: "Employees('2')/EmployeeName", method: "PUT", data: {EmployeeName: "Frederic Fall MODIFIED"}, headers: { "Content-Length" : "100000"} },
+                                     
+                                { requestUri: "Employes", method: "POST", headers: { "Content-Type" : "application/octet-stream"} },
+                                            ] 
+                            },
+                           { requestUri: "Employees('2')/EmployeeName", method: "GET" } 
+                          ] 
+      } 
+};  
+
+odataTest("batch with error", 6, request3 , function (response, data) {
+equal(response.statusCode, 202, "StatusCode: 202");
+equal(data.__batchResponses.length, 3, "Number of Responses: 2");
+equal(data.__batchResponses[0].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
+equal(data.__batchResponses[1].response.statusCode,404,"Employes not found");
+equal(data.__batchResponses[1].__changeResponses,undefined,"No change responses"); 
+equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
+      });
+
 module("POST");
 /* Test 6.1 */
 var entry={ 
