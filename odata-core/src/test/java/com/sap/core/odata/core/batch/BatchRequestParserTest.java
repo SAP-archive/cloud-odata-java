@@ -156,6 +156,48 @@ public class BatchRequestParserTest {
   }
 
   @Test
+  public void testPostWithoutBody() throws IOException, ODataException, URISyntaxException {
+    String fileName = "/batchWithContent.txt";
+    InputStream contentInputStream = ClassLoader.class.getResourceAsStream(fileName);
+    if (contentInputStream == null) {
+      throw new IOException("Requested file '" + fileName + "' was not found.");
+    }
+    StringHelper.inputStreamToString(contentInputStream);
+    String batch = "\r\n"
+        + "--batch_8194-cf13-1f56" + "\r" + "\n"
+        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\r\n"
+        + "\r\n"
+        + "--changeset_f980-1cb6-94dd" + "\r\n"
+        + "Content-Type: application/http" + "\r\n"
+        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + "\r\n"
+        + "POST Employees('2') HTTP/1.1" + "\r\n"
+        + "Content-Length: 100" + "\r\n"
+        + "Content-Type: application/octet-stream" + "\r\n"
+        + "\r\n"
+        + "\r\n"
+        + "--changeset_f980-1cb6-94dd--" + "\r\n"
+        + "\r\n"
+        + "--batch_8194-cf13-1f56--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    List<BatchPart> batchParts = parser.parse(in);
+    assertNotNull(batchParts);
+    assertEquals(false, batchParts.isEmpty());
+    for (BatchPart object : batchParts) {
+      if (object.isChangeSet()) {
+        List<ODataRequest> requests = object.getRequests();
+        for (ODataRequest request : requests) {
+          assertEquals(ODataHttpMethod.POST, request.getMethod());
+          assertEquals("100", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH));
+          assertEquals("application/octet-stream", request.getContentType());
+          assertNotNull(request.getBody());
+        }
+      }
+    }
+  }
+
+  @Test
   public void testBoundaryParameterWithQuotas() throws ODataException {
     ODataContextImpl odataContextWithInvaliContentType = new ODataContextImpl();
     odataContextWithInvaliContentType.setHttpMethod("POST");

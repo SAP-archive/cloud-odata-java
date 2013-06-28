@@ -271,9 +271,9 @@ data: { __batchRequests:  [ { requestUri: "Employees('2')/EmployeeName", method:
 
 odataTest("batch with error", 6, request3 , function (response, data) {
 equal(response.statusCode, 202, "StatusCode: 202");
-equal(data.__batchResponses.length, 3, "Number of Responses: 2");
+equal(data.__batchResponses.length, 3, "Number of Responses: 3");
 equal(data.__batchResponses[0].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
-equal(data.__batchResponses[1].response.statusCode,404,"Employes not found");
+equal(data.__batchResponses[1].response.statusCode,404,"ChangeSet processing fails. Employes not found");
 equal(data.__batchResponses[1].__changeResponses,undefined,"No change responses"); 
 equal(data.__batchResponses[2].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
       });

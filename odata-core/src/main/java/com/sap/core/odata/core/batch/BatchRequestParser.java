@@ -364,7 +364,7 @@ public class BatchRequestParser {
 
   private InputStream parseBody(final Scanner scanner) {
     String body = null;
-    InputStream requestBody = null;
+    InputStream requestBody;
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
         if (body == null) {
@@ -378,6 +378,8 @@ public class BatchRequestParser {
     }
     if (body != null) {
       requestBody = new ByteArrayInputStream(body.getBytes());
+    } else {
+      requestBody = new ByteArrayInputStream("".getBytes());
     }
     return requestBody;
   }
