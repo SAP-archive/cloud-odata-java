@@ -23,28 +23,22 @@ public class BatchTest extends AbstractRefTest {
 
   @Test
   public void testSimpleBatch() throws Exception {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "$batch"));
-    post.setHeader("Content-Type", "multipart/mixed;boundary=batch_123");
-
-    String body = StringHelper.inputStreamToString(this.getClass().getResourceAsStream("/simple.batch"), true);
-    HttpEntity entity = new StringEntity(body);
-    post.setEntity(entity);
-    HttpResponse response = getHttpClient().execute(post);
-
-    assertNotNull(response);
-    assertEquals(202, response.getStatusLine().getStatusCode());
-
-    String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent());
+    String responseBody = execute("/simple.batch");
     assertFalse(responseBody.contains("<error xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\">"));
     assertTrue(responseBody.contains("<edmx:Edmx Version=\"1.0\""));
   }
 
   @Test
   public void testChangeSetBatch() throws Exception {
+    String responseBody = execute("/changeset.batch");
+    assertTrue(responseBody.contains("Frederic Fall MODIFIED"));
+  }
+
+  private String execute(String batchResource) throws Exception {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "$batch"));
     post.setHeader("Content-Type", "multipart/mixed;boundary=batch_123");
 
-    String body = StringHelper.inputStreamToString(this.getClass().getResourceAsStream("/changeset.batch"), true);
+    String body = StringHelper.inputStreamToString(this.getClass().getResourceAsStream(batchResource), true);
     HttpEntity entity = new StringEntity(body);
     post.setEntity(entity);
     HttpResponse response = getHttpClient().execute(post);
@@ -53,7 +47,7 @@ public class BatchTest extends AbstractRefTest {
     assertEquals(202, response.getStatusLine().getStatusCode());
 
     String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertTrue(responseBody.contains("Frederic Fall MODIFIED"));
+    return responseBody;
   }
-
+  
 }
