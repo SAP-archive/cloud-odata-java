@@ -28,33 +28,36 @@ public class DebugInfoBody implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     final String contentType = response.getContentHeader();
-    if (contentType.startsWith("image/"))
-      if (response.getEntity() instanceof InputStream)
+    if (contentType.startsWith("image/")) {
+      if (response.getEntity() instanceof InputStream) {
         jsonStreamWriter.stringValueRaw(Base64.encodeBase64String(getBinaryFromInputStream((InputStream) response.getEntity())));
-      else if (response.getEntity() instanceof String)
+      } else if (response.getEntity() instanceof String) {
         jsonStreamWriter.stringValueRaw(getContentString());
-      else
+      } else {
         throw new ClassCastException("Unsupported content entity class: " + response.getEntity().getClass().getName());
-    else if (contentType.startsWith(HttpContentType.APPLICATION_JSON))
+      }
+    } else if (contentType.startsWith(HttpContentType.APPLICATION_JSON)) {
       jsonStreamWriter.unquotedValue(getContentString());
-    else
+    } else {
       jsonStreamWriter.stringValue(getContentString());
+    }
   }
 
   private String getContentString() {
     String content;
-    if (response.getEntity() instanceof String)
+    if (response.getEntity() instanceof String) {
       content = (String) response.getEntity();
-    else if (response.getEntity() instanceof InputStream)
+    } else if (response.getEntity() instanceof InputStream) {
       content = getStringFromInputStream((InputStream) response.getEntity());
-    else
+    } else {
       throw new ClassCastException("Unsupported content entity class: " + response.getEntity().getClass().getName());
+    }
     return content;
   }
 
-  private static byte[] getBinaryFromInputStream(InputStream inputStream) {
+  private static byte[] getBinaryFromInputStream(final InputStream inputStream) {
     try {
       return new BasicEntityProvider().readBinary(inputStream);
     } catch (final EntityProviderException e) {
@@ -62,7 +65,7 @@ public class DebugInfoBody implements DebugInfo {
     }
   }
 
-  private static String getStringFromInputStream(InputStream inputStream) {
+  private static String getStringFromInputStream(final InputStream inputStream) {
     try {
       return new BasicEntityProvider().readText(inputStream);
     } catch (final EntityProviderException e) {

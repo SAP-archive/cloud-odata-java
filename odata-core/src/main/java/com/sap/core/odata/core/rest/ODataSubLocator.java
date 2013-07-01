@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.MessageReference;
@@ -27,7 +28,6 @@ import com.sap.core.odata.core.ODataRequestImpl;
 public final class ODataSubLocator implements ODataLocator {
 
   private ODataServiceFactory serviceFactory;
-  private ODataRequestHandler requestHandler;
   private ODataRequestImpl request;
 
   @GET
@@ -89,7 +89,7 @@ public final class ODataSubLocator implements ODataLocator {
   private Response returnNotImplementedResponse(final MessageReference messageReference) {
     // RFC 2616, 5.1.1: "An origin server SHOULD return the status code [...]
     // 501 (Not Implemented) if the method is unrecognized [...] by the origin server."
-    ODataContextImpl context = new ODataContextImpl();
+    ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
     context.setRequest(request);
     context.setAcceptableLanguages(request.getAcceptableLanguages());
     context.setPathInfo(request.getPathInfo());
@@ -116,7 +116,14 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handle(final ODataHttpMethod method) throws ODataException {
-    request.setMethod(method); // TODO: refactor after JAX-RS elimination
+    request.setMethod(method);
+
+    ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
+    ODataService service = serviceFactory.createService(context);
+    context.setService(service);
+    service.getProcessor().setContext(context);
+
+    ODataRequestHandler requestHandler = new ODataRequestHandler(serviceFactory, service, context);
 
     final ODataResponse odataResponse = requestHandler.handle(request);
     final Response response = RestUtil.convertResponse(odataResponse);
@@ -126,7 +133,6 @@ public final class ODataSubLocator implements ODataLocator {
 
   public void initialize(final SubLocatorParameter param) throws ODataException {
     serviceFactory = param.getServiceFactory();
-    requestHandler = new ODataRequestHandler(serviceFactory);
 
     request = new ODataRequestImpl();
 

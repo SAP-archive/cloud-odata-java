@@ -35,9 +35,11 @@ public class DebugInfoRuntime implements DebugInfo {
     protected boolean add(final RuntimeMeasurement runtimeMeasurement) {
       if (timeStarted <= runtimeMeasurement.getTimeStarted()
           && timeStopped != 0 && timeStopped >= runtimeMeasurement.getTimeStopped()) {
-        for (RuntimeNode candidate : children)
-          if (candidate.add(runtimeMeasurement))
+        for (RuntimeNode candidate : children) {
+          if (candidate.add(runtimeMeasurement)) {
             return true;
+          }
+        }
         children.add(new RuntimeNode(runtimeMeasurement));
         return true;
       } else {
@@ -75,8 +77,9 @@ public class DebugInfoRuntime implements DebugInfo {
 
   public DebugInfoRuntime(final List<RuntimeMeasurement> runtimeMeasurements) {
     rootNode = new RuntimeNode();
-    for (final RuntimeMeasurement runtimeMeasurement : runtimeMeasurements)
+    for (final RuntimeMeasurement runtimeMeasurement : runtimeMeasurements) {
       rootNode.add(runtimeMeasurement);
+    }
     rootNode.combineRuntimeMeasurements();
   }
 
@@ -86,11 +89,11 @@ public class DebugInfoRuntime implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     appendJsonChildren(jsonStreamWriter, rootNode);
   }
 
-  private static void appendJsonNode(JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
+  private static void appendJsonNode(final JsonStreamWriter jsonStreamWriter, final RuntimeNode node) throws IOException {
     jsonStreamWriter.beginObject()
         .namedStringValueRaw("class", node.className).separator()
         .namedStringValueRaw("method", node.methodName).separator()
@@ -107,8 +110,9 @@ public class DebugInfoRuntime implements DebugInfo {
     jsonStreamWriter.beginArray();
     boolean first = true;
     for (final RuntimeNode childNode : node.children) {
-      if (!first)
+      if (!first) {
         jsonStreamWriter.separator();
+      }
       first = false;
       appendJsonNode(jsonStreamWriter, childNode);
     }

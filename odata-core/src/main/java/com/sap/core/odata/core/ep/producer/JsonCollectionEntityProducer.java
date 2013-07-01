@@ -36,10 +36,11 @@ public class JsonCollectionEntityProducer {
           .beginArray();
       boolean first = true;
       for (final Object item : data) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         JsonPropertyEntityProducer.appendPropertyValue(jsonStreamWriter, propertyInfo, item);
       }
       jsonStreamWriter.endArray();

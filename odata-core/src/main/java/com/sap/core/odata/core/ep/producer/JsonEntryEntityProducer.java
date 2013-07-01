@@ -49,8 +49,9 @@ public class JsonEntryEntityProducer {
 
     try {
       jsonStreamWriter = new JsonStreamWriter(writer);
-      if (isRootElement)
+      if (isRootElement) {
         jsonStreamWriter.beginObject().name(FormatJson.D);
+      }
 
       jsonStreamWriter.beginObject();
 
@@ -63,10 +64,11 @@ public class JsonEntryEntityProducer {
           .namedStringValueRaw(FormatJson.TYPE,
               type.getNamespace() + Edm.DELIMITER + type.getName());
       eTag = AtomEntryEntityProducer.createETag(entityInfo, data);
-      if (eTag != null)
+      if (eTag != null) {
         jsonStreamWriter.separator()
             .namedStringValue(FormatJson.ETAG, eTag);
-      if (type.hasStream())
+      }
+      if (type.hasStream()) {
         jsonStreamWriter.separator()
             .namedStringValueRaw(FormatJson.CONTENT_TYPE,
                 properties.getMediaResourceMimeType() == null ?
@@ -76,6 +78,7 @@ public class JsonEntryEntityProducer {
             .separator()
             .namedStringValue(FormatJson.MEDIA_SRC, self + "/$value").separator()
             .namedStringValue(FormatJson.EDIT_MEDIA, location + "/$value");
+      }
       jsonStreamWriter.endObject();
 
       for (final String propertyName : type.getPropertyNames()) {
@@ -139,8 +142,9 @@ public class JsonEntryEntityProducer {
 
       jsonStreamWriter.endObject();
 
-      if (isRootElement)
+      if (isRootElement) {
         jsonStreamWriter.endObject();
+      }
 
       writer.flush();
 

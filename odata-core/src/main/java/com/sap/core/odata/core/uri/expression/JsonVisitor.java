@@ -66,10 +66,11 @@ public class JsonVisitor implements ExpressionVisitor {
           .beginArray();
       boolean first = true;
       for (final Object order : orders) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         jsonStreamWriter.unquotedValue(order.toString());
       }
       jsonStreamWriter.endArray()
@@ -128,10 +129,11 @@ public class JsonVisitor implements ExpressionVisitor {
           .beginArray();
       boolean first = true;
       for (Object parameter : parameters) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         jsonStreamWriter.unquotedValue(parameter.toString());
       }
       jsonStreamWriter.endArray()

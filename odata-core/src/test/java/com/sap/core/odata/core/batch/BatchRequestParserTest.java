@@ -22,7 +22,6 @@ import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataRequest;
-import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
@@ -199,8 +198,6 @@ public class BatchRequestParserTest {
 
   @Test
   public void testBoundaryParameterWithQuotas() throws ODataException {
-    ODataContextImpl odataContextWithInvaliContentType = new ODataContextImpl();
-    odataContextWithInvaliContentType.setHttpMethod("POST");
     Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
     List<String> headerValues = new ArrayList<String>();
     String contentType = "multipart/mixed; boundary=\"batch_1740-bb84-2f7f\"";
@@ -208,7 +205,6 @@ public class BatchRequestParserTest {
 
     ODataRequestImpl postRequest = new ODataRequestImpl();
     postRequest.setRequestHeaders(requestHeaders);
-    odataContextWithInvaliContentType.setRequest(postRequest);
     String batch = "--batch_1740-bb84-2f7f" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
@@ -226,8 +222,6 @@ public class BatchRequestParserTest {
 
   @Test(expected = ODataException.class)
   public void testBatchWithInvalidContentType() throws ODataException {
-    ODataContextImpl odataContextWithInvaliContentType = new ODataContextImpl();
-    odataContextWithInvaliContentType.setHttpMethod("POST");
     Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
     List<String> headerValues = new ArrayList<String>();
     String invalidContentType = "multipart;boundary=batch_1740-bb84-2f7f";
@@ -235,7 +229,6 @@ public class BatchRequestParserTest {
 
     ODataRequestImpl postRequest = new ODataRequestImpl();
     postRequest.setRequestHeaders(requestHeaders);
-    odataContextWithInvaliContentType.setRequest(postRequest);
     String batch = "--batch_1740-bb84-2f7f" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"

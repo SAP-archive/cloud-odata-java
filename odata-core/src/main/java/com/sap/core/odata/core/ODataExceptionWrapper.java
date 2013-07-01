@@ -51,7 +51,7 @@ public class ODataExceptionWrapper {
   private final ODataErrorContext errorContext = new ODataErrorContext();
   private final URI requestUri;
 
-  public ODataExceptionWrapper(final ODataContextImpl context, final Map<String, String> queryParameters, final List<String> acceptHeaderContentTypes) {
+  public ODataExceptionWrapper(final ODataContext context, final Map<String, String> queryParameters, final List<String> acceptHeaderContentTypes) {
     contentType = getContentType(queryParameters, acceptHeaderContentTypes).toContentTypeString();
     messageLocale = MessageService.getSupportedLocale(getLanguages(context), DEFAULT_RESPONSE_LOCALE);
     httpRequestHeaders = context.getRequestHeaders();

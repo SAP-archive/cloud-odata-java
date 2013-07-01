@@ -207,7 +207,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     long noneHeapInUse;
   }
 
-  private void startMemoryMeasurement(ODataContext context, String forMethod) {
+  private void startMemoryMeasurement(final ODataContext context, final String forMethod) {
     if (context.isInDebugMode()) {
       final MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
       mb.setVerbose(true);
@@ -218,7 +218,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private void finishMemoryMeasurement(ODataContext context, String forMethod) {
+  private void finishMemoryMeasurement(final ODataContext context, final String forMethod) {
     if (context.isInDebugMode()) {
       final MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
 
@@ -1680,9 +1680,9 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse executeBatch(BatchHandler handler, String contentType, InputStream content) throws ODataException {
+  public ODataResponse executeBatch(final BatchHandler handler, final String contentType, final InputStream content) throws ODataException {
     ODataResponse batchResponse;
-    PathInfo pathInfo = this.getContext().getPathInfo();
+    PathInfo pathInfo = getContext().getPathInfo();
     EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
     List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
     List<ODataResponse> responses = new ArrayList<ODataResponse>();
@@ -1695,14 +1695,15 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse executeChangeSet(BatchHandler handler, List<ODataRequest> requests) throws ODataException {
+  public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
     ODataResponse changeSetResponse;
     List<ODataResponse> responses = new ArrayList<ODataResponse>();
     for (ODataRequest request : requests) {
       ODataResponse response = handler.handleRequest(request);
-      if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode())
+      if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode()) {
         // Rollback
         return response;
+      }
       responses.add(response);
     }
     changeSetResponse = EntityProvider.writeChangeSetResponse(responses);

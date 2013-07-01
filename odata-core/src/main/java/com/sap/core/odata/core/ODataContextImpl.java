@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
+import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
 
 /**
  * @author SAP AG
@@ -30,6 +32,17 @@ public class ODataContextImpl implements ODataContext {
   private Map<String, Object> parameterTable = new HashMap<String, Object>();
 
   private List<Locale> acceptableLanguages;
+
+  public ODataContextImpl(final ODataRequest request, final ODataServiceFactory factory) {
+    setServiceFactory(factory);
+    setRequest(request);
+    setPathInfo(request.getPathInfo());
+    if (request.getMethod() != null) {
+      setHttpMethod(request.getMethod().name());
+    }
+    setAcceptableLanguages(request.getAcceptableLanguages());
+    setDebugMode(checkDebugMode(request.getQueryParameters()));
+  }
 
   @Override
   public void setParameter(final String name, final Object value) {
@@ -224,4 +237,20 @@ public class ODataContextImpl implements ODataContext {
   public void setRequest(final ODataRequest request) {
     setParameter(ODATA_REQUEST, request);
   }
+
+  private boolean checkDebugMode(final Map<String, String> queryParameters) {
+    if (getQueryDebugValue(queryParameters) == null) {
+      return false;
+    } else {
+      final ODataDebugCallback callback = getServiceFactory().getCallback(ODataDebugCallback.class);
+      return callback != null && callback.isDebugEnabled();
+    }
+  }
+
+  private static String getQueryDebugValue(final Map<String, String> queryParameters) {
+    final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
+    return ODataDebugResponseWrapper.ODATA_DEBUG_JSON.equals(debugValue) ?
+        debugValue : null;
+  }
+
 }

@@ -59,8 +59,9 @@ public class ODataDebugResponseWrapper {
     List<DebugInfo> parts = new ArrayList<DebugInfo>();
 
     // body
-    if (response.getContentHeader() != null && response.getEntity() != null)
+    if (response.getContentHeader() != null && response.getEntity() != null) {
       parts.add(new DebugInfoBody(response));
+    }
 
     // request
     parts.add(new DebugInfoRequest(context.getHttpMethod(),
@@ -69,19 +70,22 @@ public class ODataDebugResponseWrapper {
 
     // response
     Map<String, String> responseHeaders = new HashMap<String, String>();
-    for (final String name : response.getHeaderNames())
+    for (final String name : response.getHeaderNames()) {
       responseHeaders.put(name, response.getHeader(name));
+    }
     parts.add(new DebugInfoResponse(response.getStatus(), responseHeaders));
 
     // URI
     if (uriInfo != null
         && (uriInfo.getFilter() != null || uriInfo.getOrderBy() != null
-            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()))
+            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())) {
       parts.add(new DebugInfoUri(uriInfo, exception));
+    }
 
     // runtime measurements
-    if (context.getRuntimeMeasurements() != null)
+    if (context.getRuntimeMeasurements() != null) {
       parts.add(new DebugInfoRuntime(context.getRuntimeMeasurements()));
+    }
 
     // exceptions
     if (exception != null) {
@@ -98,8 +102,9 @@ public class ODataDebugResponseWrapper {
     jsonStreamWriter.beginObject();
     boolean first = true;
     for (final DebugInfo part : parts) {
-      if (!first)
+      if (!first) {
         jsonStreamWriter.separator();
+      }
       first = false;
       jsonStreamWriter.name(part.getName().toLowerCase(Locale.ROOT));
       part.appendJson(jsonStreamWriter);
