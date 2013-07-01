@@ -11,9 +11,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * 
+ * @author SAP AG
+ */
 public class SupaPerformanceTestClient extends AbstractTestClient {
 
-  private static final String SUPA_CONFIG = "target/classes/performance/OData-Perf-RefScenario-LocalLJS.properties";
+  private static final String SUPA_CONFIG = "target/classes/performance/Supa-Config.properties";
   private static final Logger LOG = LoggerFactory.getLogger(SupaPerformanceTestClient.class);
   
   private final SupaController supa;
@@ -42,17 +47,21 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
     List<TestRequest> testRequests = config.getTestRequests();
 
     for (TestRequest testRequest : testRequests) {
+      String scenarioName = supa.getCurrentStepName();
+      LOG.info("Prepare for test step: {}", scenarioName);
       // run warmup
       if(warmupRuns > 0) {
+        LOG.info("Start warmup ({})", warmupRuns);
         call(testRequest, warmupRuns);
       }
       // run test
-      for (int i = 0; i < runsPerTest; i++) {
+      for (int i = 1; i <= runsPerTest; i++) {
+        LOG.info("Start run '{}/{}'.", i, runsPerTest);
         supa.begin();
-        
         call(testRequest, testRequest.getCallCount());
+        String result = supa.stop();
         
-        LOG.info(supa.stop());
+        LOG.info("...result: {}", result);
       }
       supa.nextStep();
     }
@@ -96,7 +105,6 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
         throw new RuntimeException("Unknown output: " + read);
       }
     } catch (IOException e) {
-      e.printStackTrace();
       throw new RuntimeException("Exception occured: " + e.getMessage(), e);
     }
   }

@@ -25,7 +25,7 @@ public class SupaController {
   private static final String STOP = "/supa/stopMeasurement";
   private static final String NEXT_STEP = "/supa/nextStep";
 //  private static final String FIRST_STEP = "/supa/firstStep";
-//  private static final String CURRENT_STEP = "/supa/currentStep";
+  private static final String CURRENT_STEP = "/supa/currentStep";
 //  private static final String RESET_DATA_PROVIDERS = "/supa/resetDataProviders";
   private static final String GENERATE_EXCEL = "/supa/generateExcel";
   private static final String GET_RESULT_DIR = "/supa/getResultDir";
@@ -98,6 +98,10 @@ public class SupaController {
 
   public String stop() {
     return call(STOP);
+  }
+
+  public String getCurrentStepName() {
+    return call(CURRENT_STEP);
   }
 
   public void nextStep() {
