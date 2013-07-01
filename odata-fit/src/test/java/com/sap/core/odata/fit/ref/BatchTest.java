@@ -53,7 +53,6 @@ public class BatchTest extends AbstractRefTest {
     assertEquals(202, response.getStatusLine().getStatusCode());
 
     String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent());
-    System.out.println(responseBody);
     assertTrue(responseBody.contains("Frederic Fall MODIFIED"));
   }
 
