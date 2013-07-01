@@ -11,6 +11,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.testutil.TestUtilRuntimeException;
+
 /**
  * 
  * 
@@ -41,7 +43,10 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
    */
   public String runMeasurement() {
     if(supaStart) {
-      startSupa();
+      boolean success = startSupa();
+      if(!success) {
+        throw new TestUtilRuntimeException("SUPA was not started, check SUPA log.");
+      }
     }
     
     List<TestRequest> testRequests = config.getTestRequests();
@@ -88,18 +93,26 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
       }
 
       String execCommand = "java -jar " + supaJarFile.getAbsolutePath() + " " + supaConfigFile.getAbsolutePath() + " -server";
-      Process supaServer = Runtime.getRuntime().exec(execCommand, null, new File("/tmp"));
+      File tmpDir = File.createTempFile("odata", null).getParentFile();
+      LOG.info("Start supa with command {} and temp dir {}", execCommand, tmpDir.getAbsolutePath());
+      
+      Process supaServer = Runtime.getRuntime().exec(execCommand, null, tmpDir);
       InputStream in = supaServer.getInputStream();
       BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
       
       String read = reader.readLine();
-      LOG.info(read);
-      if(read.contains("Hit Return key to close window ...")) {
+      reader.close();
+
+      if(read == null) {
+        LOG.info("SUPA Failure, got NULL during read.");
         supaServer.destroy();
-        LOG.info("SUPA Failure...");
+        return false;
+      } else if(read.contains("Hit Return key to close window ...")) {
+        supaServer.destroy();
+        LOG.info("SUPA Failure with message: {}", read);
         return false;
       } else if(read.contains("Startup")) {
-        LOG.info("SUPA Started...");
+        LOG.info("SUPA Started...{}", read);
         return true;
       } else {
         throw new RuntimeException("Unknown output: " + read);

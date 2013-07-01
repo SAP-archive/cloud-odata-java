@@ -24,15 +24,15 @@ import com.sap.core.odata.testutil.tool.core.TestPostRequest;
 import com.sap.core.odata.testutil.tool.core.TestRequest;
 
 /**
- * Simple tool to define and process calls against an OData service and collect the result of these calls.
- * Currently this is only used and configured to do ContentNegotiation test calls for different URI-Types and collect/print the
- * result in JIRA compatible markup syntax.
+ * Simple tool to define and process performance calls against an OData service and collect the result of these calls.
+ * 
  * @author SAP AG
  */
-public class TestCallTool {
-  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(TestCallTool.class);
+public class PerformanceTestTool {
+  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PerformanceTestTool.class);
 
-  private static final String BASELINE_READ_SUPA_CONFIG = "target/classes/performance/OData-Base-Read-Perf-RefScenario-LocalLJS.properties";
+  private static final String BASELINE_READ_XML_SUPA_CONFIG = "target/classes/performance/OData-Base-Read_XML-Perf-RefScenario-LocalLJS.properties";
+  private static final String BASELINE_READ_JSON_SUPA_CONFIG = "target/classes/performance/OData-Base-Read_JSON-Perf-RefScenario-LocalLJS.properties";
   private static final String BASELINE_WRITE_SUPA_CONFIG = "target/classes/performance/OData-Base-Write-Perf-RefScenario-LocalLJS.properties";
 
   /**
@@ -43,40 +43,48 @@ public class TestCallTool {
    */
   public static void main(final String[] args) throws IOException {
     activateLogging(true, false);
-    final String supaHome = "/Performance/supa/";
+    
+    final String supaHome = "~/Performance/supa";
         
-    performanceRegressionBaseLineForRead(supaHome);
+    performanceRegressionBaseLineForReadXml(supaHome);
+    performanceRegressionBaseLineForReadJson(supaHome);
     performanceRegressionBaseLineForWrite(supaHome);
   }
 
   /**
    * BaseLine for READ Performance tests.
-   * Attention: Modifications here MUST to be matched with SUPA configuration {@value #BASELINE_READ_SUPA_CONFIG}
+   * Attention: Modifications here MUST to be matched with SUPA configuration {@value #BASELINE_READ_XML_SUPA_CONFIG}
    * 
    * @param supaHome path in which SUPA is installed
    */
-  private static void performanceRegressionBaseLineForRead(String supaHome) {
+  private static void performanceRegressionBaseLineForReadXml(String supaHome) {
     final List<TestRequest> testRequests = new ArrayList<TestRequest>();
 
     testRequests.add(TestGetRequest.createGet("/Employee('1')", 10).addHeader("Accept", "application/atom+xml"));
     testRequests.add(TestGetRequest.createGet("/Employee('1')", 100).addHeader("Accept", "application/atom+xml"));
     testRequests.add(TestGetRequest.createGet("/Employee('1')", 1000).addHeader("Accept", "application/atom+xml"));
 
-    testRequests.add(TestGetRequest.createGet("/Employee('1')", 10).addHeader("Accept", "application/json"));
-    testRequests.add(TestGetRequest.createGet("/Employee('1')", 100).addHeader("Accept", "application/json"));
-    testRequests.add(TestGetRequest.createGet("/Employee('1')", 1000).addHeader("Accept", "application/json"));
-
     testRequests.add(TestGetRequest.createGet("/Rooms", 10).addHeader("Accept", "application/atom+xml"));
     testRequests.add(TestGetRequest.createGet("/Rooms", 100).addHeader("Accept", "application/atom+xml"));
     testRequests.add(TestGetRequest.createGet("/Rooms", 1000).addHeader("Accept", "application/atom+xml"));
+
+    runPerformanceRegressionFor(supaHome, BASELINE_READ_XML_SUPA_CONFIG, testRequests);
+  }
+
+  private static void performanceRegressionBaseLineForReadJson(String supaHome) {
+    final List<TestRequest> testRequests = new ArrayList<TestRequest>();
+
+    testRequests.add(TestGetRequest.createGet("/Employee('1')", 10).addHeader("Accept", "application/json"));
+    testRequests.add(TestGetRequest.createGet("/Employee('1')", 100).addHeader("Accept", "application/json"));
+    testRequests.add(TestGetRequest.createGet("/Employee('1')", 1000).addHeader("Accept", "application/json"));
 
     testRequests.add(TestGetRequest.createGet("/Rooms", 10).addHeader("Accept", "application/json"));
     testRequests.add(TestGetRequest.createGet("/Rooms", 100).addHeader("Accept", "application/json"));
     testRequests.add(TestGetRequest.createGet("/Rooms", 1000).addHeader("Accept", "application/json"));
 
-    runPerformanceRegressionFor(supaHome, BASELINE_READ_SUPA_CONFIG, testRequests);
+    runPerformanceRegressionFor(supaHome, BASELINE_READ_JSON_SUPA_CONFIG, testRequests);
   }
-  
+
   /**
    * BaseLine for WRITE Performance tests.
    * Attention: Modifications here MUST to be matched with SUPA configuration {@value #BASELINE_WRITE_SUPA_CONFIG}
@@ -139,7 +147,7 @@ public class TestCallTool {
     if(console) {
       final Layout layout = new PatternLayout("%m\n");
       final Appender consoleAppender = new ConsoleAppender(layout);
-      consoleAppender.setName(TestCallTool.class.getPackage().getName());
+      consoleAppender.setName(PerformanceTestTool.class.getPackage().getName());
       rootLogger.addAppender(consoleAppender);
       rootLogger.setLevel(Level.INFO);      
     }
