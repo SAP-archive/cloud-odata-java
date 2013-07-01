@@ -163,7 +163,7 @@ public class Dispatcher {
 
     case URI9:
       if (method == ODataHttpMethod.POST) {
-        BatchHandler handler = new BatchHandlerImpl(serviceFactory, service.getBatchProcessor());
+        BatchHandler handler = new BatchHandlerImpl(serviceFactory, service);
         return service.getBatchProcessor().executeBatch(handler, requestContentType, content);
       } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);

@@ -10,7 +10,7 @@ import java.io.Writer;
 public class JsonStreamWriter {
   private final Writer writer;
 
-  public JsonStreamWriter(Writer writer) {
+  public JsonStreamWriter(final Writer writer) {
     this.writer = writer;
   }
 
@@ -45,10 +45,11 @@ public class JsonStreamWriter {
   }
 
   public JsonStreamWriter stringValueRaw(final String value) throws IOException {
-    if (value == null)
+    if (value == null) {
       writer.append(FormatJson.NULL);
-    else
+    } else {
       writer.append('"').append(value).append('"');
+    }
     return this;
   }
 

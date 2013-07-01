@@ -26,8 +26,9 @@ public class DebugInfoUri implements DebugInfo {
     this.uriInfo = uriInfo;
 
     Throwable candidate = exception;
-    while (candidate != null && !(candidate instanceof ExpressionParserException))
+    while (candidate != null && !(candidate instanceof ExpressionParserException)) {
       candidate = candidate.getCause();
+    }
     this.exception = (ExpressionParserException) candidate;
   }
 
@@ -37,22 +38,24 @@ public class DebugInfoUri implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
 
     if (exception != null) {
       jsonStreamWriter.name("error")
           .beginObject();
-      if (exception.getFilterTree() != null)
+      if (exception.getFilterTree() != null) {
         jsonStreamWriter.namedStringValue("filter", exception.getFilterTree().getUriLiteral());
+      }
       jsonStreamWriter.endObject();
     }
 
     if (uriInfo != null) {
       if (exception != null
           && (uriInfo.getFilter() != null || uriInfo.getOrderBy() != null
-              || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()))
+              || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())) {
         jsonStreamWriter.separator();
+      }
 
       final FilterExpression filter = uriInfo.getFilter();
       if (filter != null) {
@@ -66,8 +69,9 @@ public class DebugInfoUri implements DebugInfo {
         }
         jsonStreamWriter.name("filter").unquotedValue(filterString);
         if (uriInfo.getOrderBy() != null
-            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())
+            || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {
           jsonStreamWriter.separator();
+        }
       }
 
       final OrderByExpression orderBy = uriInfo.getOrderBy();
@@ -81,8 +85,9 @@ public class DebugInfoUri implements DebugInfo {
           orderByString = null;
         }
         jsonStreamWriter.name("orderby").unquotedValue(orderByString);
-        if (!uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())
+        if (!uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {
           jsonStreamWriter.separator();
+        }
       }
 
       if (!uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {

@@ -26,7 +26,7 @@ public class DebugInfoException implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject()
         .name("exceptions")
         .beginArray();
@@ -45,8 +45,9 @@ public class DebugInfoException implements DebugInfo {
 
       jsonStreamWriter.endObject();
       throwable = throwable.getCause();
-      if (throwable != null)
+      if (throwable != null) {
         jsonStreamWriter.separator();
+      }
     }
     jsonStreamWriter.endArray();
     jsonStreamWriter.separator();
@@ -55,8 +56,9 @@ public class DebugInfoException implements DebugInfo {
         .beginArray();
     boolean first = true;
     for (final StackTraceElement stackTraceElement : exception.getStackTrace()) {
-      if (!first)
+      if (!first) {
         jsonStreamWriter.separator();
+      }
       first = false;
       appendJsonStackTraceElement(jsonStreamWriter, stackTraceElement);
     }
@@ -64,7 +66,7 @@ public class DebugInfoException implements DebugInfo {
     jsonStreamWriter.endObject();
   }
 
-  private static void appendJsonStackTraceElement(JsonStreamWriter jsonStreamWriter, final StackTraceElement stackTraceElement) throws IOException {
+  private static void appendJsonStackTraceElement(final JsonStreamWriter jsonStreamWriter, final StackTraceElement stackTraceElement) throws IOException {
     jsonStreamWriter.beginObject()
         .namedStringValueRaw("class", stackTraceElement.getClassName()).separator()
         .namedStringValueRaw("method", stackTraceElement.getMethodName()).separator()

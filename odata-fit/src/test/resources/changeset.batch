@@ -1,0 +1,37 @@
+--batch_123
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET Employees('2')/EmployeeName HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+
+
+--batch_123
+Content-Type: multipart/mixed; boundary=changeset_105a-d600-0156
+
+--changeset_105a-d600-0156
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+PUT Employees('2')/EmployeeName HTTP/1.1
+Content-Length: 100000
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+DataServiceVersion: 1.0
+Content-Type: application/json;odata=verbose
+MaxDataServiceVersion: 2.0
+
+{"EmployeeName":"Frederic Fall MODIFIED"}
+
+--changeset_105a-d600-0156--
+
+--batch_123
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET Employees('2')/EmployeeName HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+
+
+--batch_123--

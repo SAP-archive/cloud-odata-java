@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -48,9 +47,12 @@ public class ODataRequestHandler {
 
   private ODataServiceFactory serviceFactory;
   private ODataService service;
+  private ODataContext context;
 
-  public ODataRequestHandler(final ODataServiceFactory factory) {
+  public ODataRequestHandler(final ODataServiceFactory factory, final ODataService service, final ODataContext context) {
     serviceFactory = factory;
+    this.service = service;
+    this.context = context;
   }
 
   /**
@@ -61,17 +63,11 @@ public class ODataRequestHandler {
    * @return the corresponding result
    */
   public ODataResponse handle(final ODataRequest request) {
-    ODataContextImpl context = buildODataContext(request);
-
-    final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
-
     UriInfoImpl uriInfo = null;
     Exception exception = null;
     ODataResponse odataResponse;
+    final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
     try {
-      service = serviceFactory.createService(context);
-      context.setService(service);
-      service.getProcessor().setContext(context);
 
       UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
       Dispatcher dispatcher = new Dispatcher(serviceFactory, service);
@@ -120,19 +116,6 @@ public class ODataRequestHandler {
     final String debugValue = getDebugValue(context, request.getQueryParameters());
     return debugValue == null ?
         odataResponse : new ODataDebugResponseWrapper(context, odataResponse, uriInfo, exception, debugValue).wrapResponse();
-  }
-
-  private ODataContextImpl buildODataContext(final ODataRequest request) {
-    ODataContextImpl context = new ODataContextImpl();
-
-    context.setServiceFactory(serviceFactory);
-    context.setRequest(request);
-    context.setPathInfo(request.getPathInfo());
-    context.setHttpMethod(request.getMethod().name());
-    context.setAcceptableLanguages(request.getAcceptableLanguages());
-    context.setDebugMode(checkDebugMode(request.getQueryParameters()));
-
-    return context;
   }
 
   private String getServerDataServiceVersion() throws ODataException {
@@ -430,15 +413,6 @@ public class ODataRequestHandler {
 
   private static String getDebugValue(final ODataContext context, final Map<String, String> queryParameters) {
     return context.isInDebugMode() ? getQueryDebugValue(queryParameters) : null;
-  }
-
-  private boolean checkDebugMode(final Map<String, String> queryParameters) {
-    if (getQueryDebugValue(queryParameters) == null) {
-      return false;
-    } else {
-      final ODataDebugCallback callback = serviceFactory.getCallback(ODataDebugCallback.class);
-      return callback != null && callback.isDebugEnabled();
-    }
   }
 
   private static String getQueryDebugValue(final Map<String, String> queryParameters) {

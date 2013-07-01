@@ -27,9 +27,10 @@ public class JsonErrorDocumentProducer {
         .separator()
         .namedStringValue(FormatJson.VALUE, message)
         .endObject();
-    if (innerError != null)
+    if (innerError != null) {
       jsonStreamWriter.separator()
           .namedStringValue(FormatJson.INNER_ERROR, innerError);
+    }
     jsonStreamWriter.endObject()
         .endObject();
   }

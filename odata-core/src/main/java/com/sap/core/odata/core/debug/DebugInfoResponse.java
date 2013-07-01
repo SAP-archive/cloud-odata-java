@@ -25,26 +25,29 @@ public class DebugInfoResponse implements DebugInfo {
   }
 
   @Override
-  public void appendJson(JsonStreamWriter jsonStreamWriter) throws IOException {
+  public void appendJson(final JsonStreamWriter jsonStreamWriter) throws IOException {
     jsonStreamWriter.beginObject();
 
-    if (status != null)
+    if (status != null) {
       jsonStreamWriter.name("status")
           .beginObject()
           .name("code").unquotedValue(Integer.toString(status.getStatusCode())).separator()
           .namedStringValueRaw("info", status.getInfo())
           .endObject();
+    }
 
     if (!headers.isEmpty()) {
-      if (status != null)
+      if (status != null) {
         jsonStreamWriter.separator();
+      }
 
       jsonStreamWriter.name("headers")
           .beginObject();
       boolean first = true;
       for (final String name : headers.keySet()) {
-        if (!first)
+        if (!first) {
           jsonStreamWriter.separator();
+        }
         first = false;
         jsonStreamWriter.namedStringValue(name, headers.get(name));
       }

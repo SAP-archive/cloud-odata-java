@@ -275,7 +275,11 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
     final ODataService service = mockODataService(serviceFactory);
     when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
-    return new ODataRequestHandler(serviceFactory).handle(mockODataRequest(method, pathSegments, queryParameters, requestContentType));
+
+    ODataRequest request = mockODataRequest(method, pathSegments, queryParameters, requestContentType);
+    ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
+
+    return new ODataRequestHandler(serviceFactory, service, context).handle(request);
   }
 
   private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
@@ -349,8 +353,11 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
     final ODataService service = mockODataService(serviceFactory);
     when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
-    final ODataRequestHandler handler = new ODataRequestHandler(serviceFactory);
+
     ODataRequest request = mockODataRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI0, false, false), null, null);
+    ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
+
+    final ODataRequestHandler handler = new ODataRequestHandler(serviceFactory, service, context);
 
     when(request.getRequestHeaderValue(ODataHttpHeaders.DATASERVICEVERSION)).thenReturn("1.0");
     ODataResponse response = handler.handle(request);

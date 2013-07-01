@@ -110,10 +110,11 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
           .beginArray();
       boolean first = true;
       for (EdmProperty property : properties) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         jsonStreamWriter.stringValueRaw(property.getName());
       }
       jsonStreamWriter.endArray().separator()
@@ -121,10 +122,11 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
           .beginArray();
       first = true;
       for (Map.Entry<String, ExpandSelectTreeNodeImpl> entry : links.entrySet()) {
-        if (first)
+        if (first) {
           first = false;
-        else
+        } else {
           jsonStreamWriter.separator();
+        }
         final String nodeString = entry.getValue() == null ? null : entry.getValue().toJsonString();
         jsonStreamWriter.beginObject()
             .name(entry.getKey()).unquotedValue(nodeString)
