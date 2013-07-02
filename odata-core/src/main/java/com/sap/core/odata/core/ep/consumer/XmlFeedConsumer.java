@@ -82,8 +82,17 @@ public class XmlFeedConsumer {
 
         reader.next();
         if (reader.hasText()) {
-          String inlineCount = reader.getText();
-          metadata.setInlineCount(Integer.valueOf(inlineCount));
+          String inlineCountString = reader.getText();
+          try {
+            int inlineCountNumber = Integer.valueOf(inlineCountString);
+            if (inlineCountNumber >= 0) {
+              metadata.setInlineCount(inlineCountNumber);
+            } else {
+              throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCountNumber));
+            }
+          } catch (NumberFormatException e) {
+            throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
+          }
         }
       } else if (FormatXml.ATOM_LINK.equals(reader.getLocalName())) {
         reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
