@@ -10,11 +10,13 @@ import java.nio.charset.Charset;
 
 import org.apache.http.HttpEntity;
 
+import com.sap.core.odata.testutil.TestUtilRuntimeException;
+
 /**
  * @author SAP AG
  */
 public class StringHelper {
-  
+
   public static String inputStreamToString(final InputStream in, boolean preserveLineBreaks) throws IOException {
     final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     final StringBuilder stringBuilder = new StringBuilder();
@@ -53,7 +55,7 @@ public class StringHelper {
       return encapsulate(content, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       // we know that UTF-8 is supported
-      throw new RuntimeException("UTF-8 MUST be supported.", e);
+      throw new TestUtilRuntimeException("UTF-8 MUST be supported.", e);
     }
   }
 
