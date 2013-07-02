@@ -34,7 +34,13 @@ public class BatchTest extends AbstractRefTest {
     assertTrue(responseBody.contains("Frederic Fall MODIFIED"));
   }
 
-  private String execute(String batchResource) throws Exception {
+  @Test
+  public void testErrorBatch() throws Exception {
+    String responseBody = execute("/error.batch");
+    assertTrue(responseBody.contains("HTTP/1.1 404 Not Found"));
+  }
+
+  private String execute(final String batchResource) throws Exception {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "$batch"));
     post.setHeader("Content-Type", "multipart/mixed;boundary=batch_123");
 
@@ -49,5 +55,5 @@ public class BatchTest extends AbstractRefTest {
     String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent());
     return responseBody;
   }
-  
+
 }
