@@ -38,6 +38,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
+import com.sap.core.odata.api.ep.callback.TombstoneCallback;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -169,6 +170,7 @@ public abstract class AbstractProviderTest extends AbstractXmlProducerTestHelper
     prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
     prefixMap.put("ру", "http://localhost");
     prefixMap.put("custom", "http://localhost");
+    prefixMap.put("at", TombstoneCallback.NAMESPACE_TOMBSTONE);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 

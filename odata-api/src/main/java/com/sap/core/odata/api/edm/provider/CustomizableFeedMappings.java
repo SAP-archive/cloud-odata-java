@@ -19,7 +19,7 @@ import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 
 /**
- * Objects of this class represent customizable feed mappings
+ * Objects of this class represent customizable feed mappings.
  * @author SAP AG
  */
 public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
@@ -31,49 +31,31 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   private String fcSourcePath;
   private String fcTargetPath;
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#isFcKeepInContent()
-   */
   @Override
   public Boolean isFcKeepInContent() {
     return fcKeepInContent;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcContentKind()
-   */
   @Override
   public EdmContentKind getFcContentKind() {
     return fcContentKind;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcNsPrefix()
-   */
   @Override
   public String getFcNsPrefix() {
     return fcNsPrefix;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcNsUri()
-   */
   @Override
   public String getFcNsUri() {
     return fcNsUri;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcSourcePath()
-   */
   @Override
   public String getFcSourcePath() {
     return fcSourcePath;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcTargetPath()
-   */
   @Override
   public String getFcTargetPath() {
     return fcTargetPath;
@@ -87,7 +69,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets if this is kept in content
+   * Sets if this is kept in content.
    * @param fcKeepInContent
    * @return {@link CustomizableFeedMappings} for method chaining
    */
@@ -97,7 +79,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the {@link EdmContentKind}
+   * Sets the {@link EdmContentKind}.
    * @param fcContentKind
    * @return {@link CustomizableFeedMappings} for method chaining
    */
@@ -107,7 +89,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the prefix
+   * Sets the prefix.
    * @param fcNsPrefix
    * @return {@link CustomizableFeedMappings} for method chaining
    */
@@ -117,7 +99,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the Uri
+   * Sets the Uri.
    * @param fcNsUri
    * @return {@link CustomizableFeedMappings} for method chaining
    */
@@ -127,7 +109,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the source path
+   * Sets the source path.
    * @param fcSourcePath
    * @return {@link CustomizableFeedMappings} for method chaining
    */
@@ -137,7 +119,9 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the target path. Constants available {@link com.sap.core.odata.api.edm.EdmTargetPath}
+   * <p>Sets the target path.</p>
+   * <p>For standard Atom elements, constants are available in
+   * {@link com.sap.core.odata.api.edm.EdmTargetPath EdmTargetPath}.</p>
    * @param fcTargetPath
    * @return {@link CustomizableFeedMappings} for method chaining
    */

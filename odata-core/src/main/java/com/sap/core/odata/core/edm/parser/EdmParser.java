@@ -65,6 +65,7 @@ public class EdmParser {
   private Map<String, String> namespaceMap;
   private Map<String, String> mandatoryNamespaces;
   private Map<FullQualifiedName, EntityType> entityTypesMap = new HashMap<FullQualifiedName, EntityType>();
+  private Map<FullQualifiedName, ComplexType> complexTypesMap = new HashMap<FullQualifiedName, ComplexType>();
   private Map<FullQualifiedName, Association> associationsMap = new HashMap<FullQualifiedName, Association>();
   private Map<FullQualifiedName, EntityContainer> containerMap = new HashMap<FullQualifiedName, EntityContainer>();
   private List<NavigationProperty> navProperties = new ArrayList<NavigationProperty>();
@@ -395,6 +396,13 @@ public class EdmParser {
     List<Property> properties = new ArrayList<Property>();
     List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
     complexType.setName(reader.getAttributeValue(null, EdmParserConstants.EDM_NAME));
+    String baseType = reader.getAttributeValue(null, EdmParserConstants.EDM_BASE_TYPE);
+    if (baseType != null) {
+      complexType.setBaseType(extractFQName(baseType));
+    }
+    if (reader.getAttributeValue(null, EdmParserConstants.EDM_ENTITY_TYPE_ABSTRACT) != null) {
+      complexType.setAbstract("true".equalsIgnoreCase(reader.getAttributeValue(null, EdmParserConstants.EDM_ENTITY_TYPE_ABSTRACT)));
+    }
     complexType.setAnnotationAttributes(readAnnotationAttribute(reader));
     while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_EDM_2008_09.equals(reader.getNamespaceURI()) && EdmParserConstants.EDM_COMPLEX_TYPE.equals(reader.getLocalName()))) {
       reader.next();
@@ -408,8 +416,13 @@ public class EdmParser {
         }
       }
     }
-
     complexType.setProperties(properties).setAnnotationElements(annotationElements);
+    if (complexType.getName() != null) {
+      FullQualifiedName fqName = new FullQualifiedName(currentNamespace, complexType.getName());
+      complexTypesMap.put(fqName, complexType);
+    } else {
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent("Name"));
+    }
     return complexType;
 
   }
@@ -453,12 +466,13 @@ public class EdmParser {
         extractNamespaces(reader);
       }
     }
-
+    entityType.setKey(key).setProperties(properties).setNavigationProperties(navProperties).setAnnotationElements(annotationElements);
     if (entityType.getName() != null) {
       FullQualifiedName fqName = new FullQualifiedName(currentNamespace, entityType.getName());
       entityTypesMap.put(fqName, entityType);
+    } else {
+      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent("Name"));
     }
-    entityType.setKey(key).setProperties(properties).setNavigationProperties(navProperties).setAnnotationElements(annotationElements);
     return entityType;
   }
 
@@ -762,7 +776,7 @@ public class EdmParser {
     // Looking for the last dot
     String[] names = name.split("\\" + Edm.DELIMITER + "(?=[^\\" + Edm.DELIMITER + "]+$)");
     if (names.length != 2) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid type"));
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Attribute should specify a namespace qualified name or an alias qualified name").addContent(name));
     } else {
       return new FullQualifiedName(names[0], names[1]);
     }
@@ -801,6 +815,29 @@ public class EdmParser {
     }
   }
 
+  private FullQualifiedName validateComplexTypeWithAlias(final FullQualifiedName aliasName) throws EntityProviderException {
+    String namespace = aliasNamespaceMap.get(aliasName.getNamespace());
+    FullQualifiedName fqName = new FullQualifiedName(namespace, aliasName.getName());
+    if (!complexTypesMap.containsKey(fqName)) {
+      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid BaseType").addContent(fqName));
+    }
+    return fqName;
+  }
+
+  private void validateComplexTypes() throws EntityProviderException {
+    for (Map.Entry<FullQualifiedName, ComplexType> complexTypes : complexTypesMap.entrySet()) {
+      if (complexTypes.getValue() != null && complexTypes.getKey() != null) {
+        ComplexType complexType = complexTypes.getValue();
+        if (complexType.getBaseType() != null) {
+          FullQualifiedName baseTypeFQName = complexType.getBaseType();
+          if (!complexTypesMap.containsKey(baseTypeFQName)) {
+            validateComplexTypeWithAlias(baseTypeFQName);
+          }
+        }
+      }
+    }
+  }
+
   private void validateRelationship() throws EntityProviderException {
     for (NavigationProperty navProperty : navProperties) {
       if (associationsMap.containsKey(navProperty.getRelationship())) {
@@ -826,7 +863,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (AssociationSet associationSet : container.getValue().getAssociationSets()) {
         FullQualifiedName association = associationSet.getAssociation();
-        if (associationsMap.containsKey(association) && container.getKey().getNamespace().equals(association.getNamespace())) {
+        if (associationsMap.containsKey(association)) {
           validateAssociationEnd(associationSet.getEnd1(), associationsMap.get(association));
           validateAssociationEnd(associationSet.getEnd2(), associationsMap.get(association));
           boolean end1 = false;
@@ -860,8 +897,7 @@ public class EdmParser {
     for (Map.Entry<FullQualifiedName, EntityContainer> container : containerMap.entrySet()) {
       for (EntitySet entitySet : container.getValue().getEntitySets()) {
         FullQualifiedName entityType = entitySet.getEntityType();
-        if (!(entityTypesMap.containsKey(entityType)
-        && container.getKey().getNamespace().equals(entityType.getNamespace()))) {
+        if (!(entityTypesMap.containsKey(entityType))) {
           validateEntityTypeWithAlias(entityType);
         }
       }
@@ -871,9 +907,10 @@ public class EdmParser {
   private void validate() throws EntityProviderException {
     checkAllMandatoryNamespacesAvailable();
     validateEntityTypes();
+    validateComplexTypes();
     validateRelationship();
-    validateAssociation();
     validateEntitySet();
+    validateAssociation();
   }
 
   private void initialize() {

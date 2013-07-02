@@ -48,7 +48,7 @@ public class XmlFunctionImportTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeFunctionImport(functionImport, employeeData.get("Age"), DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
@@ -64,7 +64,7 @@ public class XmlFunctionImportTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeFunctionImport(functionImport, employeeData.get("Location"), DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
@@ -81,7 +81,7 @@ public class XmlFunctionImportTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeFunctionImport(functionImport, Arrays.asList("1", "2", "3"), DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
@@ -99,7 +99,7 @@ public class XmlFunctionImportTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeFunctionImport(functionImport, Arrays.asList(employeeData.get("Location")), DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);

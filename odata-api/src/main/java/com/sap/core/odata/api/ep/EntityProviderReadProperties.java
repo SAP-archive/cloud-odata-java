@@ -80,8 +80,6 @@ public class EntityProviderReadProperties {
   }
 
   /**
-   * 
-   * 
    * @author SAP AG
    */
   public static class EntityProviderReadPropertiesBuilder {

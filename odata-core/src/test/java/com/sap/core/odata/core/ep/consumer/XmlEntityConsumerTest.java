@@ -55,6 +55,7 @@ import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
@@ -112,8 +113,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "       rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" " +
           "       type=\"application/atom+xml; type=entry\" title=\"ne_Room\">" +
           "  <m:inline>" +
-          "  <entry m:etag=\"W/1\" xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">" +
-          "  <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-04-10T10:19:12Z</updated>" +
+          "  <entry m:etag=\"W/1\" xml:base=\"http://some.host.com/service.root/\">" +
+          "  <id>http://some.host.com/service.root/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-04-10T10:19:12Z</updated>" +
           "  <content type=\"application/xml\">" +
           "    <m:properties>" +
           "    <d:Id>1</d:Id>" +
@@ -279,7 +280,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       try {
         String navigationPropertyName = context.getNavigationProperty().getName();
         if (navigationPropertyName != null) {
-          //          System.out.println("Handle: " + context.getNavigationProperty() + "\n\t" + context);
           propName2Context.put(navigationPropertyName, context);
         } else {
           throw new RuntimeException("Invalid title");
@@ -312,11 +312,34 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     }
   }
 
-  /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
-   * 
-   * @throws Exception
-   */
+  @Test
+  public void readDeltaLink() throws Exception {
+    // prepare
+    String content = readFile("feed_with_delta_link.xml");
+    assertNotNull(content);
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false).build();
+
+    ODataFeed feed = xec.readFeed(entitySet, reqContent, consumerProperties);
+    assertNotNull(feed);
+
+    FeedMetadata feedMetadata = feed.getFeedMetadata();
+    assertNotNull(feedMetadata);
+
+    String deltaLink = feedMetadata.getDeltaLink();
+    //Null means no deltaLink found
+    assertNotNull(deltaLink);
+
+    assertEquals("http://thisisadeltalink", deltaLink);
+  }
+
+  /** Teams('1')?$expand=nt_Employees */
   @Test
   public void readWithInlineContentAndCallback() throws Exception {
     // prepare
@@ -405,7 +428,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   @Test
   public void readInlineBuildingEntry() throws Exception {
     // prepare
-
     String content = readFile("expandedBuilding.xml");
     assertNotNull(content);
 
@@ -437,12 +459,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNull(inlineBuildingProps.get("nb_Rooms"));
   }
 
-  /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
-   * 
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
+  /** Teams('1')?$expand=nt_Employees */
   @Test
   public void readWithInlineContent() throws Exception {
     // prepare
@@ -478,17 +495,15 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
   }
 
-  /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
-   * 
-   * @throws Exception
-   */
+  /** Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team */
   @Test
   public void readWithDoubleInlineContent() throws Exception {
     // prepare
@@ -531,14 +546,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
 
-  /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
-   * 
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
+  /** Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team */
   @Test
-  @Ignore("Implementation doesnt support callback AND deep map")
+  @Ignore("Implementation doesn't support callback AND deep map")
   public void readWithDoubleInlineContentAndResendCallback() throws Exception {
     // prepare
     String content = readFile("double_expanded_team.xml");
@@ -562,6 +572,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", properties.get("Name"));
     assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
     //
+    @SuppressWarnings("unchecked")
     List<ODataEntry> employees = (List<ODataEntry>) properties.get("nt_Employees");
     assertEquals(3, employees.size());
     //
@@ -570,7 +581,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
     assertEquals("2", employessNo2Props.get("RoomId"));
     assertEquals(32, employessNo2Props.get("Age"));
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    @SuppressWarnings("unchecked")
     Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
@@ -580,11 +593,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
   }
 
-  /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
-   * 
-   * @throws Exception
-   */
+  /** Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team */
   @SuppressWarnings("unchecked")
   @Test
   public void readWithDoubleInlineContentAndCallback() throws Exception {
@@ -688,9 +697,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Read an inline Room at an Employee with special formated XML (see issue: https://jtrack/browse/ODATAFORSAP-92)
-   * 
-   * @throws Exception
+   * Reads an inline Room at an Employee with specially formatted XML (see issue ODATAFORSAP-92).
    */
   @Test
   public void readWithInlineContentEmployeeRoomEntrySpecialXml() throws Exception {
@@ -785,7 +792,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * Teams('1')?$expand=nt_Employees
    * -> Remove 'feed' start and end tags around expanded/inlined employees
    * 
    * @throws Exception
@@ -794,7 +801,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   public void validateFeedForInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml")
-        .replace("<feed xml:base=\"http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/\">", "")
+        .replace("<feed xml:base=\"http://some.host.com/service.root/\">", "")
         .replace("</feed>", "");
     assertNotNull(content);
 
@@ -806,7 +813,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * Teams('1')?$expand=nt_Employees
    * -> Remove 'type' attribute at expanded/inlined employees link tag
    * 
    * @throws Exception
@@ -826,7 +833,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * Teams('1')?$expand=nt_Employees
    * -> Replaced parameter 'type=feed' with 'type=entry' attribute at expanded/inlined employees link tag
    * 
    * @throws Exception
@@ -846,7 +853,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * Teams('1')?$expand=nt_Employees
    * -> Replaced parameter 'type=feed' with 'type=entry' attribute at expanded/inlined employees link tag
    * 
    * @throws Exception
@@ -1156,7 +1163,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.EXCEPTION_OCCURRED.addContent("WstxParsingException"));
   }
 
   /**
@@ -1322,7 +1329,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.EXCEPTION_OCCURRED.addContent("WstxParsingException"));
   }
 
   /**
@@ -1479,6 +1486,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     FeedMetadata metadata = feedResult.getFeedMetadata();
     assertNull(metadata.getInlineCount());
     assertNull(metadata.getNextLink());
+    assertNull(metadata.getDeltaLink());
     // entries
     List<ODataEntry> entries = feedResult.getEntries();
     assertEquals(6, entries.size());
@@ -1523,6 +1531,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     FeedMetadata metadata = feedResult.getFeedMetadata();
     assertEquals(Integer.valueOf(6), metadata.getInlineCount());
     assertEquals("http://thisisanextlink", metadata.getNextLink());
+    assertNull(metadata.getDeltaLink());
     // entries
     List<ODataEntry> entries = feedResult.getEntries();
     assertEquals(6, entries.size());
@@ -1578,13 +1587,41 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
-    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
-    //    //"1999-01-01T00:00:00"
-    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    //    cal.set(1999, 0, 1, 0, 0, 0);
-    //    cal.setTimeInMillis(915148800000l);
-    //    System.out.println(cal);
-    //    System.out.println(result.get("EntryDate"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryWithLargeProperty() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String newName = StringHelper.generateData(81920);
+    InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML.replaceAll("Walter Winter", newName));
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals(newName, properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
@@ -1786,13 +1823,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
-    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
-    //    //"1999-01-01T00:00:00"
-    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    //    cal.set(1999, 0, 1, 0, 0, 0);
-    //    cal.setTimeInMillis(915148800000l);
-    //    System.out.println(cal);
-    //    System.out.println(result.get("EntryDate"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
@@ -2027,6 +2057,18 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
+  public void readLargeStringPropertyValue() throws Exception {
+    String name = StringHelper.generateData(77777);
+    String xml = "<EmployeeName xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">" + name + "</EmployeeName>";
+    InputStream content = createContentAsStream(xml);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
+
+    Object result = new XmlEntityConsumer().readPropertyValue(property, content, String.class);
+
+    assertEquals(name, result);
+  }
+
+  @Test
   public void testReadIntegerPropertyAsLong() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
@@ -2072,8 +2114,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML
         .replace("<title type=\"text\">Walter Winter</title>",
             "<title type=\"text\"><title>Walter Winter</title></title>"));
-    //        .replace("<id>http://localhost:19000/Employees('1')</id>", 
-    //            "<id><id>http://localhost:19000/Employees('1')</id></id>"));
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());

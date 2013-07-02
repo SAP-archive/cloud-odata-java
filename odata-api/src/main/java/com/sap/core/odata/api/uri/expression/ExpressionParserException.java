@@ -91,35 +91,18 @@ public class ExpressionParserException extends ODataBadRequestException {
   }
 
   /**
-   * Get erroneous filter expression tree for debug information
-   * @return 
-   *   Erroneous filter tree 
+   * Gets erroneous filter expression tree for debug information.
+   * @return erroneous filter tree 
    */
   public CommonExpression getFilterTree() {
     return filterTree;
   }
 
   /**
-   * Set erroneous filter tree for debug information
-   * @param filterTree 
-   *   FilterTree to be set
-   * @return 
-   *   A self reference for method chaining"
+   * Sets erroneous filter tree for debug information.
+   * @param filterTree filter tree to be set
    */
-  public ExpressionParserException setFilterTree(final CommonExpression filterTree) {
+  public void setFilterTree(final CommonExpression filterTree) {
     this.filterTree = filterTree;
-    return this;
-  }
-
-  /**
-   * Set exception cause
-   * @param cause 
-   *   Exception that cause this exception 
-   * @return 
-   *   A self reference for method chaining"
-   */
-  public ExpressionParserException setCause(final Throwable cause) {
-    initCause(cause);
-    return this;
   }
 }

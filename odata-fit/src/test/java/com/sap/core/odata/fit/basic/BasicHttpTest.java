@@ -38,6 +38,7 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -46,7 +47,6 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.testutil.helper.HttpMerge;
 import com.sap.core.odata.testutil.helper.HttpSomethingUnsupported;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -198,7 +198,7 @@ public class BasicHttpTest extends AbstractBasicTest {
   public void unknownMethod() throws Exception {
     HttpSomethingUnsupported request = new HttpSomethingUnsupported(getEndpoint() + "aaa/bbb/ccc");
     final HttpResponse response = getHttpClient().execute(request);
-    assertEquals(HttpStatusCodes.NOT_IMPLEMENTED.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -259,6 +259,6 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void tunneledUnknownMethodOverride() throws Exception {
-    tunnelPost("X-HTTP-Method-Override", "xxx", HttpStatusCodes.NOT_IMPLEMENTED);
+    tunnelPost("X-HTTP-Method-Override", "xxx", HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 }

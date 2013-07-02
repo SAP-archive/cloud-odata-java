@@ -34,6 +34,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -79,17 +80,17 @@ public class BasicEntityProvider {
       buffer.flush();
       return buffer.toByteArray();
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   /**
-   * 
-   * @param content
+   * Reads text from an input stream.
+   * @param content the content input stream
    * @return text as string from <code>InputStream</code>
    * @throws EntityProviderException
    */
-  private String readText(final InputStream content) throws EntityProviderException {
+  public String readText(final InputStream content) throws EntityProviderException {
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content, Charset.forName(DEFAULT_CHARSET)));
     StringBuilder stringBuilder = new StringBuilder();
     try {
@@ -99,7 +100,7 @@ public class BasicEntityProvider {
       }
       bufferedReader.close();
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return stringBuilder.toString();
   }
@@ -117,7 +118,7 @@ public class BasicEntityProvider {
     try {
       type = (EdmSimpleType) edmProperty.getType();
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -130,7 +131,7 @@ public class BasicEntityProvider {
           return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), typeMapping);
         }
       } catch (EdmException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
     }
   }
@@ -170,7 +171,7 @@ public class BasicEntityProvider {
       }
 
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -187,7 +188,7 @@ public class BasicEntityProvider {
       try {
         stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
       builder.entity(stream);
     }
@@ -206,9 +207,11 @@ public class BasicEntityProvider {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (data != null) {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      builder.contentHeader(mimeType);
       builder.entity(bais);
+    } else {
+      builder.status(HttpStatusCodes.NO_CONTENT);
     }
-    builder.contentHeader(mimeType);
     return builder.build();
   }
 
@@ -233,11 +236,11 @@ public class BasicEntityProvider {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
       XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, predefinedNamespaces);
     } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (FactoryConfigurationError e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     builder.entity(csb.getInputStream());
     builder.contentHeader(ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString());

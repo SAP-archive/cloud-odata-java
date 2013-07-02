@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.sap.core.odata.core.edm;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -124,43 +122,31 @@ public class EdmTime extends AbstractSimpleType {
     } else if (value instanceof Calendar) {
       dateTimeValue = (Calendar) ((Calendar) value).clone();
     } else if (value instanceof Long) {
-      dateTimeValue = Calendar.getInstance();
+      dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
       dateTimeValue.clear();
-      dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
       dateTimeValue.setTimeInMillis((Long) value);
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    final String pattern = "'PT'H'H'm'M's.SSS";
-    SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();
-    dateFormat.setTimeZone(dateTimeValue.getTimeZone());
-    dateFormat.applyPattern(pattern);
-    String result = dateFormat.format(dateTimeValue.getTime());
+    StringBuilder result = new StringBuilder(15); // 15 characters are enough for millisecond precision.
+    result.append('P');
+    result.append('T');
+    result.append(dateTimeValue.get(Calendar.HOUR_OF_DAY));
+    result.append('H');
+    result.append(dateTimeValue.get(Calendar.MINUTE));
+    result.append('M');
+    result.append(dateTimeValue.get(Calendar.SECOND));
 
-    if (facets == null || facets.getPrecision() == null) {
-      while (result.endsWith("0")) {
-        result = result.substring(0, result.length() - 1);
-      }
-    } else if (facets.getPrecision() <= 3) {
-      if (result.endsWith("000".substring(0, 3 - facets.getPrecision()))) {
-        result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-      } else {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-    } else {
-      for (int i = 4; i <= facets.getPrecision(); i++) {
-        result += "0";
-      }
+    try {
+      EdmDateTime.appendMilliseconds(result, dateTimeValue.get(Calendar.MILLISECOND), facets);
+    } catch (final IllegalArgumentException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets), e);
     }
 
-    if (result.endsWith(".")) {
-      result = result.substring(0, result.length() - 1);
-    }
+    result.append('S');
 
-    result += "S";
-
-    return result;
+    return result.toString();
   }
 
   @Override

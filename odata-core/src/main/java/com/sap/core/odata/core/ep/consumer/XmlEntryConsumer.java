@@ -89,9 +89,9 @@ public class XmlEntryConsumer {
 
       return readEntryResult;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -409,7 +409,7 @@ public class XmlEntryConsumer {
    */
   private Object extractODataEntity(final boolean isFeed, final List<ODataEntry> inlineEntries) {
     if (isFeed) {
-      //TODO: fill metadata correctly
+      //TODO: fill metadata correctly with inline count and inline next link. Both are currently ignored.
       return new ODataFeedImpl(inlineEntries, new FeedMetadataImpl());
     } else if (!inlineEntries.isEmpty()) {
       return inlineEntries.get(0);
@@ -439,7 +439,7 @@ public class XmlEntryConsumer {
         callback.handleReadEntry(callbackInfo);
       }
     } catch (ODataApplicationException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -462,7 +462,7 @@ public class XmlEntryConsumer {
       try {
         return callback.receiveReadProperties(currentReadProperties, navigationProperty);
       } catch (ODataApplicationException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
     }
   }

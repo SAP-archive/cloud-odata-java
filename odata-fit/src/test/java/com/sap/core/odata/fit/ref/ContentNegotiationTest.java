@@ -50,7 +50,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   @Test
   public void formatAtom() throws Exception {
     final HttpResponse response = callUri("Rooms('1')?$format=atom");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
   }
 
   @Test
@@ -129,7 +129,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
     String body = getBody(callUri("Rooms('1')"));
     final HttpResponse response = postUri("Rooms", body,
         HttpContentType.APPLICATION_ATOM_XML, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertTrue(getBody(response).length() > 100);
   }
 

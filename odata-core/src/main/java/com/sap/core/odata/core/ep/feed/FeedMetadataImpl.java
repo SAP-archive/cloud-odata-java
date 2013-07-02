@@ -21,6 +21,7 @@ public class FeedMetadataImpl implements FeedMetadata {
 
   private Integer inlineCount = null;
   private String nextLink = null;
+  private String deltaLink;
 
   public void setInlineCount(final int inlineCount) {
     this.inlineCount = inlineCount;
@@ -38,6 +39,15 @@ public class FeedMetadataImpl implements FeedMetadata {
   @Override
   public String getNextLink() {
     return nextLink;
+  }
+
+  public void setDeltaLink(final String deltaLink) {
+    this.deltaLink = deltaLink;
+  }
+
+  @Override
+  public String getDeltaLink() {
+    return deltaLink;
   }
 
 }

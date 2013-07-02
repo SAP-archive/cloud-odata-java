@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sap.core.odata.core.rest;
+
+package com.sap.core.odata.api.commons;
 
 /**
+ * The supported HTTP methods.
  * @author SAP AG
  */
-public interface ODataLocator {
-
+public enum ODataHttpMethod {
+  GET, PUT, POST, DELETE, PATCH, MERGE;
 }

@@ -76,7 +76,7 @@ public class AtomServiceDocumentConsumer {
         }
       }
       if (workspaces.isEmpty()) {
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Service element must contain at least one workspace element"));
+        throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Service element must contain at least one workspace element"));
       }
       reader.close();
       atomInfo.setWorkspaces(workspaces).setCommonAttributes(attributes).setExtesionElements(extElements);
@@ -85,7 +85,7 @@ public class AtomServiceDocumentConsumer {
       serviceDocument.setEntitySetsInfo(atomInfo.getEntitySetsInfo());
       return serviceDocument;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid service document"), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -130,7 +130,7 @@ public class AtomServiceDocumentConsumer {
       }
     }
     if (title == null) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Missing element title for workspace"));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Missing element title for workspace"));
     }
     return new WorkspaceImpl().setTitle(title).setCollections(collections).setAttributes(attributes).setExtesionElements(extElements);
   }
@@ -265,7 +265,7 @@ public class AtomServiceDocumentConsumer {
     }
     extElement.setElements(extensionElements);
     if (extElement.getText() == null && extElement.getAttributes().isEmpty() && extElement.getElements().isEmpty()) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid extension element"));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Invalid extension element"));
     }
     return extElement;
   }
@@ -298,11 +298,11 @@ public class AtomServiceDocumentConsumer {
       try {
         streamReader = factory.createXMLStreamReader(in);
       } catch (XMLStreamException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("XML Exception"), e);
+        throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       }
       return streamReader;
     } else {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("Null InputStream"));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("Null InputStream"));
     }
   }
 

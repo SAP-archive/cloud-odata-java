@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.sap.core.odata.api.ep.callback;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 
 /**
@@ -25,7 +26,7 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
  * @author SAP AG
  *
  */
-public interface OnWriteEntryContent {
+public interface OnWriteEntryContent extends ODataCallback {
 
   /**
    * Retrieves the data for an entry. See {@link WriteEntryCallbackContext} for details on the context and {@link WriteEntryCallbackResult} for details on the result of this method.

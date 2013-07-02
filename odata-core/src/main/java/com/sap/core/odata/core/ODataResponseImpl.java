@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.sap.core.odata.core;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -22,13 +24,14 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
+/**
+ * @author SAP AG
+ */
 public class ODataResponseImpl extends ODataResponse {
 
   private HttpStatusCodes status;
   private Object entity;
-  private HashMap<String, String> header;
-  private String idLiteral;
-  private String eTag;
+  private HashMap<String, String> headers;
 
   @Override
   public HttpStatusCodes getStatus() {
@@ -41,41 +44,46 @@ public class ODataResponseImpl extends ODataResponse {
   }
 
   @Override
+  public void close() throws IOException {
+    if (entity != null && entity instanceof Closeable) {
+      Closeable closeableEntity = (Closeable) entity;
+      closeableEntity.close();
+    }
+  }
+
+  @Override
   public String getHeader(final String name) {
-    return header.get(name);
+    return headers.get(name);
   }
 
   @Override
   public Set<String> getHeaderNames() {
-    return header.keySet();
+    return headers.keySet();
   }
 
   @Override
   public String getIdLiteral() {
-    return idLiteral;
+    return headers.get(HttpHeaders.LOCATION);
   }
 
   @Override
   public String getETag() {
-    return eTag;
+    return headers.get(HttpHeaders.ETAG);
   }
 
   @Override
   public String getContentHeader() {
-    return header.get(HttpHeaders.CONTENT_TYPE);
+    return headers.get(HttpHeaders.CONTENT_TYPE);
   }
 
   @Override
   public boolean containsHeader(final String header) {
-
     boolean contains = false;
-
-    for (String containedHeader : this.header.keySet()) {
+    for (String containedHeader : headers.keySet()) {
       if (containedHeader.equalsIgnoreCase(header)) {
         contains = true;
         break;
       }
-
     }
     return contains;
   }
@@ -83,17 +91,13 @@ public class ODataResponseImpl extends ODataResponse {
   public class ODataResponseBuilderImpl extends ODataResponseBuilder {
     private HttpStatusCodes status;
     private Object entity;
-    private HashMap<String, String> header = new HashMap<String, String>();
-    private String idLiteral;
-    private String eTag;
+    private HashMap<String, String> headers = new HashMap<String, String>();
 
     @Override
     public ODataResponse build() {
-      ODataResponseImpl.this.entity = entity;
-      ODataResponseImpl.this.header = header;
-      ODataResponseImpl.this.eTag = eTag;
       ODataResponseImpl.this.status = status;
-      ODataResponseImpl.this.idLiteral = idLiteral;
+      ODataResponseImpl.this.entity = entity;
+      ODataResponseImpl.this.headers = headers;
 
       return ODataResponseImpl.this;
     }
@@ -113,9 +117,9 @@ public class ODataResponseImpl extends ODataResponse {
     @Override
     public ODataResponseBuilder header(final String name, final String value) {
       if (value == null) {
-        header.remove(name);
+        headers.remove(name);
       } else {
-        header.put(name, value);
+        headers.put(name, value);
       }
 
       return this;
@@ -123,31 +127,27 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponseBuilder idLiteral(final String idLiteral) {
-      this.idLiteral = idLiteral;
-      return this;
+      return header(HttpHeaders.LOCATION, idLiteral);
     }
 
     @Override
     public ODataResponseBuilder eTag(final String eTag) {
-      this.eTag = eTag;
-      return this;
+      return header(HttpHeaders.ETAG, eTag);
     }
 
     @Override
     public ODataResponseBuilder contentHeader(final String value) {
-      header.put(HttpHeaders.CONTENT_TYPE, value);
-      return this;
+      return header(HttpHeaders.CONTENT_TYPE, value);
     }
 
     @Override
     protected ODataResponseBuilder fromResponse(final ODataResponse response) {
+      status = response.getStatus();
       entity = response.getEntity();
-      eTag = response.getETag();
-      idLiteral = response.getIdLiteral();
 
-      header = new HashMap<String, String>();
+      headers = new HashMap<String, String>();
       for (String key : response.getHeaderNames()) {
-        header.put(key, response.getHeader(key));
+        headers.put(key, response.getHeader(key));
       }
 
       return this;

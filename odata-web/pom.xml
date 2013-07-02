@@ -44,6 +44,23 @@
 		</plugins>
 
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>cloudbuild</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.sap.core.js.catalina</groupId>
+					<artifactId>com.sap.core.js.catalina.fragment</artifactId>
+					<version>1.1.1</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -72,12 +89,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sap.core.js.catalina</groupId>
-			<artifactId>com.sap.core.js.catalina.fragment</artifactId>
-			<version>1.1.1</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>

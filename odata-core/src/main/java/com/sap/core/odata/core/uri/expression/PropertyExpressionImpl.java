@@ -34,29 +34,25 @@ public class PropertyExpressionImpl implements PropertyExpression {
     this.uriLiteral = uriLiteral;
 
     this.edmLiteral = edmLiteral;
-    if (edmLiteral != null)
-    {
+    if (edmLiteral != null) {
       edmType = edmLiteral.getType();
     }
   }
 
-  public CommonExpression setEdmProperty(final EdmTyped edmProperty)
-  {
+  public CommonExpression setEdmProperty(final EdmTyped edmProperty) {
     //used EdmTyped because it may be a EdmProperty or a EdmNavigationProperty
     this.edmProperty = edmProperty;
     return this;
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
 
   @Override
-  public String getPropertyName()
-  {
+  public String getPropertyName() {
     if (edmProperty == null) {
       return "";
     }
@@ -68,38 +64,32 @@ public class PropertyExpressionImpl implements PropertyExpression {
     }
   }
 
-  public EdmLiteral getEdmLiteral()
-  {
+  public EdmLiteral getEdmLiteral() {
     return edmLiteral;
   }
 
   @Override
-  public EdmTyped getEdmProperty()
-  {
+  public EdmTyped getEdmProperty() {
     return edmProperty;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.PROPERTY;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return uriLiteral;
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor)
-  {
+  public Object accept(final ExpressionVisitor visitor) {
     Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;
   }

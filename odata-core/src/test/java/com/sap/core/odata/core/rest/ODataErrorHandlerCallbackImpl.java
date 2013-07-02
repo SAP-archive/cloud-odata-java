@@ -25,6 +25,7 @@ import com.sap.core.odata.api.processor.ODataErrorCallback;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.uri.PathInfo;
 
 public class ODataErrorHandlerCallbackImpl implements ODataErrorCallback {
 
@@ -34,6 +35,16 @@ public class ODataErrorHandlerCallbackImpl implements ODataErrorCallback {
 
     if (context.getRequestUri() != null) {
       responseBuilder.header("RequestUri", context.getRequestUri().toASCIIString());
+      PathInfo pathInfo = context.getPathInfo();
+      if (pathInfo == null) {
+        responseBuilder.header("PathInfo", "NULL");
+      } else {
+        responseBuilder.header("PathInfo", "TRUE");
+        responseBuilder.header("PathInfo.oDataSegments", pathInfo.getODataSegments().toString());
+        responseBuilder.header("PathInfo.precedingSegments", pathInfo.getPrecedingSegments().toString());
+        responseBuilder.header("PathInfo.requestUri", pathInfo.getRequestUri().toString());
+        responseBuilder.header("PathInfo.serviceRoot", pathInfo.getServiceRoot().toString());
+      }
     }
 
     Map<String, List<String>> requestHeaders = context.getRequestHeaders();

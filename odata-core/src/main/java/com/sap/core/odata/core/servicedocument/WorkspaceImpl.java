@@ -23,6 +23,9 @@ import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Title;
 import com.sap.core.odata.api.servicedocument.Workspace;
 
+/**
+ * @author SAP AG
+ */
 public class WorkspaceImpl implements Workspace {
   private Title title;
   private List<Collection> collections;

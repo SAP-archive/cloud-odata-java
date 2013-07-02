@@ -38,8 +38,7 @@ import com.sap.core.odata.api.uri.expression.FilterExpression;
  *  
  * @author SAP AG
  */
-public interface FilterParser
-{
+public interface FilterParser {
   /**
    * Parses a $filter expression string and creates an $orderby expression tree.
    * @param expression

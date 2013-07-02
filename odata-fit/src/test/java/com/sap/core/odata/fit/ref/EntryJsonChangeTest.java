@@ -43,6 +43,16 @@ public class EntryJsonChangeTest extends AbstractRefTest {
   }
 
   @Test
+  public void createEntryWithNavigation() throws Exception {
+    final String requestBody = "{\"Id\":\"199\",\"Name\":\"Room 199\"}";
+    final HttpResponse response = postUri("Buildings('1')/nb_Rooms()", requestBody, HttpContentType.APPLICATION_JSON, HttpStatusCodes.CREATED);
+    assertFalse(getBody(response).isEmpty());
+    checkUri("Rooms('104')?$format=json");
+    assertEquals("1", getBody(callUri("Rooms('104')/nr_Building/Id/$value")));
+    checkUri("Buildings('1')/nb_Rooms('104')?$format=json");
+  }
+
+  @Test
   public void createEntryWithLink() throws Exception {
     final String requestBody = "{\"Id\":\"99\",\"Name\":\"new room\",\"Seats\":19,\"Version\":42,"
         + "\"nr_Building\":{\"__deferred\":{\"uri\":\"" + getEndpoint() + "Buildings('1')\"}}}";

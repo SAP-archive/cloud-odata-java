@@ -42,7 +42,7 @@ public enum BinaryOperator {
   }
 
   /** 
-   * @return Operators name for usage in in text
+   * @return Operator name for usage in text
    */
   @Override
   public String toString() {
@@ -50,7 +50,7 @@ public enum BinaryOperator {
   }
 
   /**
-   * @return URI literal of the unary operator as used in the URL. 
+   * @return URI literal of the binary operator as used in the URL. 
    */
   public String toUriLiteral() {
     return uriSyntax;

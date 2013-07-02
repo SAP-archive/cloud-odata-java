@@ -15,13 +15,11 @@
  ******************************************************************************/
 package com.sap.core.odata.core.uri.expression;
 
-public class ActualBinaryOperator
-{
+public class ActualBinaryOperator {
   final protected InfoBinaryOperator operator;
   final protected Token token;
 
-  public ActualBinaryOperator(final InfoBinaryOperator operatorInfo, final Token token)
-  {
+  public ActualBinaryOperator(final InfoBinaryOperator operatorInfo, final Token token) {
     if (operatorInfo == null) {
       throw new IllegalArgumentException("operatorInfo parameter must not be null");
     }
@@ -30,13 +28,11 @@ public class ActualBinaryOperator
     this.token = token;
   }
 
-  public Token getToken()
-  {
+  public Token getToken() {
     return token;
   }
 
-  public InfoBinaryOperator getOP()
-  {
+  public InfoBinaryOperator getOP() {
     return operator;
   }
 

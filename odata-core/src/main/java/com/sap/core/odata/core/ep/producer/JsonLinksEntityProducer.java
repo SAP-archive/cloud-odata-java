@@ -43,15 +43,14 @@ public class JsonLinksEntityProducer {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
+      jsonStreamWriter.beginObject()
+          .name(FormatJson.D);
 
       if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         final int inlineCount = properties.getInlineCount() == null ? 0 : properties.getInlineCount();
-        jsonStreamWriter.beginObject();
-        jsonStreamWriter.namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount));
-        jsonStreamWriter.separator();
-        jsonStreamWriter.name(FormatJson.RESULTS);
+        jsonStreamWriter.beginObject()
+            .namedStringValueRaw(FormatJson.COUNT, String.valueOf(inlineCount)).separator()
+            .name(FormatJson.RESULTS);
       }
 
       jsonStreamWriter.beginArray();

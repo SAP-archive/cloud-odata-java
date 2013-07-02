@@ -26,11 +26,9 @@ public interface InputTypeValidator {
   public static class TypePromotionValidator implements InputTypeValidator {
 
     @Override
-    public EdmType validateParameterSet(final List<ParameterSet> allowedParameterTypes, final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
-    {
+    public EdmType validateParameterSet(final List<ParameterSet> allowedParameterTypes, final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
       //first check for exact parameter combination
-      for (ParameterSet parameterSet : allowedParameterTypes)
-      {
+      for (ParameterSet parameterSet : allowedParameterTypes) {
         boolean s = parameterSet.equals(actualParameterTypes, false);
         if (s) {
           return parameterSet.getReturnType();
@@ -38,8 +36,7 @@ public interface InputTypeValidator {
       }
 
       //first check for parameter combination with promotion
-      for (ParameterSet parameterSet : allowedParameterTypes)
-      {
+      for (ParameterSet parameterSet : allowedParameterTypes) {
         boolean s = parameterSet.equals(actualParameterTypes, true);
         if (s) {
           return parameterSet.getReturnType();

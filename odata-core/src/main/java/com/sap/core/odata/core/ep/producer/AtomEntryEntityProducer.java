@@ -80,7 +80,7 @@ public class AtomEntryEntityProducer {
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
       }
       if (!isFeedPart) {
-        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
+        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_BASE, properties.getServiceRoot().toASCIIString());
       }
 
       etag = createETag(eia, data);
@@ -274,7 +274,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
-      writer.writeAttribute(FormatXml.ATOM_REL, "edit");
+      writer.writeAttribute(FormatXml.ATOM_REL, Edm.LINK_REL_EDIT);
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityType().getName());
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -294,7 +294,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
-      writer.writeAttribute(FormatXml.ATOM_REL, "edit-media");
+      writer.writeAttribute(FormatXml.ATOM_REL, Edm.LINK_REL_EDIT_MEDIA);
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -327,7 +327,7 @@ public class AtomEntryEntityProducer {
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
-      writer.writeAttribute(FormatXml.M_TYPE, "text");
+      writer.writeAttribute(FormatXml.ATOM_TYPE, FormatXml.ATOM_TEXT);
       EntityPropertyInfo titleInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_TITLE);
       if (titleInfo != null) {
         EdmSimpleType st = (EdmSimpleType) titleInfo.getType();
@@ -343,19 +343,7 @@ public class AtomEntryEntityProducer {
 
       writer.writeStartElement(FormatXml.ATOM_UPDATED);
 
-      Object updateDate = null;
-      EdmFacets updateFacets = null;
-      EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
-      if (updatedInfo != null) {
-        updateDate = data.get(updatedInfo.getName());
-        if (updateDate != null) {
-          updateFacets = updatedInfo.getFacets();
-        }
-      }
-      if (updateDate == null) {
-        updateDate = new Date();
-      }
-      writer.writeCharacters(EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
+      writer.writeCharacters(getUpdatedString(eia, data));
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -363,6 +351,23 @@ public class AtomEntryEntityProducer {
     } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  String getUpdatedString(final EntityInfoAggregator eia, final Map<String, Object> data) throws EdmSimpleTypeException {
+    Object updateDate = null;
+    EdmFacets updateFacets = null;
+    EntityPropertyInfo updatedInfo = eia.getTargetPathInfo(EdmTargetPath.SYNDICATION_UPDATED);
+    if (updatedInfo != null) {
+      updateDate = data.get(updatedInfo.getName());
+      if (updateDate != null) {
+        updateFacets = updatedInfo.getFacets();
+      }
+    }
+    if (updateDate == null) {
+      updateDate = new Date();
+    }
+    String valueToString = EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets);
+    return valueToString;
   }
 
   private String getTargetPathValue(final EntityInfoAggregator eia, final String targetPath, final Map<String, Object> data) throws EntityProviderException {
@@ -438,7 +443,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  protected static String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
+  static String createSelfLink(final EntityInfoAggregator eia, final Map<String, Object> data, final String extension) throws EntityProviderException {
     StringBuilder sb = new StringBuilder();
     if (!eia.isDefaultEntityContainer()) {
       sb.append(Encoder.encode(eia.getEntityContainerName())).append(Edm.DELIMITER);

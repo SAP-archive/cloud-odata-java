@@ -41,7 +41,7 @@ import com.sap.core.odata.testutil.mock.EdmTestProvider;
 public class RequestContentTypeTest extends AbstractBasicTest {
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     return mock(ODataSingleProcessor.class);
   }
 
@@ -149,6 +149,14 @@ public class RequestContentTypeTest extends AbstractBasicTest {
     HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "Rooms"));
     post.addHeader(HttpHeaders.CONTENT_TYPE, "illegal");
     post.addHeader(HttpHeaders.CONTENT_TYPE, HttpContentType.APPLICATION_JSON);
+    final HttpResponse response = getHttpClient().execute(post);
+    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void contentTypeAndSubtypeIllegal() throws Exception {
+    HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "Rooms"));
+    post.addHeader(HttpHeaders.CONTENT_TYPE, "illegal/illegal");
     final HttpResponse response = getHttpClient().execute(post);
     assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatusLine().getStatusCode());
   }

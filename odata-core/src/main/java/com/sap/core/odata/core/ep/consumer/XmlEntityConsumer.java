@@ -41,8 +41,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class XmlEntityConsumer {
 
-  /** Default used charset for writer and response content header */
-  private static final String DEFAULT_CHARSET = "utf-8";
+  /** Default used charset for reader */
+  private static final String DEFAULT_CHARSET = "UTF-8";
 
   public XmlEntityConsumer() throws EntityProviderException {
     super();
@@ -62,7 +62,7 @@ public class XmlEntityConsumer {
       cachedException = e;
       throw cachedException;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -72,7 +72,7 @@ public class XmlEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -94,7 +94,7 @@ public class XmlEntityConsumer {
       cachedException = e;
       throw cachedException;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -104,7 +104,7 @@ public class XmlEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -121,7 +121,7 @@ public class XmlEntityConsumer {
       Map<String, Object> result = xec.readProperty(reader, edmProperty, properties.getMergeSemantic(), properties.getTypeMappings());
       return result;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -131,7 +131,7 @@ public class XmlEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -155,7 +155,7 @@ public class XmlEntityConsumer {
       }
       return result.get(edmProperty.getName());
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -168,7 +168,7 @@ public class XmlEntityConsumer {
       reader = createStaxReader(content);
       return xlc.readLink(reader, entitySet);
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -178,7 +178,7 @@ public class XmlEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -194,7 +194,7 @@ public class XmlEntityConsumer {
       reader = createStaxReader(content);
       return xlc.readLinks(reader, entitySet);
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -204,7 +204,7 @@ public class XmlEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }

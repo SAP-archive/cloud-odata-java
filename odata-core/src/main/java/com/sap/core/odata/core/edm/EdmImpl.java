@@ -63,7 +63,7 @@ public abstract class EdmImpl implements Edm {
           //ensure that the same default entity container is stored in the HashMap under null and its name 
           edmEntityContainer = edmEntityContainers.get(edmEntityContainer.getName());
           edmEntityContainers.put(name, edmEntityContainer);
-        } else if (edmEntityContainers.containsKey(null) && name.equals(edmEntityContainers.get(null).getName())) {
+        } else if (edmEntityContainers.containsKey(null) && edmEntityContainers.get(null) != null && name.equals(edmEntityContainers.get(null).getName())) {
           //ensure that the same default entity container is stored in the HashMap under null and its name        
           edmEntityContainer = edmEntityContainers.get(null);
           edmEntityContainers.put(name, edmEntityContainer);

@@ -16,6 +16,7 @@
 package com.sap.core.odata.ref.processor;
 
 import com.sap.core.odata.api.ODataCallback;
+import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
@@ -42,6 +43,14 @@ public class ScenarioServiceFactory extends ODataServiceFactory {
   @Override
   public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
     return (T) (callbackInterface.isAssignableFrom(ScenarioErrorCallback.class) ?
-        new ScenarioErrorCallback() : super.getCallback(callbackInterface));
+        new ScenarioErrorCallback() : callbackInterface.isAssignableFrom(ODataDebugCallback.class) ?
+            new ScenarioDebugCallback() : super.getCallback(callbackInterface));
+  }
+
+  private final class ScenarioDebugCallback implements ODataDebugCallback {
+    @Override
+    public boolean isDebugEnabled() {
+      return true;
+    }
   }
 }

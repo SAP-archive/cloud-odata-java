@@ -17,6 +17,9 @@ package com.sap.core.odata.core.servicedocument;
 
 import com.sap.core.odata.api.servicedocument.ExtensionAttribute;
 
+/**
+ * @author SAP AG
+ */
 public class ExtensionAttributeImpl implements ExtensionAttribute {
   private String namespace;
   private String prefix;

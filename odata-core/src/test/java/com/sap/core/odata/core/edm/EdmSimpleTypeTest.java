@@ -362,12 +362,6 @@ public class EdmSimpleTypeTest extends BaseTest {
     return facets;
   }
 
-  private EdmFacets getDefaultFacets(final String defaultValue) {
-    EdmFacets facets = mock(EdmFacets.class);
-    when(facets.getDefaultValue()).thenReturn(defaultValue);
-    return facets;
-  }
-
   private EdmFacets getPrecisionScaleFacets(final Integer precision, final Integer scale) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.getPrecision()).thenReturn(precision);
@@ -404,8 +398,6 @@ public class EdmSimpleTypeTest extends BaseTest {
       assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(null)));
 
       expectErrorInValueToString(instance, null, EdmLiteralKind.DEFAULT, getNullableFacets(false), EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-
-      assertEquals("default", instance.valueToString(null, EdmLiteralKind.DEFAULT, getDefaultFacets("default")));
     }
   }
 
@@ -524,13 +516,15 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
     dateTime.add(Calendar.MILLISECOND, -90);
     assertEquals("2012-02-29T23:32:02.9", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    dateTime.add(Calendar.MILLISECOND, 100);
+    assertEquals("2012-02-29T23:32:03.0000000", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(7, null)));
 
-    Calendar dateTime2 = Calendar.getInstance();
+    Calendar dateTime2 = Calendar.getInstance(TimeZone.getTimeZone("GMT-11:30"));
     dateTime2.clear();
-    dateTime2.setTimeZone(TimeZone.getTimeZone("GMT-11:30"));
     dateTime2.set(1969, 11, 31, 12, 29, 58);
     assertEquals("/Date(-2000)/", instance.valueToString(dateTime2, EdmLiteralKind.JSON, null));
 
+    dateTime.add(Calendar.MILLISECOND, -100);
     expectErrorInValueToString(instance, dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED);
@@ -586,7 +580,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
     assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
-    assertEquals("123456789012345678901234567890", instance.valueToString(new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null));
+    assertEquals("12345678901234567890123456789", instance.valueToString(new BigInteger("12345678901234567890123456789"), EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
     assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
     assertEquals("-1234567890.1234567890", instance.valueToString(new BigDecimal("-1234567890.1234567890"), EdmLiteralKind.DEFAULT, null));
@@ -601,6 +595,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("0.5", instance.valueToString(0.5, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1)));
     assertEquals("100", instance.valueToString(new BigDecimal(BigInteger.ONE, -2), EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null)));
 
+    expectErrorInValueToString(instance, new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.TEN, -28), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.ONE, 30), EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT);
     expectErrorInValueToString(instance, -1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
     expectErrorInValueToString(instance, 1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
     expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED);
@@ -876,6 +873,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.JSON, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("binary'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(6), byte[].class)));
+    assertTrue(Arrays.equals(new byte[] { 42 }, instance.valueOfString("Kg==", EdmLiteralKind.DEFAULT, getMaxLengthFacets(1), byte[].class)));
+    assertTrue(Arrays.equals(new byte[] { 1, 2 }, instance.valueOfString("AQI=", EdmLiteralKind.JSON, getMaxLengthFacets(2), byte[].class)));
+    assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM\r\n3e7/\r\n", EdmLiteralKind.DEFAULT, getMaxLengthFacets(6), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("X'AABBCCDDEEFF'", EdmLiteralKind.URI, getMaxLengthFacets(Integer.MAX_VALUE), byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null), byte[].class)));
@@ -971,6 +971,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.98700", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9876", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.00000000", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "20120229T233202", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1900-02-29T00:00:00", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "2012-02-29T24:00:01", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);

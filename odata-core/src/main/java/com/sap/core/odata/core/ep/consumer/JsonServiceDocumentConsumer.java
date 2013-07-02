@@ -29,7 +29,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.provider.EdmEntitySetInfoImplProv;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.servicedocument.ServiceDocumentImpl;
@@ -60,13 +59,11 @@ public class JsonServiceDocumentConsumer {
       reader.peek();
       reader.close();
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent("The structure of the service document is not valid"), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } catch (final ODataException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return new ServiceDocumentImpl().setEntitySetsInfo(entitySets);
   }
@@ -103,13 +100,13 @@ public class JsonServiceDocumentConsumer {
 
   private JsonReader createJsonReader(final InputStream in) throws EntityProviderException {
     if (in == null) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent(("Got not supported NULL object as content to de-serialize.")));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(("Got not supported NULL object as content to de-serialize.")));
     }
     InputStreamReader isReader;
     try {
       isReader = new InputStreamReader(in, DEFAULT_CHARSET);
-    } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON.addContent(e));
+    } catch (final UnsupportedEncodingException e) {
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return new JsonReader(isReader);
   }

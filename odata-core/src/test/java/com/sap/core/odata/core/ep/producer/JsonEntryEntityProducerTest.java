@@ -173,7 +173,7 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     ExpandSelectTreeNode node1 = Mockito.mock(ExpandSelectTreeNode.class);
     Mockito.when(node1.getLinks()).thenReturn(links);
 
-    class EntryCallback implements ODataCallback, OnWriteEntryContent {
+    class EntryCallback implements OnWriteEntryContent {
       @Override
       public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) throws ODataApplicationException {
         Map<String, Object> buildingData = new HashMap<String, Object>();
@@ -265,7 +265,7 @@ public class JsonEntryEntityProducerTest extends BaseTest {
     ExpandSelectTreeNode node1 = Mockito.mock(ExpandSelectTreeNode.class);
     Mockito.when(node1.getLinks()).thenReturn(links);
 
-    class FeedCallback implements ODataCallback, OnWriteFeedContent {
+    class FeedCallback implements OnWriteFeedContent {
       @Override
       public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) throws ODataApplicationException {
         Map<String, Object> roomData = new HashMap<String, Object>();

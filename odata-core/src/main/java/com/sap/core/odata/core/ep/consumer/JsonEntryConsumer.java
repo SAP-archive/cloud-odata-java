@@ -44,6 +44,9 @@ import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.uri.ExpandSelectTreeNodeImpl;
 
+/**
+ * @author SAP AG
+ */
 public class JsonEntryConsumer {
 
   private final Map<String, Object> properties = new HashMap<String, Object>();
@@ -79,15 +82,14 @@ public class JsonEntryConsumer {
       reader.endObject();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
     } catch (IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     return entryResult;
@@ -106,7 +108,7 @@ public class JsonEntryConsumer {
       handleName(name);
     }
 
-    //TODO: Ca validate created entry
+    //TODO: validate created entry
   }
 
   private void handleName(final String name) throws IOException, EdmException, EntityProviderException {
@@ -243,7 +245,7 @@ public class JsonEntryConsumer {
           }
 
         } catch (ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
       reader.endObject();
@@ -259,7 +261,7 @@ public class JsonEntryConsumer {
         try {
           inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
         } catch (final ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
       ODataFeed feed = new JsonFeedConsumer(reader, inlineInfo, inlineReadProperties).readInlineFeedStandalone();
@@ -272,7 +274,7 @@ public class JsonEntryConsumer {
         try {
           callback.handleReadFeed(result);
         } catch (final ODataApplicationException e) {
-          throw new EntityProviderException(EntityProviderException.COMMON, e);
+          throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
         }
       }
     }
@@ -287,13 +289,11 @@ public class JsonEntryConsumer {
       expandSelectTree.setExplicitlySelected();
       expandSelectTree.putLink(navigationPropertyName, new ExpandSelectTreeNodeImpl());
     }
-
   }
 
   private void updateExpandSelectTree(final String navigationPropertyName, final ODataEntry entry) {
     expandSelectTree.setExpanded();
     expandSelectTree.setExplicitlySelected();
-    //TODO: CA get rid of cast
     expandSelectTree.putLink(navigationPropertyName, (ExpandSelectTreeNodeImpl) entry.getExpandSelectTree());
   }
 

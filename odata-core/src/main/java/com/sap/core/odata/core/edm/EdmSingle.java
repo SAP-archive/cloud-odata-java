@@ -144,11 +144,8 @@ public class EdmSingle extends AbstractSimpleType {
         return Float.toString(((Double) value).floatValue());
       }
     } else if (value instanceof Float) {
-      if (((Float) value).isInfinite()) {
-        return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
-      } else {
-        return value.toString();
-      }
+      final String result = value.toString();
+      return ((Float) value).isInfinite() ? result.toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5) : result;
     } else if (value instanceof BigDecimal) {
       if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE) {
         return ((BigDecimal) value).toString();

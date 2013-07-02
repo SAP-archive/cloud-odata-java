@@ -35,33 +35,28 @@ public class LiteralExpressionImpl implements LiteralExpression {
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public CommonExpression setEdmType(final EdmType edmType)
-  {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.LITERAL;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return uriLiteral;
   }
 
   @Override
-  public Object accept(final ExpressionVisitor visitor)
-  {
+  public Object accept(final ExpressionVisitor visitor) {
     Object ret = visitor.visitLiteral(this, edmLiteral);
     return ret;
   }

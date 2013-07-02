@@ -40,6 +40,8 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlPropertyConsumer {
 
+  public static final String TRUE = "true";
+
   public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge) throws EntityProviderException {
     return readProperty(reader, property, merge, null);
   }
@@ -60,9 +62,9 @@ public class XmlPropertyConsumer {
       result.put(eia.getName(), value);
       return result;
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -104,37 +106,29 @@ public class XmlPropertyConsumer {
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
       final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
-      if ("true".equals(nullAttribute)) {
+      if (TRUE.equals(nullAttribute)) {
         reader.nextTag();
       } else if (propertyInfo.isComplex()) {
+        final String typeAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_TYPE);
+        String expectedTypeAttributeValue = propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
+        if (typeAttribute != null && !expectedTypeAttributeValue.equals(typeAttribute)) {
+          throw new EntityProviderException(EntityProviderException.INVALID_COMPLEX_TYPE.addContent(expectedTypeAttributeValue).addContent(typeAttribute));
+        }
+
         reader.nextTag();
         while (reader.hasNext() && !reader.isEndElement()) {
           String childName = reader.getLocalName();
           EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
-
+          if (childProperty == null) {
+            throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
+          }
           Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
           name2Value.put(childName, value);
           reader.nextTag();
         }
       } else {
-        String value = null;
-        while (!reader.isEndElement() && reader.hasNext()) {
-          reader.next();
-          if (reader.isCharacters()) {
-            if (value == null) {
-              value = reader.getText();
-            } else {
-              value = value + reader.getText();
-            }
-          }
-          //TODO: should we throw exceptions for events: COMMENT, CDATA
-          //TODO: JUnit Test
-        }
-
-        if (value != null) {
-          Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
-          result = convert(propertyInfo, value, mapping);
-        }
+        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
+        result = convert(propertyInfo, reader.getElementText(), mapping);
       }
       reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
 
@@ -145,7 +139,7 @@ public class XmlPropertyConsumer {
         return name2Value;
       }
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return null;
   }

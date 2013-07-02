@@ -36,19 +36,19 @@ public class JsonCollectionEntityProducer {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
-      jsonStreamWriter.beginObject();
+      jsonStreamWriter.beginObject()
+          .name(FormatJson.D)
+          .beginObject();
 
-      jsonStreamWriter.name(FormatJson.METADATA);
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.namedStringValueRaw(FormatJson.TYPE,
-          "Collection(" + propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName() + ")");
-      jsonStreamWriter.endObject();
-      jsonStreamWriter.separator();
+      jsonStreamWriter.name(FormatJson.METADATA)
+          .beginObject()
+          .namedStringValueRaw(FormatJson.TYPE,
+              "Collection(" + propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName() + ")")
+          .endObject()
+          .separator();
 
-      jsonStreamWriter.name(FormatJson.RESULTS);
-      jsonStreamWriter.beginArray();
+      jsonStreamWriter.name(FormatJson.RESULTS)
+          .beginArray();
       boolean first = true;
       for (final Object item : data) {
         if (first) {
@@ -60,8 +60,8 @@ public class JsonCollectionEntityProducer {
       }
       jsonStreamWriter.endArray();
 
-      jsonStreamWriter.endObject();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endObject()
+          .endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {

@@ -22,26 +22,42 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataDebugCallback;
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
+import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
 
 /**
  * @author SAP AG
  */
 public class ODataContextImpl implements ODataContext {
 
+  private static final String ODATA_REQUEST = "~odataRequest";
   private static final String DEBUG_MODE = "~debugMode";
   private static final String SERVICE = "~service";
+  private static final String SERVICE_FACTORY = "~serviceFactory";
   private static final String PATH_INFO = "~pathInfo";
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
   private static final String HTTP_METHOD = "~httpMethod";
 
-  private final Map<String, Object> parameterTable = new HashMap<String, Object>();
-  private final Map<String, String> requestHeader = new HashMap<String, String>();
+  private Map<String, Object> parameterTable = new HashMap<String, Object>();
 
   private List<Locale> acceptableLanguages;
+
+  public ODataContextImpl(final ODataRequest request, final ODataServiceFactory factory) {
+    setServiceFactory(factory);
+    setRequest(request);
+    setPathInfo(request.getPathInfo());
+    if (request.getMethod() != null) {
+      setHttpMethod(request.getMethod().name());
+    }
+    setAcceptableLanguages(request.getAcceptableLanguages());
+    setDebugMode(checkDebugMode(request.getQueryParameters()));
+  }
 
   @Override
   public void setParameter(final String name, final Object value) {
@@ -60,10 +76,7 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public boolean isInDebugMode() {
-    if (getParameter(DEBUG_MODE) != null) {
-      return (Boolean) getParameter(DEBUG_MODE);
-    }
-    return false;
+    return getParameter(DEBUG_MODE) != null && (Boolean) getParameter(DEBUG_MODE);
   }
 
   @Override
@@ -80,13 +93,22 @@ public class ODataContextImpl implements ODataContext {
     return (ODataService) getParameter(SERVICE);
   }
 
-  public void setUriInfo(final PathInfo uriInfo) {
+  public void setPathInfo(final PathInfo uriInfo) {
     setParameter(PATH_INFO, uriInfo);
   }
 
   @Override
   public PathInfo getPathInfo() throws ODataException {
     return (PathInfo) getParameter(PATH_INFO);
+  }
+
+  public void setServiceFactory(final ODataServiceFactory serviceFactory) {
+    setParameter(SERVICE_FACTORY, serviceFactory);
+  }
+
+  @Override
+  public ODataServiceFactory getServiceFactory() {
+    return (ODataServiceFactory) getParameter(SERVICE_FACTORY);
   }
 
   @Override
@@ -97,8 +119,7 @@ public class ODataContextImpl implements ODataContext {
       measurement.setClassName(className);
       measurement.setMethodName(methodName);
 
-      @SuppressWarnings("unchecked")
-      List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
       if (runtimeMeasurements == null) {
         runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
         setParameter(RUNTIME_MEASUREMENTS, runtimeMeasurements);
@@ -106,18 +127,16 @@ public class ODataContextImpl implements ODataContext {
       runtimeMeasurements.add(measurement);
 
       return runtimeMeasurements.size() - 1;
+    } else {
+      return 0;
     }
-
-    return 0;
   }
 
   @Override
   public void stopRuntimeMeasurement(final int handle) {
     if (isInDebugMode()) {
-      @SuppressWarnings("unchecked")
-      final List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
-
-      if ((runtimeMeasurements != null) && (handle >= 0) && (handle < runtimeMeasurements.size())) {
+      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
+      if (runtimeMeasurements != null && handle >= 0 && handle < runtimeMeasurements.size()) {
         runtimeMeasurements.get(handle).setTimeStopped(System.nanoTime());
       }
     }
@@ -130,29 +149,14 @@ public class ODataContextImpl implements ODataContext {
   }
 
   protected class RuntimeMeasurementImpl implements RuntimeMeasurement {
-    private long timeStarted;
-    private long timeStopped;
     private String className;
     private String methodName;
+    private long timeStarted;
+    private long timeStopped;
 
     @Override
-    public long getTimeStarted() {
-      return timeStarted;
-    }
-
-    @Override
-    public void setTimeStarted(final long time_start) {
-      timeStarted = time_start;
-    }
-
-    @Override
-    public long getTimeStopped() {
-      return timeStopped;
-    }
-
-    @Override
-    public void setTimeStopped(final long time_stop) {
-      timeStopped = time_stop;
+    public void setClassName(final String className) {
+      this.className = className;
     }
 
     @Override
@@ -161,8 +165,8 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setClassName(final String className) {
-      this.className = className;
+    public void setMethodName(final String methodName) {
+      this.methodName = methodName;
     }
 
     @Override
@@ -171,8 +175,23 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setMethodName(final String methodName) {
-      this.methodName = methodName;
+    public void setTimeStarted(final long start) {
+      timeStarted = start;
+    }
+
+    @Override
+    public long getTimeStarted() {
+      return timeStarted;
+    }
+
+    @Override
+    public void setTimeStopped(final long stop) {
+      timeStopped = stop;
+    }
+
+    @Override
+    public long getTimeStopped() {
+      return timeStopped;
     }
 
     @Override
@@ -181,23 +200,16 @@ public class ODataContextImpl implements ODataContext {
     }
   }
 
-  public void setHttpRequestHeader(final String name, final String value) {
-    requestHeader.put(name, value);
+  @Override
+  public String getRequestHeader(final String name) {
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    return request.getRequestHeaderValue(name);
   }
 
   @Override
-  public String getHttpRequestHeader(final String name) {
-    for (final String headerName : requestHeader.keySet()) {
-      if (headerName.equalsIgnoreCase(name)) {
-        return requestHeader.get(headerName);
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public Map<String, String> getHttpRequestHeaders() {
-    return Collections.unmodifiableMap(requestHeader);
+  public Map<String, List<String>> getRequestHeaders() {
+    ODataRequest request = (ODataRequest) parameterTable.get(ODATA_REQUEST);
+    return request.getRequestHeaders();
   }
 
   @Override
@@ -222,4 +234,24 @@ public class ODataContextImpl implements ODataContext {
   public String getHttpMethod() {
     return (String) getParameter(HTTP_METHOD);
   }
+
+  public void setRequest(final ODataRequest request) {
+    setParameter(ODATA_REQUEST, request);
+  }
+
+  private boolean checkDebugMode(final Map<String, String> queryParameters) {
+    if (getQueryDebugValue(queryParameters) == null) {
+      return false;
+    } else {
+      final ODataDebugCallback callback = getServiceFactory().getCallback(ODataDebugCallback.class);
+      return callback != null && callback.isDebugEnabled();
+    }
+  }
+
+  private static String getQueryDebugValue(final Map<String, String> queryParameters) {
+    final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
+    return ODataDebugResponseWrapper.ODATA_DEBUG_JSON.equals(debugValue) ?
+        debugValue : null;
+  }
+
 }

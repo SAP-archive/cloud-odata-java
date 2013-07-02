@@ -69,7 +69,7 @@ public class XmlFeedConsumer {
       // read feed data (metadata and entries)
       return readFeedData(reader, eia, entryReadProperties);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -107,6 +107,9 @@ public class XmlFeedConsumer {
         if (FormatXml.ATOM_NEXT_LINK.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setNextLink(uri);
+        } else if (FormatXml.ATOM_DELTA_LINK.equals(rel)) {
+          final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
+          metadata.setDeltaLink(uri);
         }
 
         reader.next();

@@ -26,19 +26,14 @@ import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 /**
- * 
  * @author SAP AG
  */
 public class FitErrorCallback implements ODataErrorCallback {
 
   private static final Logger LOG = LoggerFactory.getLogger(FitErrorCallback.class);
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.processor.ODataErrorCallback#handleError(com.sap.core.odata.api.processor.ODataErrorContext)
-   */
   @Override
   public ODataResponse handleError(final ODataErrorContext context) throws ODataApplicationException {
-
     if (context.getHttpStatus() == HttpStatusCodes.INTERNAL_SERVER_ERROR) {
       LOG.error("Internal Server Error", context.getException());
     }

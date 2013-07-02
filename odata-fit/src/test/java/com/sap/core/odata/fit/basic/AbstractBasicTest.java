@@ -74,7 +74,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
     return mock(EdmProvider.class);
   }
 
-  abstract ODataSingleProcessor createProcessor() throws ODataException;
+  protected abstract ODataSingleProcessor createProcessor() throws ODataException;
 
   protected HttpResponse executeGetRequest(final String request) throws ClientProtocolException, IOException {
     final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + request));

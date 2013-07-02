@@ -28,13 +28,14 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 
+/**
+ * @author SAP AG
+ */
 public class ContentNegotiator {
-  private static final String URI_INFO_FOMRAT_JSON = "json";
-  private static final String URI_INFO_FOMRAT_ATOM = "atom";
-  private static final String URI_INFO_FOMRAT_XML = "xml";
+  private static final String URI_INFO_FORMAT_JSON = "json";
+  private static final String URI_INFO_FORMAT_ATOM = "atom";
+  private static final String URI_INFO_FORMAT_XML = "xml";
   static final String DEFAULT_CHARSET = "utf-8";
-
-  public ContentNegotiator() {}
 
   public String doContentNegotiation(final UriInfoImpl uriInfo, final List<String> acceptHeaderContentTypes, final List<String> supportedContentTypes) throws ODataException {
     ContentType contentType;
@@ -79,15 +80,15 @@ public class ContentNegotiator {
 
   private ContentType mapFormat(final UriInfoImpl uriInfo) {
     final String format = uriInfo.getFormat();
-    if (URI_INFO_FOMRAT_XML.equals(format)) {
+    if (URI_INFO_FORMAT_XML.equals(format)) {
       return ContentType.APPLICATION_XML;
-    } else if (URI_INFO_FOMRAT_ATOM.equals(format)) {
+    } else if (URI_INFO_FORMAT_ATOM.equals(format)) {
       if (uriInfo.getUriType() == UriType.URI0) {
         // special handling for serviceDocument uris (UriType.URI0)
         return ContentType.APPLICATION_ATOM_SVC;
       }
       return ContentType.APPLICATION_ATOM_XML;
-    } else if (URI_INFO_FOMRAT_JSON.equals(format)) {
+    } else if (URI_INFO_FORMAT_JSON.equals(format)) {
       return ContentType.APPLICATION_JSON;
     }
 

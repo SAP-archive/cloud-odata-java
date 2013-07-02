@@ -61,8 +61,6 @@ public enum TokenKind {
    * Indicates that the token is a set of alphanumeric characters starting
    * with a letter
    */
-  LITERAL,
-  TYPED_LITERAL_TODO_CHECK,
-  UNKNOWN
+  LITERAL, TYPED_LITERAL_TODO_CHECK, UNKNOWN
 
 }

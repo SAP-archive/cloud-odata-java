@@ -24,16 +24,14 @@ import com.sap.core.odata.api.uri.expression.BinaryOperator;
  * Describes a binary operator which is allowed in OData expressions
  * @author SAP AG
  */
-class InfoBinaryOperator
-{
+class InfoBinaryOperator {
   private BinaryOperator operator;
   private String category;
   private String syntax;
   private int priority;
   ParameterSetCombination combination;
 
-  public InfoBinaryOperator(final BinaryOperator operator, final String category, final int priority, final ParameterSetCombination combination)
-  {
+  public InfoBinaryOperator(final BinaryOperator operator, final String category, final int priority, final ParameterSetCombination combination) {
     this.operator = operator;
     this.category = category;
     syntax = operator.toUriLiteral();
@@ -41,28 +39,23 @@ class InfoBinaryOperator
     this.combination = combination;
   }
 
-  public String getCategory()
-  {
+  public String getCategory() {
     return category;
   }
 
-  public String getSyntax()
-  {
+  public String getSyntax() {
     return syntax;
   }
 
-  public BinaryOperator getOperator()
-  {
+  public BinaryOperator getOperator() {
     return operator;
   }
 
-  public int getPriority()
-  {
+  public int getPriority() {
     return priority;
   }
 
-  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
-  {
+  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
     return combination.validate(actualParameterTypes);
   }
 

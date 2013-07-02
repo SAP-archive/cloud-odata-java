@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -52,6 +53,9 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 // accept-params = ";" "q" "=" qvalue *( accept-extension )
 // accept-extension = ";" token [ "=" ( token | quoted-string ) ]
 
+/**
+ * @author SAP AG
+ */
 public class ContentTypeTest extends BaseTest {
 
   @Test
@@ -92,12 +96,22 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test
+  public void creationContentTypeImageJpeg() {
+    ContentType mt = ContentType.create("image/jpeg");
+
+    assertEquals("image", mt.getType());
+    assertEquals("jpeg", mt.getSubtype());
+    assertEquals("image/jpeg", mt.toString());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
+  }
+
+  @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
 
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
-    assertEquals("application/atom+xml; charset=utf-8; type=entry", mt.toString());
+    assertEquals("application/atom+xml;charset=utf-8;type=entry", mt.toString());
     assertEquals(ODataFormat.ATOM, mt.getODataFormat());
     assertEquals(2, mt.getParameters().size());
     assertEquals("entry", mt.getParameters().get("type"));
@@ -112,9 +126,24 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("multipart", mt.getType());
     assertEquals("mixed", mt.getSubtype());
     assertEquals("multipart/mixed", mt.toString());
-    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
     assertEquals(0, mt.getParameters().size());
     assertEquals(ContentType.MULTIPART_MIXED, mt);
+    assertTrue(ContentType.MULTIPART_MIXED.isCompatible(mt));
+  }
+
+  @Test
+  public void creationFromHttpContentTypeMultipartMixedWithParameters() {
+    String boundary = UUID.randomUUID().toString();
+    ContentType mt = ContentType.create(HttpContentType.MULTIPART_MIXED + "; boundary=" + boundary);
+
+    assertEquals("multipart", mt.getType());
+    assertEquals("mixed", mt.getSubtype());
+    assertEquals("multipart/mixed;boundary=" + boundary, mt.toString());
+    assertEquals(ODataFormat.MIME, mt.getODataFormat());
+    assertEquals(1, mt.getParameters().size());
+    assertEquals(boundary, mt.getParameters().get("boundary"));
+    assertTrue(ContentType.MULTIPART_MIXED.isCompatible(mt));
   }
 
   @Test
@@ -123,7 +152,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml; charset=utf-8", mt.toString());
+    assertEquals("application/xml;charset=utf-8", mt.toString());
     assertEquals(ODataFormat.XML, mt.getODataFormat());
     assertEquals(1, mt.getParameters().size());
     assertEquals(ContentType.create(ContentType.APPLICATION_XML, "charset", "utf-8"), mt);
@@ -135,7 +164,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
     assertEquals(1, mt.getParameters().size());
     assertEquals(ContentType.create(ContentType.APPLICATION_JSON, "charset", "utf-8"), mt);
@@ -152,15 +181,13 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardType() {
-    ContentType mt = ContentType.create("*", "subtype");
+    ContentType.create("*", "subtype");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @SuppressWarnings("unused")
   public void testContentTypeCreationWildcardTypeSingleFormat() {
-    ContentType mt = ContentType.create("*/subtype");
+    ContentType.create("*/subtype");
   }
 
   /**
@@ -181,10 +208,9 @@ public class ContentTypeTest extends BaseTest {
     failContentTypeCreation("app    /   space", IllegalArgumentException.class);
   }
 
-  @SuppressWarnings("unused")
   private void failContentTypeCreation(final String contentType, final Class<? extends Exception> expectedExceptionClass) throws Exception {
     try {
-      ContentType mt = ContentType.create(contentType);
+      ContentType.create(contentType);
       Assert.fail("Expected exception class " + expectedExceptionClass +
           " was not thrown for creation of content type based on '" + contentType + "'.");
     } catch (Exception e) {
@@ -313,7 +339,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType third = types.get(2);
     assertEquals("application", third.getType());
     assertEquals("json", third.getSubtype());
-    assertEquals("application/json; key=value", third.toString());
+    assertEquals("application/json;key=value", third.toString());
     assertEquals("value", third.getParameters().get("key"));
     assertEquals(ODataFormat.JSON, third.getODataFormat());
   }
@@ -333,7 +359,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -346,7 +372,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml; charset=iso-8859-1", mt.toString());
+    assertEquals("application/xml;charset=iso-8859-1", mt.toString());
     assertEquals("iso-8859-1", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.XML, mt.getODataFormat());
   }
@@ -359,7 +385,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -372,7 +398,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json; charset=utf-8", mt.toString());
+    assertEquals("application/json;charset=utf-8", mt.toString());
     assertEquals("utf-8", mt.getParameters().get("charset"));
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
@@ -385,23 +411,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("subtype", mt.getSubtype());
     assertEquals(1, mt.getParameters().size());
     assertEquals("value", mt.getParameters().get("key"));
-    assertEquals("type/subtype; key=value", mt.toString());
-  }
-
-  //  private Map<String, String> addParameter(String key, String value) {
-  //    Map<String, String> map = new HashMap<String, String>();
-  //    map.put(key, value);
-  //    return map;
-  //  }
-
-  private Map<String, String> addParameters(final String... content) {
-    Map<String, String> map = new HashMap<String, String>();
-    for (int i = 0; i < content.length - 1; i += 2) {
-      String key = content[i];
-      String value = content[i + 1];
-      map.put(key, value);
-    }
-    return map;
+    assertEquals("type/subtype;key=value", mt.toString());
   }
 
   @Test
@@ -412,7 +422,7 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(2, mt.getParameters().size());
     assertEquals("value1", mt.getParameters().get("key1"));
     assertEquals("value2", mt.getParameters().get("key2"));
-    assertEquals("type/subtype; key1=value1; key2=value2", mt.toString());
+    assertEquals("type/subtype;key1=value1;key2=value2", mt.toString());
   }
 
   @Test
@@ -464,6 +474,36 @@ public class ContentTypeTest extends BaseTest {
     assertEquals("aaa", t.getType());
     assertEquals("*", t.getSubtype());
     assertEquals(2, t.getParameters().size());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithSpaces() {
+    ContentType.create("aaa/bbb;x= y;a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithLineFeed() {
+    ContentType.create("aaa/bbb;x=\ny;a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithCarriageReturn() {
+    ContentType.create("aaa/bbb;x=\ry;a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithTabs() {
+    ContentType.create("aaa/bbb;x=\ty;a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithAllLws() {
+    ContentType.create("aaa/bbb;x=\t \n \ry;a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormatParserInvalidParameterWithAllLws2() {
+    ContentType.create("aaa/bbb;x=\n \ry;a= \tbla  ");
   }
 
   @Test
@@ -871,5 +911,15 @@ public class ContentTypeTest extends BaseTest {
     assertTrue(ContentType.create("aaa/*;x=y;a").hasWildcard());
     assertTrue(ContentType.create("*/*;x=y;a").hasWildcard());
     assertTrue(ContentType.create("*/*").hasWildcard());
+  }
+
+  private Map<String, String> addParameters(final String... content) {
+    Map<String, String> map = new HashMap<String, String>();
+    for (int i = 0; i < content.length - 1; i += 2) {
+      String key = content[i];
+      String value = content[i + 1];
+      map.put(key, value);
+    }
+    return map;
   }
 }

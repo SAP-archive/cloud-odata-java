@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -79,10 +80,14 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     exceptionMapper.httpHeaders = mock(HttpHeaders.class);
     exceptionMapper.uriInfo = mock(UriInfo.class);
     exceptionMapper.servletConfig = mock(ServletConfig.class);
+    exceptionMapper.servletRequest = mock(HttpServletRequest.class);
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(map);
     uri = new URI("http://localhost:8080/ODataService.svc/Entity");
     when(exceptionMapper.uriInfo.getRequestUri()).thenReturn(uri);
+
+    MultivaluedHashMap<String, String> httpHeaders = new MultivaluedHashMap<String, String>();
+    when(exceptionMapper.httpHeaders.getRequestHeaders()).thenReturn(httpHeaders);
 
     disableLogging();
 
@@ -95,6 +100,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     value.put("AcceptMulti", Arrays.asList("AcceptValue_1", "AcceptValue_2"));
     when(exceptionMapper.httpHeaders.getRequestHeaders()).thenReturn(value);
     when(exceptionMapper.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL)).thenReturn(ODataServiceFactoryImpl.class.getName());
+    when(exceptionMapper.servletRequest.getAttribute(ODataServiceFactory.FACTORY_CLASSLOADER_LABEL)).thenReturn(null);
     Response response = exceptionMapper.toResponse(new Exception());
 
     // verify
@@ -108,6 +114,23 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertEquals(uri.toASCIIString(), response.getHeaderString("RequestUri"));
     assertEquals("[AcceptValue]", response.getHeaderString("Accept"));
     assertEquals("[AcceptValue_1, AcceptValue_2]", response.getHeaderString("AcceptMulti"));
+  }
+
+  @Test
+  public void servletRequestWithClassloader() throws Exception {
+    MultivaluedMap<String, String> value = new MultivaluedHashMap<String, String>();
+    value.putSingle("Accept", "AcceptValue");
+    value.put("AcceptMulti", Arrays.asList("AcceptValue_1", "AcceptValue_2"));
+    when(exceptionMapper.httpHeaders.getRequestHeaders()).thenReturn(value);
+    when(exceptionMapper.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL)).thenReturn(ODataServiceFactoryImpl.class.getName());
+    when(exceptionMapper.servletRequest.getAttribute(ODataServiceFactory.FACTORY_CLASSLOADER_LABEL)).thenReturn(ODataServiceFactoryImpl.class.getClassLoader());
+    Response response = exceptionMapper.toResponse(new Exception());
+
+    // verify
+    assertNotNull(response);
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    String errorMessage = (String) response.getEntity();
+    assertEquals("bla", errorMessage);
   }
 
   @Test

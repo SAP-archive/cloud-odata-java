@@ -42,15 +42,15 @@ public class JsonPropertyEntityProducer {
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
 
     try {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
-      jsonStreamWriter.beginObject();
+      jsonStreamWriter.beginObject()
+          .name(FormatJson.D)
+          .beginObject();
 
       jsonStreamWriter.name(propertyInfo.getName());
       appendPropertyValue(jsonStreamWriter, propertyInfo.isComplex() ? (EntityComplexPropertyInfo) propertyInfo : propertyInfo, value);
 
-      jsonStreamWriter.endObject();
-      jsonStreamWriter.endObject();
+      jsonStreamWriter.endObject()
+          .endObject();
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (final EdmException e) {
@@ -103,9 +103,9 @@ public class JsonPropertyEntityProducer {
   }
 
   protected static void appendPropertyMetadata(final JsonStreamWriter jsonStreamWriter, final EdmType type) throws IOException, EdmException {
-    jsonStreamWriter.name(FormatJson.METADATA);
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedStringValueRaw(FormatJson.TYPE, type.getNamespace() + Edm.DELIMITER + type.getName());
-    jsonStreamWriter.endObject();
+    jsonStreamWriter.name(FormatJson.METADATA)
+        .beginObject()
+        .namedStringValueRaw(FormatJson.TYPE, type.getNamespace() + Edm.DELIMITER + type.getName())
+        .endObject();
   }
 }

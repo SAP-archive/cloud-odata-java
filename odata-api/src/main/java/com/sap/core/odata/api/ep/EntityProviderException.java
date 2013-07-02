@@ -27,14 +27,21 @@ public class EntityProviderException extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
 
+  /** INVALID_STATE requires no content value */
   public static final MessageReference COMMON = createMessageReference(EntityProviderException.class, "COMMON");
+  /** EXCEPTION_OCCURRED requires 1 content value ('exception name') */
+  public static final MessageReference EXCEPTION_OCCURRED = createMessageReference(EntityProviderException.class, "EXCEPTION_OCCURRED");
   /** INVALIDMAPPING requires 1 content value ('propertyName') */
   public static final MessageReference INVALID_MAPPING = createMessageReference(EntityProviderException.class, "INVALID_MAPPING");
-  /** INVALIDMAPPING requires 2 content values ('supplied entity type' and 'content entity type') */
+  /** INVALID_ENTITYTYPE requires 2 content values ('supplied entity type' and 'content entity type') */
   public static final MessageReference INVALID_ENTITYTYPE = createMessageReference(EntityProviderException.class, "INVALID_ENTITYTYPE");
-  /** INVALIDMAPPING requires 2 content values ('invalid tag' and 'parent tag') */
+  /** INVALID_COMPLEX_TYPE requires 2 content values ('supplied complex type' and 'content complex type') */
+  public static final MessageReference INVALID_COMPLEX_TYPE = createMessageReference(EntityProviderException.class, "INVALID_COMPLEX_TYPE");
+  /** INVALID_CONTENT requires 2 content values ('invalid tag' and 'parent tag') */
   public static final MessageReference INVALID_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_CONTENT");
-
+  /** INVALID_PROPERTY_VALUE requires 1 content value ('invalid value') */
+  public static final MessageReference INVALID_PROPERTY_VALUE = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY_VALUE");
+  /** MISSING_PROPERTY requires 1 content value ('invalid value') */
   public static final MessageReference MISSING_PROPERTY = createMessageReference(EntityProviderException.class, "MISSING_PROPERTY");
   /** INVALID_PARENT_TAG requires 2 content values ('missing attribute name' and 'tag name') */
   public static final MessageReference MISSING_ATTRIBUTE = createMessageReference(EntityProviderException.class, "MISSING_ATTRIBUTE");
@@ -44,6 +51,7 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_STATE = createMessageReference(EntityProviderException.class, "INVALID_STATE");
   /** INVALID_INLINE_CONTENT requires 1 content value ('invalid inline message') */
   public static final MessageReference INVALID_INLINE_CONTENT = createMessageReference(EntityProviderException.class, "INVALID_INLINE_CONTENT");
+  /** INVALID_PROPERTY requires 1 content value ('invalid property name') */
   public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
   /** ILLEGAL_ARGUMENT requires 1 content value ('message') */
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");
@@ -58,8 +66,12 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference NOT_SET_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "NOT_SET_CHARACTER_ENCODING");
   /** UNSUPPORTED_CHARACTER_ENCODING requires 1 content value ('found but unsupported character encoding') */
   public static final MessageReference UNSUPPORTED_CHARACTER_ENCODING = createMessageReference(EntityProviderException.class, "UNSUPPORTED_CHARACTER_ENCODING");
-
+  /** MEDIA_DATA_NOT_INITIAL requires no content value */
   public static final MessageReference MEDIA_DATA_NOT_INITIAL = createMessageReference(EntityProviderException.class, "MEDIA_DATA_NOT_INITIAL");
+  /** END_DOCUMENT_EXPECTED requires 1 content value ('actual token') */
+  public static final MessageReference END_DOCUMENT_EXPECTED = createMessageReference(EntityProviderException.class, "END_DOCUMENT_EXPECTED");
+  /** MISSING_RESULTS_ARRAY requires no content value */
+  public static final MessageReference MISSING_RESULTS_ARRAY = createMessageReference(EntityProviderException.class, "MISSING_RESULTS_ARRAY");
 
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);

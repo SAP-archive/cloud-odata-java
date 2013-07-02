@@ -53,7 +53,6 @@ public class ODataMessageTextVerifier {
 
   private void failCollector(final String text) {
     try {
-      // System.out.println(text);
       fail(text);
     } catch (final AssertionError ae) {
       errorCollector.add(ae);

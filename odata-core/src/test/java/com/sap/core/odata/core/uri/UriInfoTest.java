@@ -41,6 +41,9 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class UriInfoTest extends BaseTest {
 
   private static Edm edm;
@@ -111,6 +114,7 @@ public class UriInfoTest extends BaseTest {
     UriInfoImpl result = parse("/");
 
     assertEquals(Collections.emptyList(), result.getKeyPredicates());
+    assertEquals(Collections.emptyList(), result.getTargetKeyPredicates());
     assertEquals(Collections.emptyList(), result.getNavigationSegments());
     assertEquals(Collections.emptyList(), result.getPropertyPath());
     assertEquals(Collections.emptyList(), result.getExpand());
@@ -136,6 +140,7 @@ public class UriInfoTest extends BaseTest {
     UriInfoImpl result = parse("/Employees");
 
     assertEquals(Collections.emptyList(), result.getKeyPredicates());
+    assertEquals(Collections.emptyList(), result.getTargetKeyPredicates());
     assertEquals(Collections.emptyList(), result.getNavigationSegments());
     assertEquals(Collections.emptyList(), result.getPropertyPath());
     assertEquals(Collections.emptyList(), result.getExpand());
@@ -149,6 +154,7 @@ public class UriInfoTest extends BaseTest {
     UriInfoImpl result = parse("/Employees('1')");
 
     assertNotSame(Collections.emptyList(), result.getKeyPredicates());
+    assertNotSame(Collections.emptyList(), result.getTargetKeyPredicates());
 
     assertEquals(Collections.emptyList(), result.getNavigationSegments());
     assertEquals(Collections.emptyList(), result.getPropertyPath());
@@ -165,6 +171,7 @@ public class UriInfoTest extends BaseTest {
     assertNotSame(Collections.emptyList(), result.getKeyPredicates());
     assertNotSame(Collections.emptyList(), result.getNavigationSegments());
 
+    assertEquals(Collections.emptyList(), result.getTargetKeyPredicates());
     assertEquals(Collections.emptyList(), result.getPropertyPath());
     assertEquals(Collections.emptyList(), result.getExpand());
     assertEquals(Collections.emptyList(), result.getSelect());

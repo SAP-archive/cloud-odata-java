@@ -21,10 +21,11 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.core.uri.UriType;
 
 /**
- * 
+ * @author SAP AG
  */
 public class ContentNegotiationPostRequestTest extends AbstractContentNegotiationTest {
 
@@ -87,9 +88,9 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
     FitTestSet testSet = FitTestSet.create(UriType.URI1, "/Employees", false, true, false).init();
 
     // set specific response 'Content-Type's for '$format'
-    testSet.setTestParam(Arrays.asList("application/xml", "application/xml; charset=utf-8"), 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList("application/xml", "application/xml; charset=utf-8"), HttpStatusCodes.OK, "application/xml; charset=utf-8");
     testSet.setTestParam(Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"),
-        200, "application/atom+xml; type=feed; charset=utf-8");
+        HttpStatusCodes.OK, "application/atom+xml; type=feed; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
     final List<String> notAcceptedHeaderValues = Arrays.asList(
@@ -98,7 +99,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         "application/atomsvc+xml",
         "application/atomsvc+xml; charset=utf-8"
         );
-    testSet.setTestParam(notAcceptedHeaderValues, 406, "application/xml");
+    testSet.setTestParam(notAcceptedHeaderValues, HttpStatusCodes.NOT_ACCEPTABLE, "application/xml");
 
     //
     final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
@@ -106,7 +107,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         "application/json; charset=utf-8"
         );
     // TODO: check which behavior is currently wanted
-    testSet.setTestParam(notAcceptedJsonHeaderValues, 406, "application/json");
+    testSet.setTestParam(notAcceptedJsonHeaderValues, HttpStatusCodes.NOT_ACCEPTABLE, "application/json");
 
     // execute all defined tests
     testSet.execute(getEndpoint());
@@ -123,11 +124,11 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         .content(ROOM_1_XML)
         .requestContentTypes(CONTENT_TYPE_VALUES)
         //        .requestContentTypes(Arrays.asList("application/xml; charset=utf-8", "application/xml"))
-        .expectedStatusCode(201)
+        .expectedStatusCode(HttpStatusCodes.CREATED)
         .init();
 
     //
-    testSet.setTestParam(Arrays.asList(""), 201, "application/atom+xml; type=entry; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), HttpStatusCodes.CREATED, "application/atom+xml; type=entry; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
     final List<String> unsupportedRequestContentTypes = Arrays.asList(
@@ -138,8 +139,8 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         "application/atomsvc+xml",
         "application/atomsvc+xml; charset=utf-8"
         );
-    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
-    testSet.modifyRequestContentTypes(Arrays.asList("application/json", "application/json; charset=utf-8"), 400, "application/xml");
+    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, "application/xml");
+    testSet.modifyRequestContentTypes(Arrays.asList("application/json", "application/json; charset=utf-8"), HttpStatusCodes.BAD_REQUEST, "application/xml");
 
     // execute all defined tests
     testSet.execute(getEndpoint());
@@ -155,7 +156,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
     String acceptHeader = "*";
     String content = "IMAGE_;o)";
     String requestContentType = "image/jpeg";
-    int expectedStatusCode = 201;
+    HttpStatusCodes expectedStatusCode = HttpStatusCodes.CREATED;
     String expectedContentType = "application/atom+xml; charset=utf-8; type=entry";
 
     FitTest test = FitTest.create(uriType, httpMethod, path, queryOption, acceptHeader, content, requestContentType, expectedStatusCode, expectedContentType);
@@ -174,7 +175,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
     String acceptHeader = "*";
     String content = "IMAGE_;o)";
     String requestContentType = "image/jpeg";
-    int expectedStatusCode = 201;
+    HttpStatusCodes expectedStatusCode = HttpStatusCodes.CREATED;
     String expectedContentType = "image/jpeg";
 
     FitTest test = FitTest.create(uriType, httpMethod, path, queryOption, acceptHeader, content, requestContentType, expectedStatusCode, expectedContentType);
@@ -192,7 +193,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         .acceptHeader(Arrays.asList("", "image/jpeg"))
         .content("Jon Doe")
         .requestContentTypes(Arrays.asList("image/jpeg"))
-        .expectedStatusCode(201)
+        .expectedStatusCode(HttpStatusCodes.CREATED)
         .init();
 
     // set all 'NOT ACCEPTED' requests
@@ -206,7 +207,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         "application/atomsvc+xml",
         "application/atomsvc+xml; charset=utf-8"
         );
-    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
+    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, "application/xml");
 
     // execute all defined tests
     testSet.execute(getEndpoint());
@@ -222,7 +223,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         .acceptHeader(Arrays.asList("", "application/xml"))
         .content("Jon Doe")
         .requestContentTypes(Arrays.asList("text/plain; charset=utf-8", "text/plain"))
-        .expectedStatusCode(201)
+        .expectedStatusCode(HttpStatusCodes.CREATED)
         .init();
 
     // set all 'NOT ACCEPTED' requests
@@ -234,7 +235,7 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
         "application/atomsvc+xml",
         "application/atomsvc+xml; charset=utf-8"
         );
-    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
+    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, "application/xml");
 
     // execute all defined tests
     testSet.execute(getEndpoint());

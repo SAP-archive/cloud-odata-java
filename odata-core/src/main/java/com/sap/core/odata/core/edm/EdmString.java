@@ -27,8 +27,8 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
  */
 public class EdmString extends AbstractSimpleType {
 
-  private static final EdmString instance = new EdmString();
   private static final Pattern PATTERN_ASCII = Pattern.compile("\\p{ASCII}*");
+  private static final EdmString instance = new EdmString();
 
   public static EdmString getInstance() {
     return instance;
@@ -52,13 +52,10 @@ public class EdmString extends AbstractSimpleType {
       result = value;
     }
 
-    if (facets != null) {
-      if (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
+    if (facets != null
+        && (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()
+        || facets.getMaxLength() != null && facets.getMaxLength() < result.length())) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
     if (returnType.isAssignableFrom(String.class)) {
@@ -72,11 +69,10 @@ public class EdmString extends AbstractSimpleType {
   protected <T> String internalValueToString(final T value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     final String result = value instanceof String ? (String) value : String.valueOf(value);
 
-    if (facets != null) {
-      if (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()
-          || facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
+    if (facets != null
+        && (facets.isUnicode() != null && !facets.isUnicode() && !PATTERN_ASCII.matcher(result).matches()
+        || facets.getMaxLength() != null && facets.getMaxLength() < result.length())) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
     return result;
@@ -84,18 +80,18 @@ public class EdmString extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    final StringBuilder uriLiteral = new StringBuilder("'");
-    final int len = literal.length();
+    final int length = literal.length();
 
-    for (int i = 0; i < len; i++) {
-      char c = literal.charAt(i);
+    StringBuilder uriLiteral = new StringBuilder(length + 2);
+    uriLiteral.append('\'');
+    for (int i = 0; i < length; i++) {
+      final char c = literal.charAt(i);
       if (c == '\'') {
-        uriLiteral.append("''");
-      } else {
         uriLiteral.append(c);
       }
+      uriLiteral.append(c);
     }
-    uriLiteral.append("'");
+    uriLiteral.append('\'');
     return uriLiteral.toString();
   }
 }

@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 
 /**
  * Tests employing the reference scenario changing properties in XML format

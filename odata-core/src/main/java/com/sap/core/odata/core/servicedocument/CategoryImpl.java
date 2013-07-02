@@ -18,6 +18,9 @@ package com.sap.core.odata.core.servicedocument;
 import com.sap.core.odata.api.servicedocument.Category;
 import com.sap.core.odata.api.servicedocument.CommonAttributes;
 
+/**
+ * @author SAP AG
+ */
 public class CategoryImpl implements Category {
   private String scheme;
   private String term;

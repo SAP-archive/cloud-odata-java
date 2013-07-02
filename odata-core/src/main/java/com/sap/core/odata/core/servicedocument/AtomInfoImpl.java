@@ -31,6 +31,9 @@ import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Workspace;
 import com.sap.core.odata.core.edm.provider.EdmEntitySetInfoImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class AtomInfoImpl implements AtomInfo {
   private List<Workspace> workspaces;
   private CommonAttributes attributes;
