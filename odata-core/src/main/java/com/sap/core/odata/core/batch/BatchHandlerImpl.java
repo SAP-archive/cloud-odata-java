@@ -1,11 +1,13 @@
 package com.sap.core.odata.core.batch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -22,20 +24,21 @@ public class BatchHandlerImpl implements BatchHandler {
   }
 
   @Override
-  public ODataResponse handleBatchPart(final BatchPart batchPart) throws ODataException {
-    ODataResponse response;
+  public BatchResponsePart handleBatchPart(final BatchPart batchPart) throws ODataException {
     if (batchPart.isChangeSet()) {
       List<ODataRequest> changeSetRequests = batchPart.getRequests();
-      response = service.getBatchProcessor().executeChangeSet(this, changeSetRequests);
+      return service.getBatchProcessor().executeChangeSet(this, changeSetRequests);
     } else {
       if (batchPart.getRequests().size() != 1) {
         throw new ODataException("Query Operation should contain one request");
       }
       ODataRequest request = batchPart.getRequests().get(0);
       ODataRequestHandler handler = createHandler(request);
-      response = handler.handle(request);
+      ODataResponse response = handler.handle(request);
+      List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
+      responses.add(response);
+      return BatchResponsePart.responses(responses).changeSet(false).build();
     }
-    return response;
   }
 
   @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -314,23 +315,14 @@ public final class EntityProvider {
     List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
 
     /**
-     * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+     * Write responses of Batch Response Parts in Batch Response as {@link ODataResponse}.
      * Batch Response body matches one-to-one with the corresponding Batch Request body
      * 
-     * @param responses a list of {@link ODataResponses}
+     * @param batchResponseParts a list of {@link BatchResponsePart}
      * @return Batch Response as {@link ODataResponse}
      * @throws EntityProviderException 
      */
-    ODataResponse writeBatchResponse(List<ODataResponse> responses) throws EntityProviderException;
-
-    /**
-     * Write responses of single change requests in Change Set Response {@link ODataResponse}
-     * 
-     * @param changeSetResponses a list of {@link ODataResponses}
-     * @return Change Set Response as {@link ODataResponse}
-     * @throws EntityProviderException 
-     */
-    ODataResponse writeChangeSetResponse(List<ODataResponse> changeSetResponses) throws EntityProviderException;
+    ODataResponse writeBatchResponse(List<BatchResponsePart> batchResponseParts) throws EntityProviderException;
   }
 
   /**
@@ -673,26 +665,15 @@ public final class EntityProvider {
   }
 
   /**
-   * Write responses of change sets and/or query operations in Batch Response as {@link ODataResponse}.
+   * Write responses of Batch Response Parts in Batch Response as {@link ODataResponse}.
    * Batch Response body matches one-to-one with the corresponding Batch Request body
    * 
-   * @param responses a list of {@link ODataResponses}
+   * @param batchResponseParts a list of {@link BatchResponsePart}
    * @return Batch Response as {@link ODataResponse}
    * @throws EntityProviderException 
    */
-  public static ODataResponse writeBatchResponse(final List<ODataResponse> responses) throws EntityProviderException {
-    return createEntityProvider().writeBatchResponse(responses);
-  }
-
-  /**
-   * Write responses of single change requests in Change Set Response {@link ODataResponse}
-   * 
-   * @param changeSetResponses a list of {@link ODataResponses}
-   * @return Change Set Response as {@link ODataResponse}
-   * @throws EntityProviderException 
-   */
-  public static ODataResponse writeChangeSetResponse(final List<ODataResponse> changeSetResponses) throws EntityProviderException {
-    return createEntityProvider().writeChangeSetResponse(changeSetResponses);
+  public static ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws EntityProviderException {
+    return createEntityProvider().writeBatchResponse(batchResponseParts);
   }
 
 }

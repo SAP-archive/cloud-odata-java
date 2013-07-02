@@ -93,7 +93,7 @@ public class BatchRequestParser {
     if (contentTypeMime != null) {
       boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
-      Pattern closeDelimiter = Pattern.compile("--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
+      String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
       while (scanner.hasNext() && !scanner.hasNext(closeDelimiter)) {
         requests.add(parseMultipart(scanner, boundary, false));
         parseNewLine(scanner);
@@ -442,6 +442,10 @@ public class BatchRequestParser {
     if (boundary.matches("\".*\"")) {
       boundary = boundary.replace("\"", "");
     }
+    boundary =  boundary.replaceAll("\\)", "\\\\)");
+    boundary =  boundary.replaceAll("\\(", "\\\\(");
+    boundary =  boundary.replaceAll("\\?", "\\\\?");
+    boundary =  boundary.replaceAll("\\+", "\\\\+");
     return boundary;
   }
 }

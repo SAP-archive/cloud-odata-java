@@ -22,6 +22,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -101,18 +102,17 @@ public class BasicBatchTest extends AbstractBasicTest {
     @Override
     public ODataResponse executeBatch(final BatchHandler handler, final String requestContentType, final InputStream content) {
       ODataResponse batchResponse;
+      List<BatchResponsePart> batchResponseParts = new ArrayList<BatchResponsePart>();
       PathInfoImpl pathInfo = new PathInfoImpl();
       try {
         pathInfo.setServiceRoot(new URI("http://localhost:19000/odata"));
 
         EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
         List<BatchPart> batchParts = EntityProvider.parseBatchRequest(requestContentType, content, batchProperties);
-        List<ODataResponse> responses = new ArrayList<ODataResponse>();
         for (BatchPart batchPart : batchParts) {
-          ODataResponse response = handler.handleBatchPart(batchPart);
-          responses.add(response);
+          batchResponseParts.add(handler.handleBatchPart(batchPart));
         }
-        batchResponse = EntityProvider.writeBatchResponse(responses);
+        batchResponse = EntityProvider.writeBatchResponse(batchResponseParts);
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       } catch (ODataException e) {
@@ -122,19 +122,19 @@ public class BasicBatchTest extends AbstractBasicTest {
     }
 
     @Override
-    public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
-      ODataResponse changeSetResponse;
+    public BatchResponsePart executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
       List<ODataResponse> responses = new ArrayList<ODataResponse>();
       for (ODataRequest request : requests) {
         ODataResponse response = handler.handleRequest(request);
         if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode()) {
           // Rollback
-          return response;
+          List<ODataResponse> errorResponses = new ArrayList<ODataResponse>(1);
+          errorResponses.add(response);
+          return BatchResponsePart.responses(errorResponses).changeSet(false).build();
         }
         responses.add(response);
-      }
-      changeSetResponse = EntityProvider.writeChangeSetResponse(responses);
-      return changeSetResponse;
+       }
+      return BatchResponsePart.responses(responses).changeSet(true).build();
     }
 
     @Override

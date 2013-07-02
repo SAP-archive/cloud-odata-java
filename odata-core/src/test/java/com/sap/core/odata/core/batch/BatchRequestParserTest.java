@@ -200,19 +200,19 @@ public class BatchRequestParserTest {
   public void testBoundaryParameterWithQuotas() throws ODataException {
     Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
     List<String> headerValues = new ArrayList<String>();
-    String contentType = "multipart/mixed; boundary=\"batch_1740-bb84-2f7f\"";
+    String contentType = "multipart/mixed; boundary=\"batch_1.2+34:2j)0?\"";
     requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
     ODataRequestImpl postRequest = new ODataRequestImpl();
     postRequest.setRequestHeaders(requestHeaders);
-    String batch = "--batch_1740-bb84-2f7f" + "\n"
+    String batch = "--batch_1.2+34:2j)0?" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
         + "\n"
         + "GET Employees('1')/EmployeeName" + "\n"
         + "\n"
         + "\n"
-        + "--batch_1740-bb84-2f7f--";
+        + "--batch_1.2+34:2j)0?--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
     List<BatchPart> batchParts = parser.parse(in);
