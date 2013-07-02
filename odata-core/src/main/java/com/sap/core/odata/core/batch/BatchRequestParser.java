@@ -176,7 +176,6 @@ public class BatchRequestParser {
 
   }
 
-  @SuppressWarnings("deprecation")
   private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws EntityProviderException {
     ODataRequestImpl request = new ODataRequestImpl();
     if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
@@ -208,7 +207,6 @@ public class BatchRequestParser {
       }
       request.setRequestHeaders(headers);
 
-      request.setHeaders(mapHeaderListToString(headers));
       if (request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE) != null) {
         request.setContentType(ContentType.create(request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE)));
       }
@@ -233,24 +231,6 @@ public class BatchRequestParser {
       throw new EntityProviderException(EntityProviderException.COMMON);
     }
     return request;
-  }
-
-  private Map<String, String> mapHeaderListToString(final Map<String, List<String>> requestHeaders) {
-    Map<String, String> headers = new HashMap<String, String>();
-    for (Map.Entry<String, List<String>> header : requestHeaders.entrySet()) {
-      String headerName = header.getKey();
-      List<String> values = header.getValue();
-      String headerValue = null;
-      for (String value : values) {
-        if (headerValue == null) {
-          headerValue = value;
-        } else {
-          headerValue = headerValue + ";" + value;
-        }
-      }
-      headers.put(headerName, headerValue);
-    }
-    return headers;
   }
 
   private Map<String, List<String>> parseRequestHeaders(final Scanner scanner) throws EntityProviderException {

@@ -129,8 +129,8 @@ public class ContextTest extends AbstractBasicTest {
     final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("de, en", ctx.getHttpRequestHeader(HttpHeaders.CONTENT_LANGUAGE));
-    assertNull(ctx.getHttpRequestHeader("nonsens"));
+    assertEquals("de, en", ctx.getRequestHeader(HttpHeaders.CONTENT_LANGUAGE));
+    assertNull(ctx.getRequestHeader("nonsens"));
   }
 
   @Test
@@ -142,8 +142,8 @@ public class ContextTest extends AbstractBasicTest {
     final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
 
-    final Map<String, String> header = ctx.getHttpRequestHeaders();
-    assertEquals("de, en", header.get(HttpHeaders.CONTENT_LANGUAGE));
+    final Map<String, List<String>> header = ctx.getRequestHeaders();
+    assertEquals("de, en", header.get(HttpHeaders.CONTENT_LANGUAGE).get(0));
   }
 
   @Test

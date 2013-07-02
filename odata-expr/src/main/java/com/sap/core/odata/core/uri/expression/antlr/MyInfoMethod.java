@@ -67,7 +67,6 @@ class MyInfoMethod {
           return null;
 
       return returnType;*/
-    //TODO
     return null;
   }
 }

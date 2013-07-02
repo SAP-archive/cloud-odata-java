@@ -18,7 +18,6 @@ import com.sap.core.odata.core.commons.ContentType;
 public class ODataRequestImpl implements ODataRequest {
 
   private ODataHttpMethod method;
-  private Map<String, String> headers = new HashMap<String, String>();
   private Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
   private InputStream body;
   private PathInfo pathInfo;
@@ -51,11 +50,6 @@ public class ODataRequestImpl implements ODataRequest {
     this.method = method;
   }
 
-  @Deprecated
-  public void setHeaders(final Map<String, String> headers) {
-    this.headers = headers;
-  }
-
   public void setRequestHeaders(final Map<String, List<String>> requestHeaders) {
     this.requestHeaders = requestHeaders;
   }
@@ -66,18 +60,6 @@ public class ODataRequestImpl implements ODataRequest {
 
   public void setPathInfo(final PathInfo pathInfo) {
     this.pathInfo = pathInfo;
-  }
-
-  @Override
-  @Deprecated
-  public String getHeaderValue(final String name) {
-    return headers.get(name);
-  }
-
-  @Override
-  @Deprecated
-  public Map<String, String> getHeaders() {
-    return Collections.unmodifiableMap(headers);
   }
 
   @Override

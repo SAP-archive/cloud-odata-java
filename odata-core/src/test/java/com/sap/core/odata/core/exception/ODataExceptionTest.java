@@ -1,10 +1,7 @@
 package com.sap.core.odata.core.exception;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Locale;
 
 import org.junit.Test;
 
@@ -163,34 +160,4 @@ public class ODataExceptionTest extends BaseTest {
   public void TestMessagesOfODataNotImplementedException() {
     ODataMessageTextVerifier.TestClass(ODataNotImplementedException.class);
   }
-
-  @Test
-  public void TestRootCauseNpe() {
-    NullPointerException rootCauseException = new NullPointerException();
-    ODataApplicationException intermediateException1 = new ODataApplicationException("bla", Locale.ENGLISH, rootCauseException);
-    ODataMessageException intermediateException2 = new EdmException(EdmException.COMMON, intermediateException1);
-    ODataException outerException = new ODataException(intermediateException2);
-
-    Throwable rootException = outerException.getRootCause();
-    assertEquals(NullPointerException.class, rootException.getClass());
-  }
-
-  @Test
-  public void TestRootCauseODataException() {
-    ODataException rootCauseException = new ODataException();
-    ODataApplicationException intermediateException1 = new ODataApplicationException("bla", Locale.ENGLISH, rootCauseException);
-    ODataMessageException intermediateException2 = new EdmException(EdmException.COMMON, intermediateException1);
-    ODataException outerException = new ODataException(intermediateException2);
-
-    Throwable rootException = outerException.getRootCause();
-    assertEquals(ODataException.class, rootException.getClass());
-  }
-
-  @Test
-  public void TestRootCauseNone() {
-    ODataException outerException = new ODataException();
-    Throwable rootException = outerException.getRootCause();
-    assertEquals(null, rootException);
-  }
-
 }

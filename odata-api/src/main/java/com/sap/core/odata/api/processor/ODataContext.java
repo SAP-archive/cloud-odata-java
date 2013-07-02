@@ -82,26 +82,11 @@ public interface ODataContext {
   Object getParameter(String name);
 
   /**
-   * Returns a header value of the HTTP request.
-   * @param name name of a request header element (e.g. "Content-Type")
-   * @return null or a request header value if found
-   */
-  @Deprecated
-  String getHttpRequestHeader(String name);
-
-  /**
    * Returns the first found header value of the HTTP request.
    * @param name name of the first found request header element (e.g. "Content-Type")
    * @return null or a request header value if found
    */
   String getRequestHeader(String name);
-
-  /**
-   * Returns all header values of the HTTP request.
-   * @return immutable map of request header values
-   */
-  @Deprecated
-  Map<String, String> getHttpRequestHeaders();
 
   /**
    * Returns all header values of the HTTP request but never null.
