@@ -9,6 +9,7 @@ import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ODataContextImpl;
@@ -49,6 +50,10 @@ public class BatchHandlerImpl implements BatchHandler {
 
   private ODataRequestHandler createHandler(final ODataRequest request) throws ODataException {
     ODataContextImpl context = new ODataContextImpl(request, factory);
+
+    ODataContext parentContext = service.getProcessor().getContext();
+    context.setBatchParentContext(parentContext);
+
     context.setService(service);
     service.getProcessor().setContext(context);
 

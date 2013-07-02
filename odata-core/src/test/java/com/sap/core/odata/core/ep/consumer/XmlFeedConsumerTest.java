@@ -66,11 +66,10 @@ public class XmlFeedConsumerTest extends AbstractConsumerTest {
       assertEquals(EntityProviderException.INLINECOUNT_INVALID, e.getMessageReference());
       throw e;
     }
-    
+
     Assert.fail("Exception expected");
   }
 
-  
   @Test(expected = EntityProviderException.class)
   public void readEmployeesFeedWithInlineCountLetters() throws Exception {
     // prepare
@@ -92,7 +91,7 @@ public class XmlFeedConsumerTest extends AbstractConsumerTest {
       assertEquals(EntityProviderException.INLINECOUNT_INVALID, e.getMessageReference());
       throw e;
     }
-    
+
     Assert.fail("Exception expected");
   }
 }

@@ -1,6 +1,9 @@
 package com.sap.core.odata.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -10,6 +13,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataRequest;
 
 /**
@@ -40,5 +44,18 @@ public class ODataContextImplTest {
   public void debugMode() {
     context.setDebugMode(true);
     assertTrue(context.isInDebugMode());
+  }
+
+  @Test
+  public void parentContext() {
+
+    assertFalse(context.isInBatchMode());
+    assertNull(context.getBatchParentContext());
+
+    ODataContext parentContext = mock(ODataContext.class);
+    context.setBatchParentContext(parentContext);
+
+    assertTrue(context.isInBatchMode());
+    assertNotNull(context.getBatchParentContext());
   }
 }

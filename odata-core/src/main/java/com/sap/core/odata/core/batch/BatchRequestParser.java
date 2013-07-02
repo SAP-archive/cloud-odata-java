@@ -54,7 +54,7 @@ public class BatchRequestParser {
   private String currentContentId;
   private static Set<String> HTTP_CHANGESET_METHODS;
   private static Set<String> HTTP_BATCH_METHODS;
-  
+
   static {
     HTTP_CHANGESET_METHODS = new HashSet<String>();
     HTTP_CHANGESET_METHODS.add("POST");

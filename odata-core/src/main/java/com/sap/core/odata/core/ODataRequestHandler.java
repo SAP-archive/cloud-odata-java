@@ -68,7 +68,6 @@ public class ODataRequestHandler {
     ODataResponse odataResponse;
     final int timingHandle = context.startRuntimeMeasurement("ODataRequestHandler", "handle");
     try {
-
       UriParser uriParser = new UriParserImpl(service.getEntityDataModel());
       Dispatcher dispatcher = new Dispatcher(serviceFactory, service);
 

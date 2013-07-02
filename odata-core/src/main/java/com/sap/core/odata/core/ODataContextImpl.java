@@ -21,6 +21,7 @@ import com.sap.core.odata.core.debug.ODataDebugResponseWrapper;
  */
 public class ODataContextImpl implements ODataContext {
 
+  private static final String ODATA_BATCH_PARENT_CONTEXT = "~odataBatchParentContext";
   private static final String ODATA_REQUEST = "~odataRequest";
   private static final String DEBUG_MODE = "~debugMode";
   private static final String SERVICE = "~service";
@@ -237,6 +238,20 @@ public class ODataContextImpl implements ODataContext {
     final String debugValue = queryParameters.get(ODataDebugResponseWrapper.ODATA_DEBUG_QUERY_PARAMETER);
     return ODataDebugResponseWrapper.ODATA_DEBUG_JSON.equals(debugValue) ?
         debugValue : null;
+  }
+
+  public void setBatchParentContext(final ODataContext ctx) {
+    setParameter(ODATA_BATCH_PARENT_CONTEXT, ctx);
+  }
+
+  @Override
+  public ODataContext getBatchParentContext() {
+    return (ODataContext) parameterTable.get(ODATA_BATCH_PARENT_CONTEXT);
+  }
+
+  @Override
+  public boolean isInBatchMode() {
+    return parameterTable.containsKey(ODATA_BATCH_PARENT_CONTEXT);
   }
 
 }
