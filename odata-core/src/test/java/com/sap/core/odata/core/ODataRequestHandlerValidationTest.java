@@ -26,6 +26,7 @@ import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
@@ -268,28 +269,30 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     return service;
   }
 
-  private ODataResponse executeRequest(final ODataHttpMethod method,
+  private void executeRequest(final ODataHttpMethod method,
       final List<String> pathSegments,
       final Map<String, String> queryParameters,
-      final String requestContentType) throws ODataException {
+      final String requestContentType,
+      final HttpStatusCodes expectedStatusCode) throws ODataException {
     ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
     final ODataService service = mockODataService(serviceFactory);
     when(serviceFactory.createService(any(ODataContext.class))).thenReturn(service);
 
-    ODataRequest request = mockODataRequest(method, pathSegments, queryParameters, requestContentType);
-    ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
+    final ODataRequest request = mockODataRequest(method, pathSegments, queryParameters, requestContentType);
+    final ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
 
-    return new ODataRequestHandler(serviceFactory, service, context).handle(request);
+    final ODataResponse response = new ODataRequestHandler(serviceFactory, service, context).handle(request);
+    assertNotNull(response);
+    assertEquals(expectedStatusCode == null ? HttpStatusCodes.PAYMENT_REQUIRED : expectedStatusCode,
+        response.getStatus());
   }
 
   private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
-    executeRequest(method, createPathSegments(uriType, false, true), null, requestContentType);
+    executeRequest(method, createPathSegments(uriType, false, true), null, requestContentType, null);
   }
 
   private void wrongRequest(final ODataHttpMethod method, final List<String> pathSegments, final Map<String, String> queryParameters) throws ODataException {
-    final ODataResponse response = executeRequest(method, pathSegments, queryParameters, null);
-    assertNotNull(response);
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED, response.getStatus());
+    executeRequest(method, pathSegments, queryParameters, null, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
   private void wrongOptions(final ODataHttpMethod method, final UriType uriType,
@@ -329,9 +332,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType, final HttpStatusCodes expectedStatusCode) throws ODataException {
-    final ODataResponse response = executeRequest(method, createPathSegments(uriType, true, false), null, null);
-    assertNotNull(response);
-    assertEquals(expectedStatusCode, response.getStatus());
+    executeRequest(method, createPathSegments(uriType, true, false), null, null, expectedStatusCode);
   }
 
   private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws ODataException {
@@ -343,9 +344,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws ODataException {
-    ODataResponse response = executeRequest(method, createPathSegments(uriType, false, isValue), null, requestContentType);
-    assertNotNull(response);
-    assertEquals(HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, response.getStatus());
+    executeRequest(method, createPathSegments(uriType, false, isValue), null, requestContentType, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
 
   @Test
@@ -386,17 +385,17 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
 
   @Test
   public void allowedMethods() throws Exception {
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI0, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI1, false, false), null, null);
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI2, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI4, false, false), null, null);
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI15, false, false), null, null);
-    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI17, false, false), null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI0, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI1, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, HttpContentType.APPLICATION_JSON, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI2, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI3, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_JSON, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_JSON, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI4, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, HttpContentType.MULTIPART_MIXED, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI15, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.GET, createPathSegments(UriType.URI17, false, false), null, null, null);
   }
 
   @Test
@@ -525,42 +524,52 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
 
   @Test
   public void requestContentType() throws Exception {
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI2, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI3, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI4, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI5, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML, HttpStatusCodes.BAD_REQUEST);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML, HttpStatusCodes.BAD_REQUEST);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI6A, false, false), null, HttpContentType.APPLICATION_XML, HttpStatusCodes.BAD_REQUEST);
 
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI6B, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI6B, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
-    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.PATCH, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML, null);
+    executeRequest(ODataHttpMethod.MERGE, createPathSegments(UriType.URI7A, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI7B, false, false), null, HttpContentType.APPLICATION_XML);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI7B, false, false), null, HttpContentType.APPLICATION_XML, null);
 
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, HttpContentType.MULTIPART_MIXED);
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI9, false, false), null, HttpContentType.MULTIPART_MIXED, null);
   }
 
   @Test
   public void requestContentTypeMediaResource() throws Exception {
-    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, "image/jpeg");
+    executeRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI1, false, false), null, "image/jpeg", null);
 
-    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI17, false, true), null, "image/jpeg");
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI17, false, true), null, "image/jpeg", null);
+  }
+
+  @Test
+  public void requestContentTypeFunctionImport() throws Exception {
+    EdmFunctionImport function = edm.getDefaultEntityContainer().getFunctionImport("MaximalAge");
+    when(function.getHttpMethod()).thenReturn(ODataHttpMethod.PUT.name());
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI14, false, false), null, null, null);
+    executeRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI14, false, false), null, HttpContentType.WILDCARD, null);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI14, null);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI14, HttpContentType.WILDCARD);
   }
 
   @Test

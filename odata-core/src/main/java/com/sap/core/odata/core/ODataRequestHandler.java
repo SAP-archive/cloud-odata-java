@@ -29,6 +29,8 @@ import com.sap.core.odata.api.processor.part.EntityMediaProcessor;
 import com.sap.core.odata.api.processor.part.EntityProcessor;
 import com.sap.core.odata.api.processor.part.EntitySetProcessor;
 import com.sap.core.odata.api.processor.part.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParser;
@@ -361,29 +363,32 @@ public class ODataRequestHandler {
   }
 
   private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentTypeString) throws ODataException {
-    final ContentType contentType = ContentType.parse(contentTypeString);
-    if (contentType == null || contentType.hasWildcard()) {
-      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
-    }
-
     Class<? extends ODataProcessor> processorFeature = Dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+
+    // Don't check the request content type for function imports
+    // because the request body is not used at all.
+    if (processorFeature == FunctionImportProcessor.class
+        || processorFeature == FunctionImportValueProcessor.class)
+      return;
+
     // Adjust processor feature.
-    if (processorFeature == EntitySetProcessor.class) {
+    if (processorFeature == EntitySetProcessor.class)
       processorFeature = uriInfo.getTargetEntitySet().getEntityType().hasStream() ?
           EntityMediaProcessor.class : // A media resource can have any type.
           EntityProcessor.class; // The request must contain a single entity!
-    } else if (processorFeature == EntityLinksProcessor.class)
-    {
+    else if (processorFeature == EntityLinksProcessor.class)
       processorFeature = EntityLinkProcessor.class; // The request must contain a single link!
-    }
+
+    final ContentType contentType = ContentType.parse(contentTypeString);
+    if (contentType == null || contentType.hasWildcard())
+      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
 
     final List<ContentType> supportedContentTypes = processorFeature == EntitySimplePropertyValueProcessor.class ?
         getSupportedContentTypes(getProperty(uriInfo)) :
         getSupportedContentTypes(processorFeature);
 
-    if (!isValidRequestContentType(contentType, supportedContentTypes)) {
+    if (!isValidRequestContentType(contentType, supportedContentTypes))
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
-    }
   }
 
   private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {

@@ -111,17 +111,14 @@ public class EdmFunctionImportImplProvTest extends BaseTest {
     assertNotNull(parameter);
     assertEquals("fooParameter1", parameter.getName());
 
-    parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter1");
     assertNotNull(parameter);
     assertEquals("fooParameter1", parameter.getName());
 
-    parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter2");
     assertNotNull(parameter);
     assertEquals("fooParameter2", parameter.getName());
 
-    parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter3");
     assertNotNull(parameter);
     assertEquals("fooParameter3", parameter.getName());
@@ -134,11 +131,9 @@ public class EdmFunctionImportImplProvTest extends BaseTest {
     EdmParameter parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter1");
     assertNull(parameter);
 
-    parameter = null;
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter2");
     assertNull(parameter);
 
-    parameter = null;
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter3");
     assertNull(parameter);
   }
