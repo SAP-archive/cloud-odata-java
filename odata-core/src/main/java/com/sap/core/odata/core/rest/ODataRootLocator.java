@@ -55,7 +55,7 @@ public class ODataRootLocator {
    * @throws InstantiationException 
    */
   @Path("/{pathSegments: .*}")
-  public ODataLocator handleRequest(
+  public Object handleRequest(
       @Encoded @PathParam("pathSegments") final List<PathSegment> pathSegments,
       @HeaderParam("X-HTTP-Method") final String xHttpMethod,
       @HeaderParam("X-HTTP-Method-Override") final String xHttpMethodOverride)
@@ -112,7 +112,7 @@ public class ODataRootLocator {
     return odataLocator;
   }
 
-  private ODataLocator handleRedirect() {
+  private Object handleRedirect() {
     return new ODataRedirectLocator();
   }
 }

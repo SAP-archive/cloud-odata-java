@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 /**
  * @author SAP AG
  */
-public class ODataRedirectLocator implements ODataLocator {
+public class ODataRedirectLocator  {
 
   @GET
   public Response redirectGet() {
