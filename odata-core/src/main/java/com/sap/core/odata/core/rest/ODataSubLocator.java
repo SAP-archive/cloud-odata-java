@@ -25,7 +25,7 @@ import com.sap.core.odata.core.ODataRequestImpl;
 /**
  * @author SAP AG
  */
-public final class ODataSubLocator implements ODataLocator {
+public final class ODataSubLocator {
 
   private ODataServiceFactory serviceFactory;
   private ODataRequestImpl request;
