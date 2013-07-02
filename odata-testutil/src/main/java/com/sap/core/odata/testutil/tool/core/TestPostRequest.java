@@ -32,7 +32,7 @@ public class TestPostRequest extends TestRequest {
       return new ByteArrayInputStream(content.getBytes(charset));
     } catch (UnsupportedEncodingException e) {
       // we know that UTF-8 is supported
-      throw new RuntimeException("UTF-8 MUST be supported.");
+      throw new RuntimeException("UTF-8 MUST be supported.", e);
     }
   }
 

@@ -92,7 +92,7 @@ public class BatchResponseWriter {
     } catch (IOException e) {
       cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
       throw cachedException;
-    } finally {
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       try {
         in.close();
       } catch (IOException e) {

@@ -14,6 +14,7 @@ import org.apache.http.HttpEntity;
  * @author SAP AG
  */
 public class StringHelper {
+  
   public static String inputStreamToString(final InputStream in, boolean preserveLineBreaks) throws IOException {
     final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     final StringBuilder stringBuilder = new StringBuilder();
@@ -52,7 +53,7 @@ public class StringHelper {
       return encapsulate(content, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       // we know that UTF-8 is supported
-      throw new RuntimeException("UTF-8 MUST be supported.");
+      throw new RuntimeException("UTF-8 MUST be supported.", e);
     }
   }
 
@@ -77,7 +78,7 @@ public class StringHelper {
   public static InputStream generateDataStream(final int len) {
     return encapsulate(generateData(len));
   }
-  
+
   /**
    * Generate a string with given length containing random upper case characters ([A-Z]).
    * 
