@@ -131,19 +131,24 @@ public final class ODataSubLocator {
     return response;
   }
 
-  public void initialize(final SubLocatorParameter param) throws ODataException {
-    serviceFactory = param.getServiceFactory();
+  public static ODataSubLocator create(final SubLocatorParameter param) throws ODataException {
+    ODataSubLocator subLocator = new ODataSubLocator();
 
-    request = new ODataRequestImpl();
+    subLocator.serviceFactory = param.getServiceFactory();
 
-    request.setRequestHeaders(param.getHttpHeaders().getRequestHeaders());
+    subLocator.request = new ODataRequestImpl();
+    subLocator.request.setRequestHeaders(param.getHttpHeaders().getRequestHeaders());
+    subLocator.request.setPathInfo(RestUtil.buildODataPathInfo(param));
+    subLocator.request.setBody(RestUtil.contentAsStream(RestUtil.extractRequestContent(param)));
+    subLocator.request.setQueryParameters(RestUtil.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()));
+    subLocator.request.setAcceptHeaders(RestUtil.extractAcceptHeaders(param));
+    subLocator.request.setContentType(RestUtil.extractRequestContentType(param));
+    subLocator.request.setAcceptableLanguages(param.getHttpHeaders().getAcceptableLanguages());
 
-    request.setPathInfo(RestUtil.buildODataPathInfo(param));
-    request.setBody(RestUtil.contentAsStream(RestUtil.extractRequestContent(param)));
+    return subLocator;
+  }
 
-    request.setQueryParameters(RestUtil.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()));
-    request.setAcceptHeaders(RestUtil.extractAcceptHeaders(param));
-    request.setContentType(RestUtil.extractRequestContentType(param));
-    request.setAcceptableLanguages(param.getHttpHeaders().getAcceptableLanguages());
+  private ODataSubLocator() {
+    super();
   }
 }
