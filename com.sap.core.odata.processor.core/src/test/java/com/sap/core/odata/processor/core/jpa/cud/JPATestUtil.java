@@ -30,13 +30,12 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
-import com.sap.core.odata.core.edm.EdmInt32;
-import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
@@ -292,14 +291,12 @@ public class JPATestUtil {
   }
 
   private static EdmType mockEdmType1() {
-    EdmInt32 edmType = new EdmInt32();
-    return edmType;
+    return EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance();
 
   }
 
   private static EdmType mockEdmType2() {
-    EdmString edmType = new EdmString();
-    return edmType;
+    return EdmSimpleTypeKind.String.getEdmSimpleTypeInstance();
 
   }
 

@@ -322,6 +322,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
         getSelectItemList());
     EasyMock.expect(objGetEntitySetUriInfo.getExpand()).andStubReturn(
         getExpandList());
+    EasyMock.expect(objGetEntitySetUriInfo.getSkip()).andStubReturn(new Integer(1));
     EasyMock.replay(objGetEntitySetUriInfo);
     return objGetEntitySetUriInfo;
   }
@@ -340,6 +341,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
         .andStubReturn(getLocalTargetEntitySet());
     EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andStubReturn(null);
     EasyMock.expect(objGetEntitySetUriInfo.getExpand()).andStubReturn(null);
+    EasyMock.expect(objGetEntitySetUriInfo.getSkip()).andStubReturn(new Integer(1));
 
     EasyMock.replay(objGetEntitySetUriInfo);
     return objGetEntitySetUriInfo;
@@ -616,6 +618,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
         .andStubReturn(selectItemList);
     EasyMock.expect(entitySetUriInfo.getExpand()).andStubReturn(expandList);
     EasyMock.expect(entitySetUriInfo.getInlineCount()).andStubReturn(InlineCount.ALLPAGES);
+    EasyMock.expect(entitySetUriInfo.getSkip()).andStubReturn(new Integer(1));
+    EasyMock.expect(entitySetUriInfo.getTop()).andStubReturn(new Integer(2));
     EasyMock.replay(entitySetUriInfo);
     return entitySetUriInfo;
   }

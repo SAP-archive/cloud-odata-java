@@ -67,7 +67,7 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView {
   private static final String SO_ID = "SoId";
   private static final String SALES_ORDER = "SalesOrder";
   private static final String SALES_ORDER_HEADERS = "SalesOrderHeaders";
-  private static final String TEXT_PLAIN_CHARSET_UTF_8 = "text/plain; charset=utf-8";
+  private static final String TEXT_PLAIN_CHARSET_UTF_8 = "text/plain;charset=utf-8";
   private static final String STR_CONTENT_TYPE = "Content-Type";
 
   @Before
