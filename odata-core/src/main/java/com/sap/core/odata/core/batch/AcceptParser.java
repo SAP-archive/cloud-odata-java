@@ -21,7 +21,7 @@ public class AcceptParser {
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
   private static final Pattern REG_EX_ACCEPT = Pattern.compile("([a-z\\*]+/[a-z0-9\\+\\*\\-=;\\s]+)");
   private static final Pattern REG_EX_ACCEPT_WITH_Q_FACTOR = Pattern.compile(REG_EX_ACCEPT + "(?:;" + REG_EX_OPTIONAL_WHITESPACE + REG_EX_QUALITY_FACTOR + ")?");
-  private static final Pattern REG_EX_ACCEPT_LANGUAGES = Pattern.compile("((?:(?:[a-z]{1,8})|(?:\\*))\\-?(?:[A-Z]{1,8})?)");
+  private static final Pattern REG_EX_ACCEPT_LANGUAGES = Pattern.compile("((?:(?:[a-z]{1,8})|(?:\\*))\\-?(?:[a-zA-Z]{1,8})?)");
   private static final Pattern REG_EX_ACCEPT_LANGUAGES_WITH_Q_FACTOR = Pattern.compile(REG_EX_ACCEPT_LANGUAGES + "(?:;" + REG_EX_OPTIONAL_WHITESPACE + REG_EX_QUALITY_FACTOR + ")?");
 
   private static final double QUALITY_PARAM_FACTOR = 0.001;
