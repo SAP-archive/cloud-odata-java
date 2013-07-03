@@ -362,36 +362,60 @@ public class ODataRequestHandler {
     return property.getFacets() == null || property.getFacets().isNullable();
   }
 
-  private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentTypeString) throws ODataException {
+  /**
+   * Check if <code>content type</code> is a valid request content type for given {@link UriInfoImpl}.
+   * If check fails because of a not valid combination of <code>content type</code> and {@link UriInfoImpl}
+   * an {@link ODataUnsupportedMediaTypeException} is thrown.
+   * 
+   * @param uriInfo information about request uri
+   * @param contentType request content type
+   * @throws ODataException in the case of an error during {@link UriInfoImpl} access or 
+   *    if check fails because of a not valid combination of <code>content type</code> and {@link UriInfoImpl} 
+   *    as {@link ODataUnsupportedMediaTypeException}.
+   */
+  private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentType) throws ODataException {
     Class<? extends ODataProcessor> processorFeature = Dispatcher.mapUriTypeToProcessorFeature(uriInfo);
 
     // Don't check the request content type for function imports
     // because the request body is not used at all.
     if (processorFeature == FunctionImportProcessor.class
-        || processorFeature == FunctionImportValueProcessor.class)
+        || processorFeature == FunctionImportValueProcessor.class) {
       return;
+    }
 
     // Adjust processor feature.
-    if (processorFeature == EntitySetProcessor.class)
+    if (processorFeature == EntitySetProcessor.class) {
       processorFeature = uriInfo.getTargetEntitySet().getEntityType().hasStream() ?
           EntityMediaProcessor.class : // A media resource can have any type.
           EntityProcessor.class; // The request must contain a single entity!
-    else if (processorFeature == EntityLinksProcessor.class)
+    } else if (processorFeature == EntityLinksProcessor.class) {
       processorFeature = EntityLinkProcessor.class; // The request must contain a single link!
+    }
+    final ContentType parsedContentType = ContentType.parse(contentType);
+    if (parsedContentType == null || parsedContentType.hasWildcard()) {
+      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(parsedContentType));
+    }
+    // get list of supported content types based an process feature
+    final List<ContentType> supportedContentTypes;
+    if(processorFeature == EntitySimplePropertyValueProcessor.class) {
+      supportedContentTypes = getSupportedContentTypes(getProperty(uriInfo));
+    } else {
+      supportedContentTypes = getSupportedContentTypes(processorFeature);
+    }
 
-    final ContentType contentType = ContentType.parse(contentTypeString);
-    if (contentType == null || contentType.hasWildcard())
-      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
-
-    final List<ContentType> supportedContentTypes = processorFeature == EntitySimplePropertyValueProcessor.class ?
-        getSupportedContentTypes(getProperty(uriInfo)) :
-        getSupportedContentTypes(processorFeature);
-
-    if (!isValidRequestContentType(contentType, supportedContentTypes))
-      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+    if (!hasMatchingContentType(parsedContentType, supportedContentTypes)) {
+      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(parsedContentType));
+    }
   }
 
-  private static boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
+  /**
+   * Check if given list of {@link ContentType}s contains a matching {@link ContentType} for given <code>contentType</code> parameter.
+   * 
+   * @param contentType for which a matching content type is searched
+   * @param allowedContentTypes list against which is checked for possible matching {@link ContentType}s
+   * @return <code>true</code> if a matching content type is in given list, otherwise <code>false</code>
+   */
+  private static boolean hasMatchingContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
     final ContentType requested = contentType.receiveWithCharsetParameter(ContentNegotiator.DEFAULT_CHARSET);
     if (requested.getODataFormat() == ODataFormat.CUSTOM || requested.getODataFormat() == ODataFormat.MIME) {
       return requested.hasCompatible(allowedContentTypes);
