@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -128,7 +129,7 @@ public class SupaController {
       final HttpResponse response = httpClient.execute(targetHost, request);
 
       //
-      return StringHelper.httpEntityToString(response.getEntity());
+      return extractSupaInformation(response.getEntity());
     } catch (final IOException e) {
       LOG.debug("Got exception for calling supa command '" + supaCommand + "'.");
       return "Exception";
@@ -137,5 +138,25 @@ public class SupaController {
         request.releaseConnection();
       }
     }
+  }
+
+  private String extractSupaInformation(HttpEntity entity) throws IllegalStateException, IOException {
+    String rawContent = StringHelper.httpEntityToString(entity);
+    if(rawContent == null) {
+      return null;
+    }
+    //
+    int startIndex = 0;
+    if(rawContent.startsWith("<html><body>")) {
+      startIndex = 12;
+    }
+    //
+    int endIndex = rawContent.indexOf("<br /><p />");
+    if(endIndex < 0 || endIndex < startIndex) {
+      endIndex = rawContent.length();
+    }
+    //
+    String supaContent = rawContent.substring(startIndex, endIndex);
+    return supaContent;
   }
 }

@@ -67,7 +67,7 @@ public abstract class AbstractTestClient {
   }
 
   public void call() {
-    call(-1, -1);
+    call(Integer.MIN_VALUE, Integer.MAX_VALUE);
   }
 
   public void callOnce() {
@@ -75,7 +75,7 @@ public abstract class AbstractTestClient {
   }
 
   public void call(int minCallCount) {
-    call(minCallCount, -1);
+    call(minCallCount, Integer.MAX_VALUE);
   }
 
   public void call(int minCallCount, int maxCallCount) {
