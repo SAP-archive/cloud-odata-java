@@ -288,7 +288,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
       final Map<String, String> queryParameters,
       final String requestContentType,
       final HttpStatusCodes expectedStatusCode) throws ODataException {
-    
+
     final ODataResponse response = executeRequest(method, pathSegments, queryParameters, requestContentType);
     assertNotNull(response);
     assertEquals(expectedStatusCode == null ? HttpStatusCodes.PAYMENT_REQUIRED : expectedStatusCode,
@@ -298,7 +298,7 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
     executeAndValidateRequest(method, createPathSegments(uriType, false, true), null, requestContentType, null);
   }
-  
+
   private void wrongRequest(final ODataHttpMethod method, final List<String> pathSegments, final Map<String, String> queryParameters) throws ODataException {
     executeAndValidateRequest(method, pathSegments, queryParameters, null, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
@@ -486,16 +486,6 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
   }
 
   @Test
-  public void functionImportPostHttpMethod() throws Exception {
-    String requestContentType = null;
-
-    List<String> pathSegments = new ArrayList<String>();
-    pathSegments.add("CreateEmployee");
-    ODataResponse response = executeRequest(ODataHttpMethod.POST, pathSegments, null, requestContentType);
-    assertEquals(HttpStatusCodes.PAYMENT_REQUIRED, response.getStatus());
-  }
-
-  @Test
   public void functionImportWrongHttpMethod() throws Exception {
     wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI1);
     wrongFunctionHttpMethod(ODataHttpMethod.PUT, UriType.URI10);
@@ -588,6 +578,10 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
     executeAndValidateRequest(ODataHttpMethod.PUT, createPathSegments(UriType.URI14, false, false), null, HttpContentType.WILDCARD, null);
     checkValueContentType(ODataHttpMethod.PUT, UriType.URI14, null);
     checkValueContentType(ODataHttpMethod.PUT, UriType.URI14, HttpContentType.WILDCARD);
+
+    function = edm.getDefaultEntityContainer().getFunctionImport("OldestEmployee");
+    when(function.getHttpMethod()).thenReturn(ODataHttpMethod.POST.name());
+    executeAndValidateRequest(ODataHttpMethod.POST, createPathSegments(UriType.URI10, false, false), null, null, null);
   }
 
   @Test
@@ -621,6 +615,8 @@ public class ODataRequestHandlerValidationTest extends BaseTest {
 
   @Test
   public void wrongRequestContentType() throws Exception {
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.WILDCARD);
+
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);

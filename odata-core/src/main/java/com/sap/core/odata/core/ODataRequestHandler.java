@@ -10,7 +10,6 @@ import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -47,9 +46,9 @@ import com.sap.core.odata.core.uri.UriType;
  */
 public class ODataRequestHandler {
 
-  private ODataServiceFactory serviceFactory;
-  private ODataService service;
-  private ODataContext context;
+  private final ODataServiceFactory serviceFactory;
+  private final ODataService service;
+  private final ODataContext context;
 
   public ODataRequestHandler(final ODataServiceFactory factory, final ODataService service, final ODataContext context) {
     serviceFactory = factory;
@@ -59,8 +58,8 @@ public class ODataRequestHandler {
 
   /**
    * <p>Handles the {@link ODataRequest} in a way that it results in a corresponding {@link ODataResponse}.</p>
-   * <p>This includes building of the {@link com.sap.core.odata.api.processor.ODataContext ODataContext},
-   * delegation of URI parsing and dispatching of the request internally.</p>
+   * <p>This includes delegation of URI parsing and dispatching of the request internally.
+   * Building of the {@link ODataContext} takes place outside of this method.</p>
    * @param request the incoming request
    * @return the corresponding result
    */
@@ -87,9 +86,8 @@ public class ODataRequestHandler {
       validateMethodAndUri(method, uriInfo);
 
       if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
-          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE) {
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
         checkRequestContentType(uriInfo, request.getContentType());
-      }
 
       final String acceptContentType = new ContentNegotiator().doContentNegotiation(uriInfo, request.getAcceptHeaders(), getSupportedContentTypes(uriInfo));
 
@@ -150,17 +148,19 @@ public class ODataRequestHandler {
     switch (uriInfo.getUriType()) {
     case URI0:
     case URI8:
-      if (method != ODataHttpMethod.GET) {
+    case URI15:
+    case URI16:
+    case URI50A:
+    case URI50B:
+      if (method != ODataHttpMethod.GET)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI1:
     case URI6B:
     case URI7B:
-      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST) {
+      if (method != ODataHttpMethod.GET && method != ODataHttpMethod.POST)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI2:
@@ -169,17 +169,15 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI3:
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI4:
@@ -187,17 +185,15 @@ public class ODataRequestHandler {
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
           && method != ODataHttpMethod.DELETE
-          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE) {
+          && method != ODataHttpMethod.PATCH && method != ODataHttpMethod.MERGE)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      } else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue()) {
+      else if (method == ODataHttpMethod.DELETE && !uriInfo.isValue())
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI9:
-      if (method != ODataHttpMethod.POST) {
+      if (method != ODataHttpMethod.POST)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI10:
@@ -207,21 +203,11 @@ public class ODataRequestHandler {
     case URI14:
       break;
 
-    case URI15:
-    case URI16:
-    case URI50A:
-    case URI50B:
-      if (method != ODataHttpMethod.GET) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-
     case URI17:
       if (method != ODataHttpMethod.GET
           && method != ODataHttpMethod.PUT
-          && method != ODataHttpMethod.DELETE) {
+          && method != ODataHttpMethod.DELETE)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     default:
@@ -232,9 +218,8 @@ public class ODataRequestHandler {
   private static void checkFunctionImport(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     if (uriInfo.getFunctionImport() != null
         && uriInfo.getFunctionImport().getHttpMethod() != null
-        && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString())) {
+        && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
       throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-    }
   }
 
   private static void checkNotGetSystemQueryOptions(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
@@ -337,15 +322,10 @@ public class ODataRequestHandler {
   }
 
   private static void checkProperty(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
-    if (uriInfo.getUriType() == UriType.URI4 || uriInfo.getUriType() == UriType.URI5) {
-      if (isPropertyKey(uriInfo)) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      if (method == ODataHttpMethod.DELETE
-          && !isPropertyNullable(getProperty(uriInfo))) {
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-    }
+    if ((uriInfo.getUriType() == UriType.URI4 || uriInfo.getUriType() == UriType.URI5)
+        && (isPropertyKey(uriInfo)
+        || method == ODataHttpMethod.DELETE && !isPropertyNullable(getProperty(uriInfo))))
+      throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
   }
 
   private static EdmProperty getProperty(final UriInfo uriInfo) {
@@ -354,8 +334,7 @@ public class ODataRequestHandler {
   }
 
   private static boolean isPropertyKey(final UriInfo uriInfo) throws EdmException {
-    final EdmEntityType entityType = uriInfo.getTargetEntitySet().getEntityType();
-    return entityType.getKeyProperties().contains(getProperty(uriInfo));
+    return uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().contains(getProperty(uriInfo));
   }
 
   private static boolean isPropertyNullable(final EdmProperty property) throws EdmException {
@@ -363,15 +342,14 @@ public class ODataRequestHandler {
   }
 
   /**
-   * Check if <code>content type</code> is a valid request content type for given {@link UriInfoImpl}.
-   * If check fails because of a not valid combination of <code>content type</code> and {@link UriInfoImpl}
-   * an {@link ODataUnsupportedMediaTypeException} is thrown.
-   * 
-   * @param uriInfo information about request uri
+   * <p>Checks if <code>content type</code> is a valid request content type for the given {@link UriInfoImpl}.</p>
+   * <p>If the combination of <code>content type</code> and {@link UriInfoImpl}
+   * is not valid, an {@link ODataUnsupportedMediaTypeException} is thrown.</p>
+   * @param uriInfo information about request URI
    * @param contentType request content type
-   * @throws ODataException in the case of an error during {@link UriInfoImpl} access or 
-   *    if check fails because of a not valid combination of <code>content type</code> and {@link UriInfoImpl} 
-   *    as {@link ODataUnsupportedMediaTypeException}.
+   * @throws ODataException in the case of an error during {@link UriInfoImpl} access;
+   *                        if the combination of <code>content type</code> and {@link UriInfoImpl}
+   *                        is invalid, as {@link ODataUnsupportedMediaTypeException}
    */
   private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentType) throws ODataException {
     Class<? extends ODataProcessor> processorFeature = Dispatcher.mapUriTypeToProcessorFeature(uriInfo);
@@ -379,38 +357,34 @@ public class ODataRequestHandler {
     // Don't check the request content type for function imports
     // because the request body is not used at all.
     if (processorFeature == FunctionImportProcessor.class
-        || processorFeature == FunctionImportValueProcessor.class) {
+        || processorFeature == FunctionImportValueProcessor.class)
       return;
-    }
 
     // Adjust processor feature.
-    if (processorFeature == EntitySetProcessor.class) {
+    if (processorFeature == EntitySetProcessor.class)
       processorFeature = uriInfo.getTargetEntitySet().getEntityType().hasStream() ?
           EntityMediaProcessor.class : // A media resource can have any type.
           EntityProcessor.class; // The request must contain a single entity!
-    } else if (processorFeature == EntityLinksProcessor.class) {
+    else if (processorFeature == EntityLinksProcessor.class)
       processorFeature = EntityLinkProcessor.class; // The request must contain a single link!
-    }
-    final ContentType parsedContentType = ContentType.parse(contentType);
-    if (parsedContentType == null || parsedContentType.hasWildcard()) {
-      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(parsedContentType));
-    }
-    // get list of supported content types based an process feature
-    final List<ContentType> supportedContentTypes;
-    if(processorFeature == EntitySimplePropertyValueProcessor.class) {
-      supportedContentTypes = getSupportedContentTypes(getProperty(uriInfo));
-    } else {
-      supportedContentTypes = getSupportedContentTypes(processorFeature);
-    }
 
-    if (!hasMatchingContentType(parsedContentType, supportedContentTypes)) {
+    final ContentType parsedContentType = ContentType.parse(contentType);
+    if (parsedContentType == null || parsedContentType.hasWildcard())
       throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(parsedContentType));
-    }
+
+    // Get list of supported content types based on processor feature.
+    final List<ContentType> supportedContentTypes =
+        processorFeature == EntitySimplePropertyValueProcessor.class ?
+            getSupportedContentTypes(getProperty(uriInfo)) :
+            getSupportedContentTypes(processorFeature);
+
+    if (!hasMatchingContentType(parsedContentType, supportedContentTypes))
+      throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(parsedContentType));
   }
 
   /**
-   * Check if given list of {@link ContentType}s contains a matching {@link ContentType} for given <code>contentType</code> parameter.
-   * 
+   * Checks if the given list of {@link ContentType}s contains a matching {@link ContentType}
+   * for the given <code>contentType</code> parameter.
    * @param contentType for which a matching content type is searched
    * @param allowedContentTypes list against which is checked for possible matching {@link ContentType}s
    * @return <code>true</code> if a matching content type is in given list, otherwise <code>false</code>
@@ -430,13 +404,11 @@ public class ODataRequestHandler {
   }
 
   private List<String> getSupportedContentTypes(final UriInfoImpl uriInfo) throws ODataException {
-    final Class<? extends ODataProcessor> processorFeature = Dispatcher.mapUriTypeToProcessorFeature(uriInfo);
-    return service.getSupportedContentTypes(processorFeature);
+    return service.getSupportedContentTypes(Dispatcher.mapUriTypeToProcessorFeature(uriInfo));
   }
 
   private List<ContentType> getSupportedContentTypes(final Class<? extends ODataProcessor> processorFeature) throws ODataException {
-    List<String> contentTypeStrings = service.getSupportedContentTypes(processorFeature);
-    return ContentType.create(contentTypeStrings);
+    return ContentType.create(service.getSupportedContentTypes(processorFeature));
   }
 
   private static String getDebugValue(final ODataContext context, final Map<String, String> queryParameters) {

@@ -33,7 +33,7 @@ public class JsonLinkEntityProducer {
       appendUri(jsonStreamWriter, uri);
       jsonStreamWriter.endObject();
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 

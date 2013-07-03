@@ -157,7 +157,6 @@ class EdmMock {
     createFunctionImportMock(defaultContainer, "AllUsedRoomIds", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), EdmMultiplicity.MANY);
     createFunctionImportMock(defaultContainer, "MaximalAge", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
     createFunctionImportMock(defaultContainer, "MostCommonLocation", locationComplexType, EdmMultiplicity.ONE);
-    createPostFunctionImportMock(defaultContainer, "CreateEmployee", employeeType, EdmMultiplicity.ONE);
     EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
     EdmParameter managerPhotoParameter = mock(EdmParameter.class);
     when(managerPhotoParameter.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
@@ -313,21 +312,6 @@ class EdmMock {
     when(functionImport.getName()).thenReturn(name);
     when(functionImport.getReturnType()).thenReturn(returnType);
     when(functionImport.getHttpMethod()).thenReturn(ODataHttpMethod.GET.name());
-
-    when(container.getFunctionImport(name)).thenReturn(functionImport);
-
-    return functionImport;
-  }
-
-  private static EdmFunctionImport createPostFunctionImportMock(final EdmEntityContainer container, final String name, final EdmType type, final EdmMultiplicity multiplicity) throws EdmException {
-    EdmTyped returnType = mock(EdmTyped.class);
-    when(returnType.getType()).thenReturn(type);
-    when(returnType.getMultiplicity()).thenReturn(multiplicity);
-
-    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
-    when(functionImport.getName()).thenReturn(name);
-    when(functionImport.getReturnType()).thenReturn(returnType);
-    when(functionImport.getHttpMethod()).thenReturn("POST");
 
     when(container.getFunctionImport(name)).thenReturn(functionImport);
 

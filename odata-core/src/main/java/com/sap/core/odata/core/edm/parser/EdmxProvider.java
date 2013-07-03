@@ -160,7 +160,7 @@ public class EdmxProvider extends EdmProvider {
     try {
       streamReader = factory.createXMLStreamReader(in);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
     return streamReader;
