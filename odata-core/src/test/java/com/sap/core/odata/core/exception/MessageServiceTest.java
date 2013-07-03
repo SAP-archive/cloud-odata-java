@@ -59,10 +59,37 @@ public class MessageServiceTest extends BaseTest {
   }
 
   @Test
+  public void testTwoParametersWithTwoAddContent() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS").addContent("first").addContent("second");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
+  @Test
   public void testThreeParametersForTwo() throws Exception {
     MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS").addContent("first", "second", "third");
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
 
     assertEquals("First was [first] and second was [second]!", ms.getText());
   }
+  
+  @Test
+  public void testThreeParametersPerAddContentForTwo() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS")
+        .addContent("first").addContent("second").addContent("third");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
+  @Test
+  public void testThreeParametersPerMixedForTwo() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS")
+        .addContent("first").addContent("second", "third");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
 }
