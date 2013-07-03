@@ -442,10 +442,10 @@ public class BatchRequestParser {
     if (boundary.matches("\".*\"")) {
       boundary = boundary.replace("\"", "");
     }
-    boundary =  boundary.replaceAll("\\)", "\\\\)");
-    boundary =  boundary.replaceAll("\\(", "\\\\(");
-    boundary =  boundary.replaceAll("\\?", "\\\\?");
-    boundary =  boundary.replaceAll("\\+", "\\\\+");
+    boundary = boundary.replaceAll("\\)", "\\\\)");
+    boundary = boundary.replaceAll("\\(", "\\\\(");
+    boundary = boundary.replaceAll("\\?", "\\\\?");
+    boundary = boundary.replaceAll("\\+", "\\\\+");
     return boundary;
   }
 }
