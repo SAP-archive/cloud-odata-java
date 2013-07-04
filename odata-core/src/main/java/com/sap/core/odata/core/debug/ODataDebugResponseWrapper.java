@@ -1,7 +1,9 @@
 package com.sap.core.odata.core.debug;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -96,8 +99,9 @@ public class ODataDebugResponseWrapper {
     return parts;
   }
 
-  private String wrapInJson(final List<DebugInfo> parts) throws IOException {
-    StringWriter writer = new StringWriter();
+  private InputStream wrapInJson(final List<DebugInfo> parts) throws IOException {
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(csb.getOutputStream(), "UTF-8"));
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
     jsonStreamWriter.beginObject();
     boolean first = true;
@@ -110,6 +114,8 @@ public class ODataDebugResponseWrapper {
       part.appendJson(jsonStreamWriter);
     }
     jsonStreamWriter.endObject();
-    return writer.toString();
+    writer.flush();
+    csb.closeWrite();
+    return csb.getInputStream();
   }
 }
