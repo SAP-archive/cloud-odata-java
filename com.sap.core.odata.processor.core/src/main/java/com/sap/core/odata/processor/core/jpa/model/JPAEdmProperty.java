@@ -353,6 +353,10 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
               && attrEmdType.equals(EdmSimpleTypeKind.Double)) {
             facets.setPrecision(column.precision());
           }
+          if (column.scale() != 0
+              && attrEmdType.equals(EdmSimpleTypeKind.Double)) {
+            facets.setScale(column.scale());
+          }
         }
         return facets;
       }
