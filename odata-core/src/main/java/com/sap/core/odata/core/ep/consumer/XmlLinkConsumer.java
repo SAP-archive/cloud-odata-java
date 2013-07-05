@@ -44,7 +44,7 @@ public class XmlLinkConsumer {
       reader.next();
       return readLink(reader);
     } catch (final XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -103,7 +103,7 @@ public class XmlLinkConsumer {
 
       return links;
     } catch (final XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 }

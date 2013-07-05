@@ -22,28 +22,30 @@ package com.sap.core.odata.api.commons;
  */
 public interface HttpContentType {
 
-  String APPLICATION_XML = "application/xml";
-  String APPLICATION_XML_UTF8 = APPLICATION_XML + "; charset=utf-8";
+  public static final String APPLICATION_XML = "application/xml";
+  public static final String APPLICATION_XML_UTF8 = APPLICATION_XML + ";charset=utf-8";
 
-  String APPLICATION_ATOM_XML = "application/atom+xml";
-  String APPLICATION_ATOM_XML_UTF8 = APPLICATION_ATOM_XML + "; charset=utf-8";
-  String APPLICATION_ATOM_XML_ENTRY = APPLICATION_ATOM_XML + "; type=entry";
-  String APPLICATION_ATOM_XML_ENTRY_UTF8 = APPLICATION_ATOM_XML_ENTRY + "; charset=utf-8";
-  String APPLICATION_ATOM_XML_FEED = APPLICATION_ATOM_XML + "; type=feed";
-  String APPLICATION_ATOM_XML_FEED_UTF8 = APPLICATION_ATOM_XML_FEED + "; charset=utf-8";
-  String APPLICATION_ATOM_SVC = "application/atomsvc+xml";
-  String APPLICATION_ATOM_SVC_UTF8 = APPLICATION_ATOM_SVC + "; charset=utf-8";
+  public static final String APPLICATION_ATOM_XML = "application/atom+xml";
+  public static final String APPLICATION_ATOM_XML_UTF8 = APPLICATION_ATOM_XML + ";charset=utf-8";
+  public static final String APPLICATION_ATOM_XML_ENTRY = APPLICATION_ATOM_XML + ";type=entry";
+  public static final String APPLICATION_ATOM_XML_ENTRY_UTF8 = APPLICATION_ATOM_XML_ENTRY + ";charset=utf-8";
+  public static final String APPLICATION_ATOM_XML_FEED = APPLICATION_ATOM_XML + ";type=feed";
+  public static final String APPLICATION_ATOM_XML_FEED_UTF8 = APPLICATION_ATOM_XML_FEED + ";charset=utf-8";
+  public static final String APPLICATION_ATOM_SVC = "application/atomsvc+xml";
+  public static final String APPLICATION_ATOM_SVC_UTF8 = APPLICATION_ATOM_SVC + ";charset=utf-8";
 
-  String APPLICATION_JSON = "application/json";
-  String APPLICATION_JSON_UTF8 = APPLICATION_JSON + "; charset=utf-8";
-  String APPLICATION_JSON_UTF8_VERBOSE = APPLICATION_JSON_UTF8 + ";odata=verbose";
+  public static final String APPLICATION_JSON = "application/json";
+  public static final String APPLICATION_JSON_UTF8 = APPLICATION_JSON + ";charset=utf-8";
+  public static final String APPLICATION_JSON_UTF8_VERBOSE = APPLICATION_JSON_UTF8 + ";odata=verbose";
 
-  String TEXT_PLAIN = "text/plain";
-  String TEXT_PLAIN_UTF8 = TEXT_PLAIN + "; charset=utf-8";
+  public static final String TEXT_PLAIN = "text/plain";
+  public static final String TEXT_PLAIN_UTF8 = TEXT_PLAIN + ";charset=utf-8";
 
-  String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
-  String MULTIPART_MIXED = "multipart/mixed";
+  public static final String APPLICATION_HTTP = "application/http";
 
-  String WILDCARD = "*/*";
+  public static final String MULTIPART_MIXED = "multipart/mixed";
+
+  public static final String WILDCARD = "*/*";
 }

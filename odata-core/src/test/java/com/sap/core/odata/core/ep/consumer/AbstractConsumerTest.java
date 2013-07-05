@@ -39,6 +39,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public abstract class AbstractConsumerTest extends BaseTest {
 
   protected static final EntityProviderReadProperties DEFAULT_PROPERTIES = EntityProviderReadProperties.init().mergeSemantic(false).build();

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2013 SAP AG
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.sap.core.odata.processor.core.jpa.cud;
 
 import static org.junit.Assert.fail;
@@ -30,13 +45,12 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
-import com.sap.core.odata.core.edm.EdmInt32;
-import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
@@ -292,14 +306,12 @@ public class JPATestUtil {
   }
 
   private static EdmType mockEdmType1() {
-    EdmInt32 edmType = new EdmInt32();
-    return edmType;
+    return EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance();
 
   }
 
   private static EdmType mockEdmType2() {
-    EdmString edmType = new EdmString();
-    return edmType;
+    return EdmSimpleTypeKind.String.getEdmSimpleTypeInstance();
 
   }
 

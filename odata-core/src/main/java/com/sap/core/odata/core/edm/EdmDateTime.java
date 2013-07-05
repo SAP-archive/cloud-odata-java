@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.sap.core.odata.core.edm;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -27,21 +26,16 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 
 /**
- * Implementation of the EDM simple type DateTime
+ * Implementation of the EDM simple type DateTime.
  * @author SAP AG
  */
 public class EdmDateTime extends AbstractSimpleType {
 
   private static final Pattern PATTERN = Pattern.compile(
       "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
-          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
+          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.(\\p{Digit}{0,3}?)0*)?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("/Date\\((-?\\p{Digit}+)\\)/");
   private static final EdmDateTime instance = new EdmDateTime();
-  private static final SimpleDateFormat DATE_FORMAT;
-  static {
-    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-  }
 
   public static EdmDateTime getInstance() {
     return instance;
@@ -69,45 +63,50 @@ public class EdmDateTime extends AbstractSimpleType {
           return returnType.cast(millis);
         } else if (returnType.isAssignableFrom(Date.class)) {
           return returnType.cast(new Date(millis));
-        } else if (!returnType.isAssignableFrom(Calendar.class)) {
+        } else if (returnType.isAssignableFrom(Calendar.class)) {
+          Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+          dateTimeValue.clear();
+          dateTimeValue.setTimeInMillis(millis);
+          return returnType.cast(dateTimeValue);
+        } else {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
         }
-
-        Calendar dateTimeValue = Calendar.getInstance();
-        dateTimeValue.clear();
-        dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-        dateTimeValue.setTimeInMillis(millis);
-        return returnType.cast(dateTimeValue);
       }
     }
 
-    Calendar calendarValue;
+    Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    dateTimeValue.clear();
+
     if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'")) {
-        calendarValue = parseLiteral(value.substring(9, value.length() - 1), facets);
+        parseLiteral(value.substring(9, value.length() - 1), facets, dateTimeValue);
       } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
     } else {
-      calendarValue = parseLiteral(value, facets);
+      parseLiteral(value, facets, dateTimeValue);
     }
 
     if (returnType.isAssignableFrom(Calendar.class)) {
-      return returnType.cast(calendarValue);
+      return returnType.cast(dateTimeValue);
     } else if (returnType.isAssignableFrom(Long.class)) {
-      return returnType.cast(calendarValue.getTimeInMillis());
+      return returnType.cast(dateTimeValue.getTimeInMillis());
     } else if (returnType.isAssignableFrom(Date.class)) {
-      return returnType.cast(calendarValue.getTime());
+      return returnType.cast(dateTimeValue.getTime());
     } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
     }
   }
 
-  private Calendar parseLiteral(final String value, final EdmFacets facets) throws EdmSimpleTypeException {
-    Calendar dateTimeValue = Calendar.getInstance();
-    dateTimeValue.clear();
-    dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-
+  /**
+   * Parses a formatted date/time value and sets the values of a
+   * {@link Calendar} object accordingly. 
+   * @param value         the formatted date/time value as String
+   * @param facets        additional constraints for parsing (optional)
+   * @param dateTimeValue the Calendar object to be set to the parsed value
+   * @throws EdmSimpleTypeException
+   */
+  protected static void parseLiteral(final String value, final EdmFacets facets, final Calendar dateTimeValue) throws EdmSimpleTypeException {
     final Matcher matcher = PATTERN.matcher(value);
     if (!matcher.matches()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
@@ -118,25 +117,18 @@ public class EdmDateTime extends AbstractSimpleType {
         Byte.parseByte(matcher.group(2)) - 1, // month is zero-based
         Byte.parseByte(matcher.group(3)),
         Byte.parseByte(matcher.group(4)),
-        Byte.parseByte(matcher.group(5)));
-    if (matcher.group(6) != null) {
-      dateTimeValue.set(Calendar.SECOND, Byte.parseByte(matcher.group(6)));
-    }
+        Byte.parseByte(matcher.group(5)),
+        matcher.group(6) == null ? 0 : Byte.parseByte(matcher.group(6)));
 
     if (matcher.group(7) != null) {
-      String milliSeconds = matcher.group(7).substring(1);
-      while (milliSeconds.endsWith("0")) {
-        milliSeconds = milliSeconds.substring(0, milliSeconds.length() - 1);
-      }
-      if (milliSeconds.length() > 3) {
+      if (matcher.group(7).length() == 1 || matcher.group(7).length() > 8) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       }
-      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length()) {
+      final String decimals = matcher.group(8);
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < decimals.length()) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
       }
-      while (milliSeconds.length() < 3) {
-        milliSeconds += "0";
-      }
+      final String milliSeconds = decimals + "000".substring(decimals.length());
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
 
@@ -151,7 +143,6 @@ public class EdmDateTime extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
     dateTimeValue.setLenient(true);
-    return dateTimeValue;
   }
 
   @Override
@@ -171,29 +162,68 @@ public class EdmDateTime extends AbstractSimpleType {
       return "/Date(" + timeInMillis + ")/";
     }
 
-    String result = DATE_FORMAT.format(timeInMillis);
+    Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    dateTimeValue.setTimeInMillis(timeInMillis);
 
-    if (facets == null || facets.getPrecision() == null) {
-      while (result.endsWith("0")) {
-        result = result.substring(0, result.length() - 1);
-      }
-    } else if (facets.getPrecision() <= 3) {
-      if (result.endsWith("000".substring(0, 3 - facets.getPrecision()))) {
-        result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-      } else {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      }
-    } else {
-      for (int i = 4; i <= facets.getPrecision(); i++) {
-        result += "0";
+    StringBuilder result = new StringBuilder(23); // 23 characters are enough for millisecond precision.
+    final int year = dateTimeValue.get(Calendar.YEAR);
+    appendTwoDigits(result, year / 100);
+    appendTwoDigits(result, year % 100);
+    result.append('-');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.MONTH) + 1); // month is zero-based
+    result.append('-');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.DAY_OF_MONTH));
+    result.append('T');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.HOUR_OF_DAY));
+    result.append(':');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.MINUTE));
+    result.append(':');
+    appendTwoDigits(result, dateTimeValue.get(Calendar.SECOND));
+
+    try {
+      appendMilliseconds(result, timeInMillis, facets);
+    } catch (final IllegalArgumentException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets), e);
+    }
+
+    return result.toString();
+  }
+
+  /**
+   * Appends the given number to the given string builder,
+   * assuming that the number has at most two digits, performance-optimized.
+   * @param result a {@link StringBuilder}
+   * @param number an integer that must satisfy <code>0 <= number <= 99</code>
+   */
+  private static void appendTwoDigits(final StringBuilder result, final int number) {
+    result.append((char) ('0' + number / 10));
+    result.append((char) ('0' + number % 10));
+  }
+
+  protected static void appendMilliseconds(final StringBuilder result, final long milliseconds, final EdmFacets facets) throws IllegalArgumentException {
+    final int digits = milliseconds % 1000 == 0 ? 0 : milliseconds % 100 == 0 ? 1 : milliseconds % 10 == 0 ? 2 : 3;
+    if (digits > 0) {
+      result.append('.');
+      for (int d = 100; d > 0; d /= 10) {
+        final byte digit = (byte) (milliseconds % (d * 10) / d);
+        if (digit > 0 || milliseconds % d > 0) {
+          result.append((char) ('0' + digit));
+        }
       }
     }
 
-    if (result.endsWith(".")) {
-      result = result.substring(0, result.length() - 1);
+    if (facets != null && facets.getPrecision() != null) {
+      final int precision = facets.getPrecision();
+      if (digits > precision) {
+        throw new IllegalArgumentException();
+      }
+      if (digits == 0 && precision > 0) {
+        result.append('.');
+      }
+      for (int i = digits; i < precision; i++) {
+        result.append('0');
+      }
     }
-
-    return result;
   }
 
   @Override

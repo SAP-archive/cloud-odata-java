@@ -312,4 +312,50 @@ public class XmlMetadataProducerTest extends AbstractXmlProducerTestHelper {
     XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
     XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
   }
+
+  //Element with predefined namespace
+  @Test
+  public void writeWithPredefinedNamespaces() throws Exception {
+    //prepare
+    List<Schema> schemas = new ArrayList<Schema>();
+
+    List<AnnotationAttribute> attributesElement1 = new ArrayList<AnnotationAttribute>();
+    attributesElement1.add(new AnnotationAttribute().setName("rel").setText("self").setPrefix("sap").setNamespace("http://www.sap.com/Protocols/SAPData"));
+    attributesElement1.add(new AnnotationAttribute().setName("href").setText("link").setPrefix("sap").setNamespace("http://www.sap.com/Protocols/SAPData"));
+
+    List<AnnotationElement> elementElements = new ArrayList<AnnotationElement>();
+    elementElements.add(new AnnotationElement().setName("schemaElementTest2").setPrefix("sap").setNamespace("http://www.sap.com/Protocols/SAPData").setAttributes(attributesElement1));
+    elementElements.add(new AnnotationElement().setName("schemaElementTest3").setPrefix("sap").setNamespace("http://www.sap.com/Protocols/SAPData").setAttributes(attributesElement1));
+
+    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setPrefix("sap").setNamespace("http://www.sap.com/Protocols/SAPData").setAttributes(attributesElement1).setChildElements(elementElements));
+
+    Schema schema = new Schema().setAnnotationElements(schemaElements);
+    schema.setNamespace("http://namespace.com");
+    schemas.add(schema);
+
+    //Execute
+    Map<String, String> predefinedNamespaces = new HashMap<String, String>();
+    predefinedNamespaces.put("sap", "http://www.sap.com/Protocols/SAPData");
+    DataServices data = new DataServices().setSchemas(schemas).setDataServiceVersion(ODataServiceVersion.V20);
+    OutputStreamWriter writer = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, predefinedNamespaces);
+    String metadata = StringHelper.inputStreamToString(csb.getInputStream());
+
+    //Verify
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
+    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("sap", "http://www.sap.com/Protocols/SAPData");
+
+    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    XMLUnit.setXpathNamespaceContext(ctx);
+
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/sap:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/sap:schemaElementTest1/sap:schemaElementTest2", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/sap:schemaElementTest1/sap:schemaElementTest3", metadata);
+  }
 }

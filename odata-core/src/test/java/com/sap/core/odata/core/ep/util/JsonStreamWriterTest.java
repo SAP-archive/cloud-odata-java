@@ -32,25 +32,16 @@ public class JsonStreamWriterTest extends BaseTest {
   public void basic() throws Exception {
     StringWriter writer = new StringWriter();
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-    jsonStreamWriter.beginArray();
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.name("value");
-    jsonStreamWriter.stringValue("value");
-    jsonStreamWriter.separator();
-    jsonStreamWriter.name("boolean");
-    jsonStreamWriter.unquotedValue(FormatJson.FALSE);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.name("booleanTrue");
-    jsonStreamWriter.unquotedValue(FormatJson.TRUE);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.name("number");
-    jsonStreamWriter.unquotedValue("42.42");
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("string", "value");
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValueRaw("string raw", "1");
-    jsonStreamWriter.endObject();
-    jsonStreamWriter.endArray();
+    jsonStreamWriter.beginArray()
+        .beginObject()
+        .name("value").stringValue("value").separator()
+        .name("boolean").unquotedValue(FormatJson.FALSE).separator()
+        .name("booleanTrue").unquotedValue(FormatJson.TRUE).separator()
+        .name("number").unquotedValue("42.42").separator()
+        .namedStringValue("string", "value").separator()
+        .namedStringValueRaw("string raw", "1")
+        .endObject()
+        .endArray();
     writer.flush();
     assertEquals("[{\"value\":\"value\",\"boolean\":false,\"booleanTrue\":true,"
         + "\"number\":42.42,\"string\":\"value\",\"string raw\":\"1\"}]",
@@ -61,13 +52,9 @@ public class JsonStreamWriterTest extends BaseTest {
   public void nullValues() throws Exception {
     StringWriter writer = new StringWriter();
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.name("number");
-    jsonStreamWriter.unquotedValue(null);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("string", null);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValueRaw("raw", null);
+    jsonStreamWriter.beginObject()
+        .name("number").unquotedValue(null).separator()
+        .namedStringValue("string", null).separator().namedStringValueRaw("raw", null);
     jsonStreamWriter.endObject();
     writer.flush();
     assertEquals("{\"number\":null,\"string\":null,\"raw\":null}", writer.toString());
@@ -78,19 +65,16 @@ public class JsonStreamWriterTest extends BaseTest {
     final String outsideBMP = String.valueOf(Character.toChars(0x1F603));
     StringWriter writer = new StringWriter();
     JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedStringValue("normal", "abc / ? \u007F € \uFDFC");
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("outsideBMP", outsideBMP);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("control", "\b\t\n\f\r\u001F " + "€ \uFDFC " + outsideBMP);
-    jsonStreamWriter.separator();
-    jsonStreamWriter.namedStringValue("escaped", "\"\\");
-    jsonStreamWriter.endObject();
+    jsonStreamWriter.beginObject()
+        .namedStringValue("normal", "abc / ? \u007F € \uFDFC").separator()
+        .namedStringValue("outsideBMP", outsideBMP).separator()
+        .namedStringValue("control", "\b\t\n\f\r\u0001\u000B\u0011\u001F " + "€ \uFDFC " + outsideBMP).separator()
+        .namedStringValue("escaped", "\"\\")
+        .endObject();
     writer.flush();
     assertEquals("{\"normal\":\"abc / ? \u007F € \uFDFC\","
         + "\"outsideBMP\":\"\uD83D\uDE03\","
-        + "\"control\":\"\\b\\t\\n\\f\\r\\u001F € \uFDFC \uD83D\uDE03\","
+        + "\"control\":\"\\b\\t\\n\\f\\r\\u0001\\u000B\\u0011\\u001F € \uFDFC \uD83D\uDE03\","
         + "\"escaped\":\"\\\"\\\\\"}",
         writer.toString());
   }

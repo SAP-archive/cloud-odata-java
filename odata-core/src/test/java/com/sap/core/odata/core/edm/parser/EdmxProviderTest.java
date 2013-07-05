@@ -60,7 +60,7 @@ public class EdmxProviderTest {
   }
 
   @Test
-  public void tesAssociation() throws EntityProviderException, ODataException, XMLStreamException {
+  public void testAssociation() throws EntityProviderException, ODataException, XMLStreamException {
     Edm edm = createEdm();
     assertNotNull(edm);
 

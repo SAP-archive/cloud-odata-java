@@ -33,17 +33,14 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
  * 
  * @author SAP AG
  */
-public class FilterParserExceptionImpl extends ExpressionParserException
-{
+public class FilterParserExceptionImpl extends ExpressionParserException {
   private static final long serialVersionUID = 77L;
 
-  static public ExpressionParserException createCOMMON()
-  {
+  static public ExpressionParserException createCOMMON() {
     return new ExpressionParserException(ODataBadRequestException.COMMON);
   }
 
-  static public ExpressionParserException createERROR_IN_TOKENIZER(final TokenizerException exceptionTokenizer, final String expression)
-  {
+  static public ExpressionParserException createERROR_IN_TOKENIZER(final TokenizerException exceptionTokenizer, final String expression) {
     Token token = exceptionTokenizer.getToken();
     MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.create();
 
@@ -54,8 +51,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef, exceptionTokenizer);
   }
 
-  static public ExpressionParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(final Token token, final String expression)
-  {
+  static public ExpressionParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING.create();
 
     msgRef.addContent(token.getUriLiteral());
@@ -65,8 +61,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final Token token, final String expression)
-  {
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition() + 1));
@@ -75,8 +70,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final int position, final String expression)
-  {
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final int position, final String expression) {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
 
     msgRef.addContent(position);
@@ -85,8 +79,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(final Token token, final String expression)
-  {
+  static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.COMMA_OR_END_EXPECTED_AT_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition() + 1));
@@ -95,8 +88,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(final Token token, final String expression)
-  {
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AT_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition() + 1));
@@ -105,8 +97,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(final Token token, final String expression)
-  {
+  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition() + token.getUriLiteral().length()));
@@ -115,47 +106,36 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createMETHOD_WRONG_ARG_COUNT(final MethodExpressionImpl methodExpression, final Token token, final String expression)
-  {
+  public static ExpressionParserException createMETHOD_WRONG_ARG_COUNT(final MethodExpressionImpl methodExpression, final Token token, final String expression) {
     MessageReference msgRef = null;
     int minParam = methodExpression.getMethodInfo().getMinParameter();
     int maxParam = methodExpression.getMethodInfo().getMaxParameter();
 
-    if ((minParam == -1) && (maxParam == -1))
-    {
+    if ((minParam == -1) && (maxParam == -1)) {
       //no exception thrown in this case
-    }
-    else if ((minParam != -1) && (maxParam == -1))
-    {
+    } else if ((minParam != -1) && (maxParam == -1)) {
       //Tested with TestParserExceptions.TestPMreadParameters CASE 7-1
       msgRef = ExpressionParserException.METHOD_WRONG_ARG_X_OR_MORE.create();
       msgRef.addContent(methodExpression.getMethod().toUriLiteral());
       msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
       msgRef.addContent(minParam);
-    }
-    else if ((minParam == -1) && (maxParam != -1))
-    {
+    } else if ((minParam == -1) && (maxParam != -1)) {
       //Tested with TestParserExceptions.TestPMreadParameters CASE 8-2
       msgRef = ExpressionParserException.METHOD_WRONG_ARG_X_OR_LESS.create();
       msgRef.addContent(methodExpression.getMethod().toUriLiteral());
       msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
       msgRef.addContent(maxParam);
-    }
-    else if ((minParam != -1) && (maxParam != -1))
-    {
-      if (minParam == maxParam)
-      {
+    } else if ((minParam != -1) && (maxParam != -1)) {
+      if (minParam == maxParam) {
         //Tested with TestParserExceptions.TestPMreadParameters CASE 11-1
         msgRef = ExpressionParserException.METHOD_WRONG_ARG_EXACT.create();
         msgRef.addContent(methodExpression.getMethod().toUriLiteral());
         msgRef.addContent(token.getPosition() + 1);
         msgRef.addContent(expression);
         msgRef.addContent(minParam);
-      }
-      else
-      {
+      } else {
         //Tested with TestParserExceptions.TestPMreadParameters CASE 10-1
         msgRef = ExpressionParserException.METHOD_WRONG_ARG_BETWEEN.create();
         msgRef.addContent(methodExpression.getMethod().toUriLiteral());
@@ -169,8 +149,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createMETHOD_WRONG_INPUT_TYPE(final MethodExpressionImpl methodExpression, final Token token, final String expression)
-  {
+  public static ExpressionParserException createMETHOD_WRONG_INPUT_TYPE(final MethodExpressionImpl methodExpression, final Token token, final String expression) {
     MessageReference msgRef = null;
 
     //Tested with TestParserExceptions.TestPMreadParameters CASE 7-1
@@ -182,8 +161,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createLEFT_SIDE_NOT_A_PROPERTY(final Token token, final String expression) throws ExpressionParserInternalError
-  {
+  public static ExpressionParserException createLEFT_SIDE_NOT_A_PROPERTY(final Token token, final String expression) throws ExpressionParserInternalError {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_A_PROPERTY.create();
 
     msgRef.addContent(token.getPosition() + 1);
@@ -192,8 +170,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE(final EdmType parentType, final PropertyExpressionImpl property, final Token token, final String expression) throws ExpressionParserInternalError
-  {
+  public static ExpressionParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE(final EdmType parentType, final PropertyExpressionImpl property, final Token token, final String expression) throws ExpressionParserInternalError {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
 
     try {
@@ -208,8 +185,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(final EdmStructuralType parentType, final PropertyExpression property, final Token token, final String expression) throws ExpressionParserInternalError
-  {
+  public static ExpressionParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(final EdmStructuralType parentType, final PropertyExpression property, final Token token, final String expression) throws ExpressionParserInternalError {
     MessageReference msgRef = ExpressionParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
 
     try {
@@ -263,8 +239,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef, e);
   }
 
-  public static ExpressionParserException createINVALID_SORT_ORDER(final Token token, final String expression)
-  {
+  public static ExpressionParserException createINVALID_SORT_ORDER(final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.INVALID_SORT_ORDER.create();
     msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
@@ -272,8 +247,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createINVALID_METHOD_CALL(final CommonExpression leftNode, final Token prevToken, final String expression)
-  {
+  public static ExpressionParserException createINVALID_METHOD_CALL(final CommonExpression leftNode, final Token prevToken, final String expression) {
     final MessageReference msgRef = ExpressionParserException.INVALID_METHOD_CALL.create();
 
     msgRef.addContent(leftNode.getUriLiteral());
@@ -284,8 +258,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
   }
 
-  public static ExpressionParserException createTYPE_EXPECTED_AT(final EdmType expectedType, final EdmType actualType, final int position, final String expression)
-  {
+  public static ExpressionParserException createTYPE_EXPECTED_AT(final EdmType expectedType, final EdmType actualType, final int position, final String expression) {
     final MessageReference msgRef = ExpressionParserException.TYPE_EXPECTED_AT.create();
 
     try {
@@ -297,16 +270,13 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     msgRef.addContent(position);
     msgRef.addContent(expression);
 
-    if (actualType != null)
-    {
+    if (actualType != null) {
       try {
         msgRef.addContent(actualType.getNamespace() + '.' + actualType.getName());
       } catch (EdmException e) {
         msgRef.addContent("");
       }
-    }
-    else
-    {
+    } else {
       msgRef.addContent("null");
     }
 

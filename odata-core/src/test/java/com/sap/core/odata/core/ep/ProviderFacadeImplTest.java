@@ -17,23 +17,33 @@ package com.sap.core.odata.core.ep;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
@@ -41,7 +51,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class ProviderFacadeImplTest {
 
-  public static final String EMPLOYEE_1_XML =
+  private static final String EMPLOYEE_1_XML =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
           "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" +
           " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\"" +
@@ -77,19 +87,26 @@ public class ProviderFacadeImplTest {
           "</entry>";
 
   @Test
-  public void testReadEntry() throws Exception {
-    ProviderFacadeImpl provider = new ProviderFacadeImpl();
+  public void readEntry() throws Exception {
+    final String contentType = ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString();
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("UTF-8"));
 
-    String contentType = ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString();
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
-    Object result = provider.readEntry(contentType, entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
-
-    assertTrue(result instanceof ODataEntry);
+    final ODataEntry result = new ProviderFacadeImpl().readEntry(contentType, entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
+    assertNotNull(result);
+    assertFalse(result.containsInlineEntry());
+    assertNotNull(result.getExpandSelectTree());
+    assertTrue(result.getExpandSelectTree().isAll());
+    assertNotNull(result.getMetadata());
+    assertNull(result.getMetadata().getEtag());
+    assertNotNull(result.getMediaMetadata());
+    assertEquals(HttpContentType.APPLICATION_OCTET_STREAM, result.getMediaMetadata().getContentType());
+    assertNotNull(result.getProperties());
+    assertEquals(52, result.getProperties().get("Age"));
   }
 
   @Test
-  public void testReadPropertyValue() throws Exception {
+  public void readPropertyValue() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
     InputStream content = new ByteArrayInputStream("2012-02-29T01:02:03".getBytes("UTF-8"));
     final Object result = new ProviderFacadeImpl().readPropertyValue(property, content, Long.class);
@@ -97,37 +114,7 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void testWriteServiceDocument() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  @Ignore
-  public void testWritePropertyValue() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  @Ignore
-  public void testWriteText() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  @Ignore
-  public void testWriteBinary() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  @Ignore
-  public void testReadLink() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testReadProperty() throws Exception {
+  public void readProperty() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     final String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Age>";
     InputStream content = new ByteArrayInputStream(xml.getBytes("UTF-8"));
@@ -137,45 +124,117 @@ public class ProviderFacadeImplTest {
   }
 
   @Test
-  @Ignore
-  public void testReadLinks() {
-    fail("Not yet implemented");
+  public void readLink() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream content = new ByteArrayInputStream("{\"d\":{\"uri\":\"http://somelink\"}}".getBytes("UTF-8"));
+    final String result = new ProviderFacadeImpl().readLink(HttpContentType.APPLICATION_JSON, entitySet, content);
+    assertEquals("http://somelink", result);
   }
 
   @Test
-  @Ignore
-  public void testWriteFeed() {
-    fail("Not yet implemented");
+  public void readLinks() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream content = new ByteArrayInputStream("{\"d\":{\"__count\":\"42\",\"results\":[{\"uri\":\"http://somelink\"}]}}".getBytes("UTF-8"));
+    final List<String> result = new ProviderFacadeImpl().readLinks(HttpContentType.APPLICATION_JSON, entitySet, content);
+    assertEquals(Arrays.asList("http://somelink"), result);
   }
 
   @Test
-  @Ignore
-  public void testWriteEntry() {
-    fail("Not yet implemented");
+  public void writeFeed() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    List<Map<String, Object>> propertiesList = new ArrayList<Map<String, Object>>();
+    final ODataResponse result = new ProviderFacadeImpl().writeFeed(HttpContentType.APPLICATION_JSON, entitySet, propertiesList, EntityProviderWriteProperties.serviceRoot(URI.create("http://root/")).build());
+    assertEquals("{\"d\":{\"results\":[]}}", StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
   @Test
-  @Ignore
-  public void testWriteProperty() {
-    fail("Not yet implemented");
+  public void writeEntry() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("Id", "42");
+    final ODataResponse result = new ProviderFacadeImpl().writeEntry(HttpContentType.APPLICATION_JSON, entitySet, properties, EntityProviderWriteProperties.serviceRoot(URI.create("http://root/")).build());
+    assertEquals("{\"d\":{\"__metadata\":{\"id\":\"http://root/Teams('42')\","
+        + "\"uri\":\"http://root/Teams('42')\",\"type\":\"RefScenario.Team\"},"
+        + "\"Id\":\"42\",\"Name\":null,\"isScrumTeam\":null,"
+        + "\"nt_Employees\":{\"__deferred\":{\"uri\":\"http://root/Teams('42')/nt_Employees\"}}}}",
+        StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
   @Test
-  @Ignore
-  public void testWriteLink() {
-    fail("Not yet implemented");
+  public void writeProperty() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
+    final ODataResponse result = new ProviderFacadeImpl().writeProperty(HttpContentType.APPLICATION_XML, property, 987654321000L);
+    assertEquals(HttpContentType.APPLICATION_XML_UTF8, result.getContentHeader());
+    assertTrue(StringHelper.inputStreamToString((InputStream) result.getEntity())
+        .endsWith("\">2001-04-19T04:25:21</EntryDate>"));
   }
 
   @Test
-  @Ignore
-  public void testWriteLinks() {
-    fail("Not yet implemented");
+  public void writeLink() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("Id", "42");
+    final ODataResponse result = new ProviderFacadeImpl().writeLink(HttpContentType.APPLICATION_JSON, entitySet, properties, EntityProviderWriteProperties.serviceRoot(URI.create("http://root/")).build());
+    assertEquals("{\"d\":{\"uri\":\"http://root/Rooms('42')\"}}",
+        StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
   @Test
-  @Ignore
-  public void testWriteFunctionImport() {
-    fail("Not yet implemented");
+  public void writeLinks() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("Id", "42");
+    List<Map<String, Object>> propertiesList = new ArrayList<Map<String, Object>>();
+    propertiesList.add(properties);
+    propertiesList.add(properties);
+    final ODataResponse result = new ProviderFacadeImpl().writeLinks(HttpContentType.APPLICATION_JSON, entitySet, propertiesList, EntityProviderWriteProperties.serviceRoot(URI.create("http://root/")).build());
+    assertEquals("{\"d\":[{\"uri\":\"http://root/Rooms('42')\"},{\"uri\":\"http://root/Rooms('42')\"}]}",
+        StringHelper.inputStreamToString((InputStream) result.getEntity()));
+  }
+
+  @Test
+  public void writeServiceDocument() throws Exception {
+    final ODataResponse result = new ProviderFacadeImpl().writeServiceDocument(HttpContentType.APPLICATION_JSON, MockFacade.getMockEdm(), "root");
+    assertEquals("{\"d\":{\"EntitySets\":[]}}", StringHelper.inputStreamToString((InputStream) result.getEntity()));
+  }
+
+  @Test
+  public void writePropertyValue() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EntryDate");
+    final ODataResponse result = new ProviderFacadeImpl().writePropertyValue(property, 987654321000L);
+    assertEquals(HttpContentType.TEXT_PLAIN_UTF8, result.getContentHeader());
+    assertEquals("2001-04-19T04:25:21", StringHelper.inputStreamToString((InputStream) result.getEntity()));
+  }
+
+  @Test
+  public void writeText() throws Exception {
+    final ODataResponse result = new ProviderFacadeImpl().writeText("test");
+    assertEquals(HttpContentType.TEXT_PLAIN_UTF8, result.getContentHeader());
+    assertEquals("test", StringHelper.inputStreamToString((InputStream) result.getEntity()));
+  }
+
+  @Test
+  public void writeBinary() throws Exception {
+    final ODataResponse result = new ProviderFacadeImpl().writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, new byte[] { 102, 111, 111 });
+    assertEquals(HttpContentType.APPLICATION_OCTET_STREAM, result.getContentHeader());
+    assertEquals("foo", StringHelper.inputStreamToString((InputStream) result.getEntity()));
+  }
+
+  @Test
+  public void writeBinaryNoContent() throws Exception {
+    final ODataResponse result = new ProviderFacadeImpl().writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, null);
+    assertNull(result.getEntity());
+    assertNull(result.getContentHeader());
+    assertEquals(HttpStatusCodes.NO_CONTENT, result.getStatus());
+  }
+
+  @Test
+  public void writeFunctionImport() throws Exception {
+    final EdmFunctionImport function = MockFacade.getMockEdm().getDefaultEntityContainer().getFunctionImport("MaximalAge");
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("MaximalAge", 99);
+    final ODataResponse result = new ProviderFacadeImpl().writeFunctionImport(HttpContentType.APPLICATION_JSON, function, properties, null);
+    assertEquals("{\"d\":{\"MaximalAge\":99}}", StringHelper.inputStreamToString((InputStream) result.getEntity()));
   }
 
 }

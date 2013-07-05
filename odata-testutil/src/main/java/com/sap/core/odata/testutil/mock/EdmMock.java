@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import org.mockito.Mockito;
 
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
@@ -325,11 +326,10 @@ class EdmMock {
     EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
     when(functionImport.getName()).thenReturn(name);
     when(functionImport.getReturnType()).thenReturn(returnType);
-    when(functionImport.getHttpMethod()).thenReturn("GET");
+    when(functionImport.getHttpMethod()).thenReturn(ODataHttpMethod.GET.name());
 
     when(container.getFunctionImport(name)).thenReturn(functionImport);
 
     return functionImport;
   }
-
 }

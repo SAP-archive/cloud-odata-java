@@ -69,7 +69,7 @@ public class XmlFeedConsumer {
       // read feed data (metadata and entries)
       return readFeedData(reader, eia, entryReadProperties);
     } catch (XMLStreamException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -97,8 +97,17 @@ public class XmlFeedConsumer {
 
         reader.next();
         if (reader.hasText()) {
-          String inlineCount = reader.getText();
-          metadata.setInlineCount(Integer.valueOf(inlineCount));
+          String inlineCountString = reader.getText();
+          try {
+            int inlineCountNumber = Integer.valueOf(inlineCountString);
+            if (inlineCountNumber >= 0) {
+              metadata.setInlineCount(inlineCountNumber);
+            } else {
+              throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(inlineCountNumber));
+            }
+          } catch (NumberFormatException e) {
+            throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID.addContent(""), e);
+          }
         }
       } else if (FormatXml.ATOM_LINK.equals(reader.getLocalName())) {
         reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_LINK);
@@ -107,6 +116,9 @@ public class XmlFeedConsumer {
         if (FormatXml.ATOM_NEXT_LINK.equals(rel)) {
           final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
           metadata.setNextLink(uri);
+        } else if (FormatXml.ATOM_DELTA_LINK.equals(rel)) {
+          final String uri = reader.getAttributeValue(null, FormatXml.ATOM_HREF);
+          metadata.setDeltaLink(uri);
         }
 
         reader.next();

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -57,19 +58,21 @@ public class JsonPropertyConsumer {
       reader.endObject();
 
       if (reader.peek() != JsonToken.END_DOCUMENT) {
-        //TODO: CA Messagetext
-        throw new EntityProviderException(EntityProviderException.COMMON);
+        throw new EntityProviderException(EntityProviderException.END_DOCUMENT_EXPECTED.addContent(reader.peek().toString()));
       }
 
       return result;
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IllegalStateException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   private void handleName(final JsonReader reader, final Map<String, Object> typeMappings, final EntityPropertyInfo entityPropertyInfo, final Map<String, Object> result, final String nextName) throws EntityProviderException {
+    if (!entityPropertyInfo.getName().equals(nextName)) {
+      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent(nextName));
+    }
     Object mapping = null;
     if (typeMappings != null) {
       mapping = typeMappings.get(nextName);
@@ -84,9 +87,9 @@ public class JsonPropertyConsumer {
           readComplexProperty(reader, (EntityComplexPropertyInfo) entityPropertyInfo, typeMapping) :
           readSimpleProperty(reader, entityPropertyInfo, typeMapping);
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(e.getMessage()), e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -103,7 +106,7 @@ public class JsonPropertyConsumer {
           value = reader.nextBoolean();
           value = value.toString();
         } else {
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       case Byte:
@@ -114,14 +117,14 @@ public class JsonPropertyConsumer {
           value = reader.nextInt();
           value = value.toString();
         } else {
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       default:
         if (tokenType == JsonToken.STRING) {
           value = reader.nextString();
         } else {
-          throw new EntityProviderException(EntityProviderException.COMMON);
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(entityPropertyInfo.getName()));
         }
         break;
       }
@@ -133,6 +136,11 @@ public class JsonPropertyConsumer {
 
   @SuppressWarnings("unchecked")
   private Object readComplexProperty(final JsonReader reader, final EntityComplexPropertyInfo complexPropertyInfo, final Object typeMapping) throws EdmException, EntityProviderException, IOException {
+    if (reader.peek().equals(JsonToken.NULL)) {
+      reader.nextNull();
+      return null;
+    }
+
     reader.beginObject();
     Map<String, Object> data = new HashMap<String, Object>();
 
@@ -155,11 +163,17 @@ public class JsonPropertyConsumer {
         if (!FormatJson.TYPE.equals(childName)) {
           throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(FormatJson.TYPE).addContent(FormatJson.METADATA));
         }
-        reader.nextString();
+        String actualTypeName = reader.nextString();
+        String expectedTypeName = complexPropertyInfo.getType().getNamespace() + Edm.DELIMITER + complexPropertyInfo.getType().getName();
+        if (!expectedTypeName.equals(actualTypeName)) {
+          throw new EntityProviderException(EntityProviderException.INVALID_ENTITYTYPE.addContent(expectedTypeName).addContent(actualTypeName));
+        }
         reader.endObject();
       } else {
         EntityPropertyInfo childPropertyInfo = complexPropertyInfo.getPropertyInfo(childName);
-
+        if (childPropertyInfo == null) {
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
+        }
         Object childData = readPropertyValue(reader, childPropertyInfo, mapping.get(childName));
         if (data.containsKey(childName)) {
           throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(childName));

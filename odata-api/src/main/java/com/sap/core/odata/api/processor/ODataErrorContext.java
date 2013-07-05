@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.uri.PathInfo;
 
 /**
  * Error context information bean. Usually created and in error situations.
@@ -41,6 +42,7 @@ public class ODataErrorContext {
   private Map<String, List<String>> requestHeaders;
   private URI requestUri;
   private String innerError;
+  private PathInfo pathInfo;
 
   /**
    * create a new context object
@@ -201,5 +203,24 @@ public class ODataErrorContext {
    */
   public void setInnerError(final String innerError) {
     this.innerError = innerError;
+  }
+
+  /**
+   * Get {@link PathInfo} object.
+   * May be <code>NULL</code> if no path info was created/set till error occurred (but may be over written by application).
+   * 
+   * @return {@link PathInfo} or <code>NULL</code>.
+   */
+  public PathInfo getPathInfo() {
+    return pathInfo;
+  }
+
+  /**
+   * Set {@link PathInfo} object.
+   * 
+   * @param pathInfo path info
+   */
+  public void setPathInfo(final PathInfo pathInfo) {
+    this.pathInfo = pathInfo;
   }
 }

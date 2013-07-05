@@ -28,40 +28,28 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   private String name;
   private String text;
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationAttribute#getNamespace()
-   */
   @Override
   public String getNamespace() {
     return namespace;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationAttribute#getPrefix()
-   */
   @Override
   public String getPrefix() {
     return prefix;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationAttribute#getName()
-   */
   @Override
   public String getName() {
     return name;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmAnnotationAttribute#getText()
-   */
   @Override
   public String getText() {
     return text;
   }
 
   /**
-   * Sets the namespace for this {@link AnnotationAttribute}
+   * Sets the namespace for this {@link AnnotationAttribute}.
    * @param namespace
    * @return {@link AnnotationAttribute} for method chaining
    */
@@ -71,7 +59,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   }
 
   /**
-   * Sets the prefix for this {@link AnnotationAttribute}
+   * Sets the prefix for this {@link AnnotationAttribute}.
    * @param prefix
    * @return {@link AnnotationAttribute} for method chaining
    */
@@ -81,7 +69,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   }
 
   /**
-   * Sets the name for this {@link AnnotationAttribute}
+   * Sets the name for this {@link AnnotationAttribute}.
    * @param name
    * @return {@link AnnotationAttribute} for method chaining
    */
@@ -91,7 +79,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   }
 
   /**
-   * Sets the text for this {@link AnnotationAttribute}
+   * Sets the text for this {@link AnnotationAttribute}.
    * @param text
    * @return {@link AnnotationAttribute} for method chaining
    */

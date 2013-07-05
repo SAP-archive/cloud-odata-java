@@ -20,133 +20,185 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.PathInfo;
 
 /**
- * Compilation of generic context objects. 
-  *
+ * Compilation of generic context objects.
  * @author SAP AG
  * @com.sap.core.odata.DoNotImplement
  */
 public interface ODataContext {
 
   /**
+   * Gets the OData service.
    * @return ODataService related for this context
    * @throws ODataException
    */
   ODataService getService() throws ODataException;
 
   /**
-   * @return a OData path info object
+   * @return the service factory instance
+   */
+  ODataServiceFactory getServiceFactory();
+
+  /**
+   * Gets information about the request path.
+   * @return an OData path info object
    * @throws ODataException
    */
   PathInfo getPathInfo() throws ODataException;
 
   /**
-   * Start runtime measurement
-   * 
-   * @param className where the runtime measurement starts
-   * @param methodName where the runtime measurement starts
+   * If a request execution is part of batch processing then this method returns the context of the 
+   * outer batch request.
+   * @return a batch parent context or null
+   */
+  ODataContext getBatchParentContext();
+
+  /**
+   * @return true in case of this request is part of a batch processing queue
+   */
+  boolean isInBatchMode();
+
+  /**
+   * Starts runtime measurement.
+   * @param className class name where the runtime measurement starts
+   * @param methodName method name where the runtime measurement starts
    * @return handle for the started runtime measurement which can be used for stopping
    */
   int startRuntimeMeasurement(String className, String methodName);
 
   /**
-   * Stop runtime measurement
-   * 
+   * Stops runtime measurement.
    * @param handle of runtime measurement to be stopped
    */
   void stopRuntimeMeasurement(int handle);
 
   /**
-   * Get the list of all runtime measurements
-   * 
+   * Gets the list of all runtime measurements.
    * @return list of all runtime measurements of type {@link RuntimeMeasurement}
    */
   List<RuntimeMeasurement> getRuntimeMeasurements();
 
   /**
-   * Get the Http Method of the request
-   * 
-   * @return Http Method as {@link String}
+   * Gets the HTTP method of the request.
+   * @return HTTP method as {@link String}
    */
   String getHttpMethod();
 
   /**
-   * Set parameter
-   * 
+   * Sets a parameter.
    * @param name of parameter (name is used as key, existing values are overwritten)
    * @param value of parameter as object
    */
   void setParameter(String name, Object value);
 
   /**
-   * Remove parameter
-   * 
+   * Removes parameter.
    * @param name of parameter to be removed
    */
   void removeParameter(String name);
 
   /**
-   * Get the parameter
-   * 
+   * Gets a named parameter value.
    * @param name of parameter
    * @return parameter value as {@link Object} for the given name
    */
   Object getParameter(String name);
 
   /**
-   * Returns header value of HTTP request
-   * @param name name of a request header element (e.g. "Content-Type")
+   * Returns the first found header value of the HTTP request.
+   * @param name name of the first found request header element (e.g. "Content-Type")
    * @return null or a request header value if found
    */
-  String getHttpRequestHeader(String name);
+  String getRequestHeader(String name);
 
   /**
-   * Returns all header values of HTTP request
+   * Returns all header values of the HTTP request but never null.
    * @return immutable map of request header values
    */
-  Map<String, String> getHttpRequestHeaders();
+  Map<String, List<String>> getRequestHeaders();
 
   /**
-   * Get information about enabled debug mode
-   * 
+   * Gets information about enabled debug mode.
    * @return debugMode as boolean
    */
   boolean isInDebugMode();
 
   /**
-   * Enable debug mode
-   * 
+   * Enables debug mode.
    * @param debugMode as boolean
    */
   void setDebugMode(boolean debugMode);
 
   /**
-   * Get a list of languages that are acceptable for the response.
+   * Gets a list of languages that are acceptable for the response.
    * If no acceptable languages are specified, a read-only list containing 
    * a single wildcard java.util.Locale instance (with language field set to "*") is returned.
-   * 
-   * @return a read-only list of acceptable languages sorted according to their q-value, with highest preference first.
+   * @return a read-only list of acceptable languages sorted according to their q-value,
+   *         with highest preference first.
    */
   List<Locale> getAcceptableLanguages();
 
+  /**
+   * <p>Runtime measurements.</p>
+   * <p>All times are in nanoseconds since some fixed but arbitrary time
+   * (perhaps in the future, so values may be negative).</p>
+   * @see System#nanoTime()
+   */
   public interface RuntimeMeasurement {
-    void setMethodName(String methodName);
-
-    String getMethodName();
-
+    /**
+     * Sets the class name.
+     * @param className the name of the class that is measured
+     */
     void setClassName(String className);
 
+    /**
+     * Gets the class name.
+     * @return the name of the class that is measured
+     */
     String getClassName();
 
-    void setTimeStopped(long timeStopped);
+    /**
+     * Sets the method name.
+     * @param methodName the name of the method that is measured
+     */
+    void setMethodName(String methodName);
 
-    long getTimeStopped();
+    /**
+     * Gets the method name.
+     * @return the name of the method that is measured
+     */
+    String getMethodName();
 
+    /**
+     * Sets the start time.
+     * @param timeStarted the start time in nanoseconds
+     * @see System#nanoTime()
+     */
     void setTimeStarted(long timeStarted);
 
+    /**
+     * Gets the start time.
+     * @return the start time in nanoseconds or 0 if not set yet
+     * @see System#nanoTime()
+     */
     long getTimeStarted();
+
+    /**
+     * Sets the stop time.
+     * @param timeStopped the stop time in nanoseconds
+     * @see System#nanoTime()
+     */
+    void setTimeStopped(long timeStopped);
+
+    /**
+     * Gets the stop time.
+     * @return the stop time in nanoseconds or 0 if not set yet
+     * @see System#nanoTime()
+     */
+    long getTimeStopped();
   }
 }

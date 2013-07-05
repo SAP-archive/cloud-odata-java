@@ -17,10 +17,11 @@ package com.sap.core.odata.core.ep;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.batch.BatchException;
+import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -28,6 +29,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
+import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.EntityProviderWriteProperties;
@@ -37,6 +39,8 @@ import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataErrorContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.servicedocument.ServiceDocument;
+import com.sap.core.odata.core.batch.BatchRequestParser;
+import com.sap.core.odata.core.batch.BatchResponseWriter;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
@@ -69,15 +73,6 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     } catch (final ODataNotAcceptableException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-  }
-
-  /**
-   * @deprecated since 0.5.0
-   */
-  @Deprecated
-  @Override
-  public ODataResponse writeErrorDocument(final String contentType, final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
-    return create(contentType).writeErrorDocument(status, errorCode, message, locale, innerError);
   }
 
   @Override
@@ -189,4 +184,17 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   public ServiceDocument readServiceDocument(final InputStream serviceDocument, final String contentType) throws EntityProviderException {
     return create(contentType).readServiceDocument(serviceDocument);
   }
+
+  @Override
+  public List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
+    List<BatchPart> batchParts = new BatchRequestParser(contentType, properties).parse(content);
+    return batchParts;
+  }
+
+  @Override
+  public ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
+    BatchResponseWriter batchWriter = new BatchResponseWriter();
+    return batchWriter.writeResponse(batchResponseParts);
+  }
+
 }

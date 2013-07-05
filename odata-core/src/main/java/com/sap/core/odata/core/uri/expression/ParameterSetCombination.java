@@ -30,13 +30,11 @@ public interface ParameterSetCombination {
 
   EdmType getReturnType();
 
-  public static class PSCflex implements ParameterSetCombination
-  {
+  public static class PSCflex implements ParameterSetCombination {
     public List<ParameterSet> combinations = new ArrayList<ParameterSet>();
 
     @Override
-    public void add(final ParameterSet parameterSet)
-    {
+    public void add(final ParameterSet parameterSet) {
       combinations.add(parameterSet);
     }
 
@@ -53,10 +51,8 @@ public interface ParameterSetCombination {
 
       //There are more than 1 possible return type, check if they are equal, if not return null.
       EdmType returnType = combinations.get(0).getReturnType();
-      for (int i = 1; i < parameterCount; i++)
-      {
-        if (returnType != combinations.get(i))
-        {
+      for (int i = 1; i < parameterCount; i++) {
+        if (returnType != combinations.get(i)) {
           return null;
         }
       }
@@ -66,29 +62,24 @@ public interface ParameterSetCombination {
     }
 
     @Override
-    public void addFirst(final ParameterSet parameterSet)
-    {
+    public void addFirst(final ParameterSet parameterSet) {
       List<ParameterSet> oldCombinations = combinations;
       combinations = new ArrayList<ParameterSet>();
       combinations.add(parameterSet);
-      for (ParameterSet parameterSet1 : oldCombinations)
-      {
+      for (ParameterSet parameterSet1 : oldCombinations) {
         combinations.add(parameterSet1);
       }
 
     }
 
     @Override
-    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
-    {
-      if (combinations.size() == 0)
-      {
+    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
+      if (combinations.size() == 0) {
         return new ParameterSet(null, null);
       }
 
       //first check for exact parameter combination
-      for (ParameterSet parameterSet : combinations)
-      {
+      for (ParameterSet parameterSet : combinations) {
         boolean s = parameterSet.equals(actualParameterTypes, false);
         if (s) {
           return parameterSet;
@@ -96,8 +87,7 @@ public interface ParameterSetCombination {
       }
 
       //first check for parameter combination with promotion
-      for (ParameterSet parameterSet : combinations)
-      {
+      for (ParameterSet parameterSet : combinations) {
         boolean s = parameterSet.equals(actualParameterTypes, true);
         if (s) {
           return parameterSet;
@@ -108,24 +98,20 @@ public interface ParameterSetCombination {
 
   }
 
-  public static class PSCReturnTypeEqLastParameter implements ParameterSetCombination
-  {
+  public static class PSCReturnTypeEqLastParameter implements ParameterSetCombination {
 
     @Override
-    public void add(final ParameterSet parameterSet)
-    {
+    public void add(final ParameterSet parameterSet) {
       throw new IllegalStateException();
     }
 
     @Override
-    public void addFirst(final ParameterSet parameterSet)
-    {
+    public void addFirst(final ParameterSet parameterSet) {
       throw new IllegalStateException();
     }
 
     @Override
-    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
-    {
+    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
       EdmType xxx = actualParameterTypes.get(actualParameterTypes.size() - 1);
       return new ParameterSet(xxx, null);
       //return actualParameterTypes.get(actualParameterTypes.size() - 1);

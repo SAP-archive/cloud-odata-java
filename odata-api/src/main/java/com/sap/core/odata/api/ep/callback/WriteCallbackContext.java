@@ -110,7 +110,7 @@ public abstract class WriteCallbackContext {
         key.put(keyPropertyName, entryData.get(keyPropertyName));
       }
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
     return key;
   }

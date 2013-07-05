@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<entry xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/" xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">
-    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')</id>
+<entry xml:base="http://some.host.com/service.root/"
+       xmlns="http://www.w3.org/2005/Atom"
+       xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+       xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">
+    <id>http://some.host.com/service.root/Teams('1')</id>
     <title type="text">Team 1</title>
     <updated>2013-03-14T11:16:48Z</updated>
     <category term="RefScenario.Team" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
     <link href="Teams('1')" rel="edit" title="Team"/>
     <link href="Teams('1')/nt_Employees" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nt_Employees" type="application/atom+xml;type=feed" title="nt_Employees">
         <m:inline>
-            <feed xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/">
-                <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees</id>
+            <feed xml:base="http://some.host.com/service.root/">
+                <id>http://some.host.com/service.root/Employees</id>
                 <title type="text">Employees</title>
                 <updated>2013-03-14T11:16:48Z</updated>
                 <author>
@@ -16,7 +19,7 @@
                 </author>
                 <link href="Employees" rel="self" title="Employees"/>
                 <entry>
-                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('1')</id>
+                    <id>http://some.host.com/service.root/Employees('1')</id>
                     <title type="text">Walter Winter</title>
                     <updated>1999-01-01T00:00:00Z</updated>
                     <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
@@ -48,7 +51,7 @@
                     </m:properties>
                 </entry>
                 <entry>
-                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('2')</id>
+                    <id>http://some.host.com/service.root/Employees('2')</id>
                     <title type="text">Frederic Fall</title>
                     <updated>2003-07-01T00:00:00Z</updated>
                     <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
@@ -80,7 +83,7 @@
                     </m:properties>
                 </entry>
                 <entry>
-                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('3')</id>
+                    <id>http://some.host.com/service.root/Employees('3')</id>
                     <title type="text">Jonathan Smith</title>
                     <updated>2013-03-14T11:16:48Z</updated>
                     <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>

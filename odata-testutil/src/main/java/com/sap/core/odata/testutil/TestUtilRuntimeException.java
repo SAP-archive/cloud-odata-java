@@ -32,4 +32,8 @@ public class TestUtilRuntimeException extends RuntimeException {
     super(msg);
   }
 
+  public TestUtilRuntimeException(final String msg, final Throwable e) {
+    super(msg, e);
+  }
+
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.stream.JsonReader;
@@ -35,7 +36,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class JsonEntityConsumer {
 
-  /** Default used charset for writer and response content header */
+  /** Default used charset for reader */
   private static final String DEFAULT_CHARSET = "UTF-8";
 
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
@@ -50,7 +51,7 @@ public class JsonEntityConsumer {
       ODataEntry result = jec.readSingleEntry();
       return result;
     } catch (UnsupportedEncodingException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -60,7 +61,7 @@ public class JsonEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -80,7 +81,7 @@ public class JsonEntityConsumer {
 
       return result;
     } catch (UnsupportedEncodingException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -90,7 +91,7 @@ public class JsonEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }
@@ -105,7 +106,7 @@ public class JsonEntityConsumer {
       reader = createJsonReader(content);
       return new JsonPropertyConsumer().readPropertyStandalone(reader, property, readProperties);
     } catch (final UnsupportedEncodingException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       if (reader != null) {
@@ -115,7 +116,57 @@ public class JsonEntityConsumer {
           if (cachedException != null) {
             throw cachedException;
           } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+          }
+        }
+      }
+    }
+  }
+
+  public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonLinkConsumer().readLink(reader, entitySet);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+          }
+        }
+      }
+    }
+  }
+
+  public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
+    JsonReader reader = null;
+    EntityProviderException cachedException = null;
+
+    try {
+      reader = createJsonReader(content);
+      return new JsonLinkConsumer().readLinks(reader, entitySet);
+    } catch (final UnsupportedEncodingException e) {
+      cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+      throw cachedException;
+    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (final IOException e) {
+          if (cachedException != null) {
+            throw cachedException;
+          } else {
+            throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
           }
         }
       }

@@ -75,6 +75,7 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 
   private ODataJPAContext oDataJPAContext;
+  private ODataContext oDataContext;
 
   /**
    * Creates an OData Service based on the values set in
@@ -84,6 +85,8 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
   @Override
   public final ODataService createService(final ODataContext ctx)
       throws ODataException {
+
+    oDataContext = ctx;
 
     // Initialize OData JPA Context
     oDataJPAContext = initializeODataJPAContext();
@@ -95,7 +98,9 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
         .getODataJPAAccessFactory();
 
     // OData JPA Processor
-    oDataJPAContext.setODataContext(ctx);
+    if (oDataJPAContext.getODataContext() == null)
+      oDataJPAContext.setODataContext(ctx);
+
     ODataSingleProcessor odataJPAProcessor = accessFactory
         .createODataProcessor(oDataJPAContext);
 
@@ -157,6 +162,8 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
       oDataJPAContext = ODataJPAFactory.createFactory()
           .getODataJPAAccessFactory().createODataJPAContext();
     }
+    if (oDataContext != null)
+      oDataJPAContext.setODataContext(oDataContext);
     return oDataJPAContext;
 
   }

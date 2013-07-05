@@ -44,7 +44,7 @@
 		</plugins>
 
 	</build>
-
+	
 	<dependencies>
 		<dependency>
 			<!-- required because of auto detection of web facet 2.5 -->
@@ -91,5 +91,19 @@
           </plugins>
         </build>        
       </profile>
+               <profile>
+                        <id>cloudbuild</id>
+                        <activation>
+                                <activeByDefault>false</activeByDefault>
+                        </activation>
+                        <dependencies>
+                                <dependency>
+                                        <groupId>com.sap.core.js.catalina</groupId>
+                                        <artifactId>com.sap.core.js.catalina.fragment</artifactId>
+                                        <version>1.1.1</version>
+                                        <scope>provided</scope>
+                                </dependency>
+                        </dependencies>
+                </profile>
     </profiles>
 </project>

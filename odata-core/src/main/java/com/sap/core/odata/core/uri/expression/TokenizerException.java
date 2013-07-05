@@ -25,8 +25,7 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * the {@link com.sap.core.odata.api.uri.expression.ExpressionParserException} exception.  
  * @author SAP AG
  */
-public class TokenizerException extends ODataMessageException
-{
+public class TokenizerException extends ODataMessageException {
   private static final long serialVersionUID = 77L;
 
   public static final MessageReference TYPEDECTECTION_FAILED_ON_STRING = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_STRING");
@@ -39,34 +38,28 @@ public class TokenizerException extends ODataMessageException
     return token;
   }
 
-  public TokenizerException setToken(final Token token)
-  {
+  public TokenizerException setToken(final Token token) {
     this.token = token;
     return this;
   }
 
-  public int getPosition()
-  {
+  public int getPosition() {
     return position;
   }
 
-  public void setPosition(final int position)
-  {
+  public void setPosition(final int position) {
     this.position = position;
   }
 
-  public TokenizerException(final MessageReference messageReference)
-  {
+  public TokenizerException(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public TokenizerException(final MessageReference messageReference, final Throwable cause)
-  {
+  public TokenizerException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(final EdmLiteralException ex, final int position, final String uriLiteral)
-  {
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(final EdmLiteralException ex, final int position, final String uriLiteral) {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_STRING.create();
 
     msgRef.addContent(uriLiteral);
@@ -88,8 +81,7 @@ public class TokenizerException extends ODataMessageException
     return new TokenizerException(msgRef).setToken(token);
   }
   */
-  static public TokenizerException createUNKNOWN_CHARACTER(final int position, final String uriLiteral, final String expression)
-  {
+  static public TokenizerException createUNKNOWN_CHARACTER(final int position, final String uriLiteral, final String expression) {
     MessageReference msgRef = TokenizerException.UNKNOWN_CHARACTER.create();
 
     msgRef.addContent(uriLiteral);

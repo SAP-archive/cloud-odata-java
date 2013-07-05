@@ -25,8 +25,12 @@ public class ODataUnsupportedMediaTypeException extends ODataHttpException {
 
   private static final long serialVersionUID = 1L;
 
-  public static final MessageReference COMMON = createMessageReference(ODataUnsupportedMediaTypeException.class, "COMMON");
+  /** NOT_SUPPORTED requires 1 content value ('media type') */
   public static final MessageReference NOT_SUPPORTED = createMessageReference(ODataUnsupportedMediaTypeException.class, "NOT_SUPPORTED");
+  /** NOT_SUPPORTED_CONTENT_TYPE requires 1 content value ('media type') */
+  public static final MessageReference NOT_SUPPORTED_CONTENT_TYPE = createMessageReference(ODataUnsupportedMediaTypeException.class, "NOT_SUPPORTED_CONTENT_TYPE");
+  /** NOT_SUPPORTED_ACCEPT_HEADER requires 1 content value ('media type') */
+  public static final MessageReference NOT_SUPPORTED_ACCEPT_HEADER = createMessageReference(ODataUnsupportedMediaTypeException.class, "NOT_SUPPORTED_ACCEPT_HEADER");
 
   public ODataUnsupportedMediaTypeException(final MessageReference context) {
     super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);

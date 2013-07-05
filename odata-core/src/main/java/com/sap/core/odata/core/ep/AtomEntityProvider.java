@@ -15,11 +15,9 @@
  ******************************************************************************/
 package com.sap.core.odata.core.ep;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,44 +104,26 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
    */
   @Override
   public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) {
-    OutputStream outStream = null;
-    ODataRuntimeException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      outStream = csb.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
 
       XmlErrorDocumentProducer producer = new XmlErrorDocumentProducer();
       producer.writeErrorDocument(writer, errorCode, message, locale, innerError);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      csb.closeWrite();
 
       ODataResponseBuilder response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(ContentType.APPLICATION_XML.toContentTypeString())
           .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
           .status(status);
       return response.build();
-    } catch (XMLStreamException e) {
-      cachedException = new ODataRuntimeException(e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new ODataRuntimeException(e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new ODataRuntimeException(e);
-          }
-        }
-      }
+    } catch (Exception e) {
+      csb.close();
+      throw new ODataRuntimeException(e);
     }
   }
 
@@ -158,47 +138,34 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
    */
   @Override
   public ODataResponse writeServiceDocument(final Edm edm, final String serviceRoot) throws EntityProviderException {
-    OutputStreamWriter writer = null;
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      OutputStream outputStream = csb.getOutputStream();
-      writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
+      OutputStreamWriter writer = new OutputStreamWriter(csb.getOutputStream(), DEFAULT_CHARSET);
       AtomServiceDocumentProducer as = new AtomServiceDocumentProducer(edm, serviceRoot);
       as.writeServiceDocument(writer);
+      csb.closeWrite();
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
           .build();
 
       return response;
-    } catch (UnsupportedEncodingException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (writer != null) {
-        try {
-          writer.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   @Override
   public ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    OutputStream outStream = null;
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      outStream = csb.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -207,32 +174,19 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       as.append(writer, eia, data, true, false);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      csb.closeWrite();
 
       ODataResponseBuilder response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY))
           .eTag(as.getETag())
           .idLiteral(as.getLocation());
       return response.build();
-    } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -243,12 +197,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   private ODataResponse writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
-    OutputStream outStream = null;
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      outStream = csb.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -256,40 +208,24 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       ps.append(writer, propertyInfo, value);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      csb.closeWrite();
 
-      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
-      return response;
-    } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   @Override
   public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    OutputStream outStream = null;
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      outStream = csb.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -298,29 +234,16 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       atomFeedProvider.append(writer, eia, data, false);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      csb.closeWrite();
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
     } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -333,11 +256,10 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataResponse writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -346,38 +268,25 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       entity.append(writer, entityInfo, data, true);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
-    } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+      csb.closeWrite();
+
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
   }
 
   @Override
   public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderWriteProperties properties) throws EntityProviderException {
-    CircleStreamBuffer buffer = new CircleStreamBuffer();
-    OutputStream outStream = buffer.getOutputStream();
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
@@ -386,66 +295,38 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       entity.append(writer, entityInfo, data);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
-    } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
-    }
+      csb.closeWrite();
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
+    }
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
-    OutputStream outStream = null;
-    EntityProviderException cachedException = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
 
     try {
-      CircleStreamBuffer buffer = new CircleStreamBuffer();
-      outStream = buffer.getOutputStream();
+      OutputStream outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlCollectionEntityProducer.append(writer, propertyInfo, data);
 
       writer.flush();
-      outStream.flush();
-      outStream.close();
+      csb.closeWrite();
 
-      return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
-    } catch (XMLStreamException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
-      throw cachedException;
-    } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
-      if (outStream != null) {
-        try {
-          outStream.close();
-        } catch (IOException e) {
-          if (cachedException != null) {
-            throw cachedException;
-          } else {
-            throw new EntityProviderException(EntityProviderException.COMMON, e);
-          }
-        }
-      }
+      return ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
+    } catch (EntityProviderException e) {
+      csb.close();
+      throw e;
+    } catch (Exception e) {
+      csb.close();
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
@@ -468,7 +349,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
         return writeSingleTypedElement(info, data);
       }
     } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 

@@ -34,6 +34,14 @@ public class MessageServiceTest extends BaseTest {
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
 
   @Test
+  public void testResourceBundleException() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "COMMON");
+    Message ms = MessageService.getMessage(null, context);
+
+    assertEquals("MessageService could not be created because of exception 'IllegalArgumentException with message 'Parameter locale MUST NOT be NULL.'.", ms.getText());
+  }
+
+  @Test
   public void test() throws Exception {
     MessageReference context = MessageReference.create(ODataMessageException.class, "COMMON");
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
@@ -66,10 +74,37 @@ public class MessageServiceTest extends BaseTest {
   }
 
   @Test
+  public void testTwoParametersWithTwoAddContent() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS").addContent("first").addContent("second");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
+  @Test
   public void testThreeParametersForTwo() throws Exception {
     MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS").addContent("first", "second", "third");
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
 
     assertEquals("First was [first] and second was [second]!", ms.getText());
   }
+
+  @Test
+  public void testThreeParametersPerAddContentForTwo() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS")
+        .addContent("first").addContent("second").addContent("third");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
+  @Test
+  public void testThreeParametersPerMixedForTwo() throws Exception {
+    MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS")
+        .addContent("first").addContent("second", "third");
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, context);
+
+    assertEquals("First was [first] and second was [second]!", ms.getText());
+  }
+
 }

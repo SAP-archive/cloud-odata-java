@@ -20,26 +20,68 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
  * Internally used {@link ContentType} for OData library.
- * For more details on format and content of a {@link ContentType} see    
- * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
  * 
- * Once created a {@link ContentType} is IMMUTABLE.
+ * For more details on format and content of a {@link ContentType} see    
+ * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html)</code>.
+ * <pre>
+ * <code>
+ *   media-type     = type "/" subtype *( ";" parameter )
+ *   type           = token
+ *   subtype        = token
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Accept</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.1 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Accept = "Accept" ":"
+ *          #( media-range [ accept-params ] )
+ *  media-range = ( "* /*"
+ *                | ( type "/" "*" )
+ *                | ( type "/" subtype )
+ *                ) *( ";" parameter )
+ *  accept-params  = ";" "q" "=" qvalue *( accept-extension )
+ *  accept-extension = ";" token [ "=" ( token | quoted-string ) ]
+ * </code>
+ * </pre>
+ * 
+ * Especially for <code>Content-Type</code> Header as defined in 
+ * <code>RFC 2616 chapter 14.7 (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)</code>:
+ * <pre>
+ * <code>
+ * Content-Type   = "Content-Type" ":" media-type
+ * </code>
+ * </pre>
+ * 
+ * Once created a {@link ContentType} is <b>IMMUTABLE</b>.
  * 
  * @author SAP AG
  */
 public class ContentType {
 
   public enum ODataFormat {
-    ATOM, XML, JSON, CUSTOM
+    ATOM, XML, JSON, MIME, CUSTOM
+  }
+
+  private static final Set<String> KNOWN_MIME_TYPES = new HashSet<String>();
+  static {
+    KNOWN_MIME_TYPES.add("audio");
+    KNOWN_MIME_TYPES.add("image");
+    KNOWN_MIME_TYPES.add("video");
+    KNOWN_MIME_TYPES.add("multipart");
+    KNOWN_MIME_TYPES.add("text");
   }
 
   private static final char WHITESPACE_CHAR = ' ';
@@ -82,10 +124,6 @@ public class ContentType {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
 
-  private ContentType(final String type, final String subtype, final Map<String, String> parameters) {
-    this(type, subtype, mapToODataFormat(subtype), parameters);
-  }
-
   private ContentType(final String type, final String subtype, final ODataFormat odataFormat) {
     this(type, subtype, odataFormat, null);
   }
@@ -113,7 +151,7 @@ public class ContentType {
   }
 
   private String validateType(final String type) {
-    if (type == null) {
+    if (type == null || type.isEmpty()) {
       return MEDIA_TYPE_WILDCARD;
     }
     if (type.charAt(0) == WHITESPACE_CHAR || type.charAt(type.length() - 1) == WHITESPACE_CHAR) {
@@ -143,7 +181,7 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(final String type, final String subtype) {
-    return new ContentType(type, subtype, mapToODataFormat(subtype), null);
+    return new ContentType(type, subtype, mapToODataFormat(type, subtype), null);
   }
 
   /**
@@ -154,7 +192,7 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(final String type, final String subtype, final Map<String, String> parameters) {
-    return new ContentType(type, subtype, mapToODataFormat(subtype), parameters);
+    return new ContentType(type, subtype, mapToODataFormat(type, subtype), parameters);
   }
 
   /**
@@ -254,16 +292,18 @@ public class ContentType {
    * @param subtype
    * @return
    */
-  private static ODataFormat mapToODataFormat(final String subtype) {
-    ODataFormat odataFormat = null;
-    if (subtype.contains("atom")) {
-      odataFormat = ODataFormat.ATOM;
-    } else if (subtype.contains("xml")) {
-      odataFormat = ODataFormat.XML;
-    } else if (subtype.contains("json")) {
-      odataFormat = ODataFormat.JSON;
-    } else {
-      odataFormat = ODataFormat.CUSTOM;
+  private static ODataFormat mapToODataFormat(final String type, final String subtype) {
+    ODataFormat odataFormat = ODataFormat.CUSTOM;
+    if (type.contains("application")) {
+      if (subtype.contains("atom")) {
+        odataFormat = ODataFormat.ATOM;
+      } else if (subtype.contains("xml")) {
+        odataFormat = ODataFormat.XML;
+      } else if (subtype.contains("json")) {
+        odataFormat = ODataFormat.JSON;
+      }
+    } else if (KNOWN_MIME_TYPES.contains(type)) {
+      odataFormat = ODataFormat.MIME;
     }
     return odataFormat;
   }
@@ -284,7 +324,16 @@ public class ContentType {
   }
 
   /**
-   * Valid input are <code>;</code> separated <code>key = value</code> pairs.
+   * Valid input are <code>;</code> separated <code>key=value</code> pairs 
+   * without spaces between key and value.
+   * 
+   * <p>
+   * See RFC 2616:
+   * The type, subtype, and parameter attribute names are case-insensitive. 
+   * Parameter values might or might not be case-sensitive, depending on the 
+   * semantics of the parameter name. <b>Linear white space (LWS) MUST NOT be used 
+   * between the type and subtype, nor between an attribute and its value</b>. 
+   * </p>
    * 
    * @param parameters
    * @return Map with keys mapped to values
@@ -297,12 +346,33 @@ public class ContentType {
         String[] keyValue = parameter.split("=");
         String key = keyValue[0].trim().toLowerCase(Locale.ENGLISH);
         if (isParameterAllowed(key)) {
-          String value = keyValue.length > 1 ? keyValue[1].trim() : null;
+          String value = keyValue.length > 1 ? keyValue[1] : null;
+          if (value != null && isLws(value.charAt(0))) {
+            throw new IllegalArgumentException("Value of parameter '" + key + "' starts with a LWS ('" + parameters + "').");
+          }
           parameterMap.put(key, value);
         }
       }
     }
     return parameterMap;
+  }
+
+  /** 
+   * Validate if given character is a linear whitepace (includes <code>horizontal-tab, linefeed, carriage return and space</code>).
+   * 
+   * @param character to be checked
+   * @return <code>true</code> if character is a LWS, otherwise <code>false</code>.
+   */
+  private static boolean isLws(final char character) {
+    switch (character) {
+    case 9: // HT = <US-ASCII HT, horizontal-tab (9)>
+    case 10: // LF = <US-ASCII LF, linefeed (10)>
+    case 13: // CR = <US-ASCII CR, carriage return (13)>
+    case 32: // SP = <US-ASCII SP, space (32)>
+      return true;
+    default:
+      return false;
+    }
   }
 
   private static boolean isParameterAllowed(final String key) {
@@ -371,6 +441,7 @@ public class ContentType {
    */
   @Override
   public boolean equals(final Object obj) {
+    // NULL validation is done in method 'isEqualWithoutParameters(obj)'
     Boolean compatible = isEqualWithoutParameters(obj);
 
     if (compatible == null) {
@@ -504,7 +575,7 @@ public class ContentType {
     for (String key : parameters.keySet()) {
       if (isParameterAllowed(key)) {
         String value = parameters.get(key);
-        sb.append("; ").append(key).append("=").append(value);
+        sb.append(";").append(key).append("=").append(value);
       }
     }
     return sb.toString();
@@ -563,6 +634,19 @@ public class ContentType {
       }
     }
     return null;
+  }
+
+  /**
+   * Check if a valid compatible match for this {@link ContentType} exists in given list.
+   * Compatible in this case means that <b>all set parameters are ignored</b>.
+   * For more detail what a valid match is see {@link #matchCompatible(List)}.
+   * 
+   * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
+   * @return <code>true</code> if a compatible content type was found in given list 
+   *          or <code>false</code> if none compatible content type match was found
+   */
+  public boolean hasCompatible(final List<ContentType> toMatchContentTypes) {
+    return matchCompatible(toMatchContentTypes) != null;
   }
 
   /**

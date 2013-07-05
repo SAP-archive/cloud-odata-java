@@ -54,7 +54,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     ODataResponse response = s.writeProperty(edmProperty, employeeData.get("EmployeeId"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
 
     String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
@@ -73,7 +73,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     ODataResponse response = s.writeProperty(edmProperty, employeeData.get("Age"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
     String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
@@ -91,7 +91,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     ODataResponse response = s.writeProperty(edmProperty, employeeData.get("ImageUrl"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
     String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
@@ -141,7 +141,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     ODataResponse response = s.writeProperty(edmProperty, employeeData.get("Location"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML.toString() + ";charset=utf-8", response.getContentHeader());
     String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 

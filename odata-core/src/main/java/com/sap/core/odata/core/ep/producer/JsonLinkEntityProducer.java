@@ -43,18 +43,18 @@ public class JsonLinkEntityProducer {
     final String uri = (properties.getServiceRoot() == null ? "" : properties.getServiceRoot().toASCIIString())
         + AtomEntryEntityProducer.createSelfLink(entityInfo, data, null);
     try {
-      jsonStreamWriter.beginObject();
-      jsonStreamWriter.name(FormatJson.D);
+      jsonStreamWriter.beginObject()
+          .name(FormatJson.D);
       appendUri(jsonStreamWriter, uri);
       jsonStreamWriter.endObject();
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 
   protected static void appendUri(final JsonStreamWriter jsonStreamWriter, final String uri) throws IOException {
-    jsonStreamWriter.beginObject();
-    jsonStreamWriter.namedStringValue(FormatJson.URI, uri);
-    jsonStreamWriter.endObject();
+    jsonStreamWriter.beginObject()
+        .namedStringValue(FormatJson.URI, uri)
+        .endObject();
   }
 }

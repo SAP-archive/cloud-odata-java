@@ -35,7 +35,7 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void feed() throws Exception {
     HttpResponse response = callUri("Employees()");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     final String payload = getBody(response);
     assertXpathEvaluatesTo("Employees", "/atom:feed/atom:title", payload);
     assertXpathEvaluatesTo(EMPLOYEE_1_NAME, "/atom:feed/atom:entry[1]/atom:title", payload);
@@ -46,7 +46,7 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo(EMPLOYEE_6_NAME, "/atom:feed/atom:entry[6]/atom:title", payload);
 
     response = callUri("Rooms()");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     assertXpathEvaluatesTo("Rooms", "/atom:feed/atom:title", getBody(response));
 
     notFound("$top");
@@ -56,7 +56,7 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void navigationFeed() throws Exception {
     HttpResponse response = callUri("Employees('3')/ne_Room/nr_Employees()");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("4", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_2_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
@@ -67,11 +67,11 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     assertFalse(body.contains(EMPLOYEE_5_NAME));
 
     response = callUri("Rooms('2')/nr_Employees");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     assertXpathEvaluatesTo("4", "count(/atom:feed/atom:entry)", getBody(response));
 
     response = callUri("Employees('2')/ne_Team/nt_Employees?$orderby=Age&$top=1");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_2_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
@@ -80,13 +80,13 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void skipAndTop() throws Exception {
     HttpResponse response = callUri("Employees?$skip=1&$top=1");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_2_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
 
     response = callUri("Teams()?$skip=4");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathExists("/atom:feed", body);
     assertXpathNotExists("/atom:feed/atom:entry", body);
@@ -99,21 +99,21 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void skiptoken() throws Exception {
     HttpResponse response = callUri("Employees?$skiptoken=6");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_6_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
     assertFalse(body.contains(EMPLOYEE_1_NAME));
 
     response = callUri("Container2.Photos?$skiptoken=4foo");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", getBody(response));
   }
 
   @Test
   public void orderBy() throws Exception {
     HttpResponse response = callUri("Employees?$orderby=EmployeeId%20desc&$skip=5");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_1_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
@@ -130,13 +130,13 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void inlineCount() throws Exception {
     HttpResponse response = callUri("Managers()?$inlinecount=allpages");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("2", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo("2", "/atom:feed/m:count", body);
 
     response = callUri("Employees()?$top=3&$inlinecount=none");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     assertXpathNotExists("/atom:feed/m:count", getBody(response));
 
     response = callUri("Rooms('2')/$links/nr_Employees?$skip=9&$inlinecount=allpages");
@@ -149,35 +149,35 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void filter() throws Exception {
     HttpResponse response = callUri("Employees?$filter=RoomId%20eq%20%273%27");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_5_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
 
     response = callUri("Employees?$filter=EntryDate%20gt%20datetime%272003-12-24T00%3A00%3A00%27");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("2", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_6_NAME, "/atom:feed/atom:entry[2]/atom:title", body);
 
     response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     assertXpathNotExists("/atom:feed/atom:entry", getBody(response));
 
     response = callUri("Employees?$filter=day(EntryDate)%20eq%20(Age%20mod%208%20add%201)");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_2_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
 
     response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_4_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
 
     response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo(EMPLOYEE_6_NAME, "/atom:feed/atom:entry[1]/atom:title", body);
@@ -189,19 +189,19 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
     assertXpathNotExists("/atom:feed/atom:entry", getBody(response));
 
     response = callUri("Employees?$filter=Location/City/PostalCode%20lt%20%2769150%27");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertXpathEvaluatesTo("69124", "/atom:feed/atom:entry/m:properties/d:Location/d:City/d:PostalCode", body);
 
     response = callUri("Employees?$filter=length(trim(Location/City/CityName))%20gt%209");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     body = getBody(response);
     assertXpathEvaluatesTo("1", "count(/atom:feed/atom:entry)", body);
     assertFalse(body.contains(CITY_2_NAME));
 
     response = callUri("Employees('2')?$filter=Age%20eq%2032");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
     assertXpathEvaluatesTo(EMPLOYEE_2_NAME, "/atom:entry/atom:title", getBody(response));
 
     checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId%20eq%20'1'");
@@ -223,19 +223,41 @@ public class FeedXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void nextLink() throws Exception {
     HttpResponse response = callUri("Rooms()");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
+    assertXpathEvaluatesTo("Rooms()?$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
 
+    response = callUri("Rooms?$skiptoken=1");
+    body = getBody(response);
     assertXpathEvaluatesTo("Rooms?$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 
   @Test
   public void nextLinkOrderBy() throws Exception {
-    HttpResponse response = callUri("Rooms()?$orderby=Name");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    HttpResponse response = callUri("Rooms?$orderby=Name");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
     String body = getBody(response);
-
-    assertXpathEvaluatesTo("Rooms?$skiptoken=97&$orderby=Name", "/atom:feed/atom:link[@rel='next']/@href", body);
+    assertXpathEvaluatesTo("Rooms?$orderby=Name&$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
   }
 
+  @Test
+  public void nextLinkQueryOptions() throws Exception {
+    final HttpResponse response = callUri("Rooms?$format=atom&$filter=true&$inlinecount=none&$orderby=Name&$skiptoken=1&$skip=0&$top=200&$expand=nr_Building&$select=Seats");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("Rooms?$format=atom&$filter=true&$inlinecount=none&$orderby=Name&$top=200&$expand=nr_Building&$select=Seats&$skiptoken=97", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
+
+  @Test
+  public void nextLinkNavigation() throws Exception {
+    // We have to create one entry to have one more than the paging size.
+    final String requestBody = getBody(callUri("Rooms('1')")).replaceAll("<link.+?/>", "");
+    HttpResponse response = postUri("Buildings('3')/nb_Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    getBody(response);
+
+    response = callUri("Buildings('3')/nb_Rooms");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=feed");
+    final String body = getBody(response);
+    assertXpathEvaluatesTo("Buildings('3')/nb_Rooms?$skiptoken=99", "/atom:feed/atom:link[@rel='next']/@href", body);
+  }
 }

@@ -34,9 +34,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;

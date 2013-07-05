@@ -43,43 +43,35 @@ public class TokenizerExpectError extends ODataMessageException {
   private Exception previous;
   private int position;
 
-  public String getToken()
-  {
+  public String getToken() {
     return token;
   }
 
-  public void setToken(final String token)
-  {
+  public void setToken(final String token) {
     this.token = token;
   }
 
-  public Exception getPrevious()
-  {
+  public Exception getPrevious() {
     return previous;
   }
 
-  public void setPrevious(final Exception previous)
-  {
+  public void setPrevious(final Exception previous) {
     this.previous = previous;
   }
 
-  public int getPosition()
-  {
+  public int getPosition() {
     return position;
   }
 
-  public void setPosition(final int position)
-  {
+  public void setPosition(final int position) {
     this.position = position;
   }
 
-  public TokenizerExpectError(final MessageReference messageReference)
-  {
+  public TokenizerExpectError(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public static TokenizerExpectError createINVALID_TOKEN_AT(final String expectedToken, final Token actualToken)
-  {
+  public static TokenizerExpectError createINVALID_TOKEN_AT(final String expectedToken, final Token actualToken) {
     MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
 
     msgRef.addContent(expectedToken);
@@ -89,8 +81,7 @@ public class TokenizerExpectError extends ODataMessageException {
     return new TokenizerExpectError(msgRef);
   }
 
-  public static TokenizerExpectError createINVALID_TOKENKIND_AT(final TokenKind expectedTokenKind, final Token actualToken)
-  {
+  public static TokenizerExpectError createINVALID_TOKENKIND_AT(final TokenKind expectedTokenKind, final Token actualToken) {
     MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
 
     msgRef.addContent(expectedTokenKind.toString());
@@ -101,8 +92,7 @@ public class TokenizerExpectError extends ODataMessageException {
     return new TokenizerExpectError(msgRef);
   }
 
-  public static TokenizerExpectError createNO_TOKEN_AVAILABLE(final String expectedToken)
-  {
+  public static TokenizerExpectError createNO_TOKEN_AVAILABLE(final String expectedToken) {
     MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
 
     msgRef.addContent(expectedToken);

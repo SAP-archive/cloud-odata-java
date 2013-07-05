@@ -30,8 +30,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class CircleStreamBuffer {
 
-  private final static int DEFAULT_CAPACITY = 8192;
-  private final static int MAX_CAPACITY = DEFAULT_CAPACITY * 32;
+  private static final int NEW_BUFFER_RESIZE_FACTOR = 2;
+  private static final int READ_EOF = -1;
+  private static final int DEFAULT_CAPACITY = 8192;
+  private static final int MAX_CAPACITY = DEFAULT_CAPACITY * 32;
+
   private int currentAllocateCapacity = DEFAULT_CAPACITY;
 
   private boolean writeMode = true;
@@ -44,10 +47,18 @@ public class CircleStreamBuffer {
   private InternalInputStream inStream;
   private InternalOutputStream outStream;
 
+  /**
+   * Creates a {@link CircleStreamBuffer} with default buffer size.
+   */
   public CircleStreamBuffer() {
     this(DEFAULT_CAPACITY);
   }
 
+  /**
+   * Create a {@link CircleStreamBuffer} with given buffer size in bytes.
+   * 
+   * @param bufferSize
+   */
   public CircleStreamBuffer(final int bufferSize) {
     currentAllocateCapacity = bufferSize;
     createNewWriteBuffer();
@@ -79,12 +90,34 @@ public class CircleStreamBuffer {
   // #
   // #############################################
 
+  /**
+   * Closes the write (input) part of the {@link CircleStreamBuffer}.
+   * After this call the buffer can only be read out.
+   */
   public void closeWrite() {
     writeClosed = true;
   }
 
+  /**
+   * Closes the read (output) part of the {@link CircleStreamBuffer}.
+   * After this call it is possible to write into the buffer (but can never be read out).
+   */
   public void closeRead() {
     readClosed = true;
+    // clear references to byte buffers
+    ByteBuffer buffer = bufferQueue.poll();
+    while (buffer != null) {
+      buffer.clear();
+      buffer = bufferQueue.poll();
+    }
+  }
+
+  /**
+   * Closes write and read part (and hence the complete buffer).
+   */
+  public void close() {
+    closeWrite();
+    closeRead();
   }
 
   private int remaining() throws IOException {
@@ -134,24 +167,24 @@ public class CircleStreamBuffer {
     return tmp;
   }
 
-  private int read(final byte[] b, final int off, int len) throws IOException {
-    ByteBuffer toRead = getReadBuffer();
-    if (toRead == null) {
-      return -1;
+  private int read(final byte[] b, final int off, final int len) throws IOException {
+    ByteBuffer readBuffer = getReadBuffer();
+    if (readBuffer == null) {
+      return READ_EOF;
     }
 
-    final int remaining = toRead.remaining();
-    if (remaining <= len) {
-      len = remaining;
+    int toReadLength = readBuffer.remaining();
+    if (len < toReadLength) {
+      toReadLength = len;
     }
-    toRead.get(b, off, len);
-    return len;
+    readBuffer.get(b, off, toReadLength);
+    return toReadLength;
   }
 
   private int read() throws IOException {
     ByteBuffer readBuffer = getReadBuffer();
     if (readBuffer == null) {
-      return -1;
+      return READ_EOF;
     }
 
     return readBuffer.get();
@@ -211,14 +244,17 @@ public class CircleStreamBuffer {
    * @param requestedCapacity
    * @return the buffer
    */
-  private ByteBuffer allocateBuffer(int requestedCapacity) {
-    if (requestedCapacity < currentAllocateCapacity) {
-      requestedCapacity = currentAllocateCapacity * 2;
+  private ByteBuffer allocateBuffer(final int requestedCapacity) {
+    int allocateCapacity = requestedCapacity;
+    if (allocateCapacity < currentAllocateCapacity) {
+      allocateCapacity = currentAllocateCapacity * NEW_BUFFER_RESIZE_FACTOR;
     }
-    if (currentAllocateCapacity > MAX_CAPACITY) {
-      currentAllocateCapacity = MAX_CAPACITY;
+    if (allocateCapacity > MAX_CAPACITY) {
+      allocateCapacity = MAX_CAPACITY;
     }
-    return ByteBuffer.allocateDirect(requestedCapacity);
+    // update current
+    currentAllocateCapacity = allocateCapacity;
+    return ByteBuffer.allocate(allocateCapacity);
   }
 
   // #############################################

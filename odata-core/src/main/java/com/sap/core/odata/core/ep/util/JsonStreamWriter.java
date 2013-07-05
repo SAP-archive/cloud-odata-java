@@ -17,59 +17,58 @@ package com.sap.core.odata.core.ep.util;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.regex.Pattern;
 
 /**
  * Writes JSON output.
  * @author SAP AG
  */
 public class JsonStreamWriter {
-  private static final Pattern JSON_TO_BE_ESCAPED = Pattern.compile("\"|\\\\|\\p{Cntrl}");
-
   private final Writer writer;
 
   public JsonStreamWriter(final Writer writer) {
     this.writer = writer;
   }
 
-  public void beginObject() throws IOException {
+  public JsonStreamWriter beginObject() throws IOException {
     writer.append('{');
+    return this;
   }
 
-  public void endObject() throws IOException {
+  public JsonStreamWriter endObject() throws IOException {
     writer.append('}');
+    return this;
   }
 
-  public void beginArray() throws IOException {
+  public JsonStreamWriter beginArray() throws IOException {
     writer.append('[');
+    return this;
   }
 
-  public void endArray() throws IOException {
+  public JsonStreamWriter endArray() throws IOException {
     writer.append(']');
+    return this;
   }
 
-  public void name(final String name) throws IOException {
-    writer.append('"');
-    writer.append(name);
-    writer.append('"');
-    writer.append(':');
+  public JsonStreamWriter name(final String name) throws IOException {
+    writer.append('"').append(name).append('"').append(':');
+    return this;
   }
 
-  public void unquotedValue(final String value) throws IOException {
+  public JsonStreamWriter unquotedValue(final String value) throws IOException {
     writer.append(value == null ? FormatJson.NULL : value);
+    return this;
   }
 
-  public void stringValueRaw(final String value) throws IOException {
+  public JsonStreamWriter stringValueRaw(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
     } else {
-      writer.append('"');
-      writer.append(value);
-      writer.append('"');
+      writer.append('"').append(value).append('"');
     }
+    return this;
   }
 
-  public void stringValue(final String value) throws IOException {
+  public JsonStreamWriter stringValue(final String value) throws IOException {
     if (value == null) {
       writer.append(FormatJson.NULL);
     } else {
@@ -77,20 +76,24 @@ public class JsonStreamWriter {
       escape(value);
       writer.append('"');
     }
+    return this;
   }
 
-  public void namedStringValueRaw(final String name, final String value) throws IOException {
+  public JsonStreamWriter namedStringValueRaw(final String name, final String value) throws IOException {
     name(name);
     stringValueRaw(value);
+    return this;
   }
 
-  public void namedStringValue(final String name, final String value) throws IOException {
+  public JsonStreamWriter namedStringValue(final String name, final String value) throws IOException {
     name(name);
     stringValue(value);
+    return this;
   }
 
-  public void separator() throws IOException {
+  public JsonStreamWriter separator() throws IOException {
     writer.append(',');
+    return this;
   }
 
   /**
@@ -103,39 +106,67 @@ public class JsonStreamWriter {
     // quotation marks except for the characters that must be escaped:
     // quotation mark, reverse solidus, and the control characters
     // (U+0000 through U+001F)."
-    if (JSON_TO_BE_ESCAPED.matcher(value).find()) {
-      for (int i = 0; i < value.length(); i++) {
-        final char c = value.charAt(i);
-        if (c == '\\') {
-          writer.append("\\\\");
-        } else if (c == '"') {
-          writer.append("\\\"");
-        } else if (c <= '\u001F') {
-          switch (c) {
-          case '\b':
-            writer.append("\\b");
-            break;
-          case '\t':
-            writer.append("\\t");
-            break;
-          case '\n':
-            writer.append("\\n");
-            break;
-          case '\f':
-            writer.append("\\f");
-            break;
-          case '\r':
-            writer.append("\\r");
-            break;
-          default:
-            writer.append(String.format("\\u%04X", (short) c));
-          }
-        } else {
-          writer.write(c);
-        }
+    // All output here is done on character basis which should be faster
+    // than writing Strings.
+    for (int i = 0; i < value.length(); i++) {
+      final char c = value.charAt(i);
+      switch (c) {
+      case '\\':
+        writer.append('\\').append(c);
+        break;
+      case '"':
+        writer.append('\\').append(c);
+        break;
+      case '\b':
+        writer.append('\\').append('b');
+        break;
+      case '\t':
+        writer.append('\\').append('t');
+        break;
+      case '\n':
+        writer.append('\\').append('n');
+        break;
+      case '\f':
+        writer.append('\\').append('f');
+        break;
+      case '\r':
+        writer.append('\\').append('r');
+        break;
+      case '\u0000':
+      case '\u0001':
+      case '\u0002':
+      case '\u0003':
+      case '\u0004':
+      case '\u0005':
+      case '\u0006':
+      case '\u0007':
+      case '\u000B':
+      case '\u000E':
+      case '\u000F':
+      case '\u0010':
+      case '\u0011':
+      case '\u0012':
+      case '\u0013':
+      case '\u0014':
+      case '\u0015':
+      case '\u0016':
+      case '\u0017':
+      case '\u0018':
+      case '\u0019':
+      case '\u001A':
+      case '\u001B':
+      case '\u001C':
+      case '\u001D':
+      case '\u001E':
+      case '\u001F':
+        final int lastHexDigit = c % 0x10;
+        writer.append('\\').append('u').append('0').append('0')
+            .append(c >= '\u0010' ? '1' : '0')
+            .append((char) ((lastHexDigit > 9 ? 'A' : '0') + lastHexDigit % 10));
+        break;
+      default:
+        writer.append(c);
       }
-    } else {
-      writer.append(value);
     }
   }
 }

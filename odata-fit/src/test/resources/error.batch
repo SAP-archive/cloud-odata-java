@@ -1,0 +1,17 @@
+--batch_123
+Content-Type: application/http
+Content-Transfer-Encoding:binary
+
+GET $metadata HTTP/1.1
+
+
+--batch_123
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET nonsens HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+
+
+--batch_123--

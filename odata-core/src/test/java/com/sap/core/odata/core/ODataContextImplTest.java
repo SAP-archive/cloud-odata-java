@@ -16,18 +16,61 @@
 package com.sap.core.odata.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
+import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataRequest;
+
+/**
+ * @author SAP AG
+ */
 public class ODataContextImplTest {
 
-  private static final String HTTP_GET = "GET";
+  ODataContextImpl context;
+
+  @Before
+  public void before() {
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
+    ODataRequest request = mock(ODataRequest.class);
+
+    when(request.getMethod()).thenReturn(ODataHttpMethod.GET);
+    when(request.getPathInfo()).thenReturn(new PathInfoImpl());
+
+    context = new ODataContextImpl(request, factory);
+  }
 
   @Test
-  public void httpMethodTest() {
-    ODataContextImpl context = new ODataContextImpl();
-    context.setHttpMethod(HTTP_GET);
+  public void httpMethod() {
+    context.setHttpMethod(ODataHttpMethod.GET.name());
+    assertEquals(ODataHttpMethod.GET.name(), context.getHttpMethod());
+  }
 
-    assertEquals(HTTP_GET, context.getHttpMethod());
+  @Test
+  public void debugMode() {
+    context.setDebugMode(true);
+    assertTrue(context.isInDebugMode());
+  }
+
+  @Test
+  public void parentContext() {
+
+    assertFalse(context.isInBatchMode());
+    assertNull(context.getBatchParentContext());
+
+    ODataContext parentContext = mock(ODataContext.class);
+    context.setBatchParentContext(parentContext);
+
+    assertTrue(context.isInBatchMode());
+    assertNotNull(context.getBatchParentContext());
   }
 }

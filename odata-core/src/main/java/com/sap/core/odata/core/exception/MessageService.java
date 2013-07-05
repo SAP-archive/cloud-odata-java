@@ -16,6 +16,7 @@
 package com.sap.core.odata.core.exception;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -40,11 +41,46 @@ public class MessageService {
   private static final Map<Locale, MessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, MessageService>();
 
   private MessageService(final Locale locale) {
-    if (locale == null) {
-      throw new IllegalArgumentException("Parameter locale MUST NOT be NULL.");
-    }
     requestedLocale = locale;
-    resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+    resourceBundle = createResourceBundle(locale);
+  }
+
+  /**
+   * Create a {@link ResourceBundle} based on given locale and name ({@value #BUNDLE_NAME}).
+   * If during creation an exception occurs it is catched and an special bundle is created with error type and message of
+   * this exception.
+   * 
+   * @param locale for which locale the {@link ResourceBundle} is created
+   * @return a {@link ResourceBundle}
+   */
+  private ResourceBundle createResourceBundle(final Locale locale) {
+    ResourceBundle bundle;
+    try {
+      if (locale == null) {
+        throw new IllegalArgumentException("Parameter locale MUST NOT be NULL.");
+      }
+      bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+    } catch (final Exception e) {
+      bundle = new ResourceBundle() {
+        @Override
+        protected Object handleGetObject(final String key) {
+          return "MessageService could not be created because of exception '" +
+              e.getClass().getSimpleName() + " with message '" + e.getMessage() + "'.";
+        }
+
+        @Override
+        public Locale getLocale() {
+          return Locale.ENGLISH;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Enumeration<String> getKeys() {
+          return (Enumeration<String>) Collections.emptySet();
+        }
+      };
+    }
+    return bundle;
   }
 
   public static class Message {

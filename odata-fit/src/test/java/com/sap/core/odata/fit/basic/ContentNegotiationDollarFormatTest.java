@@ -16,6 +16,7 @@
 package com.sap.core.odata.fit.basic;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -43,17 +44,21 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  */
 public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
 
+  /**
+   * 
+   */
+  private static final String CUSTOM_CONTENT_TYPE = "application/csv";
   ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
   @Override
-  ODataSingleProcessor createProcessor() throws ODataException {
+  protected ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
     final String contentType = HttpContentType.APPLICATION_ATOM_SVC_UTF8;
     final ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
     // csv
-    final ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
+    final ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader(CUSTOM_CONTENT_TYPE).entity("any content").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
     when(((CustomContentType) processor).getCustomContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList("csv"));
 
@@ -79,7 +84,8 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals("csv", header.getValue());
+    assertNotNull(header);
+    assertEquals(CUSTOM_CONTENT_TYPE, header.getValue());
   }
 
   @Test

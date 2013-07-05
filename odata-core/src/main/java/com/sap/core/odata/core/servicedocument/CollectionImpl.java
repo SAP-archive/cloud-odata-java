@@ -24,6 +24,9 @@ import com.sap.core.odata.api.servicedocument.CommonAttributes;
 import com.sap.core.odata.api.servicedocument.ExtensionElement;
 import com.sap.core.odata.api.servicedocument.Title;
 
+/**
+ * @author SAP AG
+ */
 public class CollectionImpl implements Collection {
   private Title title;
   private String href;

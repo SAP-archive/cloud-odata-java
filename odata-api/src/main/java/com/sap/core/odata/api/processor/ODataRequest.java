@@ -13,11 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.api.processor;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import com.sap.core.odata.api.commons.ODataHttpMethod;
+import com.sap.core.odata.api.uri.PathInfo;
 
 /**
+ * 
  * @author SAP AG
  */
-public interface ODataLocator {
+public interface ODataRequest {
+
+  String getRequestHeaderValue(String name);
+
+  Map<String, List<String>> getRequestHeaders();
+
+  InputStream getBody();
+
+  PathInfo getPathInfo();
+
+  ODataHttpMethod getMethod();
+
+  List<Locale> getAcceptableLanguages();
+
+  String getContentType();
+
+  List<String> getAcceptHeaders();
+
+  Map<String, String> getQueryParameters();
 
 }

@@ -31,7 +31,7 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
 
   @Override
   public boolean equals(final Object obj) {
-    return this == obj || getClass().equals(obj.getClass());
+    return this == obj || (obj != null && getClass() == obj.getClass());
   }
 
   @Override
@@ -92,16 +92,10 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
   @Override
   public final String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null) {
-      if (facets == null) {
+      if (facets == null || facets.isNullable() == null || facets.isNullable()) {
         return null;
-      } else if (facets.getDefaultValue() == null) {
-        if (facets.isNullable() == null || facets.isNullable()) {
-          return null;
-        } else {
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-        }
       } else {
-        return facets.getDefaultValue();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
       }
     }
 

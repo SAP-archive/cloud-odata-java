@@ -18,6 +18,9 @@ package com.sap.core.odata.core.servicedocument;
 import com.sap.core.odata.api.servicedocument.Accept;
 import com.sap.core.odata.api.servicedocument.CommonAttributes;
 
+/**
+ * @author SAP AG
+ */
 public class AcceptImpl implements Accept {
   private String value;
   private CommonAttributes commonAttributes;

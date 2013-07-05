@@ -65,9 +65,10 @@ public class EntitySetTest extends BaseTest {
   @Before
   public void setUp() throws Exception {
     ODataContext context = mock(ODataContext.class);
-    PathInfo uriInfo = mock(PathInfo.class);
-    when(uriInfo.getServiceRoot()).thenReturn(new URI("http://localhost/"));
-    when(context.getPathInfo()).thenReturn(uriInfo);
+    PathInfo pathInfo = mock(PathInfo.class);
+    when(pathInfo.getServiceRoot()).thenReturn(new URI("http://localhost/"));
+    when(pathInfo.getRequestUri()).thenReturn(new URI("http://localhost/EntitySet"));
+    when(context.getPathInfo()).thenReturn(pathInfo);
 
     processor.setContext(context);
   }

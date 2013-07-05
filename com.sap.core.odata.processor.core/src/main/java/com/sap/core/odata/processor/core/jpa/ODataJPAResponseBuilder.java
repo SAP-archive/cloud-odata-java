@@ -465,8 +465,17 @@ public final class ODataJPAResponseBuilder {
         edmEntityList.add(edmPropertyValueMap);
       }
 
-      Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
-          .size() : null;
+      Integer count = null;
+      if (resultsView.getInlineCount() != null) {
+        if ((resultsView.getSkip() != null || resultsView.getTop() != null)) {
+          // when $skip and/or $top is present with $inlinecount
+          count = getInlineCountForNonFilterQueryLinks(edmEntityList, resultsView);
+        } else {
+          // In all other cases
+          count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
+              .size() : null;
+        }
+      }
 
       ODataContext context = oDataJPAContext.getODataContext();
       EntityProviderWriteProperties entryProperties = EntityProviderWriteProperties
@@ -490,6 +499,38 @@ public final class ODataJPAResponseBuilder {
   }
 
   /*
+   * This method handles $inlinecount request. It also modifies the list of results in case of 
+   * $inlinecount and $top/$skip combinations. Specific to LinksUriInfo. //TODO
+   * 
+   * @param edmEntityList
+   * @param resultsView 
+   * 
+   * @return
+   */
+  private static Integer getInlineCountForNonFilterQueryLinks(final List<Map<String, Object>> edmEntityList, final GetEntitySetLinksUriInfo resultsView) {
+    // when $skip and/or $top is present with $inlinecount, first get the total count
+    Integer count = null;
+    if (resultsView.getInlineCount() == InlineCount.ALLPAGES) {
+      if (resultsView.getSkip() != null || resultsView.getTop() != null) {
+        count = edmEntityList.size();
+        // Now update the list
+        if (resultsView.getSkip() != null) {
+          // Index checks to avoid IndexOutOfBoundsException
+          if (resultsView.getSkip() > edmEntityList.size()) {
+            edmEntityList.clear();
+            return count;
+          }
+          edmEntityList.subList(0, resultsView.getSkip()).clear();
+        }
+        if (resultsView.getTop() != null && resultsView.getTop() >= 0 && resultsView.getTop() < edmEntityList.size()) {
+          edmEntityList.subList(0, resultsView.getTop());
+        }
+      }
+    }// Inlinecount of None is handled by default - null
+    return count;
+  }
+
+  /*
    * Method to build the entity provider Property.Callbacks for $expand would
    * be registered here
    */
@@ -498,8 +539,19 @@ public final class ODataJPAResponseBuilder {
       final List<Map<String, Object>> edmEntityList)
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
-    Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
-        .size() : null;
+
+    Integer count = null;
+    if (resultsView.getInlineCount() != null) {
+      if ((resultsView.getSkip() != null || resultsView.getTop() != null)) {
+        // when $skip and/or $top is present with $inlinecount
+        count = getInlineCountForNonFilterQueryEntitySet(edmEntityList, resultsView);
+      } else {
+        // In all other cases
+        count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
+            .size() : null;
+      }
+    }
+
     try {
       entityFeedPropertiesBuilder = EntityProviderWriteProperties
           .serviceRoot(odataJPAContext.getODataContext()
@@ -522,6 +574,34 @@ public final class ODataJPAResponseBuilder {
     }
 
     return entityFeedPropertiesBuilder.build();
+  }
+
+  /*
+   * This method handles $inlinecount request. It also modifies the list of results in case of 
+   * $inlinecount and $top/$skip combinations. Specific to Entity Set. //TODO
+   * 
+   */
+  private static Integer getInlineCountForNonFilterQueryEntitySet(final List<Map<String, Object>> edmEntityList, final GetEntitySetUriInfo resultsView) {
+    // when $skip and/or $top is present with $inlinecount, first get the total count
+    Integer count = null;
+    if (resultsView.getInlineCount() == InlineCount.ALLPAGES) {
+      if (resultsView.getSkip() != null || resultsView.getTop() != null) {
+        count = edmEntityList.size();
+        // Now update the list
+        if (resultsView.getSkip() != null) {
+          // Index checks to avoid IndexOutOfBoundsException
+          if (resultsView.getSkip() > edmEntityList.size()) {
+            edmEntityList.clear();
+            return count;
+          }
+          edmEntityList.subList(0, resultsView.getSkip()).clear();
+        }
+        if (resultsView.getTop() != null && resultsView.getTop() >= 0 && resultsView.getTop() < edmEntityList.size()) {
+          edmEntityList.retainAll(edmEntityList.subList(0, resultsView.getTop()));
+        }
+      }
+    }// Inlinecount of None is handled by default - null
+    return count;
   }
 
   private static EntityProviderWriteProperties getEntityProviderProperties(

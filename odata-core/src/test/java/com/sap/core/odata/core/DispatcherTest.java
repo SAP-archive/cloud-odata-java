@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -35,12 +34,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
@@ -59,7 +57,6 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.fit.BaseTest;
@@ -70,7 +67,6 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class DispatcherTest extends BaseTest {
 
-  @SuppressWarnings("unchecked")
   public static ODataService getMockService() throws ODataException {
     ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
     when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -114,7 +110,7 @@ public class DispatcherTest extends BaseTest {
     when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(anyString())).thenAnswer(getAnswer());
+    when(batch.executeBatch(any(BatchHandler.class), anyString(), any(InputStream.class))).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
@@ -141,8 +137,6 @@ public class DispatcherTest extends BaseTest {
     when(service.getFunctionImportProcessor()).thenReturn(functionImport);
     when(service.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
     when(service.getEntityMediaProcessor()).thenReturn(entityMedia);
-    //
-    when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList("*/*"));
 
     return service;
   }
@@ -168,35 +162,15 @@ public class DispatcherTest extends BaseTest {
     UriInfoImpl uriInfo = mock(UriInfoImpl.class);
     when(uriInfo.getUriType()).thenReturn(uriType);
     when(uriInfo.isValue()).thenReturn(isValue);
-    when(uriInfo.getSkip()).thenReturn(null);
-    when(uriInfo.getTop()).thenReturn(null);
-    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
-    when(uriInfo.getFunctionImport()).thenReturn(functionImport);
-    EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
-    EdmEntityType entityType = mock(EdmEntityType.class);
-    when(entityType.hasStream()).thenReturn(Boolean.FALSE);
-    when(edmEntitySet.getEntityType()).thenReturn(entityType);
-    when(uriInfo.getTargetEntitySet()).thenReturn(edmEntitySet);
-
-    if (isValue) {
-      EdmProperty edmProp = Mockito.mock(EdmProperty.class);
-      when(edmProp.getMimeType()).thenReturn("*/*");
-      List<EdmProperty> properties = Arrays.asList(edmProp);
-      when(uriInfo.getPropertyPath()).thenReturn(properties);
-    }
-
     return uriInfo;
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    final ODataResponse response = new Dispatcher(getMockService(), getMockContentNegotiator())
-        .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", Arrays.asList("*/*"));
-    assertEquals(expectedMethodName, response.getEntity());
-  }
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
 
-  private static ContentNegotiator getMockContentNegotiator() {
-    ContentNegotiator mock = Mockito.mock(ContentNegotiator.class);
-    return mock;
+    final ODataResponse response = new Dispatcher(factory, getMockService())
+        .dispatch(method, mockUriInfo(uriType, isValue), null, "application/xml", "*/*");
+    assertEquals(expectedMethodName, response.getEntity());
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
@@ -391,7 +365,10 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
-    assertEquals(feature, new Dispatcher(getMockService(), getMockContentNegotiator()).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
+    new Dispatcher(factory, getMockService());
+    assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    assertEquals(feature, Dispatcher.mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
   }
 
   @Test
@@ -425,37 +402,37 @@ public class DispatcherTest extends BaseTest {
 
   @Test
   public void contentNegotiationDefaultCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml", "application/xml;charset=utf-8", true);
   }
 
   @Test
   public void contentNegotiationSupportedCharset() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", false);
+    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", false);
   }
 
   @Test
   public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
-    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
+    negotiateContentTypeCharset("application/xml;charset=utf-8", "application/xml;charset=utf-8", true);
   }
 
   @SuppressWarnings("unchecked")
   private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
 
+    ODataServiceFactory factory = mock(ODataServiceFactory.class);
     ODataService service = Mockito.mock(ODataService.class);
-    Dispatcher dispatcher = new Dispatcher(service, new ContentNegotiator());
+    Dispatcher dispatcher = new Dispatcher(factory, service);
 
     UriInfoImpl uriInfo = new UriInfoImpl();
     uriInfo.setUriType(UriType.URI1); // 
     if (asFormat) {
       uriInfo.setFormat(requestType);
     }
-    List<String> acceptedContentTypes = Arrays.asList(requestType);
 
     Mockito.when(service.getSupportedContentTypes(Matchers.any(Class.class))).thenReturn(Arrays.asList(supportedType));
     EntitySetProcessor processor = Mockito.mock(EntitySetProcessor.class);
@@ -465,8 +442,7 @@ public class DispatcherTest extends BaseTest {
     Mockito.when(service.getEntitySetProcessor()).thenReturn(processor);
 
     InputStream content = null;
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriInfo, content, requestType, acceptedContentTypes);
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriInfo, content, requestType, supportedType);
     assertEquals(supportedType, odataResponse.getContentHeader());
   }
-
 }

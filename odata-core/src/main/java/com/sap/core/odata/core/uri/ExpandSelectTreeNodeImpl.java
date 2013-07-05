@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.sap.core.odata.core.uri;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
+import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -113,27 +116,44 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   }
 
   public String toJsonString() {
-    String propertiesString = "";
-    String linksString = "";
-
     try {
+      StringWriter writer = new StringWriter();
+      JsonStreamWriter jsonStreamWriter = new JsonStreamWriter(writer);
+      jsonStreamWriter.beginObject()
+          .name("all").unquotedValue(Boolean.toString(isAll())).separator()
+          .name("properties")
+          .beginArray();
+      boolean first = true;
       for (EdmProperty property : properties) {
-        if (!propertiesString.isEmpty()) {
-          propertiesString += ",";
+        if (first) {
+          first = false;
+        } else {
+          jsonStreamWriter.separator();
         }
-        propertiesString += "\"" + property.getName() + "\"";
+        jsonStreamWriter.stringValueRaw(property.getName());
       }
-
+      jsonStreamWriter.endArray().separator()
+          .name("links")
+          .beginArray();
+      first = true;
       for (Map.Entry<String, ExpandSelectTreeNodeImpl> entry : links.entrySet()) {
-        final String nodeString = entry.getValue() == null ? null : entry.getValue().toJsonString();
-        if (!linksString.isEmpty()) {
-          linksString += ",";
+        if (first) {
+          first = false;
+        } else {
+          jsonStreamWriter.separator();
         }
-        linksString += "{\"" + entry.getKey() + "\":" + nodeString + "}";
+        final String nodeString = entry.getValue() == null ? null : entry.getValue().toJsonString();
+        jsonStreamWriter.beginObject()
+            .name(entry.getKey()).unquotedValue(nodeString)
+            .endObject();
       }
-
-      return "{\"all\":" + isAll() + ",\"properties\":[" + propertiesString + "],\"links\":[" + linksString + "]}";
-    } catch (EdmException e) {
+      jsonStreamWriter.endArray()
+          .endObject();
+      writer.flush();
+      return writer.toString();
+    } catch (final IOException e) {
+      throw new ODataRuntimeException("IOException: ", e);
+    } catch (final EdmException e) {
       throw new ODataRuntimeException("EdmException: ", e);
     }
   }
