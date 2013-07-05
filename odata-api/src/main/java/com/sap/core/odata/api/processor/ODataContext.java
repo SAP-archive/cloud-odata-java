@@ -51,6 +51,18 @@ public interface ODataContext {
   PathInfo getPathInfo() throws ODataException;
 
   /**
+   * If a request execution is part of batch processing then this method returns the context of the 
+   * outer batch request.
+   * @return a batch parent context or null
+   */
+  ODataContext getBatchParentContext();
+
+  /**
+   * @return true in case of this request is part of a batch processing queue
+   */
+  boolean isInBatchMode();
+
+  /**
    * Starts runtime measurement.
    * @param className class name where the runtime measurement starts
    * @param methodName method name where the runtime measurement starts

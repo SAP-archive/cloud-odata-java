@@ -144,7 +144,7 @@ public class JsonEntryEntityProducer {
                   }
                 }
               } catch (final ODataApplicationException e) {
-                throw new EntityProviderException(EntityProviderException.COMMON, e);
+                throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
               }
             } else {
               writeDeferredUri(navigationPropertyName);
@@ -164,9 +164,9 @@ public class JsonEntryEntityProducer {
       writer.flush();
 
     } catch (final IOException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     } catch (final EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
   }
 

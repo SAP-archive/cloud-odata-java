@@ -121,10 +121,7 @@ public class ODataRootLocator {
     param.setServletRequest(servletRequest);
     param.setPathSplit(pathSplit);
 
-    final ODataSubLocator odataLocator = new ODataSubLocator();
-    odataLocator.initialize(param);
-
-    return odataLocator;
+    return ODataSubLocator.create(param);
   }
 
   private Object handleRedirect() {

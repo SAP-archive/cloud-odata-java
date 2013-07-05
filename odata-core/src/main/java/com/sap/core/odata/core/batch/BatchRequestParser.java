@@ -41,7 +41,7 @@ public class BatchRequestParser {
   private static final Pattern REG_EX_HEADER = Pattern.compile("([a-zA-Z\\-]+):" + REG_EX_OPTIONAL_WHITESPACE + "(.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_VERSION = Pattern.compile("(?:HTTP/[0-9]\\.[0-9])?");
   private static final Pattern REG_EX_ANY_BOUNDARY_STRING = Pattern.compile("--" + ANY_CHARACTERS + REG_EX_ZERO_OR_MORE_WHITESPACES);
-  private static final Pattern REG_EX_REQUEST_LINE = Pattern.compile("(GET|POST|PUT|DELETE|MERGE)\\s(.*)\\s?" + REG_EX_VERSION + REG_EX_ZERO_OR_MORE_WHITESPACES);
+  private static final Pattern REG_EX_REQUEST_LINE = Pattern.compile("(GET|POST|PUT|DELETE|MERGE|PATCH)\\s(.*)\\s?" + REG_EX_VERSION + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_BOUNDARY_PARAMETER = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + "boundary=(\".*\"|.*)" + REG_EX_ZERO_OR_MORE_WHITESPACES);
   private static final Pattern REG_EX_CONTENT_TYPE = Pattern.compile(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED);
   private static final Pattern REG_EX_QUERY_PARAMETER = Pattern.compile("((?:\\$[a-z]+)|(?:[^\\$][^=]))=([^=]+)");
@@ -54,13 +54,14 @@ public class BatchRequestParser {
   private String currentContentId;
   private static Set<String> HTTP_CHANGESET_METHODS;
   private static Set<String> HTTP_BATCH_METHODS;
-  
+
   static {
     HTTP_CHANGESET_METHODS = new HashSet<String>();
     HTTP_CHANGESET_METHODS.add("POST");
     HTTP_CHANGESET_METHODS.add("PUT");
     HTTP_CHANGESET_METHODS.add("DELETE");
     HTTP_CHANGESET_METHODS.add("MERGE");
+    HTTP_CHANGESET_METHODS.add("PATCH");
 
     HTTP_BATCH_METHODS = new HashSet<String>();
     HTTP_BATCH_METHODS.add("GET");
@@ -93,7 +94,7 @@ public class BatchRequestParser {
     if (contentTypeMime != null) {
       boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
-      Pattern closeDelimiter = Pattern.compile("--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
+      String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
       while (scanner.hasNext() && !scanner.hasNext(closeDelimiter)) {
         requests.add(parseMultipart(scanner, boundary, false));
         parseNewLine(scanner);
@@ -125,14 +126,14 @@ public class BatchRequestParser {
       scanner.next();
       mimeHeaders = parseHeaders(scanner);
 
-      String contentType = mimeHeaders.get(BatchConstants.HTTP_CONTENT_TYPE);
+      String contentType = mimeHeaders.get(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
       if (contentType == null) {
         throw new EntityProviderException(EntityProviderException.COMMON.addContent("No Content-Type field for MIME-header is present"));
       }
       if (isChangeSet) {
-        if (BatchConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING));
-          currentContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID);
+        if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
+          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase()));
+          currentContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
           parseNewLine(scanner);// mandatory
 
           requests.add(parseRequest(scanner, isChangeSet));
@@ -141,16 +142,19 @@ public class BatchRequestParser {
           throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Content-Type field for MIME-header"));
         }
       } else {
-        if (mimeHeaders.containsKey(BatchConstants.HTTP_CONTENT_ID)) {
+        if (mimeHeaders.containsKey(BatchConstants.HTTP_CONTENT_ID.toLowerCase())) {
           throw new EntityProviderException(EntityProviderException.COMMON.addContent("A Content-ID header can be included just for an Insert request within a ChangeSet"));
         }
-        if (BatchConstants.HTTP_APPLICATION_HTTP.equals(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING));
+        if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
+          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase()));
           parseNewLine(scanner);// mandatory
           requests.add(parseRequest(scanner, isChangeSet));
           multipart = new BatchPartImpl(false, requests);
         } else if (contentType.matches(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
+          if (boundary.equals(changeSetBoundary)) {
+            throw new EntityProviderException(EntityProviderException.COMMON.addContent("The boundary of the ChangeSet should be different from that used by the Batch"));
+          }
           List<ODataRequest> changeSetRequests = new LinkedList<ODataRequest>();
           parseNewLine(scanner);// mandatory
           Pattern changeSetCloseDelimiter = Pattern.compile("--" + changeSetBoundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
@@ -204,20 +208,22 @@ public class BatchRequestParser {
       if (currentContentId != null) {
         List<String> headerList = new ArrayList<String>();
         headerList.add(currentContentId);
-        headers.put(BatchConstants.HTTP_CONTENT_ID, headerList);
+        headers.put(BatchConstants.HTTP_CONTENT_ID.toLowerCase(), headerList);
       }
       request.setRequestHeaders(headers);
-
-      if (request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE) != null) {
-        request.setContentType(ContentType.create(request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE)));
+      String requestContentType = request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
+      if (requestContentType != null) {
+        request.setContentType(ContentType.create(requestContentType));
       }
-      if (request.getRequestHeaderValue(BatchConstants.ACCEPT) != null) {
-        request.setAcceptHeaders(parseAcceptHeaders(request.getRequestHeaderValue(BatchConstants.ACCEPT)));
+      String requestAcceptHeaders = request.getRequestHeaderValue(BatchConstants.ACCEPT.toLowerCase());
+      if (requestAcceptHeaders != null) {
+        request.setAcceptHeaders(parseAcceptHeaders(requestAcceptHeaders));
       } else {
         request.setAcceptHeaders(new ArrayList<String>());
       }
-      if (request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE) != null) {
-        request.setAcceptableLanguages(parseAcceptableLanguages(request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE)));
+      String requestAcceptLanguages = request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE.toLowerCase());
+      if (requestAcceptLanguages != null) {
+        request.setAcceptableLanguages(parseAcceptableLanguages(requestAcceptLanguages));
       } else {
         request.setAcceptableLanguages(new ArrayList<Locale>());
       }
@@ -241,8 +247,8 @@ public class BatchRequestParser {
         scanner.next(REG_EX_HEADER);
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
-          String headerName = result.group(1).trim();
-          String headerValue = result.group(2).trim();
+          String headerName = result.group(1).trim().toLowerCase();
+          String headerValue = result.group(2).trim().toLowerCase();
           if (headers.containsKey(headerName)) {
             headers.get(headerName).add(headerValue);
           } else {
@@ -389,7 +395,7 @@ public class BatchRequestParser {
   }
 
   private void validateEncoding(final String encoding) throws EntityProviderException {
-    if (!BatchConstants.BINARY_ENCODING.equals(encoding)) {
+    if (!BatchConstants.BINARY_ENCODING.equalsIgnoreCase(encoding)) {
       throw new EntityProviderException(EntityProviderException.COMMON.addContent("The Content-Transfer-Encoding should be binary"));
     }
   }
@@ -401,8 +407,8 @@ public class BatchRequestParser {
         scanner.next(REG_EX_HEADER);
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
-          String headerName = result.group(1).trim();
-          String headerValue = result.group(2).trim();
+          String headerName = result.group(1).trim().toLowerCase();
+          String headerValue = result.group(2).trim().toLowerCase();
           headers.put(headerName, headerValue);
         }
       } else {
@@ -442,6 +448,10 @@ public class BatchRequestParser {
     if (boundary.matches("\".*\"")) {
       boundary = boundary.replace("\"", "");
     }
+    boundary = boundary.replaceAll("\\)", "\\\\)");
+    boundary = boundary.replaceAll("\\(", "\\\\(");
+    boundary = boundary.replaceAll("\\?", "\\\\?");
+    boundary = boundary.replaceAll("\\+", "\\\\+");
     return boundary;
   }
 }

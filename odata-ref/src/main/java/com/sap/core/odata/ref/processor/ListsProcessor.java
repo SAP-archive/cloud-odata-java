@@ -33,6 +33,7 @@ import java.util.Map;
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.batch.BatchHandler;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
@@ -1697,31 +1698,30 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse executeBatch(final BatchHandler handler, final String contentType, final InputStream content) throws ODataException {
     ODataResponse batchResponse;
+    List<BatchResponsePart> batchResponseParts = new ArrayList<BatchResponsePart>();
     PathInfo pathInfo = getContext().getPathInfo();
     EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
     List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
-    List<ODataResponse> responses = new ArrayList<ODataResponse>();
     for (BatchPart batchPart : batchParts) {
-      ODataResponse response = handler.handleBatchPart(batchPart);
-      responses.add(response);
+      batchResponseParts.add(handler.handleBatchPart(batchPart));
     }
-    batchResponse = EntityProvider.writeBatchResponse(responses);
+    batchResponse = EntityProvider.writeBatchResponse(batchResponseParts);
     return batchResponse;
   }
 
   @Override
-  public ODataResponse executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
-    ODataResponse changeSetResponse;
+  public BatchResponsePart executeChangeSet(final BatchHandler handler, final List<ODataRequest> requests) throws ODataException {
     List<ODataResponse> responses = new ArrayList<ODataResponse>();
     for (ODataRequest request : requests) {
       ODataResponse response = handler.handleRequest(request);
       if (response.getStatus().getStatusCode() >= HttpStatusCodes.BAD_REQUEST.getStatusCode()) {
         // Rollback
-        return response;
+        List<ODataResponse> errorResponses = new ArrayList<ODataResponse>(1);
+        errorResponses.add(response);
+        return BatchResponsePart.responses(errorResponses).changeSet(false).build();
       }
       responses.add(response);
     }
-    changeSetResponse = EntityProvider.writeChangeSetResponse(responses);
-    return changeSetResponse;
+    return BatchResponsePart.responses(responses).changeSet(true).build();
   }
 }

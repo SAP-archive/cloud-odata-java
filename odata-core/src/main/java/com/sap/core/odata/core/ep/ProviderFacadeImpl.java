@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -190,15 +191,9 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataResponse writeBatchResponse(final List<ODataResponse> responses) throws EntityProviderException {
+  public ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws EntityProviderException {
     BatchResponseWriter batchWriter = new BatchResponseWriter();
-    return batchWriter.write(responses);
-  }
-
-  @Override
-  public ODataResponse writeChangeSetResponse(final List<ODataResponse> responses) throws EntityProviderException {
-    BatchResponseWriter batchWriter = new BatchResponseWriter();
-    return batchWriter.writeChangeSet(responses);
+    return batchWriter.writeResponse(batchResponseParts);
   }
 
 }

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.sap.core.odata.api.batch.BatchHandler;
+import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataRequest;
@@ -51,5 +52,5 @@ public interface BatchProcessor extends ODataProcessor {
    * @return a {@link ODataResponse} object
    * @throws ODataException 
    */
-  ODataResponse executeChangeSet(BatchHandler handler, List<ODataRequest> requests) throws ODataException;
+  BatchResponsePart executeChangeSet(BatchHandler handler, List<ODataRequest> requests) throws ODataException;
 }

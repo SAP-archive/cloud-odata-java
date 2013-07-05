@@ -1,0 +1,6 @@
+# Mandatory absolute path to SUPA home (directory in which the 'supaStarter.jar' is)
+supa.home=/local/path/to/supa
+
+# LOG level settings
+performance.tool.console.log.level=INFO
+performance.tool.file.log.level=OFF

@@ -18,6 +18,9 @@ package com.sap.core.odata.testutil.mock;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
+/**
+ * @author SAP AG
+ */
 public class SampleClassForInvalidMessageReferences extends ODataMessageException
 {
   private static final long serialVersionUID = 1L;

@@ -8,3 +8,4 @@ bin
 classes
 .DS_Store
 nwcloud.properties
+performanceTestTool.properties

@@ -53,7 +53,7 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
 
     for (TestRequest testRequest : testRequests) {
       String scenarioName = supa.getCurrentStepName();
-      LOG.info("Prepare for test step: {}", scenarioName);
+      LOG.info("\n####\nPrepare for test step: {}", scenarioName);
       // run warmup
       if(warmupRuns > 0) {
         LOG.info("Start warmup ({})", warmupRuns);
