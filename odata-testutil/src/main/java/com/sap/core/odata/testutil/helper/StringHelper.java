@@ -32,7 +32,7 @@ import com.sap.core.odata.testutil.TestUtilRuntimeException;
  */
 public class StringHelper {
 
-  public static String inputStreamToString(final InputStream in, boolean preserveLineBreaks) throws IOException {
+  public static String inputStreamToString(final InputStream in, final boolean preserveLineBreaks) throws IOException {
     final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     final StringBuilder stringBuilder = new StringBuilder();
     String line = null;
@@ -65,7 +65,7 @@ public class StringHelper {
    * @param content to encapsulate content
    * @return content as stream
    */
-  public static InputStream encapsulate(String content) {
+  public static InputStream encapsulate(final String content) {
     try {
       return encapsulate(content, "UTF-8");
     } catch (UnsupportedEncodingException e) {
@@ -82,7 +82,7 @@ public class StringHelper {
    * @return content as stream
    * @throws UnsupportedEncodingException if charset is not supported
    */
-  public static InputStream encapsulate(String content, String charset) throws UnsupportedEncodingException {
+  public static InputStream encapsulate(final String content, final String charset) throws UnsupportedEncodingException {
     return new ByteArrayInputStream(content.getBytes(charset));
   }
 

@@ -88,7 +88,7 @@ public class MessageServiceTest extends BaseTest {
 
     assertEquals("First was [first] and second was [second]!", ms.getText());
   }
-  
+
   @Test
   public void testThreeParametersPerAddContentForTwo() throws Exception {
     MessageReference context = MessageReference.create(ODataMessageException.class, "TWO_REPLACEMENTS")

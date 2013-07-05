@@ -154,7 +154,7 @@ public class BasicBatchTest extends AbstractBasicTest {
           return BatchResponsePart.responses(errorResponses).changeSet(false).build();
         }
         responses.add(response);
-       }
+      }
       return BatchResponsePart.responses(responses).changeSet(true).build();
     }
 

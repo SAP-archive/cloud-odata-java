@@ -27,23 +27,23 @@ public class TestPostRequest extends TestRequest {
   private String content;
   private String charset;
 
-  TestPostRequest(String path, int callCount, String contentType, String content) {
+  TestPostRequest(final String path, final int callCount, final String contentType, final String content) {
     this(path, callCount, contentType, content, "UTF-8");
   }
-  
-  TestPostRequest(String path, int callCount, String contentType, String content, String charset) {
+
+  TestPostRequest(final String path, final int callCount, final String contentType, final String content, final String charset) {
     super(path, callCount);
-    
+
     this.contentType = contentType;
     this.content = content;
     this.charset = charset;
-    this.requestHttpMethod = RequestHttpMethod.POST;
+    requestHttpMethod = RequestHttpMethod.POST;
   }
 
   public String getContentType() {
     return contentType;
   }
-  
+
   public InputStream getContentAsStream() {
     try {
       return new ByteArrayInputStream(content.getBytes(charset));

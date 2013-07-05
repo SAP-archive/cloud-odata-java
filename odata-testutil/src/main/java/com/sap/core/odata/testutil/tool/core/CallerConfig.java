@@ -37,7 +37,7 @@ public class CallerConfig {
   public CallerConfig(final String baseUrl, final TestResponseHandler responseHandler, final List<TestRequest> testPaths) throws URISyntaxException {
     this(baseUrl);
     this.responseHandler = responseHandler;
-    this.testRequests = testPaths;
+    testRequests = testPaths;
   }
 
   public CallerConfig(final String baseUrl) throws URISyntaxException {

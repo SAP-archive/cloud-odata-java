@@ -111,10 +111,10 @@ public class TestResult implements Comparable<TestResult> {
    */
   @Override
   public String toString() {
-    return "TestResult [\n\tbaseUri=" + baseUri + 
-        ", \n\tpath=" + path + 
-        ", \n\trequestHeaders=" + reqHeaders + 
-        ", \n\tresponseHeaders=" + resHeaders + 
+    return "TestResult [\n\tbaseUri=" + baseUri +
+        ", \n\tpath=" + path +
+        ", \n\trequestHeaders=" + reqHeaders +
+        ", \n\tresponseHeaders=" + resHeaders +
         ", \n\tvalues=" + someValues + "]";
   }
 

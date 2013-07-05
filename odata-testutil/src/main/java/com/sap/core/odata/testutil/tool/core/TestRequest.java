@@ -31,30 +31,32 @@ import org.apache.http.HttpRequest;
  */
 public abstract class TestRequest implements Comparable<TestRequest> {
 
-  public enum RequestHttpMethod { GET, POST, PUT, DELETE };
-  
+  public enum RequestHttpMethod {
+    GET, POST, PUT, DELETE
+  };
+
   private final String path;
   private final Map<String, String> headers;
   private final int callCount;
   protected RequestHttpMethod requestHttpMethod;
 
-  TestRequest(final String path, int callCount) {
+  TestRequest(final String path, final int callCount) {
     super();
     this.path = path;
-    this.headers = new HashMap<String, String>();
+    headers = new HashMap<String, String>();
     this.callCount = callCount;
-    this.requestHttpMethod = RequestHttpMethod.GET;
+    requestHttpMethod = RequestHttpMethod.GET;
   }
 
   public static TestRequest createGet(final String path) {
     return new TestGetRequest(path, 1);
   }
 
-  public static TestRequest createGet(final String path, int callCount) {
+  public static TestRequest createGet(final String path, final int callCount) {
     return new TestGetRequest(path, callCount);
   }
 
-  public static TestRequest createPost(final String path, int callCount, String contentType, String content) {
+  public static TestRequest createPost(final String path, final int callCount, final String contentType, final String content) {
     return new TestPostRequest(path, callCount, contentType, content);
   }
 
@@ -74,14 +76,14 @@ public abstract class TestRequest implements Comparable<TestRequest> {
     return testPaths;
   }
 
-  public void setHttpMethod(RequestHttpMethod requestHttpMethod) {
+  public void setHttpMethod(final RequestHttpMethod requestHttpMethod) {
     this.requestHttpMethod = requestHttpMethod;
   }
-  
+
   public RequestHttpMethod getHttpMethod() {
     return requestHttpMethod;
   }
-  
+
   public int getCallCount() {
     return callCount;
   }
