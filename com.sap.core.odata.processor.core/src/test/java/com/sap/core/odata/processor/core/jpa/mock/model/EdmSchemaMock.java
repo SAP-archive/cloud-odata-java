@@ -55,6 +55,7 @@ public class EdmSchemaMock {
   private static List<EntityContainer> createEntityContainer() {
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     EntityContainer entityContainer = new EntityContainer();
+    entityContainer.setDefaultEntityContainer(true);
     entityContainer.setName(ENTITY_CONTAINER_NAME);
     entityContainer.setEntitySets(createEntitySets());
     entityContainer.setAssociationSets(createAssociationSets());

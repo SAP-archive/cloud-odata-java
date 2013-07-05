@@ -104,7 +104,7 @@ public class JPAProcessorImpl implements JPAProcessor {
     } catch (InvocationTargetException e) {
       throw ODataJPARuntimeException
           .throwException(ODataJPARuntimeException.GENERAL
-              .addContent(e.getMessage()), e);
+              .addContent(e.getTargetException().getMessage()), e.getTargetException());
     }
 
     return resultObj;
@@ -141,11 +141,12 @@ public class JPAProcessorImpl implements JPAProcessor {
     Query query = null;
     try {
       query = em.createQuery(jpqlStatement.toString());
-      if (uriParserResultView.getSkip() != null) {
+      // $top/$skip with $inlinecount case handled in response builder to avoid multiple DB call
+      if (uriParserResultView.getSkip() != null && uriParserResultView.getInlineCount() == null) {
         query.setFirstResult(uriParserResultView.getSkip());
       }
 
-      if (uriParserResultView.getTop() != null) {
+      if (uriParserResultView.getTop() != null && uriParserResultView.getInlineCount() == null) {
         if (uriParserResultView.getTop() == 0) {
           List<T> resultList = new ArrayList<T>();
           return resultList;
@@ -219,7 +220,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     }
-    return 0;// Invalid value
+    return 0;
   }
 
   /* Process $count for Get Entity Request */
@@ -422,7 +423,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       final InputStream content, final String requestContentType, final String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException {
     JPALink link = new JPALink(oDataJPAContext);
-    link.create(putUriInfo, content, requestContentType, contentType);
+    link.update(putUriInfo, content, requestContentType, contentType);
     link.save();
 
   }

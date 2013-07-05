@@ -131,8 +131,6 @@ public class JPALink {
     }
   }
 
-  public void update() {}
-
   public void delete() {}
 
   public void save() {
@@ -147,7 +145,7 @@ public class JPALink {
 
   }
 
-  public void create(final PutMergePatchUriInfo putUriInfo, final InputStream content,
+  public void update(final PutMergePatchUriInfo putUriInfo, final InputStream content,
       final String requestContentType, final String contentType) throws ODataJPARuntimeException, ODataJPAModelException {
     UriInfo uriInfo = (UriInfo) putUriInfo;
 

@@ -99,6 +99,23 @@ public class ODataJPAEdmProviderTest {
     assertEquals("salesorderprocessingContainer", entityContainerName);
     assertNotNull(entityContainer);
   }
+  
+  @Test
+  public void testDefaultGetEntityContainerInfo() {
+    String entityContainerName = null;
+    EntityContainerInfo entityContainer = null;
+    try {
+      entityContainer = edmProvider
+          .getEntityContainerInfo(null);
+      entityContainerName = entityContainer.getName();
+    } catch (ODataException e) {
+      fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage()
+          + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+    }
+
+    assertEquals("salesorderprocessingContainer", entityContainerName);
+    assertNotNull(entityContainer);
+  }
 
   @Test
   public void testGetEntityType() {
