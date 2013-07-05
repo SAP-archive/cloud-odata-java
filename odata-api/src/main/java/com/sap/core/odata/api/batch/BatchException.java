@@ -81,4 +81,12 @@ public class BatchException extends ODataMessageException {
     super(messageReference, cause);
   }
 
+  public BatchException(final MessageReference messageReference, final String errorCode) {
+    super(messageReference, errorCode);
+  }
+
+  public BatchException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
+    super(messageReference, cause, errorCode);
+  }
+
 }

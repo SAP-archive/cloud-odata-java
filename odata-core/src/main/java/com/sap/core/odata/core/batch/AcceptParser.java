@@ -16,6 +16,8 @@ import com.sap.core.odata.api.batch.BatchException;
  * @author SAP AG
  */
 public class AcceptParser {
+
+  private static final String BAD_REQUEST = "400";
   private static final String ALL = "*";
   private static final String REG_EX_QUALITY_FACTOR = "q=((?:1\\.0{0,3})|(?:0\\.[0-9]{0,2}[1-9]))";
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
@@ -43,12 +45,12 @@ public class AcceptParser {
         } else {
           String header = acceptHeaderScanner.next();
           acceptHeaderScanner.close();
-          throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
+          throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header), BAD_REQUEST);
         }
       } else {
         String header = acceptHeaderScanner.next();
         acceptHeaderScanner.close();
-        throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
+        throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header), BAD_REQUEST);
       }
     }
     for (Accept accept : acceptTree) {
@@ -97,12 +99,12 @@ public class AcceptParser {
         } else {
           String acceptLanguage = acceptLanguageScanner.next();
           acceptLanguageScanner.close();
-          throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
+          throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage), BAD_REQUEST);
         }
       } else {
         String acceptLanguage = acceptLanguageScanner.next();
         acceptLanguageScanner.close();
-        throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
+        throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage), BAD_REQUEST);
       }
     }
     for (Accept accept : acceptTree) {
