@@ -29,11 +29,11 @@ public abstract class AbstractTestClient {
 
   AbstractTestClient(final CallerConfig config) {
     this.config = config;
-    this.responseHandler = config.getResponseHandler();
-    this.httpClient = createHttpClient(config);
+    responseHandler = config.getResponseHandler();
+    httpClient = createHttpClient(config);
   }
 
-  private DefaultHttpClient createHttpClient(CallerConfig config) {
+  private DefaultHttpClient createHttpClient(final CallerConfig config) {
     DefaultHttpClient httpClient = new DefaultHttpClient();
     if (config.isProxySet()) {
       initProxy(httpClient, config);
@@ -48,7 +48,7 @@ public abstract class AbstractTestClient {
     return httpClient;
   }
 
-  private void initProxy(DefaultHttpClient httpClient, CallerConfig config) throws IllegalArgumentException {
+  private void initProxy(final DefaultHttpClient httpClient, final CallerConfig config) throws IllegalArgumentException {
     final String proxyUrl = config.getProxy();
     final String[] hostAndPort = proxyUrl.split(":");
     if (hostAndPort.length != 2) {
@@ -74,16 +74,16 @@ public abstract class AbstractTestClient {
     call(1, 1);
   }
 
-  public void call(int minCallCount) {
+  public void call(final int minCallCount) {
     call(minCallCount, Integer.MAX_VALUE);
   }
 
-  public void call(int minCallCount, int maxCallCount) {
-    if(maxCallCount > 0 && maxCallCount < minCallCount) {
+  public void call(final int minCallCount, final int maxCallCount) {
+    if (maxCallCount > 0 && maxCallCount < minCallCount) {
       throw new IllegalArgumentException("MaxCallCount must be bigger then MinCallCount (or negative to be ignored).");
     }
 
-    for (final TestRequest testRequest: config.getTestRequests()) {
+    for (final TestRequest testRequest : config.getTestRequests()) {
       int calls = (minCallCount > testRequest.getCallCount() ? minCallCount : testRequest.getCallCount());
       calls = (maxCallCount < testRequest.getCallCount() ? maxCallCount : testRequest.getCallCount());
 
@@ -91,7 +91,7 @@ public abstract class AbstractTestClient {
     }
   }
 
-  protected void call(TestRequest testRequest, int exactCallCount) {
+  protected void call(final TestRequest testRequest, final int exactCallCount) {
 
     for (int i = 0; i < exactCallCount; i++) {
       call(config.getBaseUri(), testRequest);
@@ -120,30 +120,31 @@ public abstract class AbstractTestClient {
     }
   }
 
-  private void handleFailureCall(final TestRequest testPath, HttpRequestBase request, Exception e) {
-    if(responseHandler != null) {
+  private void handleFailureCall(final TestRequest testPath, final HttpRequestBase request, final Exception e) {
+    if (responseHandler != null) {
       responseHandler.handle(testPath, request, e);
     }
     LOG.debug("Got exception for calling TestPath '" + testPath + "'.");
   }
 
-  private void handleSuccessCall(final URI baseUri, final TestRequest testRequest, HttpRequestBase request, final HttpResponse response) {
-    if(responseHandler != null) {
+  private void handleSuccessCall(final URI baseUri, final TestRequest testRequest, final HttpRequestBase request, final HttpResponse response) {
+    if (responseHandler != null) {
       responseHandler.handle(baseUri, testRequest, request, response);
     } else {
-      LOG.trace("Successfull call for calling TestRequest '{}'.", testRequest);      
+      LOG.trace("Successfull call for calling TestRequest '{}'.", testRequest);
     }
   }
 
   private HttpRequestBase createRequest(final URI baseUri, final TestRequest testRequest) {
     RequestHttpMethod method = testRequest.getHttpMethod();
-    if(method == null) {
+    if (method == null) {
       throw new TestUtilRuntimeException("No HttpMethod set.");
     }
-    
+
     switch (method) {
-    case GET: return new HttpGet(baseUri.getPath() + testRequest.getPath());
-    case POST: 
+    case GET:
+      return new HttpGet(baseUri.getPath() + testRequest.getPath());
+    case POST:
       TestPostRequest postRequest = (TestPostRequest) testRequest;
       HttpPost post = new HttpPost(baseUri.getPath() + testRequest.getPath());
       post.setEntity(new InputStreamEntity(postRequest.getContentAsStream(), -1, ContentType.create(postRequest.getContentType())));

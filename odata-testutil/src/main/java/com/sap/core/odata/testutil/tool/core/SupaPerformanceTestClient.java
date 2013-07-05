@@ -22,7 +22,7 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
 
   private static final String SUPA_CONFIG = "target/classes/performance/Supa-Config.properties";
   private static final Logger LOG = LoggerFactory.getLogger(SupaPerformanceTestClient.class);
-  
+
   private final SupaController supa;
   private int runsPerTest;
   private int warmupRuns;
@@ -31,8 +31,8 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
   private boolean supaExit;
   public String supaHome;
   public String supaConfig;
-  
-  SupaPerformanceTestClient(final CallerConfig config, String supaBaseUrl) throws URISyntaxException {
+
+  SupaPerformanceTestClient(final CallerConfig config, final String supaBaseUrl) throws URISyntaxException {
     super(config);
     supa = new SupaController(supaBaseUrl);
   }
@@ -42,20 +42,20 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
    * @return
    */
   public String runMeasurement() {
-    if(supaStart) {
+    if (supaStart) {
       boolean success = startSupa();
-      if(!success) {
+      if (!success) {
         throw new TestUtilRuntimeException("SUPA was not started, check SUPA log.");
       }
     }
-    
+
     List<TestRequest> testRequests = config.getTestRequests();
 
     for (TestRequest testRequest : testRequests) {
       String scenarioName = supa.getCurrentStepName();
       LOG.info("\n####\nPrepare for test step: {}", scenarioName);
       // run warmup
-      if(warmupRuns > 0) {
+      if (warmupRuns > 0) {
         LOG.info("Start warmup ({})", warmupRuns);
         call(testRequest, warmupRuns);
       }
@@ -65,14 +65,14 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
         supa.begin();
         call(testRequest, testRequest.getCallCount());
         String result = supa.stop();
-        
+
         LOG.info("...result: {}", result);
       }
       supa.nextStep();
     }
-    
+
     String resultsPath = supa.finish();
-    if(supaExit) {
+    if (supaExit) {
       supa.shutdownSupaServer();
     }
     return resultsPath;
@@ -84,34 +84,34 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
   private boolean startSupa() {
     try {
       File supaJarFile = new File(supaHome + "/supaStarter.jar");
-      if(!supaJarFile.exists()) {
+      if (!supaJarFile.exists()) {
         throw new IllegalArgumentException("No supaStarter.jar found at " + supaJarFile.getAbsolutePath());
       }
       File supaConfigFile = new File(supaConfig);
-      if(!supaConfigFile.exists()) {
+      if (!supaConfigFile.exists()) {
         throw new IllegalArgumentException("No configuration for supa found at " + supaConfigFile.getAbsolutePath());
       }
 
       String execCommand = "java -jar " + supaJarFile.getAbsolutePath() + " " + supaConfigFile.getAbsolutePath() + " -server";
       File tmpDir = File.createTempFile("odata", null).getParentFile();
       LOG.info("Start supa with command {} and temp dir {}", execCommand, tmpDir.getAbsolutePath());
-      
+
       Process supaServer = Runtime.getRuntime().exec(execCommand, null, tmpDir);
       InputStream in = supaServer.getInputStream();
       BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-      
+
       String read = reader.readLine();
       reader.close();
 
-      if(read == null) {
+      if (read == null) {
         LOG.info("SUPA Failure, got NULL during read.");
         supaServer.destroy();
         return false;
-      } else if(read.contains("Hit Return key to close window ...")) {
+      } else if (read.contains("Hit Return key to close window ...")) {
         supaServer.destroy();
         LOG.info("SUPA Failure with message: {}", read);
         return false;
-      } else if(read.contains("Startup")) {
+      } else if (read.contains("Startup")) {
         LOG.info("SUPA Started...{}", read);
         return true;
       } else {
@@ -122,20 +122,18 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
     }
   }
 
-  
-  
   //
   // Builder below
   // 
-  
-  public static SupaPerformanceTestClientBuilder create(final CallerConfig config, String supaBaseUrl) throws URISyntaxException {
+
+  public static SupaPerformanceTestClientBuilder create(final CallerConfig config, final String supaBaseUrl) throws URISyntaxException {
     return new SupaPerformanceTestClientBuilder(config, supaBaseUrl);
   }
-  
+
   public static class SupaPerformanceTestClientBuilder {
     private final SupaPerformanceTestClient client;
-    
-    public SupaPerformanceTestClientBuilder(CallerConfig config, String supaBaseUrl) throws URISyntaxException {
+
+    public SupaPerformanceTestClientBuilder(final CallerConfig config, final String supaBaseUrl) throws URISyntaxException {
       client = new SupaPerformanceTestClient(config, supaBaseUrl);
       // set default values
       client.runsPerTest = 3;
@@ -144,26 +142,26 @@ public class SupaPerformanceTestClient extends AbstractTestClient {
       client.supaStart = false;
       client.supaConfig = SUPA_CONFIG;
     }
-    
-    public SupaPerformanceTestClientBuilder runsPerTest(int runsPerTest) {
+
+    public SupaPerformanceTestClientBuilder runsPerTest(final int runsPerTest) {
       client.runsPerTest = runsPerTest;
       return this;
     }
-    
-    public SupaPerformanceTestClientBuilder warmupRuns(int warmupRuns) {
+
+    public SupaPerformanceTestClientBuilder warmupRuns(final int warmupRuns) {
       client.warmupRuns = warmupRuns;
       return this;
     }
-    
+
     public SupaPerformanceTestClient build() {
       return client;
     }
 
-    public SupaPerformanceTestClientBuilder startSupa(String supaHome) {
+    public SupaPerformanceTestClientBuilder startSupa(final String supaHome) {
       return this.startSupa(supaHome, SUPA_CONFIG);
     }
-    
-    public SupaPerformanceTestClientBuilder startSupa(String supaHome, String supaConfig) {
+
+    public SupaPerformanceTestClientBuilder startSupa(final String supaHome, final String supaConfig) {
       client.supaStart = true;
       client.supaHome = supaHome;
       client.supaConfig = supaConfig;

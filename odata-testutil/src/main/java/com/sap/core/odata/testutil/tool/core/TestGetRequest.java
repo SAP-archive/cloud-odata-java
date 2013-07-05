@@ -2,7 +2,7 @@ package com.sap.core.odata.testutil.tool.core;
 
 public class TestGetRequest extends TestRequest {
 
-  TestGetRequest(String path, int callCount) {
+  TestGetRequest(final String path, final int callCount) {
     super(path, callCount);
   }
 
