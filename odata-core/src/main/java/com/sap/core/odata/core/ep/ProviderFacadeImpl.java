@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
@@ -170,13 +171,13 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+  public List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
     List<BatchPart> batchParts = new BatchRequestParser(contentType, properties).parse(content);
     return batchParts;
   }
 
   @Override
-  public ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws EntityProviderException {
+  public ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     BatchResponseWriter batchWriter = new BatchResponseWriter();
     return batchWriter.writeResponse(batchResponseParts);
   }

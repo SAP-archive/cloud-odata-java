@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.batch.BatchException;
 
 /**
  * @author SAP AG
@@ -26,7 +26,7 @@ public class AcceptParser {
 
   private static final double QUALITY_PARAM_FACTOR = 0.001;
 
-  public static List<String> parseAcceptHeaders(final String headerValue) throws EntityProviderException {
+  public static List<String> parseAcceptHeaders(final String headerValue) throws BatchException {
     TreeSet<Accept> acceptTree = getAcceptTree();
     List<String> acceptHeaders = new ArrayList<String>();
     Scanner acceptHeaderScanner = new Scanner(headerValue).useDelimiter(",\\s?");
@@ -43,12 +43,12 @@ public class AcceptParser {
         } else {
           String header = acceptHeaderScanner.next();
           acceptHeaderScanner.close();
-          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + header));
+          throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
         }
       } else {
         String header = acceptHeaderScanner.next();
         acceptHeaderScanner.close();
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept header: " + header));
+        throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
       }
     }
     for (Accept accept : acceptTree) {
@@ -82,7 +82,7 @@ public class AcceptParser {
     return qualityFactor;
   }
 
-  public static List<Locale> parseAcceptableLanguages(final String headerValue) throws EntityProviderException {
+  public static List<Locale> parseAcceptableLanguages(final String headerValue) throws BatchException {
     List<Locale> acceptLanguages = new LinkedList<Locale>();
     TreeSet<Accept> acceptTree = getAcceptTree();
     Scanner acceptLanguageScanner = new Scanner(headerValue).useDelimiter(",\\s?");
@@ -97,12 +97,12 @@ public class AcceptParser {
         } else {
           String acceptLanguage = acceptLanguageScanner.next();
           acceptLanguageScanner.close();
-          throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguage));
+          throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
         }
       } else {
         String acceptLanguage = acceptLanguageScanner.next();
         acceptLanguageScanner.close();
-        throw new EntityProviderException(EntityProviderException.COMMON.addContent("Invalid Accept-Language: " + acceptLanguage));
+        throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
       }
     }
     for (Accept accept : acceptTree) {

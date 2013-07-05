@@ -2,7 +2,6 @@ package com.sap.core.odata.api.batch;
 
 import java.util.List;
 
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataRequest;
 
 /**
@@ -16,7 +15,7 @@ public interface BatchPart {
    * Get the info if a BatchPart is a ChangeSet
    * @return true or false
    */
-  public boolean isChangeSet() throws EntityProviderException;
+  public boolean isChangeSet();
 
   /**
    * Get requests. If a BatchPart is a Query Operation, the list contains one request.

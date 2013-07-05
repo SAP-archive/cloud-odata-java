@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.sap.core.odata.api.batch.BatchPart;
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataRequest;
 
 public class BatchPartImpl implements BatchPart {
@@ -21,7 +20,7 @@ public class BatchPartImpl implements BatchPart {
   }
 
   @Override
-  public boolean isChangeSet() throws EntityProviderException {
+  public boolean isChangeSet() {
     return isChangeSet;
   }
 

@@ -11,15 +11,15 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class BatchResponseWriterTest {
 
   @Test
-  public void testBatchResponse() throws EntityProviderException, IOException {
+  public void testBatchResponse() throws BatchException, IOException {
     List<BatchResponsePart> parts = new ArrayList<BatchResponsePart>();
     ODataResponse response = ODataResponse.entity("Walter Winter").status(HttpStatusCodes.OK).contentHeader("application/json").build();
     List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
@@ -50,7 +50,7 @@ public class BatchResponseWriterTest {
   }
 
   @Test
-  public void testResponse() throws EntityProviderException, IOException {
+  public void testResponse() throws BatchException, IOException {
     List<BatchResponsePart> parts = new ArrayList<BatchResponsePart>();
     ODataResponse response = ODataResponse.entity("Walter Winter").status(HttpStatusCodes.OK).contentHeader("application/json").build();
     List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
@@ -74,7 +74,7 @@ public class BatchResponseWriterTest {
   }
 
   @Test
-  public void testChangeSetResponse() throws EntityProviderException, IOException {
+  public void testChangeSetResponse() throws BatchException, IOException {
     List<BatchResponsePart> parts = new ArrayList<BatchResponsePart>();
     ODataResponse changeSetResponse = ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
     List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
