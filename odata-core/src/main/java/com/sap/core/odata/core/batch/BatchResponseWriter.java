@@ -5,9 +5,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class BatchResponseWriter {
@@ -16,7 +17,7 @@ public class BatchResponseWriter {
   private static final String LF = "\r\n";
   private StringBuilder writer = new StringBuilder();
 
-  private void appendChangeSet(final BatchResponsePart batchResponsePart) throws EntityProviderException {
+  private void appendChangeSet(final BatchResponsePart batchResponsePart) throws BatchException {
     String boundary = generateBoundary("changeset");
     writer.append(BatchConstants.HTTP_CONTENT_TYPE).append(COLON).append(SP).append("multipart/mixed; boundary=" + boundary).append(LF).append(LF);
     for (ODataResponse response : batchResponsePart.getResponses()) {
@@ -26,7 +27,7 @@ public class BatchResponseWriter {
     writer.append("--").append(boundary).append("--").append(LF).append(LF);
   }
 
-  public ODataResponse writeResponse(final List<BatchResponsePart> batchResponseParts) throws EntityProviderException {
+  public ODataResponse writeResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     String boundary = generateBoundary("batch");
     appendResponseBody(batchResponseParts, boundary);
     String batchResponseBody = writer.toString();
@@ -36,7 +37,7 @@ public class BatchResponseWriter {
 
   }
 
-  private void appendResponseBody(final List<BatchResponsePart> batchResponseParts, final String boundary) throws EntityProviderException {
+  private void appendResponseBody(final List<BatchResponsePart> batchResponseParts, final String boundary) throws BatchException {
 
     for (BatchResponsePart batchResponsePart : batchResponseParts) {
       writer.append("--").append(boundary).append(LF);
@@ -50,7 +51,7 @@ public class BatchResponseWriter {
     writer.append("--").append(boundary).append("--");
   }
 
-  private void appendResponseBodyPart(final ODataResponse response) throws EntityProviderException {
+  private void appendResponseBodyPart(final ODataResponse response) throws BatchException {
     writer.append(BatchConstants.HTTP_CONTENT_TYPE).append(COLON).append(SP).append(BatchConstants.HTTP_APPLICATION_HTTP).append(LF);
     writer.append(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING).append(COLON).append(SP).append("binary").append(LF).append(LF);
     writer.append("HTTP/1.1").append(SP).append(response.getStatus().getStatusCode()).append(SP).append(response.getStatus().getInfo()).append(LF);
@@ -79,10 +80,10 @@ public class BatchResponseWriter {
     return value + "_" + UUID.randomUUID().toString();
   }
 
-  private String readBody(final InputStream in) throws EntityProviderException {
+  private String readBody(final InputStream in) throws BatchException {
     byte[] tmp = new byte[2048];
     int count;
-    EntityProviderException cachedException = null;
+    BatchException cachedException = null;
     StringBuffer b = new StringBuffer();
     try {
       count = in.read(tmp);
@@ -91,7 +92,7 @@ public class BatchResponseWriter {
         count = in.read(tmp);
       }
     } catch (IOException e) {
-      cachedException = new EntityProviderException(EntityProviderException.COMMON, e);
+      cachedException = new BatchException(ODataMessageException.COMMON, e);
       throw cachedException;
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       try {

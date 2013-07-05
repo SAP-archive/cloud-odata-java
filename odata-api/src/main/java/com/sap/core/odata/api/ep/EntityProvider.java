@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
@@ -325,9 +326,9 @@ public final class EntityProvider {
      * @param content request body
      * @param properties additional properties necessary for parsing. Must not be null.
      * @return list of {@link BatchPart}
-     * @throws EntityProviderException  if parsing fails
+     * @throws BatchException  if parsing fails
      */
-    List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws EntityProviderException;
+    List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws BatchException;
 
     /**
      * Write responses of Batch Response Parts in Batch Response as {@link ODataResponse}.
@@ -335,9 +336,9 @@ public final class EntityProvider {
      * 
      * @param batchResponseParts a list of {@link BatchResponsePart}
      * @return Batch Response as {@link ODataResponse}
-     * @throws EntityProviderException 
+     * @throws BatchException 
      */
-    ODataResponse writeBatchResponse(List<BatchResponsePart> batchResponseParts) throws EntityProviderException;
+    ODataResponse writeBatchResponse(List<BatchResponsePart> batchResponseParts) throws BatchException;
   }
 
   /**
@@ -673,9 +674,9 @@ public final class EntityProvider {
    * @param content request body
    * @param properties additional properties necessary for parsing. Must not be null.
    * @return list of {@link BatchPart}
-   * @throws EntityProviderException  if parsing fails
+   * @throws BatchException if parsing fails
    */
-  public static List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws EntityProviderException {
+  public static List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
     return createEntityProvider().parseBatchRequest(contentType, content, properties);
   }
 
@@ -685,9 +686,9 @@ public final class EntityProvider {
    * 
    * @param batchResponseParts a list of {@link BatchResponsePart}
    * @return Batch Response as {@link ODataResponse}
-   * @throws EntityProviderException 
+   * @throws BatchException 
    */
-  public static ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws EntityProviderException {
+  public static ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     return createEntityProvider().writeBatchResponse(batchResponseParts);
   }
 
