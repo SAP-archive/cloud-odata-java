@@ -67,19 +67,7 @@ th, td { border: 1px solid; padding: 20px; }
 				</ul>
 			</td>
 			<td valign="top">
-<<<<<<< HEAD
 				&nbsp;
-=======
-				<h3>Csrf Protected Service</h3>
-				<ul>
-					<li><a href="CsrfReferenceScenario.svc/" target="_blank">service
-							document</a></li>
-				</ul>
-				<h3>QUnit Test Suite</h3>
-				<ul>
-					<li><a href="test/index.htm" target="_blank">qunit test suite</a></li>
-				</ul>
->>>>>>> master
 			</td>
 			<td valign="bottom">
 				<div class="code">
