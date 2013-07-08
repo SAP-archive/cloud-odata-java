@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.core.jpa.access.model;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,8 +26,7 @@ public class JPATypeConvertor {
    * This utility method converts a given jpa Type to equivalent
    * EdmSimpleTypeKind for maintaining compatibility between Java and OData
    * Types.
-   * 
-   * @param jpaType
+   *  @param jpaType
    *            The JPA Type input.
    * @return The corresponding EdmSimpleTypeKind.
    * @throws ODataJPAModelException
@@ -69,23 +69,40 @@ public class JPATypeConvertor {
       return EdmSimpleTypeKind.Boolean;
     }
     else if ((jpaType.equals(Date.class)) || (jpaType.equals(Calendar.class))) {
-      try {
-        if ((currentAttribute != null) && (currentAttribute.getDeclaringType().getJavaType().getDeclaredField(currentAttribute.getName()).getAnnotation(Temporal.class).value() == TemporalType.TIME)) {
-          return EdmSimpleTypeKind.Time;
-        } else {
-          return EdmSimpleTypeKind.DateTime;
-        }
-      } catch (NoSuchFieldException e) {
-        throw ODataJPAModelException
-            .throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
-      } catch (SecurityException e) {
-        throw ODataJPAModelException
-            .throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
-      }
+      return dateConversion(currentAttribute, false);
     }
     else if (jpaType.equals(UUID.class)) {
       return EdmSimpleTypeKind.Guid;
     }
+    else if (jpaType.equals(java.sql.Date.class) ||
+        jpaType.equals(java.sql.Time.class) ||
+        jpaType.equals(java.sql.Timestamp.class)) {
+      return dateConversion(currentAttribute, true);
+    }
     throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()), null);
+  }
+
+  private static EdmSimpleTypeKind dateConversion(final Attribute<?, ?> currentAttribute, boolean isInherited) throws ODataJPAModelException {
+    try {
+      Field jpaField = currentAttribute.getDeclaringType().getJavaType().getDeclaredField(currentAttribute.getName());
+      if (isInherited) {
+        Class<?> type = jpaField.getType();
+        if (type.equals(Date.class) != true && type.equals(Calendar.class) != true) {
+          throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(type.toString()), null);
+        }
+      }
+      if ((currentAttribute != null) && (jpaField.getAnnotation(Temporal.class).value() == TemporalType.TIME)) {
+        return EdmSimpleTypeKind.Time;
+      } else {
+        return EdmSimpleTypeKind.DateTime;
+      }
+    } catch (NoSuchFieldException e) {
+      throw ODataJPAModelException
+          .throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
+    } catch (SecurityException e) {
+      throw ODataJPAModelException
+          .throwException(ODataJPAModelException.GENERAL.addContent(e.getMessage()), e);
+    }
+
   }
 }
