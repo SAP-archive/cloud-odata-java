@@ -905,6 +905,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Short.valueOf((short) 255), instance.valueOfString("255", EdmLiteralKind.URI, null, Short.class));
     assertEquals(Long.valueOf(0), instance.valueOfString("0", EdmLiteralKind.DEFAULT, null, Long.class));
 
+    expectErrorInValueOfString(instance, "0x42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "abc", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "256", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "-1", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
