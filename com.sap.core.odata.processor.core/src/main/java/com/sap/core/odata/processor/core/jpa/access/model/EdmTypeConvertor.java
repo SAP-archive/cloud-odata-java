@@ -49,6 +49,9 @@ public class EdmTypeConvertor {
         else if (edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()) {
           return Date.class;
         }
+        else if (edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
+          return Calendar.class;
+        }
         else if (edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()) {
           return Calendar.class;
         }
