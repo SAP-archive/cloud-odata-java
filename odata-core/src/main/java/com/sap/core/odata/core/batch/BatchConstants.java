@@ -15,7 +15,11 @@ public class BatchConstants {
 
   public static final String ACCEPT_LANGUAGE = "Accept-Language";
 
-  public static final String HTTP_CONTENT_ID = "Content-ID";
+  public static final String HTTP_CONTENT_ID = "Content-Id";
 
   public static final String HTTP_CONTENT_LENGTH = "Content-Length";
+
+  public static final String MIME_HEADER_CONTENT_ID = "MimeHeader-ContentId";
+
+  public static final String REQUEST_HEADER_CONTENT_ID = "RequestHeader-ContentId";
 }

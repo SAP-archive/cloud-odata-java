@@ -2,6 +2,7 @@ package com.sap.core.odata.core.batch;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -9,10 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +21,6 @@ import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -32,6 +29,9 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  * @author SAP AG
  */
 public class BatchRequestParserTest {
+  private static final String CONTENT_ID_REFERENCE = "NewEmployee";
+  private static final String PUT_MIME_HEADER_CONTENT_ID = "BBB_MIMEPART1";
+  private static final String PUT_REQUEST_HEADER_CONTENT_ID = "BBB_REQUEST1";
   private static final String SERVICE_ROOT = "http://localhost/odata/";
   private static EntityProviderBatchProperties batchProperties;
   private static final String contentType = "multipart/mixed;boundary=batch_8194-cf13-1f56";
@@ -147,7 +147,7 @@ public class BatchRequestParserTest {
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
           assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
-          assertEquals("1", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_ID.toLowerCase()));
+          assertEquals("1", request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           InputStream body = request.getBody();
           assertEquals(content, StringHelper.inputStreamToString(body));
@@ -202,13 +202,8 @@ public class BatchRequestParserTest {
 
   @Test
   public void testBoundaryParameterWithQuotas() throws BatchException {
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
     String contentType = "multipart/mixed; boundary=\"batch_1.2+34:2j)0?\"";
-    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
     String batch = "--batch_1.2+34:2j)0?" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
@@ -226,13 +221,8 @@ public class BatchRequestParserTest {
 
   @Test(expected = BatchException.class)
   public void testBatchWithInvalidContentType() throws BatchException {
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
     String invalidContentType = "multipart;boundary=batch_1740-bb84-2f7f";
-    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
     String batch = "--batch_1740-bb84-2f7f" + "\n"
         + "Content-Type: application/http" + "\n"
         + "Content-Transfer-Encoding: binary" + "\n"
@@ -613,6 +603,66 @@ public class BatchRequestParserTest {
         assertEquals("application/xml", retrieveRequest.getAcceptHeaders().get(2));
       }
 
+    }
+  }
+
+  @Test
+  public void testContentId() throws BatchException {
+    String batch = "--batch_8194-cf13-1f56" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "\n"
+        + "GET Employees HTTP/1.1" + "\n"
+        + "accept: */*,application/atom+xml,application/atomsvc+xml,application/xml" + "\n"
+        + "Content-Id: BBB" + "\n"
+        + "\n" + "\n"
+        + "--batch_8194-cf13-1f56" + "\n"
+        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94dd" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "Content-Id: " + CONTENT_ID_REFERENCE + "\n"
+        + "\n"
+        + "POST Employees HTTP/1.1" + "\n"
+        + "Content-type: application/octet-stream" + "\n"
+        + "\n"
+        + "/9j/4AAQSkZJRgABAQEBLAEsAAD/4RM0RXhpZgAATU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAA" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94dd" + "\n"
+        + "Content-Type: application/http" + "\n"
+        + "Content-Transfer-Encoding: binary" + "\n"
+        + "Content-ID: " + PUT_MIME_HEADER_CONTENT_ID + "\n"
+        + "\n"
+        + "PUT $" + CONTENT_ID_REFERENCE + "/EmployeeName HTTP/1.1" + "\n"
+        + "Content-Type: application/json;odata=verbose" + "\n"
+        + "Content-Id:" + PUT_REQUEST_HEADER_CONTENT_ID + "\n"
+        + "\n"
+        + "{\"EmployeeName\":\"Peter Fall\"}" + "\n"
+        + "--changeset_f980-1cb6-94dd--" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    List<BatchPart> batchParts = parser.parse(in);
+    assertNotNull(batchParts);
+    for (BatchPart multipart : batchParts) {
+      if (!multipart.isChangeSet()) {
+        assertEquals(1, multipart.getRequests().size());
+        ODataRequest retrieveRequest = multipart.getRequests().get(0);
+        assertEquals("BBB", retrieveRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+      } else {
+        for (ODataRequest request : multipart.getRequests()) {
+          if (ODataHttpMethod.POST.equals(request.getMethod())) {
+            assertEquals(CONTENT_ID_REFERENCE, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+          } else if (ODataHttpMethod.PUT.equals(request.getMethod())) {
+            assertEquals(PUT_MIME_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+            assertEquals(PUT_REQUEST_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+            assertNull(request.getPathInfo().getRequestUri());
+            assertEquals("$" + CONTENT_ID_REFERENCE, request.getPathInfo().getODataSegments().get(0).getPath());
+          }
+        }
+      }
     }
   }
 }

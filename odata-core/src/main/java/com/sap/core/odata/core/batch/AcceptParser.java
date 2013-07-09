@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.regex.MatchResult;
@@ -84,8 +83,8 @@ public class AcceptParser {
     return qualityFactor;
   }
 
-  public static List<Locale> parseAcceptableLanguages(final String headerValue) throws BatchException {
-    List<Locale> acceptLanguages = new LinkedList<Locale>();
+  public static List<String> parseAcceptableLanguages(final String headerValue) throws BatchException {
+    List<String> acceptLanguages = new LinkedList<String>();
     TreeSet<Accept> acceptTree = getAcceptTree();
     Scanner acceptLanguageScanner = new Scanner(headerValue).useDelimiter(",\\s?");
     while (acceptLanguageScanner.hasNext()) {
@@ -108,14 +107,7 @@ public class AcceptParser {
       }
     }
     for (Accept accept : acceptTree) {
-      String[] p = accept.getValue().split("-");
-      String language = p[0];
-      String country = "";
-      if (p.length == 2) {
-        country = p[p.length - 1];
-      }
-      Locale locale = new Locale(language, country);
-      acceptLanguages.add(locale);
+      acceptLanguages.add(accept.getValue());
     }
     acceptLanguageScanner.close();
     return acceptLanguages;

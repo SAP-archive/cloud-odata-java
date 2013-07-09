@@ -26,9 +26,7 @@ import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
-import com.sap.core.odata.core.commons.ContentType;
 
 /**
  * @author SAP AG
@@ -54,7 +52,7 @@ public class BatchRequestParser {
   private PathInfo batchRequestPathInfo;
   private String contentTypeMime;
   private String boundary;
-  private String currentContentId;
+  private String currentMimeHeaderContentId;
   private static Set<String> HTTP_CHANGESET_METHODS;
   private static Set<String> HTTP_BATCH_METHODS;
 
@@ -128,6 +126,7 @@ public class BatchRequestParser {
     if (scanner.hasNext("--" + boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
       scanner.next();
       mimeHeaders = parseHeaders(scanner);
+      currentMimeHeaderContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
 
       String contentType = mimeHeaders.get(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
       if (contentType == null) {
@@ -136,7 +135,6 @@ public class BatchRequestParser {
       if (isChangeSet) {
         if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
           validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase()));
-          currentContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
           parseNewLine(scanner);// mandatory
 
           requests.add(parseRequest(scanner, isChangeSet));
@@ -182,7 +180,7 @@ public class BatchRequestParser {
   }
 
   private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws BatchException {
-    ODataRequestImpl request = new ODataRequestImpl();
+    ODataRequest request;
     if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
       scanner.next(REG_EX_REQUEST_LINE);
       String method = null;
@@ -194,8 +192,8 @@ public class BatchRequestParser {
       } else {
         throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()), BAD_REQUEST);
       }
-      request.setPathInfo(parseRequestUri(uri));
-      request.setQueryParameters(parseQueryParameters(uri));
+      PathInfo pathInfo = parseRequestUri(uri);
+      Map<String, String> queryParameters = parseQueryParameters(uri);
       if (isChangeSet) {
         if (!HTTP_CHANGESET_METHODS.contains(method)) {
           throw new BatchException(BatchException.INVALID_CHANGESET_METHOD, BAD_REQUEST);
@@ -203,37 +201,42 @@ public class BatchRequestParser {
       } else if (!HTTP_BATCH_METHODS.contains(method)) {
         throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD, BAD_REQUEST);
       }
-      request.setMethod(ODataHttpMethod.valueOf(method));
+      ODataHttpMethod httpMethod = ODataHttpMethod.valueOf(method);
       Map<String, List<String>> headers = parseRequestHeaders(scanner);
-      if (currentContentId != null) {
+      if (currentMimeHeaderContentId != null) {
         List<String> headerList = new ArrayList<String>();
-        headerList.add(currentContentId);
-        headers.put(BatchConstants.HTTP_CONTENT_ID.toLowerCase(), headerList);
-      }
-      request.setRequestHeaders(headers);
-      String requestContentType = request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
-      if (requestContentType != null) {
-        request.setContentType(ContentType.create(requestContentType));
-      }
-      String requestAcceptHeaders = request.getRequestHeaderValue(BatchConstants.ACCEPT.toLowerCase());
-      if (requestAcceptHeaders != null) {
-        request.setAcceptHeaders(parseAcceptHeaders(requestAcceptHeaders));
-      } else {
-        request.setAcceptHeaders(new ArrayList<String>());
-      }
-      String requestAcceptLanguages = request.getRequestHeaderValue(BatchConstants.ACCEPT_LANGUAGE.toLowerCase());
-      if (requestAcceptLanguages != null) {
-        request.setAcceptableLanguages(parseAcceptableLanguages(requestAcceptLanguages));
-      } else {
-        request.setAcceptableLanguages(new ArrayList<Locale>());
+        headerList.add(currentMimeHeaderContentId);
+        headers.put(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(), headerList);
       }
 
+      String contentType = getContentTypeHeader(headers);
+      List<String> acceptHeaders = getAcceptHeader(headers);
+      List<Locale> acceptLanguages = getAcceptLanguageHeader(headers);
       parseNewLine(scanner);
-
+      InputStream body = new ByteArrayInputStream("".getBytes());
       if (isChangeSet) {
-        request.setBody(parseBody(scanner));
+        body = parseBody(scanner);
       }
-
+      if (contentType != null) {
+        request = ODataRequest.method(httpMethod)
+            .queryParameters(queryParameters)
+            .requestHeaders(headers)
+            .pathInfo(pathInfo)
+            .acceptableLanguages(acceptLanguages)
+            .contentType(contentType)
+            .body(body)
+            .acceptHeaders(acceptHeaders)
+            .build();
+      } else {
+        request = ODataRequest.method(httpMethod)
+            .queryParameters(queryParameters)
+            .requestHeaders(headers)
+            .pathInfo(pathInfo)
+            .acceptableLanguages(acceptLanguages)
+            .body(body)
+            .acceptHeaders(acceptHeaders)
+            .build();
+      }
     } else {
       throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()), BAD_REQUEST);
     }
@@ -248,13 +251,27 @@ public class BatchRequestParser {
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim().toLowerCase();
-          String headerValue = result.group(2).trim().toLowerCase();
-          if (headers.containsKey(headerName)) {
-            headers.get(headerName).add(headerValue);
+          String headerValue = result.group(2).trim();
+          if (BatchConstants.ACCEPT.equalsIgnoreCase(headerName)) {
+            List<String> acceptHeaders = parseAcceptHeaders(headerValue);
+            headers.put(headerName, acceptHeaders);
+
+          } else if (BatchConstants.ACCEPT_LANGUAGE.equalsIgnoreCase(headerName)) {
+            List<String> acceptLanguageHeaders = parseAcceptableLanguages(headerValue);
+            headers.put(headerName, acceptLanguageHeaders);
+          }
+          else if (!BatchConstants.HTTP_CONTENT_ID.equalsIgnoreCase(headerName)) {
+            if (headers.containsKey(headerName)) {
+              headers.get(headerName).add(headerValue);
+            } else {
+              List<String> headerList = new ArrayList<String>();
+              headerList.add(headerValue);
+              headers.put(headerName, headerList);
+            }
           } else {
             List<String> headerList = new ArrayList<String>();
             headerList.add(headerValue);
-            headers.put(headerName, headerList);
+            headers.put(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(), headerList);
           }
         }
       } else {
@@ -270,10 +287,7 @@ public class BatchRequestParser {
     pathInfo.setPrecedingPathSegment(batchRequestPathInfo.getPrecedingSegments());
     Scanner uriScanner = new Scanner(uri);
     Pattern regexRequestUri = Pattern.compile("(?:" + baseUri + ")?/?([^?]+)(\\?.*)?");
-    if (uriScanner.hasNext("\\$[^/]/([^?]+)(?:\\?.*)?")) {
-      // TODO: Content-ID reference 
-      uriScanner.next("\\$[^/]/([^?]+)(?:\\?.*)?");
-    } else if (uriScanner.hasNext(regexRequestUri)) {
+    if (uriScanner.hasNext(regexRequestUri)) {
       uriScanner.next(regexRequestUri);
       MatchResult result = uriScanner.match();
       if (result.groupCount() == 2) {
@@ -281,8 +295,10 @@ public class BatchRequestParser {
         String queryParametersAsString = result.group(2) != null ? result.group(2) : "";
         pathInfo.setODataPathSegment(parseODataPathSegments(odataPathSegmentsAsString));
         try {
-          String requestUri = baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString;
-          pathInfo.setRequestUri(new URI(requestUri));
+          if (!odataPathSegmentsAsString.startsWith("$")) {
+            String requestUri = baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString;
+            pathInfo.setRequestUri(new URI(requestUri));
+          }
         } catch (URISyntaxException e) {
           uriScanner.close();
           throw new BatchException(BatchException.INVALID_URI, e, BAD_REQUEST);
@@ -346,7 +362,7 @@ public class BatchRequestParser {
     return AcceptParser.parseAcceptHeaders(headerValue);
   }
 
-  private List<Locale> parseAcceptableLanguages(final String headerValue) throws BatchException {
+  private List<String> parseAcceptableLanguages(final String headerValue) throws BatchException {
     return AcceptParser.parseAcceptableLanguages(headerValue);
   }
 
@@ -409,7 +425,7 @@ public class BatchRequestParser {
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim().toLowerCase();
-          String headerValue = result.group(2).trim().toLowerCase();
+          String headerValue = result.group(2).trim();
           headers.put(headerName, headerValue);
         }
       } else {
@@ -454,5 +470,44 @@ public class BatchRequestParser {
     boundary = boundary.replaceAll("\\?", "\\\\?");
     boundary = boundary.replaceAll("\\+", "\\\\+");
     return boundary;
+  }
+
+  private List<String> getAcceptHeader(final Map<String, List<String>> headers) {
+    List<String> acceptHeaders = new ArrayList<String>();
+    List<String> requestAcceptHeaderList = headers.get(BatchConstants.ACCEPT.toLowerCase());
+
+    if (requestAcceptHeaderList != null) {
+      acceptHeaders = requestAcceptHeaderList;
+    }
+    return acceptHeaders;
+  }
+
+  private List<Locale> getAcceptLanguageHeader(final Map<String, List<String>> headers) {
+    List<String> requestAcceptLanguageList = headers.get(BatchConstants.ACCEPT_LANGUAGE.toLowerCase());
+    List<Locale> acceptLanguages = new ArrayList<Locale>();
+    if (requestAcceptLanguageList != null) {
+      for (String acceptLanguage : requestAcceptLanguageList) {
+        String[] part = acceptLanguage.split("-");
+        String language = part[0];
+        String country = "";
+        if (part.length == 2) {
+          country = part[part.length - 1];
+        }
+        Locale locale = new Locale(language, country);
+        acceptLanguages.add(locale);
+      }
+    }
+    return acceptLanguages;
+  }
+
+  private String getContentTypeHeader(final Map<String, List<String>> headers) {
+    List<String> requestContentTypeList = headers.get(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
+    String contentType = null;
+    if (requestContentTypeList != null) {
+      for (String requestContentType : requestContentTypeList) {
+        contentType = contentType != null ? contentType + "," + requestContentType : requestContentType;
+      }
+    }
+    return contentType;
   }
 }

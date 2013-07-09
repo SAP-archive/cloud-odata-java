@@ -11,6 +11,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.processor.ODataRequest.ODataRequestBuilder;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.UriParser;
@@ -74,6 +75,8 @@ public abstract class RuntimeDelegate {
     protected abstract EdmProvider createEdmProvider(InputStream metadataXml, boolean validate) throws EntityProviderException;
 
     protected abstract BatchResponsePartBuilder createBatchResponsePartBuilder();
+
+    protected abstract ODataRequestBuilder createODataRequestBuilder();
 
   }
 
@@ -159,5 +162,9 @@ public abstract class RuntimeDelegate {
 
   public static BatchResponsePartBuilder createBatchResponsePartBuilder() {
     return RuntimeDelegate.getInstance().createBatchResponsePartBuilder();
+  }
+
+  public static ODataRequestBuilder createODataRequestBuilder() {
+    return RuntimeDelegate.getInstance().createODataRequestBuilder();
   }
 }

@@ -16,11 +16,11 @@ import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataExceptionWrapper;
 import com.sap.core.odata.core.ODataRequestHandler;
-import com.sap.core.odata.core.ODataRequestImpl;
 
 /**
  * @author SAP AG
@@ -28,7 +28,7 @@ import com.sap.core.odata.core.ODataRequestImpl;
 public final class ODataSubLocator {
 
   private ODataServiceFactory serviceFactory;
-  private ODataRequestImpl request;
+  private ODataRequest request;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -116,7 +116,7 @@ public final class ODataSubLocator {
   }
 
   private Response handle(final ODataHttpMethod method) throws ODataException {
-    request.setMethod(method);
+    request = ODataRequest.fromRequest(request).method(method).build();
 
     ODataContextImpl context = new ODataContextImpl(request, serviceFactory);
     ODataService service = serviceFactory.createService(context);
@@ -135,15 +135,14 @@ public final class ODataSubLocator {
     ODataSubLocator subLocator = new ODataSubLocator();
 
     subLocator.serviceFactory = param.getServiceFactory();
-
-    subLocator.request = new ODataRequestImpl();
-    subLocator.request.setRequestHeaders(param.getHttpHeaders().getRequestHeaders());
-    subLocator.request.setPathInfo(RestUtil.buildODataPathInfo(param));
-    subLocator.request.setBody(RestUtil.contentAsStream(RestUtil.extractRequestContent(param)));
-    subLocator.request.setQueryParameters(RestUtil.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()));
-    subLocator.request.setAcceptHeaders(RestUtil.extractAcceptHeaders(param));
-    subLocator.request.setContentType(RestUtil.extractRequestContentType(param));
-    subLocator.request.setAcceptableLanguages(param.getHttpHeaders().getAcceptableLanguages());
+    subLocator.request = ODataRequest.acceptableLanguages(param.getHttpHeaders().getAcceptableLanguages())
+        .acceptHeaders(RestUtil.extractAcceptHeaders(param))
+        .body(RestUtil.contentAsStream(RestUtil.extractRequestContent(param)))
+        .pathInfo(RestUtil.buildODataPathInfo(param))
+        .queryParameters(RestUtil.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()))
+        .requestHeaders(param.getHttpHeaders().getRequestHeaders())
+        .contentType(RestUtil.extractRequestContentType(param).toContentTypeString())
+        .build();
 
     return subLocator;
   }
