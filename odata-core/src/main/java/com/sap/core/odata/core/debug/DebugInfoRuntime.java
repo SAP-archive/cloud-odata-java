@@ -19,10 +19,14 @@ public class DebugInfoRuntime implements DebugInfo {
     protected long timeStarted;
     protected long timeStopped;
     protected List<RuntimeNode> children = new ArrayList<RuntimeNode>();
+    public long memoryStarted;
+    public long memoryStopped;
 
     protected RuntimeNode() {
       timeStarted = 0;
       timeStopped = Long.MAX_VALUE;
+      memoryStarted = 0;
+      memoryStopped = 0;
     }
 
     private RuntimeNode(final RuntimeMeasurement runtimeMeasurement) {
@@ -30,6 +34,8 @@ public class DebugInfoRuntime implements DebugInfo {
       methodName = runtimeMeasurement.getMethodName();
       timeStarted = runtimeMeasurement.getTimeStarted();
       timeStopped = runtimeMeasurement.getTimeStopped();
+      memoryStarted = runtimeMeasurement.getMemoryStarted();
+      memoryStopped = runtimeMeasurement.getMemoryStopped();
     }
 
     protected boolean add(final RuntimeMeasurement runtimeMeasurement) {
@@ -64,6 +70,10 @@ public class DebugInfoRuntime implements DebugInfo {
             && preceding.className.equals(child.className)) {
           preceding.timeStarted = child.timeStarted - (preceding.timeStopped - preceding.timeStarted);
           preceding.timeStopped = child.timeStopped;
+
+          preceding.memoryStarted = child.memoryStarted - (preceding.memoryStopped - preceding.memoryStarted);
+          preceding.memoryStopped = child.memoryStopped;
+
           iterator.remove();
         } else {
           preceding = child;
@@ -100,6 +110,10 @@ public class DebugInfoRuntime implements DebugInfo {
         .name("duration")
         .unquotedValue(node.timeStopped == 0 ? null :
             Long.toString((node.timeStopped - node.timeStarted) / 1000))
+        .separator()
+        .name("memory")
+        .unquotedValue(node.memoryStopped == 0 ? null :
+            Long.toString((node.memoryStopped - node.memoryStarted) / 1000))
         .separator()
         .name("children");
     appendJsonChildren(jsonStreamWriter, node);

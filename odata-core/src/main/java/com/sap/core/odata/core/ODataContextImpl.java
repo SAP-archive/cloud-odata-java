@@ -1,5 +1,6 @@
 package com.sap.core.odata.core;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,19 +101,18 @@ public class ODataContextImpl implements ODataContext {
   @Override
   public int startRuntimeMeasurement(final String className, final String methodName) {
     if (isInDebugMode()) {
+      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
+      int handleId = runtimeMeasurements.size();
+
       final RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
       measurement.setTimeStarted(System.nanoTime());
       measurement.setClassName(className);
       measurement.setMethodName(methodName);
+      measurement.setMemoryStarted(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed());
 
-      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
-      if (runtimeMeasurements == null) {
-        runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
-        setParameter(RUNTIME_MEASUREMENTS, runtimeMeasurements);
-      }
       runtimeMeasurements.add(measurement);
 
-      return runtimeMeasurements.size() - 1;
+      return handleId;
     } else {
       return 0;
     }
@@ -121,17 +121,34 @@ public class ODataContextImpl implements ODataContext {
   @Override
   public void stopRuntimeMeasurement(final int handle) {
     if (isInDebugMode()) {
-      List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
-      if (runtimeMeasurements != null && handle >= 0 && handle < runtimeMeasurements.size()) {
-        runtimeMeasurements.get(handle).setTimeStopped(System.nanoTime());
+      long stopTime = System.nanoTime();
+      long stopMemory = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+
+      RuntimeMeasurement runtimeMeasurement = getRuntimeMeasurement(handle);
+      if (runtimeMeasurement != null) {
+        runtimeMeasurement.setTimeStopped(stopTime);
+        runtimeMeasurement.setMemoryStopped(stopMemory);
       }
     }
   }
 
+  private RuntimeMeasurement getRuntimeMeasurement(final int handle) {
+    List<RuntimeMeasurement> runtimeMeasurements = getRuntimeMeasurements();
+    if (handle >= 0 && handle < runtimeMeasurements.size()) {
+      return runtimeMeasurements.get(handle);
+    }
+    return null;
+  }
+  
   @SuppressWarnings("unchecked")
   @Override
   public List<RuntimeMeasurement> getRuntimeMeasurements() {
-    return (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+    List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+    if (runtimeMeasurements == null) {
+      runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
+      setParameter(RUNTIME_MEASUREMENTS, runtimeMeasurements);
+    }
+    return runtimeMeasurements;
   }
 
   protected class RuntimeMeasurementImpl implements RuntimeMeasurement {
@@ -139,6 +156,8 @@ public class ODataContextImpl implements ODataContext {
     private String methodName;
     private long timeStarted;
     private long timeStopped;
+    private long memoryStarted;
+    private long memoryStopped;
 
     @Override
     public void setClassName(final String className) {
@@ -182,7 +201,27 @@ public class ODataContextImpl implements ODataContext {
 
     @Override
     public String toString() {
-      return className + "." + methodName + ": " + (timeStopped - timeStarted);
+      return className + "." + methodName + ": duration: " + (timeStopped - timeStarted) + ", memory: " + (memoryStopped - memoryStarted);
+    }
+
+    @Override
+    public void setMemoryStarted(long used) {
+      memoryStarted = used;
+    }
+
+    @Override
+    public void setMemoryStopped(long used) {
+      memoryStopped = used;
+    }
+
+    @Override
+    public long getMemoryStarted() {
+      return memoryStarted;
+    }
+
+    @Override
+    public long getMemoryStopped() {
+      return memoryStopped;
     }
   }
 
