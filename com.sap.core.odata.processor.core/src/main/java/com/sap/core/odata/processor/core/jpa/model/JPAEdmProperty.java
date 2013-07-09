@@ -251,8 +251,8 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
             currentComplexProperty.setType(new FullQualifiedName(
                 schemaView.getEdmSchema().getNamespace(),
                 complexType.getName()));
-            currentComplexProperty
-                .setFacets(setFacets(currentAttribute));
+//            currentComplexProperty
+//                .setFacets(setFacets(currentAttribute));
             properties.add(currentComplexProperty);
             List<String> nonKeyComplexTypes = schemaView.getNonKeyComplexTypeList();
             if (!nonKeyComplexTypes.contains(currentComplexProperty.getType().getName()))
