@@ -17,6 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -129,6 +130,8 @@ public class ODataExceptionWrapper {
     if (toHandleException instanceof ODataHttpException) {
       errorContext.setHttpStatus(((ODataHttpException) toHandleException).getHttpStatus());
     } else if (toHandleException instanceof EntityProviderException) {
+      errorContext.setHttpStatus(HttpStatusCodes.BAD_REQUEST);
+    } else if (toHandleException instanceof BatchException) {
       errorContext.setHttpStatus(HttpStatusCodes.BAD_REQUEST);
     }
 

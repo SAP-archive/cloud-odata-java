@@ -22,18 +22,17 @@ import com.sap.core.odata.api.batch.BatchPart;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
-import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * @author SAP AG
  */
 public class BatchRequestParser {
-  private static final String BAD_REQUEST = "400";
   private static final String LF = "\n";
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
   private static final String REG_EX_ZERO_OR_MORE_WHITESPACES = "\\s*";
@@ -85,7 +84,7 @@ public class BatchRequestParser {
       try {
         in.close();
       } catch (IOException e) {
-        throw new BatchException(ODataMessageException.COMMON, e);
+        throw new ODataRuntimeException(e);
       }
     }
     return requestList;
@@ -104,10 +103,10 @@ public class BatchRequestParser {
       if (scanner.hasNext(closeDelimiter)) {
         scanner.next(closeDelimiter);
       } else {
-        throw new BatchException(BatchException.MISSING_CLOSE_DELIMITER, BAD_REQUEST);
+        throw new BatchException(BatchException.MISSING_CLOSE_DELIMITER);
       }
     } else {
-      throw new BatchException(BatchException.MISSING_CONTENT_TYPE, BAD_REQUEST);
+      throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
     }
     return requests;
 
@@ -131,7 +130,7 @@ public class BatchRequestParser {
 
       String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase());
       if (contentType == null) {
-        throw new BatchException(BatchException.MISSING_CONTENT_TYPE, BAD_REQUEST);
+        throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
       }
       if (isChangeSet) {
         if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
@@ -141,7 +140,7 @@ public class BatchRequestParser {
           requests.add(parseRequest(scanner, isChangeSet));
           multipart = new BatchPartImpl(false, requests);
         } else {
-          throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.HTTP_APPLICATION_HTTP), BAD_REQUEST);
+          throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.HTTP_APPLICATION_HTTP));
         }
       } else {
         if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
@@ -152,7 +151,7 @@ public class BatchRequestParser {
         } else if (contentType.matches(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
           if (boundary.equals(changeSetBoundary)) {
-            throw new BatchException(BatchException.INVALID_CHANGESET_BOUNDARY, BAD_REQUEST);
+            throw new BatchException(BatchException.INVALID_CHANGESET_BOUNDARY);
           }
           List<ODataRequest> changeSetRequests = new LinkedList<ODataRequest>();
           parseNewLine(scanner);// mandatory
@@ -166,7 +165,7 @@ public class BatchRequestParser {
           scanner.next(changeSetCloseDelimiter);
           multipart = new BatchPartImpl(true, changeSetRequests);
         } else {
-          throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED + " or " + BatchConstants.HTTP_APPLICATION_HTTP), BAD_REQUEST);
+          throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED + " or " + BatchConstants.HTTP_APPLICATION_HTTP));
         }
       }
     } else if (scanner.hasNext(boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
@@ -174,7 +173,7 @@ public class BatchRequestParser {
     } else if (scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       throw new BatchException(BatchException.NO_MATCH_WITH_BOUNDARY_STRING.addContent(boundary));
     } else {
-      throw new BatchException(BatchException.MISSING_BOUNDARY_DELIMITER, BAD_REQUEST);
+      throw new BatchException(BatchException.MISSING_BOUNDARY_DELIMITER);
     }
     return multipart;
 
@@ -191,16 +190,16 @@ public class BatchRequestParser {
         method = result.group(1);
         uri = result.group(2).trim();
       } else {
-        throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()), BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()));
       }
       PathInfo pathInfo = parseRequestUri(uri);
       Map<String, String> queryParameters = parseQueryParameters(uri);
       if (isChangeSet) {
         if (!HTTP_CHANGESET_METHODS.contains(method)) {
-          throw new BatchException(BatchException.INVALID_CHANGESET_METHOD, BAD_REQUEST);
+          throw new BatchException(BatchException.INVALID_CHANGESET_METHOD);
         }
       } else if (!HTTP_BATCH_METHODS.contains(method)) {
-        throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD, BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD);
       }
       ODataHttpMethod httpMethod = ODataHttpMethod.valueOf(method);
       Map<String, List<String>> headers = parseRequestHeaders(scanner);
@@ -239,7 +238,7 @@ public class BatchRequestParser {
             .build();
       }
     } else {
-      throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()), BAD_REQUEST);
+      throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()));
     }
     return request;
   }
@@ -276,7 +275,7 @@ public class BatchRequestParser {
           }
         }
       } else {
-        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()), BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()));
       }
     }
     return headers;
@@ -302,15 +301,15 @@ public class BatchRequestParser {
           }
         } catch (URISyntaxException e) {
           uriScanner.close();
-          throw new BatchException(BatchException.INVALID_URI, e, BAD_REQUEST);
+          throw new BatchException(BatchException.INVALID_URI, e);
         }
       } else {
         uriScanner.close();
-        throw new BatchException(BatchException.INVALID_URI, BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_URI);
       }
     } else {
       uriScanner.close();
-      throw new BatchException(BatchException.INVALID_URI, BAD_REQUEST);
+      throw new BatchException(BatchException.INVALID_URI);
     }
     uriScanner.close();
     return pathInfo;
@@ -335,14 +334,14 @@ public class BatchRequestParser {
             queryParametersMap.put(systemQueryOption, value);
           } else {
             queryParamsScanner.close();
-            throw new BatchException(BatchException.INVALID_QUERY_PARAMETER, BAD_REQUEST);
+            throw new BatchException(BatchException.INVALID_QUERY_PARAMETER);
           }
         }
         queryParamsScanner.close();
 
       } else {
         uriScanner.close();
-        throw new BatchException(BatchException.INVALID_URI, BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_URI);
       }
     }
     uriScanner.close();
@@ -395,7 +394,7 @@ public class BatchRequestParser {
       contentTypeScanner.next(REG_EX_CONTENT_TYPE);
     } else {
       contentTypeScanner.close();
-      throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED), BAD_REQUEST);
+      throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED));
     }
     if (contentTypeScanner.hasNext(REG_EX_BOUNDARY_PARAMETER)) {
       contentTypeScanner.next(REG_EX_BOUNDARY_PARAMETER);
@@ -404,11 +403,11 @@ public class BatchRequestParser {
       if (result.groupCount() == 1 && result.group(1).trim().matches(REG_EX_BOUNDARY)) {
         return trimQuota(result.group(1).trim());
       } else {
-        throw new BatchException(BatchException.INVALID_BOUNDARY, BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_BOUNDARY);
       }
     } else {
       contentTypeScanner.close();
-      throw new BatchException(BatchException.MISSING_PARAMETER_IN_CONTENT_TYPE, BAD_REQUEST);
+      throw new BatchException(BatchException.MISSING_PARAMETER_IN_CONTENT_TYPE);
     }
   }
 
@@ -430,7 +429,7 @@ public class BatchRequestParser {
           headers.put(headerName, headerValue);
         }
       } else {
-        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()), BAD_REQUEST);
+        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()));
       }
     }
     return headers;
@@ -440,7 +439,7 @@ public class BatchRequestParser {
     if (scanner.hasNext() && scanner.hasNext(REG_EX_BLANK_LINE)) {
       scanner.next();
     } else {
-      throw new BatchException(BatchException.MISSING_BLANK_LINE, BAD_REQUEST);
+      throw new BatchException(BatchException.MISSING_BLANK_LINE);
     }
   }
 
@@ -457,7 +456,7 @@ public class BatchRequestParser {
         return baseUri;
       }
     } else {
-      throw new BatchException(BatchException.INVALID_PATHINFO, BAD_REQUEST);
+      throw new BatchException(BatchException.INVALID_PATHINFO);
     }
     return null;
   }
