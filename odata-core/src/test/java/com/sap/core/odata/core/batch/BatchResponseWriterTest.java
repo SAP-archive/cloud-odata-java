@@ -98,4 +98,35 @@ public class BatchResponseWriterTest {
 
   }
 
+  @Test
+  public void testContentIdEchoing() throws BatchException, IOException {
+    List<BatchResponsePart> parts = new ArrayList<BatchResponsePart>();
+    ODataResponse response = ODataResponse.entity("Walter Winter")
+        .status(HttpStatusCodes.OK)
+        .contentHeader("application/json")
+        .header(BatchConstants.MIME_HEADER_CONTENT_ID, "mimeHeaderContentId123")
+        .header(BatchConstants.REQUEST_HEADER_CONTENT_ID, "requestHeaderContentId123")
+        .build();
+    List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
+    responses.add(response);
+    parts.add(BatchResponsePart.responses(responses).changeSet(false).build());
+    BatchResponseWriter writer = new BatchResponseWriter();
+    ODataResponse batchResponse = writer.writeResponse(parts);
+
+    assertEquals(202, batchResponse.getStatus().getStatusCode());
+    assertNotNull(batchResponse.getEntity());
+    String body = (String) batchResponse.getEntity();
+
+    String mimeHeader = "Content-Type: application/http" + "\r\n"
+        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + "Content-Id: mimeHeaderContentId123" + "\r\n";
+
+    String requestHeader = "Content-Id: requestHeaderContentId123" + "\r\n"
+        + "Content-Type: application/json" + "\r\n"
+        + "Content-Length: 13" + "\r\n";
+
+    assertTrue(body.contains(mimeHeader));
+    assertTrue(body.contains(requestHeader));
+  }
+
 }

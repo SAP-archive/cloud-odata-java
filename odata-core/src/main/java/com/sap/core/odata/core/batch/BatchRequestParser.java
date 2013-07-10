@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.exception.ODataMessageException;
@@ -128,7 +129,7 @@ public class BatchRequestParser {
       mimeHeaders = parseHeaders(scanner);
       currentMimeHeaderContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
 
-      String contentType = mimeHeaders.get(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
+      String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase());
       if (contentType == null) {
         throw new BatchException(BatchException.MISSING_CONTENT_TYPE, BAD_REQUEST);
       }
@@ -252,11 +253,11 @@ public class BatchRequestParser {
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim().toLowerCase();
           String headerValue = result.group(2).trim();
-          if (BatchConstants.ACCEPT.equalsIgnoreCase(headerName)) {
+          if (HttpHeaders.ACCEPT.equalsIgnoreCase(headerName)) {
             List<String> acceptHeaders = parseAcceptHeaders(headerValue);
             headers.put(headerName, acceptHeaders);
 
-          } else if (BatchConstants.ACCEPT_LANGUAGE.equalsIgnoreCase(headerName)) {
+          } else if (HttpHeaders.ACCEPT_LANGUAGE.equalsIgnoreCase(headerName)) {
             List<String> acceptLanguageHeaders = parseAcceptableLanguages(headerValue);
             headers.put(headerName, acceptLanguageHeaders);
           }
@@ -474,7 +475,7 @@ public class BatchRequestParser {
 
   private List<String> getAcceptHeader(final Map<String, List<String>> headers) {
     List<String> acceptHeaders = new ArrayList<String>();
-    List<String> requestAcceptHeaderList = headers.get(BatchConstants.ACCEPT.toLowerCase());
+    List<String> requestAcceptHeaderList = headers.get(HttpHeaders.ACCEPT.toLowerCase());
 
     if (requestAcceptHeaderList != null) {
       acceptHeaders = requestAcceptHeaderList;
@@ -483,7 +484,7 @@ public class BatchRequestParser {
   }
 
   private List<Locale> getAcceptLanguageHeader(final Map<String, List<String>> headers) {
-    List<String> requestAcceptLanguageList = headers.get(BatchConstants.ACCEPT_LANGUAGE.toLowerCase());
+    List<String> requestAcceptLanguageList = headers.get(HttpHeaders.ACCEPT_LANGUAGE.toLowerCase());
     List<Locale> acceptLanguages = new ArrayList<Locale>();
     if (requestAcceptLanguageList != null) {
       for (String acceptLanguage : requestAcceptLanguageList) {
@@ -501,7 +502,7 @@ public class BatchRequestParser {
   }
 
   private String getContentTypeHeader(final Map<String, List<String>> headers) {
-    List<String> requestContentTypeList = headers.get(BatchConstants.HTTP_CONTENT_TYPE.toLowerCase());
+    List<String> requestContentTypeList = headers.get(HttpHeaders.CONTENT_TYPE.toLowerCase());
     String contentType = null;
     if (requestContentTypeList != null) {
       for (String requestContentType : requestContentTypeList) {

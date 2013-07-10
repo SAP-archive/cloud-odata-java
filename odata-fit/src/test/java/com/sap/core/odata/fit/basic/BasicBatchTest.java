@@ -40,6 +40,7 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.core.ep.util.FormatJson;
 import com.sap.core.odata.core.ep.util.JsonStreamWriter;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
+import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
@@ -55,12 +56,14 @@ public class BasicBatchTest extends AbstractBasicTest {
       "--batch_98c1-8b13-36bb" + LF
           + "Content-Type: application/http" + LF
           + "Content-Transfer-Encoding: binary" + LF
+          + "Content-Id: mimeHeaderContentId1" + LF
           + LF
           + "GET Employees('1')/EmployeeName HTTP/1.1" + LF
           + "Host: localhost:19000" + LF
           + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + LF
           + "Accept-Language: en" + LF
           + "MaxDataServiceVersion: 2.0" + LF
+          + "Content-Id: requestHeaderContentId1" + LF
           + LF
           + LF
           + "--batch_98c1-8b13-36bb" + LF
@@ -69,11 +72,13 @@ public class BasicBatchTest extends AbstractBasicTest {
           + "--changeset_f980-1cb6-94dd" + LF
           + "Content-Type: application/http" + LF
           + "Content-Transfer-Encoding: binary" + LF
+          + "Content-Id: mimeHeaderContentId2" + LF
           + LF
           + "PUT Employees('1')/EmployeeName HTTP/1.1" + LF
           + "Host: localhost:19000" + LF
           + "Content-Type: application/json;odata=verbose" + LF
           + "MaxDataServiceVersion: 2.0" + LF
+          + "Content-Id: requestHeaderContentId2" + LF
           + LF
           + "{\"EmployeeName\":\"Walter Winter MODIFIED\"}" + LF
           + LF
@@ -97,6 +102,12 @@ public class BasicBatchTest extends AbstractBasicTest {
     assertTrue(response.containsHeader("DataServiceVersion"));
     assertTrue(response.getEntity().getContentType().getValue().matches(REG_EX));
     assertNotNull(response.getEntity().getContent());
+
+    String body = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(body.contains("Content-Id: mimeHeaderContentId1"));
+    assertTrue(body.contains("Content-Id: requestHeaderContentId1"));
+    assertTrue(body.contains("Content-Id: mimeHeaderContentId2"));
+    assertTrue(body.contains("Content-Id: requestHeaderContentId2"));
   }
 
   static class TestSingleProc extends ODataSingleProcessor {

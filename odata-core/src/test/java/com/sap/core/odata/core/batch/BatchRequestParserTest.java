@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.processor.ODataRequest;
@@ -76,7 +77,7 @@ public class BatchRequestParserTest {
         for (ODataRequest request : requests) {
 
           assertEquals(ODataHttpMethod.PUT, request.getMethod());
-          assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
+          assertEquals("100000", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
           assertEquals("application/json;odata=verbose", request.getContentType());
           assertEquals(3, request.getAcceptHeaders().size());
           assertNotNull(request.getAcceptableLanguages());
@@ -146,7 +147,7 @@ public class BatchRequestParserTest {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
-          assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
+          assertEquals("100000", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
           assertEquals("1", request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           InputStream body = request.getBody();
@@ -192,7 +193,7 @@ public class BatchRequestParserTest {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
-          assertEquals("100", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
+          assertEquals("100", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           assertNotNull(request.getBody());
         }
