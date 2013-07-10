@@ -277,6 +277,32 @@ equal(data.__batchResponses[1].__changeResponses,undefined,"No change responses"
       });
 
 module("POST");
+
+/* Test 5.4 */
+
+request4 ={
+       method: 'POST',
+resourcePath: "$batch",
+       data: { __batchRequests:  [ { requestUri: "Employees('2')/EmployeeName", method: "GET",  headers: { "Content-Id":"AAA"}} ,
+                            {__changeRequests: [ 
+                              { requestUri: "Employees", method: "POST", headers: { "Content-Type" : "application/octet-stream", "Content-ID" : "employee"}},
+                              { requestUri: "$employee/EmployeeName", method: "PUT", data: {EmployeeName: "Robert Fall"}, headers: { "Content-Length" : "100000", "Content-Id":"AAA"}}
+                             ]},
+                           { requestUri: "Employees('7')/EmployeeName", method: "GET" } 
+                          ]
+      }
+};
+odataTest("batch with content-ID", 9, request4 , function (response, data) {
+equal(response.statusCode, 202, "StatusCode: 202");
+equal(data.__batchResponses.length, 3, "Number of Responses: 3");
+equal(data.__batchResponses[0].data.EmployeeName, "Frederic Fall", "Second EmployeeName: Frederic Fall");
+equal(data.__batchResponses[0].headers["Content-Id"], "AAA", "Content-Id: AAA");
+equal(data.__batchResponses[1].__changeResponses.length,2,"Expected 2 __changeResponse");
+equal(data.__batchResponses[1].__changeResponses[0].statusCode,201,"New entry Employee created");
+equal(data.__batchResponses[1].__changeResponses[0].headers["Content-Id"],"employee","Content-Id: employee");
+equal(data.__batchResponses[1].__changeResponses[1].statusCode,204,"No change responses"); 
+equal(data.__batchResponses[2].data.EmployeeName, "Robert Fall", "EmployeeName: Robert Fall");
+});
 /* Test 6.1 */
 var entry={ 
    __metadata: {
