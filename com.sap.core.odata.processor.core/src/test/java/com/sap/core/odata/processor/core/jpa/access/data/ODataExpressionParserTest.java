@@ -521,10 +521,10 @@ public class ODataExpressionParserTest {
       EasyMock.expect(kpProperty2.getType()).andStubReturn(
           EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
       EasyMock.expect(keyPredicate1.getProperty()).andStubReturn(kpProperty1);
-      EasyMock.expect(kpProperty1.getMapping()).andReturn(edmMapping);
+      EasyMock.expect(kpProperty1.getMapping()).andStubReturn(edmMapping);
       EasyMock.expect(edmMapping.getInternalName()).andReturn(SAMPLE_DATA_FIELD1);
       EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
-      EasyMock.expect(kpProperty2.getMapping()).andReturn(edmMapping);
+      EasyMock.expect(kpProperty2.getMapping()).andStubReturn(edmMapping);
     } catch (EdmException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
     }
