@@ -54,6 +54,7 @@ public class BatchRequestParser {
   private String contentTypeMime;
   private String boundary;
   private String currentMimeHeaderContentId;
+  private int currentLineNumber = 0;
   private static Set<String> HTTP_CHANGESET_METHODS;
   private static Set<String> HTTP_BATCH_METHODS;
 
@@ -103,8 +104,9 @@ public class BatchRequestParser {
       }
       if (scanner.hasNext(closeDelimiter)) {
         scanner.next(closeDelimiter);
+        currentLineNumber++;
       } else {
-        throw new BatchException(BatchException.MISSING_CLOSE_DELIMITER);
+        throw new BatchException(BatchException.MISSING_CLOSE_DELIMITER.addContent(currentLineNumber));
       }
     } else {
       throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
@@ -117,6 +119,7 @@ public class BatchRequestParser {
   private void parsePreamble(final Scanner scanner) {
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       scanner.next();
+      currentLineNumber++;
     }
   }
 
@@ -126,6 +129,7 @@ public class BatchRequestParser {
     List<ODataRequest> requests = new ArrayList<ODataRequest>();
     if (scanner.hasNext("--" + boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
       scanner.next();
+      currentLineNumber++;
       mimeHeaders = parseHeaders(scanner);
       currentMimeHeaderContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
 
@@ -152,7 +156,7 @@ public class BatchRequestParser {
         } else if (contentType.matches(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
           if (boundary.equals(changeSetBoundary)) {
-            throw new BatchException(BatchException.INVALID_CHANGESET_BOUNDARY);
+            throw new BatchException(BatchException.INVALID_CHANGESET_BOUNDARY.addContent(currentLineNumber));
           }
           List<ODataRequest> changeSetRequests = new LinkedList<ODataRequest>();
           parseNewLine(scanner);// mandatory
@@ -164,17 +168,21 @@ public class BatchRequestParser {
             }
           }
           scanner.next(changeSetCloseDelimiter);
+          currentLineNumber++;
           multipart = new BatchPartImpl(true, changeSetRequests);
         } else {
           throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED + " or " + BatchConstants.HTTP_APPLICATION_HTTP));
         }
       }
     } else if (scanner.hasNext(boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
-      throw new BatchException(BatchException.INVALID_BOUNDARY);
+      currentLineNumber++;
+      throw new BatchException(BatchException.INVALID_BOUNDARY_DELIMITER.addContent(currentLineNumber));
     } else if (scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
-      throw new BatchException(BatchException.NO_MATCH_WITH_BOUNDARY_STRING.addContent(boundary));
+      currentLineNumber++;
+      throw new BatchException(BatchException.NO_MATCH_WITH_BOUNDARY_STRING.addContent(boundary).addContent(currentLineNumber));
     } else {
-      throw new BatchException(BatchException.MISSING_BOUNDARY_DELIMITER);
+      currentLineNumber++;
+      throw new BatchException(BatchException.MISSING_BOUNDARY_DELIMITER.addContent(currentLineNumber));
     }
     return multipart;
 
@@ -184,6 +192,7 @@ public class BatchRequestParser {
     ODataRequest request;
     if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
       scanner.next(REG_EX_REQUEST_LINE);
+      currentLineNumber++;
       String method = null;
       String uri = null;
       MatchResult result = scanner.match();
@@ -191,16 +200,17 @@ public class BatchRequestParser {
         method = result.group(1);
         uri = result.group(2).trim();
       } else {
-        throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()));
+        currentLineNumber++;
+        throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
       }
       PathInfo pathInfo = parseRequestUri(uri);
       Map<String, String> queryParameters = parseQueryParameters(uri);
       if (isChangeSet) {
         if (!HTTP_CHANGESET_METHODS.contains(method)) {
-          throw new BatchException(BatchException.INVALID_CHANGESET_METHOD);
+          throw new BatchException(BatchException.INVALID_CHANGESET_METHOD.addContent(currentLineNumber));
         }
       } else if (!HTTP_BATCH_METHODS.contains(method)) {
-        throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD);
+        throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD.addContent(currentLineNumber));
       }
       ODataHttpMethod httpMethod = ODataHttpMethod.valueOf(method);
       Map<String, List<String>> headers = parseRequestHeaders(scanner);
@@ -239,7 +249,8 @@ public class BatchRequestParser {
             .build();
       }
     } else {
-      throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()));
+      currentLineNumber++;
+      throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
     }
     return request;
   }
@@ -249,6 +260,7 @@ public class BatchRequestParser {
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_BLANK_LINE)) {
       if (scanner.hasNext(REG_EX_HEADER)) {
         scanner.next(REG_EX_HEADER);
+        currentLineNumber++;
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim().toLowerCase();
@@ -275,7 +287,8 @@ public class BatchRequestParser {
           }
         }
       } else {
-        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()));
+        currentLineNumber++;
+        throw new BatchException(BatchException.INVALID_HEADER.addContent(scanner.next()).addContent(currentLineNumber));
       }
     }
     return headers;
@@ -379,6 +392,7 @@ public class BatchRequestParser {
       } else {
         scanner.next();
       }
+      currentLineNumber++;
     }
     if (body != null) {
       requestBody = new ByteArrayInputStream(body.getBytes());
@@ -422,6 +436,7 @@ public class BatchRequestParser {
     while (scanner.hasNext() && !(scanner.hasNext(REG_EX_BLANK_LINE))) {
       if (scanner.hasNext(REG_EX_HEADER)) {
         scanner.next(REG_EX_HEADER);
+        currentLineNumber++;
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
           String headerName = result.group(1).trim().toLowerCase();
@@ -438,8 +453,10 @@ public class BatchRequestParser {
   private void parseNewLine(final Scanner scanner) throws BatchException {
     if (scanner.hasNext() && scanner.hasNext(REG_EX_BLANK_LINE)) {
       scanner.next();
+      currentLineNumber++;
     } else {
-      throw new BatchException(BatchException.MISSING_BLANK_LINE);
+      currentLineNumber++;
+      throw new BatchException(BatchException.MISSING_BLANK_LINE.addContent(currentLineNumber));
     }
   }
 
