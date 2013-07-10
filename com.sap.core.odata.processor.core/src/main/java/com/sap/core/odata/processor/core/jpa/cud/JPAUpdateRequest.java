@@ -112,9 +112,9 @@ public class JPAUpdateRequest extends JPAWriteRequest {
           continue;
         }
         if (propertyValue != null) {
-          if (propertyValue instanceof java.util.GregorianCalendar) {
-            propertyValue = ((java.util.GregorianCalendar) propertyValue).getTime();
-          }
+          /*          if (propertyValue instanceof java.util.GregorianCalendar) {
+                      propertyValue = ((java.util.GregorianCalendar) propertyValue).getTime();
+                    }*/
 
           if (method != null) {
             if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
