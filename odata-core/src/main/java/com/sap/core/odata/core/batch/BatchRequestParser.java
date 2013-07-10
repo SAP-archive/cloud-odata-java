@@ -27,6 +27,7 @@ import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
+import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -255,7 +256,6 @@ public class BatchRequestParser {
           if (HttpHeaders.ACCEPT.equalsIgnoreCase(headerName)) {
             List<String> acceptHeaders = parseAcceptHeaders(headerValue);
             headers.put(headerName, acceptHeaders);
-
           } else if (HttpHeaders.ACCEPT_LANGUAGE.equalsIgnoreCase(headerName)) {
             List<String> acceptLanguageHeaders = parseAcceptableLanguages(headerValue);
             headers.put(headerName, acceptLanguageHeaders);
@@ -331,7 +331,7 @@ public class BatchRequestParser {
           if (result.groupCount() == 2) {
             String systemQueryOption = result.group(1);
             String value = result.group(2);
-            queryParametersMap.put(systemQueryOption, value);
+            queryParametersMap.put(systemQueryOption, Decoder.decode(value));
           } else {
             queryParamsScanner.close();
             throw new BatchException(BatchException.INVALID_QUERY_PARAMETER);

@@ -23,7 +23,6 @@ import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
-import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
@@ -71,7 +70,7 @@ public class BatchRequestParserTest {
         if (retrieveRequest.getQueryParameters().get("$format") != null) {
           assertEquals("json", retrieveRequest.getQueryParameters().get("$format"));
         }
-        assertEquals(SERVICE_ROOT + "Employees('2')/EmployeeName?$format=json", Decoder.decode(retrieveRequest.getPathInfo().getRequestUri().toASCIIString()));
+        assertEquals(SERVICE_ROOT + "Employees('2')/EmployeeName?$format=json", retrieveRequest.getPathInfo().getRequestUri().toASCIIString());
       } else {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
@@ -141,8 +140,8 @@ public class BatchRequestParserTest {
         assertEquals(1, object.getRequests().size());
         ODataRequest retrieveRequest = object.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
-        assertEquals("Age gt 40", Decoder.decode(retrieveRequest.getQueryParameters().get("$filter")));
-        assertEquals("http://localhost/odata/Employees?$filter=Age gt 40", Decoder.decode(retrieveRequest.getPathInfo().getRequestUri().toString()));
+        assertEquals("Age gt 40", retrieveRequest.getQueryParameters().get("$filter"));
+        assertEquals(new URI("http://localhost/odata/Employees?$filter=Age%20gt%2040"), retrieveRequest.getPathInfo().getRequestUri());
       } else {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {

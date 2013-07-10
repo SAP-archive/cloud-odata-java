@@ -62,7 +62,7 @@ public class BatchHandlerImpl implements BatchHandler {
     String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase());
 
     List<PathSegment> odataSegments = suppliedRequest.getPathInfo().getODataSegments();
-    if (odataSegments.size() > 1 && odataSegments.get(0).getPath().matches("\\$.*")) {
+    if (!odataSegments.isEmpty() && odataSegments.get(0).getPath().matches("\\$.*")) {
       ODataRequest request = modifyRequest(suppliedRequest, odataSegments);
       ODataRequestHandler handler = createHandler(request);
       response = setContentIdHeader(handler.handle(request), mimeHeaderContentId, requestHeaderContentId);
