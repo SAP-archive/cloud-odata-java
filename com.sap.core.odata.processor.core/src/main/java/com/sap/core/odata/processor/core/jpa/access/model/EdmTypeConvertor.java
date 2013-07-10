@@ -2,7 +2,6 @@ package com.sap.core.odata.processor.core.jpa.access.model;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -47,7 +46,7 @@ public class EdmTypeConvertor {
           return Boolean.TYPE;
         }
         else if (edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()) {
-          return Date.class;
+          return Calendar.class;
         }
         else if (edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
           return Calendar.class;
