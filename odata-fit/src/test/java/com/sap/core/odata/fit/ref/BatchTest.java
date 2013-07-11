@@ -35,6 +35,27 @@ public class BatchTest extends AbstractRefTest {
   }
 
   @Test
+  public void testContentIdReferencing() throws Exception {
+    String responseBody = execute("/batchWithContentId.batch");
+    assertTrue(responseBody.contains("HTTP/1.1 201 Created"));
+    assertTrue(responseBody.contains("HTTP/1.1 204 No Content"));
+    assertTrue(responseBody.contains("HTTP/1.1 200 OK"));
+    assertTrue(responseBody.contains("\"EmployeeName\":\"Frederic Fall MODIFIED\""));
+    assertTrue(responseBody.contains("\"Age\":40"));
+  }
+
+  @Test
+  public void testContentIdEchoing() throws Exception {
+    String responseBody = execute("/batchWithContentId.batch");
+    assertTrue(responseBody.contains("Content-Id: 1"));
+    assertTrue(responseBody.contains("Content-Id: 2"));
+    assertTrue(responseBody.contains("Content-Id: 3"));
+    assertTrue(responseBody.contains("Content-Id: 4"));
+    assertTrue(responseBody.contains("Content-Id: AAA"));
+    assertTrue(responseBody.contains("Content-Id: newEmployee"));
+  }
+
+  @Test
   public void testErrorBatch() throws Exception {
     String responseBody = execute("/error.batch");
     assertTrue(responseBody.contains("HTTP/1.1 404 Not Found"));
