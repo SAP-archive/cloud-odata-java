@@ -57,22 +57,23 @@ public class BatchHandlerImpl implements BatchHandler {
 
   @Override
   public ODataResponse handleRequest(final ODataRequest suppliedRequest) throws ODataException {
-    ODataResponse response;
+    ODataRequest request;
     String mimeHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase());
     String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase());
 
     List<PathSegment> odataSegments = suppliedRequest.getPathInfo().getODataSegments();
     if (!odataSegments.isEmpty() && odataSegments.get(0).getPath().matches("\\$.*")) {
-      ODataRequest request = modifyRequest(suppliedRequest, odataSegments);
-      ODataRequestHandler handler = createHandler(request);
-      response = setContentIdHeader(handler.handle(request), mimeHeaderContentId, requestHeaderContentId);
+      request = modifyRequest(suppliedRequest, odataSegments);
     } else {
-      ODataRequestHandler handler = createHandler(suppliedRequest);
-      response = setContentIdHeader(handler.handle(suppliedRequest), mimeHeaderContentId, requestHeaderContentId);
-
+      request = suppliedRequest;
     }
-    if (suppliedRequest.getMethod().equals(ODataHttpMethod.POST)) {
-      String baseUri = getBaseUri(suppliedRequest);
+    ODataRequestHandler handler = createHandler(request);
+    ODataResponse response = handler.handle(request);
+    if (response.getStatus().getStatusCode() < BAD_REQUEST) {
+      response = setContentIdHeader(response, mimeHeaderContentId, requestHeaderContentId);
+    }
+    if (request.getMethod().equals(ODataHttpMethod.POST)) {
+      String baseUri = getBaseUri(request);
       if (mimeHeaderContentId != null) {
         fillContentIdReference(response, mimeHeaderContentId, baseUri);
       } else if (requestHeaderContentId != null) {
@@ -120,9 +121,6 @@ public class BatchHandlerImpl implements BatchHandler {
 
   private ODataResponse setContentIdHeader(final ODataResponse response, final String mimeHeaderContentId, final String requestHeaderContentId) {
     ODataResponse modifiedResponse;
-    if (response.getStatus().getStatusCode() >= BAD_REQUEST) {
-      return response;
-    }
     if (requestHeaderContentId != null && mimeHeaderContentId != null) {
       modifiedResponse = ODataResponse.fromResponse(response).header(BatchConstants.REQUEST_HEADER_CONTENT_ID, requestHeaderContentId)
           .header(BatchConstants.MIME_HEADER_CONTENT_ID, mimeHeaderContentId).build();
