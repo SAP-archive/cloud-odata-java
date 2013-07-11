@@ -21,7 +21,10 @@ public class BatchResponseWriterTest {
   @Test
   public void testBatchResponse() throws BatchException, IOException {
     List<BatchResponsePart> parts = new ArrayList<BatchResponsePart>();
-    ODataResponse response = ODataResponse.entity("Walter Winter").status(HttpStatusCodes.OK).contentHeader("application/json").build();
+    ODataResponse response = ODataResponse.entity("Walter Winter")
+        .status(HttpStatusCodes.OK)
+        .contentHeader("application/json")
+        .build();
     List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
     responses.add(response);
     parts.add(BatchResponsePart.responses(responses).changeSet(false).build());
