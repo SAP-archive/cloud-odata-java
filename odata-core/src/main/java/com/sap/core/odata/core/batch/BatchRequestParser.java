@@ -456,7 +456,12 @@ public class BatchRequestParser {
       currentLineNumber++;
     } else {
       currentLineNumber++;
-      throw new BatchException(BatchException.MISSING_BLANK_LINE.addContent(currentLineNumber));
+      if (scanner.hasNext()) {
+        throw new BatchException(BatchException.MISSING_BLANK_LINE.addContent(scanner.next()).addContent(currentLineNumber));
+      } else {
+        throw new BatchException(BatchException.TRUNCATED_BODY.addContent(currentLineNumber));
+
+      }
     }
   }
 

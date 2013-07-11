@@ -61,7 +61,7 @@ public class BatchException extends ODataMessageException {
   /** INVALID_CONTENT_TRANSFER_ENCODING requires no content value */
   public static final MessageReference INVALID_CONTENT_TRANSFER_ENCODING = createMessageReference(BatchException.class, "INVALID_CONTENT_TRANSFER_ENCODING");
 
-  /** MISSING_BLANK_LINE requires 1 content value ('line number') */
+  /** MISSING_BLANK_LINE requires 2 content value ('supplied line','line number') */
   public static final MessageReference MISSING_BLANK_LINE = createMessageReference(BatchException.class, "MISSING_BLANK_LINE");
 
   /** INVALID_PATHINFO requires no content value */
@@ -72,6 +72,9 @@ public class BatchException extends ODataMessageException {
 
   /** INVALID_REQUEST_LINE requires 2 content value ('request line', 'line number') */
   public static final MessageReference INVALID_REQUEST_LINE = createMessageReference(BatchException.class, "INVALID_REQUEST_LINE");
+
+  /** TRUNCETED_BODY requires 1 content value ('line number') */
+  public static final MessageReference TRUNCATED_BODY = createMessageReference(BatchException.class, "TRUNCATED_BODY");
 
   public BatchException(final MessageReference messageReference) {
     super(messageReference);
