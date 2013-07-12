@@ -7,20 +7,28 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 import com.sap.core.odata.api.ep.callback.ReadEntryResult;
 import com.sap.core.odata.api.ep.callback.ReadFeedResult;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
@@ -54,6 +62,49 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
     EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(callback).build();
     ODataEntry outerEntry = prepareAndExecuteEntry(EMPLOYEE_WITH_INLINE_TEAM, "Employees", readProperties);
 
+    assertThat(outerEntry.getProperties().get("ne_Team"), nullValue());
+
+    ODataEntry innerTeam = callback.getEntry();
+    Map<String, Object> innerTeamProperties = innerTeam.getProperties();
+
+    assertEquals("1", innerTeamProperties.get("Id"));
+    assertEquals("Team 1", innerTeamProperties.get("Name"));
+    assertEquals(Boolean.FALSE, innerTeamProperties.get("isScrumTeam"));
+    assertNull(innerTeamProperties.get("nt_Employees"));
+
+    List<String> associationUris = innerTeam.getMetadata().getAssociationUris("nt_Employees");
+    assertEquals(1, associationUris.size());
+    assertEquals("http://localhost:8080/ReferenceScenario.svc/Teams('1')/nt_Employees", associationUris.get(0));
+  }
+
+  @Test
+  public void innerEntryWithOptionalNavigationProperty() throws Exception {
+    // XXX: mibo
+    EntryCallback callback = new EntryCallback();
+    EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(callback).build();
+    //prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    //
+    EdmType navigationType = mock(EdmType.class);
+    when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
+
+    EdmNavigationProperty navigationProperty = mock(EdmNavigationProperty.class);
+    when(navigationProperty.getName()).thenReturn("ne_Team");
+    when(navigationProperty.getType()).thenReturn(navigationType);
+    when(navigationProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ZERO_TO_ONE);
+
+    when(entitySet.getEntityType().getProperty("ne_Team")).thenReturn(navigationProperty);
+    EdmEntitySet targetEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    when(entitySet.getRelatedEntitySet(navigationProperty)).thenReturn(targetEntitySet);
+    //
+    String content = readFile(EMPLOYEE_WITH_INLINE_TEAM);
+    assertNotNull(content);
+    InputStream contentBody = createContentAsStream(content);
+    // execute
+    JsonEntityConsumer xec = new JsonEntityConsumer();
+    ODataEntry outerEntry = xec.readEntry(entitySet, contentBody, readProperties);
+
+    //
     assertThat(outerEntry.getProperties().get("ne_Team"), nullValue());
 
     ODataEntry innerTeam = callback.getEntry();
