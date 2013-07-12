@@ -81,7 +81,7 @@ public class ODataDebugResponseWrapperTest extends BaseTest {
     when(measurement.getMemoryStopped()).thenReturn(stopMemory);
     return measurement;
   }
-  
+
   private RuntimeMeasurement mockRuntimeMeasurement(final String method, final long start, final long stop) {
     return mockRuntimeMeasurement(method, start, stop, 1000, 4000);
   }

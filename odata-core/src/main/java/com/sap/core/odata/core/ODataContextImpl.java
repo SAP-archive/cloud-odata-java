@@ -139,7 +139,7 @@ public class ODataContextImpl implements ODataContext {
     }
     return null;
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public List<RuntimeMeasurement> getRuntimeMeasurements() {
@@ -205,12 +205,12 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setMemoryStarted(long used) {
+    public void setMemoryStarted(final long used) {
       memoryStarted = used;
     }
 
     @Override
-    public void setMemoryStopped(long used) {
+    public void setMemoryStopped(final long used) {
       memoryStopped = used;
     }
 
