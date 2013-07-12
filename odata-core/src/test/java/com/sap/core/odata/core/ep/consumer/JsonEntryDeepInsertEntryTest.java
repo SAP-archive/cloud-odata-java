@@ -79,12 +79,11 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
 
   @Test
   public void innerEntryWithOptionalNavigationProperty() throws Exception {
-    // XXX: mibo
+    //prepare
     EntryCallback callback = new EntryCallback();
     EntityProviderReadProperties readProperties = EntityProviderReadProperties.init().mergeSemantic(false).callback(callback).build();
-    //prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    //
+    // modify edm for test case (change multiplicity to ZERO_TO_ONE)
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
@@ -96,15 +95,13 @@ public class JsonEntryDeepInsertEntryTest extends AbstractConsumerTest {
     when(entitySet.getEntityType().getProperty("ne_Team")).thenReturn(navigationProperty);
     EdmEntitySet targetEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     when(entitySet.getRelatedEntitySet(navigationProperty)).thenReturn(targetEntitySet);
-    //
-    String content = readFile(EMPLOYEE_WITH_INLINE_TEAM);
-    assertNotNull(content);
-    InputStream contentBody = createContentAsStream(content);
+
     // execute
     JsonEntityConsumer xec = new JsonEntityConsumer();
+    InputStream contentBody = getFileAsStream(EMPLOYEE_WITH_INLINE_TEAM);
     ODataEntry outerEntry = xec.readEntry(entitySet, contentBody, readProperties);
 
-    //
+    // assert
     assertThat(outerEntry.getProperties().get("ne_Team"), nullValue());
 
     ODataEntry innerTeam = callback.getEntry();

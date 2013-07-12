@@ -51,15 +51,20 @@ public abstract class AbstractConsumerTest extends BaseTest {
     return typeMappings;
   }
 
-  protected String readFile(final String filename) throws IOException {
+  protected InputStream getFileAsStream(final String filename) throws IOException {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
     if (in == null) {
       throw new IOException("Requested file '" + filename + "' was not found.");
     }
+    return in;
+  }
+  
+  protected String readFile(final String filename) throws IOException {
+    InputStream in = getFileAsStream(filename);
 
     byte[] tmp = new byte[8192];
     int count = in.read(tmp);
-    StringBuffer b = new StringBuffer();
+    StringBuilder b = new StringBuilder();
     while (count >= 0) {
       b.append(new String(tmp, 0, count));
       count = in.read(tmp);
