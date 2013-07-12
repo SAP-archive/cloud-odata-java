@@ -29,12 +29,12 @@ public interface BatchProcessor extends ODataProcessor {
   ODataResponse executeBatch(BatchHandler handler, String contentType, InputStream content) throws ODataException;
 
   /**
-   * Executes a Change Set and provide Change Set Response as {@link ODataResponse}.
+   * Executes a Change Set and provide BatchResponsePart as {@link BatchResponsePart} that contains the responses to change requests.
    * The method has to define a rollback semantic that may be applied when a request within a Change Set fails (all-or-nothing requirement).
    * If a request within a Change Set fails, instead of Change Set Response should be returned the error response 
    * @param handler batch handler
    * @param requests list of single change requests
-   * @return a {@link ODataResponse} object
+   * @return a {@link BatchResponsePart} object
    * @throws ODataException 
    */
   BatchResponsePart executeChangeSet(BatchHandler handler, List<ODataRequest> requests) throws ODataException;
