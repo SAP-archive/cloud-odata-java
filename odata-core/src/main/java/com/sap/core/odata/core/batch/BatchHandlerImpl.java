@@ -28,7 +28,7 @@ public class BatchHandlerImpl implements BatchHandler {
   private static final int BAD_REQUEST = 400;
   private ODataServiceFactory factory;
   private ODataService service;
-  private Map<String, String> contentIdMap = new HashMap<String, String>();
+  private Map<String, String> contentIdMap;
 
   public BatchHandlerImpl(final ODataServiceFactory factory, final ODataService service) {
     this.factory = factory;
@@ -39,6 +39,7 @@ public class BatchHandlerImpl implements BatchHandler {
   public BatchResponsePart handleBatchPart(final BatchPart batchPart) throws ODataException {
     if (batchPart.isChangeSet()) {
       List<ODataRequest> changeSetRequests = batchPart.getRequests();
+      contentIdMap = new HashMap<String, String>();
       return service.getBatchProcessor().executeChangeSet(this, changeSetRequests);
     } else {
       if (batchPart.getRequests().size() != 1) {
@@ -75,15 +76,15 @@ public class BatchHandlerImpl implements BatchHandler {
     if (request.getMethod().equals(ODataHttpMethod.POST)) {
       String baseUri = getBaseUri(request);
       if (mimeHeaderContentId != null) {
-        fillContentIdReference(response, mimeHeaderContentId, baseUri);
+        fillContentIdMap(response, mimeHeaderContentId, baseUri);
       } else if (requestHeaderContentId != null) {
-        fillContentIdReference(response, requestHeaderContentId, baseUri);
+        fillContentIdMap(response, requestHeaderContentId, baseUri);
       }
     }
     return response;
   }
 
-  private void fillContentIdReference(final ODataResponse response, final String contentId, final String baseUri) {
+  private void fillContentIdMap(final ODataResponse response, final String contentId, final String baseUri) {
     String location = response.getHeader(HttpHeaders.LOCATION);
     String relLocation = location.replace(baseUri + "/", "");
     contentIdMap.put("$" + contentId, relLocation);
