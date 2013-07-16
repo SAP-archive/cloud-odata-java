@@ -60,7 +60,7 @@ public class JPATypeConvertor {
       return EdmSimpleTypeKind.Binary;
     }
     else if (jpaType.equals(Byte.class) || jpaType.equals(byte.class)) {
-      return EdmSimpleTypeKind.Byte;
+      return EdmSimpleTypeKind.SByte;
     }
     else if (jpaType.equals(Byte[].class)) {
       return EdmSimpleTypeKind.Binary;

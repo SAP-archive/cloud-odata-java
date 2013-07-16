@@ -58,7 +58,7 @@
 							*
 						</Import-Package>
 						<Export-Package>
-							com.sap.core.odata.api.annotation.edm.*;version=${project.version}
+							com.sap.core.odata.api.annotation.*;version=${project.version}
 						</Export-Package>
 						<Bundle-DocURL>${project.url}</Bundle-DocURL>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
