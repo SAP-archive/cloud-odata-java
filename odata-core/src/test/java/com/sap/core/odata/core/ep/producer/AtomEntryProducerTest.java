@@ -409,6 +409,20 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     verifyTagOrdering(xmlString, expectedPropertyNamesFromEdm.toArray(new String[0]));
   }
 
+  @Test(expected = EntityProviderException.class)
+  public void serializeAtomEntryWithNullData() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).build();
+    AtomEntityProvider ser = createAtomEntityProvider();
+    ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), null, properties);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void serializeAtomEntryWithEmptyHashMap() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).build();
+    AtomEntityProvider ser = createAtomEntityProvider();
+    ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), new HashMap<String, Object>(), properties);
+  }
+
   @Test
   public void serializeAtomEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     final EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(BASE_URI).build();

@@ -2,6 +2,7 @@ package com.sap.core.odata.core.ep.producer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -202,6 +203,9 @@ public class AtomEntryEntityProducer {
           throw new EntityProviderException(EntityProviderException.COMMON, e);
         }
         List<Map<String, Object>> inlineData = result.getFeedData();
+        if (inlineData == null) {
+          inlineData = new ArrayList<Map<String, Object>>();
+        }
 
         EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
         EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
@@ -239,7 +243,7 @@ public class AtomEntryEntityProducer {
           throw new EntityProviderException(EntityProviderException.COMMON, e);
         }
         Map<String, Object> inlineData = result.getEntryData();
-        if (inlineData != null) {
+        if (inlineData != null && !inlineData.isEmpty()) {
           EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
           EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
           AtomEntryEntityProducer inlineProducer = new AtomEntryEntityProducer(inlineProperties);
