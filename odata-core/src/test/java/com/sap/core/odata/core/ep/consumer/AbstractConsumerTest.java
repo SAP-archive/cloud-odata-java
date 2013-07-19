@@ -58,7 +58,7 @@ public abstract class AbstractConsumerTest extends BaseTest {
     }
     return in;
   }
-  
+
   protected String readFile(final String filename) throws IOException {
     InputStream in = getFileAsStream(filename);
 

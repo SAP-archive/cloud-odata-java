@@ -33,10 +33,6 @@ public class Encoder {
   // Character classes from RFC 3986
   private final static String UNRESERVED = "-._~"; // + ALPHA + DIGIT
   private final static String GEN_DELIMS = ":/?#[]@";
-  private final static String SUB_DELIMS = "!$&'()*+,;=";
-  // Compatibility constants for java.net.URI decoding behavior
-  // which follows RFC2396 (deprecated by RFC3986)
-  private final static String RFC2396_UNSAFE_NOSPACE = GEN_DELIMS + "<>%&";
   // RFC 3986 says: "For consistency, URI producers and normalizers should
   // use uppercase hexadecimal digits for all percent-encodings."
   private final static String[] hex = {
