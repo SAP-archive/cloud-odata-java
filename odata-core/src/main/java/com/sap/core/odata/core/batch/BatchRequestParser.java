@@ -217,7 +217,7 @@ public class BatchRequestParser {
       if (currentMimeHeaderContentId != null) {
         List<String> headerList = new ArrayList<String>();
         headerList.add(currentMimeHeaderContentId);
-        headers.put(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(), headerList);
+        headers.put(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH), headerList);
       }
 
       String contentType = getContentTypeHeader(headers);
@@ -263,7 +263,7 @@ public class BatchRequestParser {
         currentLineNumber++;
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
-          String headerName = result.group(1).trim().toLowerCase();
+          String headerName = result.group(1).trim().toLowerCase(Locale.ENGLISH);
           String headerValue = result.group(2).trim();
           if (HttpHeaders.ACCEPT.equalsIgnoreCase(headerName)) {
             List<String> acceptHeaders = parseAcceptHeaders(headerValue);
@@ -283,7 +283,7 @@ public class BatchRequestParser {
           } else {
             List<String> headerList = new ArrayList<String>();
             headerList.add(headerValue);
-            headers.put(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(), headerList);
+            headers.put(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH), headerList);
           }
         }
       } else {
@@ -439,7 +439,7 @@ public class BatchRequestParser {
         currentLineNumber++;
         MatchResult result = scanner.match();
         if (result.groupCount() == 2) {
-          String headerName = result.group(1).trim().toLowerCase();
+          String headerName = result.group(1).trim().toLowerCase(Locale.ENGLISH);
           String headerValue = result.group(2).trim();
           headers.put(headerName, headerValue);
         }
