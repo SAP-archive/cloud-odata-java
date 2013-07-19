@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
@@ -47,8 +48,8 @@ public class BatchHandlerImpl implements BatchHandler {
       }
       ODataRequest request = batchPart.getRequests().get(0);
       ODataRequestHandler handler = createHandler(request);
-      String mimeHeaderContentId = request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase());
-      String requestHeaderContentId = request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase());
+      String mimeHeaderContentId = request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+      String requestHeaderContentId = request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
       ODataResponse response = setContentIdHeader(handler.handle(request), mimeHeaderContentId, requestHeaderContentId);
       List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
       responses.add(response);
@@ -59,8 +60,8 @@ public class BatchHandlerImpl implements BatchHandler {
   @Override
   public ODataResponse handleRequest(final ODataRequest suppliedRequest) throws ODataException {
     ODataRequest request;
-    String mimeHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase());
-    String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase());
+    String mimeHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+    String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
 
     List<PathSegment> odataSegments = suppliedRequest.getPathInfo().getODataSegments();
     if (!odataSegments.isEmpty() && odataSegments.get(0).getPath().matches("\\$.*")) {

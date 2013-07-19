@@ -131,15 +131,15 @@ public class BatchRequestParser {
       scanner.next();
       currentLineNumber++;
       mimeHeaders = parseHeaders(scanner);
-      currentMimeHeaderContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase());
+      currentMimeHeaderContentId = mimeHeaders.get(BatchConstants.HTTP_CONTENT_ID.toLowerCase(Locale.ENGLISH));
 
-      String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase());
+      String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH));
       if (contentType == null) {
         throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
       }
       if (isChangeSet) {
         if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase()));
+          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase(Locale.ENGLISH)));
           parseNewLine(scanner);// mandatory
 
           requests.add(parseRequest(scanner, isChangeSet));
@@ -149,7 +149,7 @@ public class BatchRequestParser {
         }
       } else {
         if (BatchConstants.HTTP_APPLICATION_HTTP.equalsIgnoreCase(contentType)) {
-          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase()));
+          validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase(Locale.ENGLISH)));
           parseNewLine(scanner);// mandatory
           requests.add(parseRequest(scanner, isChangeSet));
           multipart = new BatchPartImpl(false, requests);
@@ -496,7 +496,7 @@ public class BatchRequestParser {
 
   private List<String> getAcceptHeader(final Map<String, List<String>> headers) {
     List<String> acceptHeaders = new ArrayList<String>();
-    List<String> requestAcceptHeaderList = headers.get(HttpHeaders.ACCEPT.toLowerCase());
+    List<String> requestAcceptHeaderList = headers.get(HttpHeaders.ACCEPT.toLowerCase(Locale.ENGLISH));
 
     if (requestAcceptHeaderList != null) {
       acceptHeaders = requestAcceptHeaderList;
@@ -505,7 +505,7 @@ public class BatchRequestParser {
   }
 
   private List<Locale> getAcceptLanguageHeader(final Map<String, List<String>> headers) {
-    List<String> requestAcceptLanguageList = headers.get(HttpHeaders.ACCEPT_LANGUAGE.toLowerCase());
+    List<String> requestAcceptLanguageList = headers.get(HttpHeaders.ACCEPT_LANGUAGE.toLowerCase(Locale.ENGLISH));
     List<Locale> acceptLanguages = new ArrayList<Locale>();
     if (requestAcceptLanguageList != null) {
       for (String acceptLanguage : requestAcceptLanguageList) {
@@ -523,7 +523,7 @@ public class BatchRequestParser {
   }
 
   private String getContentTypeHeader(final Map<String, List<String>> headers) {
-    List<String> requestContentTypeList = headers.get(HttpHeaders.CONTENT_TYPE.toLowerCase());
+    List<String> requestContentTypeList = headers.get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH));
     String contentType = null;
     if (requestContentTypeList != null) {
       for (String requestContentType : requestContentTypeList) {
