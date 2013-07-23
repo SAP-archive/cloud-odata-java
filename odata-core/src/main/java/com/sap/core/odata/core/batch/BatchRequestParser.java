@@ -3,6 +3,7 @@ package com.sap.core.odata.core.batch;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class BatchRequestParser {
   }
 
   public List<BatchPart> parse(final InputStream in) throws BatchException {
-    Scanner scanner = new Scanner(in).useDelimiter(LF);
+    Scanner scanner = new Scanner(in, "UTF-8").useDelimiter(LF);
     baseUri = getBaseUri();
     List<BatchPart> requestList;
     try {
@@ -380,6 +381,7 @@ public class BatchRequestParser {
   }
 
   private InputStream parseBody(final Scanner scanner) {
+    try {
     String body = null;
     InputStream requestBody;
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
@@ -395,11 +397,14 @@ public class BatchRequestParser {
       currentLineNumber++;
     }
     if (body != null) {
-      requestBody = new ByteArrayInputStream(body.getBytes());
+        requestBody = new ByteArrayInputStream(body.getBytes("UTF-8"));
     } else {
-      requestBody = new ByteArrayInputStream("".getBytes());
+      requestBody = new ByteArrayInputStream("".getBytes("UTF-8"));
     }
     return requestBody;
+    } catch (UnsupportedEncodingException e) {
+      throw new ODataRuntimeException(e);
+    }
   }
 
   private String getBoundary(final String contentType) throws BatchException {
