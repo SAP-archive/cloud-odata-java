@@ -205,6 +205,7 @@ public class BatchRequestParser {
   }
 
   private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws BatchException {
+    try {
     ODataRequest request;
     if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
       scanner.next(REG_EX_REQUEST_LINE);
@@ -240,7 +241,8 @@ public class BatchRequestParser {
       List<String> acceptHeaders = getAcceptHeader(headers);
       List<Locale> acceptLanguages = getAcceptLanguageHeader(headers);
       parseNewLine(scanner);
-      InputStream body = new ByteArrayInputStream("".getBytes());
+      InputStream body;
+        body = new ByteArrayInputStream("".getBytes("UTF-8"));
       if (isChangeSet) {
         body = parseBody(scanner);
       }
@@ -269,6 +271,9 @@ public class BatchRequestParser {
       throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
     }
     return request;
+    } catch (UnsupportedEncodingException e) {
+      throw new ODataRuntimeException(e);
+    }
   }
 
   private Map<String, List<String>> parseRequestHeaders(final Scanner scanner) throws BatchException {
