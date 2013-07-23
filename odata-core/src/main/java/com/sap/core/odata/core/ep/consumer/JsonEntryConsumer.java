@@ -220,18 +220,7 @@ public class JsonEntryConsumer {
             inlineReadProperties = callback.receiveReadProperties(readProperties, navigationProperty);
           }
 
-          if (navigationProperty.getMultiplicity() == EdmMultiplicity.ONE) {
-            JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
-            ODataEntry entry = inlineConsumer.readInlineEntry(name);
-            updateExpandSelectTree(navigationPropertyName, entry);
-            if (callback == null) {
-              properties.put(navigationPropertyName, entry);
-              entryResult.setContainsInlineEntry(true);
-            } else {
-              ReadEntryResult result = new ReadEntryResult(inlineReadProperties, navigationProperty, entry);
-              callback.handleReadEntry(result);
-            }
-          } else {
+          if (navigationProperty.getMultiplicity() == EdmMultiplicity.MANY) {
             JsonFeedConsumer inlineConsumer = new JsonFeedConsumer(reader, inlineEia, inlineReadProperties);
             ODataFeed feed = inlineConsumer.readStartedInlineFeed(name);
             updateExpandSelectTree(navigationPropertyName, feed);
@@ -241,6 +230,17 @@ public class JsonEntryConsumer {
             } else {
               ReadFeedResult result = new ReadFeedResult(inlineReadProperties, navigationProperty, feed);
               callback.handleReadFeed(result);
+            }
+          } else {
+            JsonEntryConsumer inlineConsumer = new JsonEntryConsumer(reader, inlineEia, inlineReadProperties);
+            ODataEntry entry = inlineConsumer.readInlineEntry(name);
+            updateExpandSelectTree(navigationPropertyName, entry);
+            if (callback == null) {
+              properties.put(navigationPropertyName, entry);
+              entryResult.setContainsInlineEntry(true);
+            } else {
+              ReadEntryResult result = new ReadEntryResult(inlineReadProperties, navigationProperty, entry);
+              callback.handleReadEntry(result);
             }
           }
 

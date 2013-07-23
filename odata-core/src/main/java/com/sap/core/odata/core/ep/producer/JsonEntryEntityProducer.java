@@ -17,6 +17,7 @@ package com.sap.core.odata.core.ep.producer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -129,18 +130,22 @@ public class JsonEntryEntityProducer {
                 if (isFeed) {
                   final WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult((WriteFeedCallbackContext) context);
                   List<Map<String, Object>> inlineData = result.getFeedData();
-                  if (inlineData != null) {
-                    final EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
-                    final EntityInfoAggregator inlineEntityInfo = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-                    new JsonFeedEntityProducer(inlineProperties).append(writer, inlineEntityInfo, inlineData, false);
+                  if (inlineData == null) {
+                    inlineData = new ArrayList<Map<String, Object>>();
                   }
+                  final EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
+                  final EntityInfoAggregator inlineEntityInfo = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+                  new JsonFeedEntityProducer(inlineProperties).append(writer, inlineEntityInfo, inlineData, false);
+
                 } else {
                   final WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult((WriteEntryCallbackContext) context);
                   Map<String, Object> inlineData = result.getEntryData();
-                  if (inlineData != null) {
+                  if (inlineData != null && !inlineData.isEmpty()) {
                     final EntityProviderWriteProperties inlineProperties = result.getInlineProperties();
                     final EntityInfoAggregator inlineEntityInfo = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
                     new JsonEntryEntityProducer(inlineProperties).append(writer, inlineEntityInfo, inlineData, false);
+                  } else {
+                    jsonStreamWriter.unquotedValue("null");
                   }
                 }
               } catch (final ODataApplicationException e) {

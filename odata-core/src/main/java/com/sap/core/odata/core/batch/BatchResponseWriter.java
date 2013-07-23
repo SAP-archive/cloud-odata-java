@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchResponsePart;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -32,24 +33,24 @@ public class BatchResponseWriter {
   private static final String LF = "\r\n";
   private StringBuilder writer = new StringBuilder();
 
-  private void appendChangeSet(final BatchResponsePart batchResponsePart) throws BatchException {
-    String boundary = generateBoundary("changeset");
-    writer.append(BatchConstants.HTTP_CONTENT_TYPE).append(COLON).append(SP).append("multipart/mixed; boundary=" + boundary).append(LF).append(LF);
-    for (ODataResponse response : batchResponsePart.getResponses()) {
-      writer.append("--").append(boundary).append(LF);
-      appendResponseBodyPart(response);
-    }
-    writer.append("--").append(boundary).append("--").append(LF).append(LF);
-  }
-
   public ODataResponse writeResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     String boundary = generateBoundary("batch");
     appendResponseBody(batchResponseParts, boundary);
     String batchResponseBody = writer.toString();
     return ODataResponse.entity(batchResponseBody).status(HttpStatusCodes.ACCEPTED).
-        header(BatchConstants.HTTP_CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=" + boundary)
-        .header(BatchConstants.HTTP_CONTENT_LENGTH, "" + batchResponseBody.length()).build();
+        header(HttpHeaders.CONTENT_TYPE, BatchConstants.MULTIPART_MIXED + "; boundary=" + boundary)
+        .header(HttpHeaders.CONTENT_LENGTH, "" + batchResponseBody.length()).build();
 
+  }
+
+  private void appendChangeSet(final BatchResponsePart batchResponsePart) throws BatchException {
+    String boundary = generateBoundary("changeset");
+    writer.append(HttpHeaders.CONTENT_TYPE).append(COLON).append(SP).append("multipart/mixed; boundary=" + boundary).append(LF).append(LF);
+    for (ODataResponse response : batchResponsePart.getResponses()) {
+      writer.append("--").append(boundary).append(LF);
+      appendResponseBodyPart(response);
+    }
+    writer.append("--").append(boundary).append("--").append(LF).append(LF);
   }
 
   private void appendResponseBody(final List<BatchResponsePart> batchResponseParts, final String boundary) throws BatchException {
@@ -67,8 +68,12 @@ public class BatchResponseWriter {
   }
 
   private void appendResponseBodyPart(final ODataResponse response) throws BatchException {
-    writer.append(BatchConstants.HTTP_CONTENT_TYPE).append(COLON).append(SP).append(BatchConstants.HTTP_APPLICATION_HTTP).append(LF);
-    writer.append(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING).append(COLON).append(SP).append("binary").append(LF).append(LF);
+    writer.append(HttpHeaders.CONTENT_TYPE).append(COLON).append(SP).append(BatchConstants.HTTP_APPLICATION_HTTP).append(LF);
+    writer.append(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING).append(COLON).append(SP).append("binary").append(LF);
+    if (response.getHeader(BatchConstants.MIME_HEADER_CONTENT_ID) != null) {
+      writer.append(BatchConstants.HTTP_CONTENT_ID).append(COLON).append(SP).append(response.getHeader(BatchConstants.MIME_HEADER_CONTENT_ID)).append(LF);
+    }
+    writer.append(LF);
     writer.append("HTTP/1.1").append(SP).append(response.getStatus().getStatusCode()).append(SP).append(response.getStatus().getInfo()).append(LF);
     appendHeader(response);
     if (!HttpStatusCodes.NO_CONTENT.equals(response.getStatus())) {
@@ -79,7 +84,7 @@ public class BatchResponseWriter {
       } else {
         body = response.getEntity().toString();
       }
-      writer.append(BatchConstants.HTTP_CONTENT_LENGTH).append(COLON).append(SP).append(body.length()).append(LF).append(LF);
+      writer.append(HttpHeaders.CONTENT_LENGTH).append(COLON).append(SP).append(body.length()).append(LF).append(LF);
       writer.append(body);
     }
     writer.append(LF).append(LF);
@@ -87,7 +92,11 @@ public class BatchResponseWriter {
 
   private void appendHeader(final ODataResponse response) {
     for (String name : response.getHeaderNames()) {
-      writer.append(name).append(COLON).append(SP).append(response.getHeader(name)).append(LF);
+      if (!BatchConstants.MIME_HEADER_CONTENT_ID.equalsIgnoreCase(name) && !BatchConstants.REQUEST_HEADER_CONTENT_ID.equalsIgnoreCase(name)) {
+        writer.append(name).append(COLON).append(SP).append(response.getHeader(name)).append(LF);
+      } else if (BatchConstants.REQUEST_HEADER_CONTENT_ID.equalsIgnoreCase(name)) {
+        writer.append(BatchConstants.HTTP_CONTENT_ID).append(COLON).append(SP).append(response.getHeader(name)).append(LF);
+      }
     }
   }
 

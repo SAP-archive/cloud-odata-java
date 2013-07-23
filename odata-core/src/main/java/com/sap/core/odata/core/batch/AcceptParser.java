@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.regex.MatchResult;
@@ -31,6 +30,8 @@ import com.sap.core.odata.api.batch.BatchException;
  * @author SAP AG
  */
 public class AcceptParser {
+
+  private static final String BAD_REQUEST = "400";
   private static final String ALL = "*";
   private static final String REG_EX_QUALITY_FACTOR = "q=((?:1\\.0{0,3})|(?:0\\.[0-9]{0,2}[1-9]))";
   private static final String REG_EX_OPTIONAL_WHITESPACE = "\\s?";
@@ -58,12 +59,12 @@ public class AcceptParser {
         } else {
           String header = acceptHeaderScanner.next();
           acceptHeaderScanner.close();
-          throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
+          throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header), BAD_REQUEST);
         }
       } else {
         String header = acceptHeaderScanner.next();
         acceptHeaderScanner.close();
-        throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header));
+        throw new BatchException(BatchException.INVALID_ACCEPT_HEADER.addContent(header), BAD_REQUEST);
       }
     }
     for (Accept accept : acceptTree) {
@@ -97,8 +98,8 @@ public class AcceptParser {
     return qualityFactor;
   }
 
-  public static List<Locale> parseAcceptableLanguages(final String headerValue) throws BatchException {
-    List<Locale> acceptLanguages = new LinkedList<Locale>();
+  public static List<String> parseAcceptableLanguages(final String headerValue) throws BatchException {
+    List<String> acceptLanguages = new LinkedList<String>();
     TreeSet<Accept> acceptTree = getAcceptTree();
     Scanner acceptLanguageScanner = new Scanner(headerValue).useDelimiter(",\\s?");
     while (acceptLanguageScanner.hasNext()) {
@@ -112,23 +113,16 @@ public class AcceptParser {
         } else {
           String acceptLanguage = acceptLanguageScanner.next();
           acceptLanguageScanner.close();
-          throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
+          throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage), BAD_REQUEST);
         }
       } else {
         String acceptLanguage = acceptLanguageScanner.next();
         acceptLanguageScanner.close();
-        throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage));
+        throw new BatchException(BatchException.INVALID_ACCEPT_LANGUAGE_HEADER.addContent(acceptLanguage), BAD_REQUEST);
       }
     }
     for (Accept accept : acceptTree) {
-      String[] p = accept.getValue().split("-");
-      String language = p[0];
-      String country = "";
-      if (p.length == 2) {
-        country = p[p.length - 1];
-      }
-      Locale locale = new Locale(language, country);
-      acceptLanguages.add(locale);
+      acceptLanguages.add(accept.getValue());
     }
     acceptLanguageScanner.close();
     return acceptLanguages;
