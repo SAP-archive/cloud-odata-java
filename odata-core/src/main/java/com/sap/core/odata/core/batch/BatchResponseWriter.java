@@ -97,7 +97,7 @@ public class BatchResponseWriter {
     try {
       count = in.read(tmp);
       while (count >= 0) {
-        b.append(new String(tmp, 0, count));
+        b.append(new String(tmp, 0, count, "UTF-8"));
         count = in.read(tmp);
       }
     } catch (IOException e) {
