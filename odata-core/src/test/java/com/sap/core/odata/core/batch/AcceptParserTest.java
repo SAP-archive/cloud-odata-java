@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.Test;
 
@@ -121,26 +120,26 @@ public class AcceptParserTest {
 
   @Test
   public void testAcceptLanguages() throws BatchException {
-    List<Locale> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("en-US,en;q=0.7,en-UK;q=0.9");
+    List<String> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("en-US,en;q=0.7,en-UK;q=0.9");
     assertNotNull(acceptLanguageHeaders);
     assertEquals(3, acceptLanguageHeaders.size());
-    assertEquals(new Locale("en", "US"), acceptLanguageHeaders.get(0));
-    assertEquals(new Locale("en", "UK"), acceptLanguageHeaders.get(1));
-    assertEquals(new Locale("en"), acceptLanguageHeaders.get(2));
+    assertEquals("en-US", acceptLanguageHeaders.get(0));
+    assertEquals("en-UK", acceptLanguageHeaders.get(1));
+    assertEquals("en", acceptLanguageHeaders.get(2));
   }
 
   @Test
   public void testAllAcceptLanguages() throws BatchException {
-    List<Locale> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("*");
+    List<String> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("*");
     assertNotNull(acceptLanguageHeaders);
     assertEquals(1, acceptLanguageHeaders.size());
   }
 
   @Test
   public void testLongAcceptLanguageValue() throws BatchException {
-    List<Locale> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("english");
+    List<String> acceptLanguageHeaders = AcceptParser.parseAcceptableLanguages("english");
     assertNotNull(acceptLanguageHeaders);
-    assertEquals(new Locale("english"), acceptLanguageHeaders.get(0));
+    assertEquals("english", acceptLanguageHeaders.get(0));
   }
 
   @Test(expected = BatchException.class)

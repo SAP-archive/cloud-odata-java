@@ -86,13 +86,19 @@ public class ODataDebugResponseWrapperTest extends BaseTest {
     return response;
   }
 
-  private RuntimeMeasurement mockRuntimeMeasurement(final String method, final long start, final long stop) {
+  private RuntimeMeasurement mockRuntimeMeasurement(final String method, final long startTime, final long stopTime, final long startMemory, final long stopMemory) {
     RuntimeMeasurement measurement = mock(RuntimeMeasurement.class);
     when(measurement.getClassName()).thenReturn("class");
     when(measurement.getMethodName()).thenReturn(method);
-    when(measurement.getTimeStarted()).thenReturn(start);
-    when(measurement.getTimeStopped()).thenReturn(stop);
+    when(measurement.getTimeStarted()).thenReturn(startTime);
+    when(measurement.getTimeStopped()).thenReturn(stopTime);
+    when(measurement.getMemoryStarted()).thenReturn(startMemory);
+    when(measurement.getMemoryStopped()).thenReturn(stopMemory);
     return measurement;
+  }
+
+  private RuntimeMeasurement mockRuntimeMeasurement(final String method, final long start, final long stop) {
+    return mockRuntimeMeasurement(method, start, stop, 1000, 4000);
   }
 
   @Test
@@ -245,12 +251,12 @@ public class ODataDebugResponseWrapperTest extends BaseTest {
         .wrapResponse();
     String entity = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertEquals(EXPECTED.replace("}}}",
-        "}},\"runtime\":[{\"class\":\"class\",\"method\":\"method\",\"duration\":41,"
-            + "\"children\":[{\"class\":\"class\",\"method\":\"inner\",\"duration\":8,\"children\":[]},"
-            + "{\"class\":\"class\",\"method\":\"inner\",\"duration\":3,\"children\":["
-            + "{\"class\":\"class\",\"method\":\"inner2\",\"duration\":1,\"children\":[]}]},"
-            + "{\"class\":\"class\",\"method\":\"child\",\"duration\":4,\"children\":[]}]},"
-            + "{\"class\":\"class\",\"method\":\"second\",\"duration\":54,\"children\":[]}]}"),
+        "}},\"runtime\":[{\"class\":\"class\",\"method\":\"method\",\"duration\":41,\"memory\":3,"
+            + "\"children\":[{\"class\":\"class\",\"method\":\"inner\",\"duration\":8,\"memory\":6,\"children\":[]},"
+            + "{\"class\":\"class\",\"method\":\"inner\",\"duration\":3,\"memory\":3,\"children\":["
+            + "{\"class\":\"class\",\"method\":\"inner2\",\"duration\":1,\"memory\":3,\"children\":[]}]},"
+            + "{\"class\":\"class\",\"method\":\"child\",\"duration\":4,\"memory\":3,\"children\":[]}]},"
+            + "{\"class\":\"class\",\"method\":\"second\",\"duration\":54,\"memory\":3,\"children\":[]}]}"),
         entity);
   }
 

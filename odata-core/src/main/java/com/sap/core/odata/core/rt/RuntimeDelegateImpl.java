@@ -26,10 +26,12 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.processor.ODataRequest.ODataRequestBuilder;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
+import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.batch.BatchResponsePartImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
@@ -89,6 +91,12 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   protected BatchResponsePartBuilder createBatchResponsePartBuilder() {
     BatchResponsePartImpl part = new BatchResponsePartImpl();
     return part.new BatchResponsePartBuilderImpl();
+  }
+
+  @Override
+  protected ODataRequestBuilder createODataRequestBuilder() {
+    ODataRequestImpl request = new ODataRequestImpl();
+    return request.new ODataRequestBuilderImpl();
   }
 
 }

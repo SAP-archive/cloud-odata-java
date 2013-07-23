@@ -17,6 +17,7 @@ package com.sap.core.odata.core.batch;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -24,32 +25,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.PathInfoImpl;
-import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG
  */
 public class BatchRequestParserTest {
+
+  private static final String CONTENT_ID_REFERENCE = "NewEmployee";
+  private static final String PUT_MIME_HEADER_CONTENT_ID = "BBB_MIMEPART1";
+  private static final String PUT_REQUEST_HEADER_CONTENT_ID = "BBB_REQUEST1";
   private static final String SERVICE_ROOT = "http://localhost/odata/";
   private static EntityProviderBatchProperties batchProperties;
   private static final String contentType = "multipart/mixed;boundary=batch_8194-cf13-1f56";
+  private static final String MIME_HEADERS = "Content-Type: application/http" + "\r\n"
+      + "Content-Transfer-Encoding: binary" + "\r\n";
+  private static final String GET_REQUEST = MIME_HEADERS + "\n"
+      + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+      + "\n"
+      + "\n";
 
   @BeforeClass
   public static void setProperties() throws URISyntaxException {
@@ -85,13 +92,13 @@ public class BatchRequestParserTest {
         if (retrieveRequest.getQueryParameters().get("$format") != null) {
           assertEquals("json", retrieveRequest.getQueryParameters().get("$format"));
         }
-        assertEquals(SERVICE_ROOT + "Employees('2')/EmployeeName?$format=json", Decoder.decode(retrieveRequest.getPathInfo().getRequestUri().toASCIIString()));
+        assertEquals(SERVICE_ROOT + "Employees('2')/EmployeeName?$format=json", retrieveRequest.getPathInfo().getRequestUri().toASCIIString());
       } else {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
 
           assertEquals(ODataHttpMethod.PUT, request.getMethod());
-          assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
+          assertEquals("100000", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
           assertEquals("application/json;odata=verbose", request.getContentType());
           assertEquals(3, request.getAcceptHeaders().size());
           assertNotNull(request.getAcceptableLanguages());
@@ -136,8 +143,7 @@ public class BatchRequestParserTest {
         + "--changeset_f980-1cb6-94dd--" + "\r\n"
         + "\r\n"
         + "--batch_8194-cf13-1f56" + "\r\n"
-        + "Content-Type: application/http" + "\r\n"
-        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + MIME_HEADERS
         + "\r\n"
         + "GET Employees?$filter=Age%20gt%2040 HTTP/1.1" + "\r\n"
         + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + "\r\n"
@@ -145,24 +151,20 @@ public class BatchRequestParserTest {
         + "\r\n"
         + "\r\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchPart> batchParts = parse(batch);
     for (BatchPart object : batchParts) {
       if (!object.isChangeSet()) {
         assertEquals(1, object.getRequests().size());
         ODataRequest retrieveRequest = object.getRequests().get(0);
         assertEquals(ODataHttpMethod.GET, retrieveRequest.getMethod());
-        assertEquals("Age gt 40", Decoder.decode(retrieveRequest.getQueryParameters().get("$filter")));
-        assertEquals("http://localhost/odata/Employees?$filter=Age gt 40", Decoder.decode(retrieveRequest.getPathInfo().getRequestUri().toString()));
+        assertEquals("Age gt 40", retrieveRequest.getQueryParameters().get("$filter"));
+        assertEquals(new URI("http://localhost/odata/Employees?$filter=Age%20gt%2040"), retrieveRequest.getPathInfo().getRequestUri());
       } else {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
-          assertEquals("100000", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
-          assertEquals("1", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_ID.toLowerCase()));
+          assertEquals("100000", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
+          assertEquals("1", request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           InputStream body = request.getBody();
           assertEquals(content, StringHelper.inputStreamToString(body));
@@ -186,8 +188,7 @@ public class BatchRequestParserTest {
         + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\r\n"
         + "\r\n"
         + "--changeset_f980-1cb6-94dd" + "\r\n"
-        + "Content-Type: application/http" + "\r\n"
-        + "Content-Transfer-Encoding: binary" + "\r\n"
+        + MIME_HEADERS
         + "\r\n"
         + "POST Employees('2') HTTP/1.1" + "\r\n"
         + "Content-Length: 100" + "\r\n"
@@ -197,17 +198,13 @@ public class BatchRequestParserTest {
         + "--changeset_f980-1cb6-94dd--" + "\r\n"
         + "\r\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchPart> batchParts = parse(batch);
     for (BatchPart object : batchParts) {
       if (object.isChangeSet()) {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
-          assertEquals("100", request.getRequestHeaderValue(BatchConstants.HTTP_CONTENT_LENGTH.toLowerCase()));
+          assertEquals("100", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           assertNotNull(request.getBody());
         }
@@ -217,20 +214,10 @@ public class BatchRequestParserTest {
 
   @Test
   public void testBoundaryParameterWithQuotas() throws BatchException {
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
     String contentType = "multipart/mixed; boundary=\"batch_1.2+34:2j)0?\"";
-    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
     String batch = "--batch_1.2+34:2j)0?" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_1.2+34:2j)0?--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
@@ -241,20 +228,10 @@ public class BatchRequestParserTest {
 
   @Test(expected = BatchException.class)
   public void testBatchWithInvalidContentType() throws BatchException {
-    Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    List<String> headerValues = new ArrayList<String>();
     String invalidContentType = "multipart;boundary=batch_1740-bb84-2f7f";
-    requestHeaders.put(BatchConstants.HTTP_CONTENT_TYPE, headerValues);
 
-    ODataRequestImpl postRequest = new ODataRequestImpl();
-    postRequest.setRequestHeaders(requestHeaders);
     String batch = "--batch_1740-bb84-2f7f" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_1740-bb84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
@@ -265,12 +242,7 @@ public class BatchRequestParserTest {
   public void testBatchWithoutBoundaryParameter() throws BatchException {
     String invalidContentType = "multipart/mixed";
     String batch = "--batch_1740-bb84-2f7f" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_1740-bb84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
@@ -278,15 +250,10 @@ public class BatchRequestParserTest {
   }
 
   @Test(expected = BatchException.class)
-  public void testBoundaryWithoutQuota() throws BatchException {
+  public void testBoundaryParameterWithoutQuota() throws BatchException {
     String invalidContentType = "multipart;boundary=batch_1740-bb:84-2f7f";
     String batch = "--batch_1740-bb:84-2f7f" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_1740-bb:84-2f7f--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(invalidContentType, batchProperties);
@@ -296,38 +263,29 @@ public class BatchRequestParserTest {
   @Test(expected = BatchException.class)
   public void testWrongBoundaryString() throws BatchException {
     String batch = "--batch_8194-cf13-1f5" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testBoundaryWithoutHyphen() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
+        + GET_REQUEST
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
+  }
+
+  @Test(expected = BatchException.class)
+  public void testNoBoundaryString() throws BatchException {
+    String batch = "--batch_8194-cf13-1f56" + "\n"
+        + GET_REQUEST
+        //+ no boundary string
+        + GET_REQUEST
+        + "--batch_8194-cf13-1f56--";
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -336,10 +294,9 @@ public class BatchRequestParserTest {
         + "Content-Type: multipart/mixed;boundary=batch_8194-cf13-1f56" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
-        + "PIT Employees('2')/EmployeeName HTTP/1.1" + "\n"
+        + "PUT Employees('2')/EmployeeName HTTP/1.1" + "\n"
         + "Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1" + "\n"
         + "Content-Type: application/json;odata=verbose" + "\n"
         + "MaxDataServiceVersion: 2.0" + "\n"
@@ -347,9 +304,7 @@ public class BatchRequestParserTest {
         + "{\"EmployeeName\":\"Frederic Fall MODIFIED\"}" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -360,9 +315,7 @@ public class BatchRequestParserTest {
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -374,9 +327,7 @@ public class BatchRequestParserTest {
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -388,69 +339,41 @@ public class BatchRequestParserTest {
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testMimeHeaderContentId() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binaryt" + "\n"
+        + MIME_HEADERS
         + "Content-ID: 1" + "\n"
         + "\n"
         + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testInvalidMethodForBatch() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
         + "POST Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testNoMethod() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
-        + "Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + /*GET*/"Employees('1')/EmployeeName HTTP/1.1" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
-  }
-
-  @Test(expected = BatchException.class)
-  public void testNoBoundaryString() throws BatchException {
-    String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -459,17 +382,14 @@ public class BatchRequestParserTest {
         + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\n"
         + "\n"
         + "--changeset_f980-1cb6-94dd" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
         + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
         + "Content-Type: application/json;odata=verbose" + "\n"
         + "MaxDataServiceVersion: 2.0" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
@@ -477,65 +397,44 @@ public class BatchRequestParserTest {
     String batch = "--batch_8194-cf13-1f56" + "\n"
         + "Content-Type: multipart/mixed;boundary=changeset_f980-1cb6-94dd" + "\n"
         + "\n"
-        + "--changeset_f980-1cb6-94d" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + "--changeset_f980-1cb6-94d"/*+"d"*/+ "\n"
+        + MIME_HEADERS
         + "\n"
         + "POST Employees('2') HTTP/1.1" + "\n"
         + "Content-Type: application/json;odata=verbose" + "\n"
         + "MaxDataServiceVersion: 2.0" + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testNoCloseDelimiter() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+        + GET_REQUEST;
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testNoCloseDelimiter2() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
+    /*--batch_8194-cf13-1f56--*/;
+    parseInvalidBatchBody(batch);
   }
 
   @Test(expected = BatchException.class)
   public void testNoCloseDelimiter3() throws BatchException {
-    String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
-        + "\n"
-        + "GET Employees('1')/EmployeeName HTTP/1.1" + "\n"
-        + "\n"
-        + "\n"
-        + "--batch_8194-cf13-1f56-";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    parser.parse(in);
+    String batch = "--batch_8194-cf13-1f56" + "\n" + GET_REQUEST + "--batch_8194-cf13-1f56-"/*no hash*/;
+    parseInvalidBatchBody(batch);
   }
 
   @Test
   public void testAcceptHeaders() throws BatchException, URISyntaxException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
         + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
         + "Content-Length: 100000" + "\n"
@@ -544,11 +443,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchPart> batchParts = parse(batch);
     for (BatchPart multipart : batchParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
@@ -566,8 +461,7 @@ public class BatchRequestParserTest {
   @Test
   public void testAcceptHeaders2() throws BatchException, URISyntaxException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
         + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
         + "Content-Length: 100000" + "\n"
@@ -576,11 +470,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchPart> batchParts = parse(batch);
     for (BatchPart multipart : batchParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
@@ -599,8 +489,7 @@ public class BatchRequestParserTest {
   @Test
   public void testAcceptHeaders3() throws BatchException, URISyntaxException {
     String batch = "--batch_8194-cf13-1f56" + "\n"
-        + "Content-Type: application/http" + "\n"
-        + "Content-Transfer-Encoding: binary" + "\n"
+        + MIME_HEADERS
         + "\n"
         + "GET Employees('2')/EmployeeName HTTP/1.1" + "\n"
         + "Content-Length: 100000" + "\n"
@@ -609,11 +498,7 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    InputStream in = new ByteArrayInputStream(batch.getBytes());
-    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchPart> batchParts = parse(batch);
     for (BatchPart multipart : batchParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
@@ -629,5 +514,77 @@ public class BatchRequestParserTest {
       }
 
     }
+  }
+
+  @Test
+  public void testContentId() throws BatchException {
+    String batch = "--batch_8194-cf13-1f56" + "\n"
+        + MIME_HEADERS
+        + "\n"
+        + "GET Employees HTTP/1.1" + "\n"
+        + "accept: */*,application/atom+xml,application/atomsvc+xml,application/xml" + "\n"
+        + "Content-Id: BBB" + "\n"
+        + "\n" + "\n"
+        + "--batch_8194-cf13-1f56" + "\n"
+        + "Content-Type: multipart/mixed; boundary=changeset_f980-1cb6-94dd" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94dd" + "\n"
+        + MIME_HEADERS
+        + "Content-Id: " + CONTENT_ID_REFERENCE + "\n"
+        + "\n"
+        + "POST Employees HTTP/1.1" + "\n"
+        + "Content-type: application/octet-stream" + "\n"
+        + "\n"
+        + "/9j/4AAQSkZJRgABAQEBLAEsAAD/4RM0RXhpZgAATU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAA" + "\n"
+        + "\n"
+        + "--changeset_f980-1cb6-94dd" + "\n"
+        + MIME_HEADERS
+        + "Content-ID: " + PUT_MIME_HEADER_CONTENT_ID + "\n"
+        + "\n"
+        + "PUT $" + CONTENT_ID_REFERENCE + "/EmployeeName HTTP/1.1" + "\n"
+        + "Content-Type: application/json;odata=verbose" + "\n"
+        + "Content-Id:" + PUT_REQUEST_HEADER_CONTENT_ID + "\n"
+        + "\n"
+        + "{\"EmployeeName\":\"Peter Fall\"}" + "\n"
+        + "--changeset_f980-1cb6-94dd--" + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56--";
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    List<BatchPart> batchParts = parser.parse(in);
+    assertNotNull(batchParts);
+    for (BatchPart multipart : batchParts) {
+      if (!multipart.isChangeSet()) {
+        assertEquals(1, multipart.getRequests().size());
+        ODataRequest retrieveRequest = multipart.getRequests().get(0);
+        assertEquals("BBB", retrieveRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+      } else {
+        for (ODataRequest request : multipart.getRequests()) {
+          if (ODataHttpMethod.POST.equals(request.getMethod())) {
+            assertEquals(CONTENT_ID_REFERENCE, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+          } else if (ODataHttpMethod.PUT.equals(request.getMethod())) {
+            assertEquals(PUT_MIME_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+            assertEquals(PUT_REQUEST_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+            assertNull(request.getPathInfo().getRequestUri());
+            assertEquals("$" + CONTENT_ID_REFERENCE, request.getPathInfo().getODataSegments().get(0).getPath());
+          }
+        }
+      }
+    }
+  }
+
+  private List<BatchPart> parse(final String batch) throws BatchException {
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    List<BatchPart> batchParts = parser.parse(in);
+    assertNotNull(batchParts);
+    assertEquals(false, batchParts.isEmpty());
+    return batchParts;
+  }
+
+  private void parseInvalidBatchBody(final String batch) throws BatchException {
+    InputStream in = new ByteArrayInputStream(batch.getBytes());
+    BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
+    parser.parse(in);
   }
 }

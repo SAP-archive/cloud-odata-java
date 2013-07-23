@@ -1,0 +1,56 @@
+--batch_123
+Content-Type: multipart/mixed; boundary=changeset_7638-3d26-8efd
+
+--changeset_7638-3d26-8efd
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+Content-Id: newEmployee
+
+POST Employees HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+Content-Type: application/octet-stream
+Content-Id: 1
+
+Loml/s/2aje2bUNbJcpOZhijEEOfIcSPMrtqgm0xZWu20Vpo46S20sNLSs4NihYGtHuV6EAUVFEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERB//9k=
+
+--changeset_7638-3d26-8efd
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+PUT $newEmployee/EmployeeName HTTP/1.1
+Content-Length: 100
+DataServiceVersion: 1.0
+Content-Type: application/json;odata=verbose
+MaxDataServiceVersion: 2.0
+Content-Id: 2
+
+{"EmployeeName":"Frederic Fall MODIFIED"}
+
+--changeset_7638-3d26-8efd
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+PUT $newEmployee/Age HTTP/1.1
+Content-Length: 100
+DataServiceVersion: 1.0
+Content-Type: application/json;odata=verbose
+MaxDataServiceVersion: 2.0
+Content-Id: 3
+
+{"Age":40}
+
+--changeset_7638-3d26-8efd--
+
+--batch_123
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+Content-Id: AAA
+
+GET Employees('7') HTTP/1.1
+Accept: application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1
+MaxDataServiceVersion: 2.0
+Content-Id: 4
+
+
+--batch_123--
