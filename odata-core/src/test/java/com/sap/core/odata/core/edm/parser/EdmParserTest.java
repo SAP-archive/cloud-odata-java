@@ -43,10 +43,15 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.core.ep.AbstractXmlProducerTestHelper;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
 
-public class EdmParserTest {
+public class EdmParserTest extends AbstractXmlProducerTestHelper {
+
+  public EdmParserTest(final StreamWriterImplType type) {
+    super(type);
+  }
 
   private static final String DEFAULT_VALUE = "Photo";
   private static final String FC_TARGET_PATH = "Содержание";
@@ -1434,6 +1439,7 @@ public class EdmParserTest {
         }
       }
       for (EntityType entityType : schema.getEntityTypes()) {
+        assertEquals(1, entityType.getAnnotationAttributes().size());
         AnnotationAttribute attr = entityType.getAnnotationAttributes().get(0);
         assertEquals("href", attr.getName());
         assertEquals("prefix1", attr.getPrefix());

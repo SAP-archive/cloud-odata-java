@@ -19,13 +19,16 @@ public abstract class AbstractXmlProducerTestHelper extends BaseTest {
   public AbstractXmlProducerTestHelper(final StreamWriterImplType type) {
     switch (type) {
     case WOODSTOCKIMPL:
+      System.setProperty("javax.xml.stream.XMLInputFactory", "com.ctc.wstx.stax.WstxInputFactory"); //NOSONAR
       System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
       break;
     case SUNINTERNALIMPL:
+      System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.internal.stream.XMLInputFactoryImpl"); //NOSONAR
       System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl"); //NOSONAR
       break;
     default:
       System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl"); //NOSONAR
+      System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.internal.stream.XMLInputFactoryImpl"); //NOSONAR
       break;
     }
   }

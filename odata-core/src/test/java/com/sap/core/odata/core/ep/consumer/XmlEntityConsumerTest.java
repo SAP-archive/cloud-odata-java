@@ -214,6 +214,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "  </m:properties>" +
       "</entry>";
 
+  public XmlEntityConsumerTest() {
+    System.setProperty("javax.xml.stream.XMLInputFactory", "com.ctc.wstx.stax.WstxInputFactory"); //NOSONAR
+    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
+  }
+
   private static class EmployeeCallback implements OnReadInlineContent {
     List<ODataEntry> employees;
 
