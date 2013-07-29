@@ -1,7 +1,7 @@
 !!! DEPRECATED !!!
 ==================
 
-This project will continue at the Apache Software Foundation and has already entered the incubator. Please follow this link to the new project site: [Apache Olingo (incubation)](http://olingo.incubator.apache.org/)
+This project will continue at the Apache Software Foundation and has entered the incubator already. Please follow this link to the new project site: [Apache Olingo (incubation)](http://olingo.incubator.apache.org/)
 
 OData Library (Java)
 ====================
