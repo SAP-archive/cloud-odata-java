@@ -22,7 +22,7 @@ The OData Library (Java) is a library which enables developers to implement ODat
 
 ### Some more Background ###
 
-The basic idea behind this project is to have a code base that can continue development to support future OData 4.0 standard. OData 4.0 is expected to be release by OAISI in 2013. For that the code is modular and has following components:
+The basic idea behind this project is to have a code base that can continue development to support future OData 4.0 standard. OData 4.0 is expected to be release by OASIS in 2013. For that the code is modular and has following components:
 
 - URI parser: currently a OData 2.0 parser
 - Dispatcher: is handling OData 2.0 URI types
