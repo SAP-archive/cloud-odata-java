@@ -1,7 +1,5 @@
 package com.sap.core.odata.core.edm;
 
-import java.util.Locale;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -128,6 +126,6 @@ public class EdmBinary extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return "binary'" + Hex.encodeHexString(Base64.decodeBase64(literal)).toUpperCase(Locale.ROOT) + "'";
+    return "binary'" + String.valueOf(Hex.encodeHex(Base64.decodeBase64(literal), false)) + "'";
   }
 }

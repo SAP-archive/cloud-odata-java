@@ -67,34 +67,27 @@ public class EdmTime extends AbstractSimpleType {
     Calendar dateTimeValue = Calendar.getInstance();
     dateTimeValue.clear();
 
-    if (matcher.group(1) != null) {
-      dateTimeValue.set(Calendar.HOUR_OF_DAY, Integer.parseInt(matcher.group(1)));
-    }
-    if (matcher.group(2) != null) {
-      dateTimeValue.set(Calendar.MINUTE, Integer.parseInt(matcher.group(2)));
-    }
-    if (matcher.group(3) != null) {
-      dateTimeValue.set(Calendar.SECOND, Integer.parseInt(matcher.group(3)));
-    }
+    dateTimeValue.set(Calendar.HOUR_OF_DAY,
+        matcher.group(1) == null ? 0 : Integer.parseInt(matcher.group(1)));
+    dateTimeValue.set(Calendar.MINUTE,
+        matcher.group(2) == null ? 0 : Integer.parseInt(matcher.group(2)));
+    dateTimeValue.set(Calendar.SECOND,
+        matcher.group(3) == null ? 0 : Integer.parseInt(matcher.group(3)));
 
-    if (matcher.group(4) != null) {
-      if (facets == null || facets.getPrecision() == null || facets.getPrecision() >= matcher.group(4).length()) {
-        if (matcher.group(4).length() <= 3) {
+    if (matcher.group(4) != null)
+      if (facets == null || facets.getPrecision() == null || facets.getPrecision() >= matcher.group(4).length())
+        if (matcher.group(4).length() <= 3)
           dateTimeValue.set(Calendar.MILLISECOND,
               Short.parseShort(matcher.group(4) + "000".substring(0, 3 - matcher.group(4).length())));
-        } else {
+        else
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(literal));
-        }
-      } else {
+      else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(literal, facets));
-      }
-    }
 
-    if (dateTimeValue.get(Calendar.DAY_OF_YEAR) == 1) {
+    if (dateTimeValue.get(Calendar.DAY_OF_YEAR) == 1)
       return dateTimeValue;
-    } else {
+    else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(literal));
-    }
   }
 
   @Override

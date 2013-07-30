@@ -123,7 +123,7 @@ public class EdmDateTime extends AbstractSimpleType {
     // off temporarily.
     dateTimeValue.setLenient(false);
     try {
-      dateTimeValue.getTimeInMillis();
+      dateTimeValue.get(Calendar.MILLISECOND);
     } catch (final IllegalArgumentException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
