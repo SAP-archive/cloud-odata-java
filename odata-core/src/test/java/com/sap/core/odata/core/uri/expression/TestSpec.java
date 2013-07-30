@@ -32,8 +32,7 @@ import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 /**
  * @author SAP AG
  */
-public class TestSpec extends TestBase
-{
+public class TestSpec extends TestBase {
   final static String aBoolean = "true";
   final static String aBinary = "binary'FA12AAA1'";
   final static String aBit = "1";
@@ -71,8 +70,7 @@ public class TestSpec extends TestBase
   final EdmTime timeInst = EdmTime.getInstance();
 
   @Test
-  public void testMinimumSpecReq()
-  {
+  public void testMinimumSpecReq() {
 
     //ADD
     GetPTF(aDecimal + " add " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " add " + aDecimal + "}");
@@ -266,8 +264,7 @@ public class TestSpec extends TestBase
   }
 
   @Test
-  public void testPropertiesWithEdm()
-  {
+  public void testPropertiesWithEdm() {
     try {
       EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
       EdmProperty string = (EdmProperty) edmEtAllTypes.getProperty("String");
@@ -283,30 +280,16 @@ public class TestSpec extends TestBase
 
       GetPTF(edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
 
-      GetPTF(edmEtAllTypes, "'text' eq String")
-          .root().aKind(ExpressionKind.BINARY);
+      GetPTF(edmEtAllTypes, "'text' eq String").root().aKind(ExpressionKind.BINARY);
 
-      GetPTF(edmEtAllTypes, "Complex/String")
-          .root().left().aEdmProperty(complex).aEdmType(complexType)
-          .root().right().aEdmProperty(complexString).aEdmType(complexStringType)
-          .root().aKind(ExpressionKind.MEMBER).aEdmType(complexStringType);
+      GetPTF(edmEtAllTypes, "Complex/String").root().left().aEdmProperty(complex).aEdmType(complexType).root().right().aEdmProperty(complexString).aEdmType(complexStringType).root().aKind(ExpressionKind.MEMBER).aEdmType(complexStringType);
 
-      GetPTF(edmEtAllTypes, "Complex/Address/City")
-          .root().aKind(ExpressionKind.MEMBER)
-          .root().left().aKind(ExpressionKind.MEMBER)
-          .root().left().left().aKind(ExpressionKind.PROPERTY).aEdmProperty(complex).aEdmType(complexType)
-          .root().left().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddress).aEdmType(complexAddressType)
-          .root().left().aEdmType(complexAddressType)
-          .root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType)
-          .root().aEdmType(complexAddressCityType);
+      GetPTF(edmEtAllTypes, "Complex/Address/City").root().aKind(ExpressionKind.MEMBER).root().left().aKind(ExpressionKind.MEMBER).root().left().left().aKind(ExpressionKind.PROPERTY).aEdmProperty(complex).aEdmType(complexType).root().left().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddress).aEdmType(complexAddressType).root().left().aEdmType(complexAddressType).root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType).root().aEdmType(complexAddressCityType);
 
       EdmProperty boolean_ = (EdmProperty) edmEtAllTypes.getProperty("Boolean");
       EdmSimpleType boolean_Type = (EdmSimpleType) boolean_.getType();
 
-      GetPTF(edmEtAllTypes, "not Boolean")
-          .aKind(ExpressionKind.UNARY)
-          .aEdmType(boolean_Type)
-          .right().aEdmProperty(boolean_).aEdmType(boolean_Type);
+      GetPTF(edmEtAllTypes, "not Boolean").aKind(ExpressionKind.UNARY).aEdmType(boolean_Type).right().aEdmProperty(boolean_).aEdmType(boolean_Type);
 
     } catch (EdmException e) {
       fail("Error in testPropertiesWithEdm:" + e.getLocalizedMessage());
@@ -315,8 +298,7 @@ public class TestSpec extends TestBase
   }
 
   @Test
-  public void testDeepParenthesis()
-  {
+  public void testDeepParenthesis() {
     GetPTF("2d").aSerialized("2d");
     GetPTF("(2d)").aSerialized("2d");
     GetPTF("((2d))").aSerialized("2d");

@@ -10,8 +10,7 @@ import com.sap.core.odata.api.edm.EdmException;
  * Helper for the entity data model used as technical reference scenario.
  * @author SAP AG
  */
-public class TecEdmInfo
-{
+public class TecEdmInfo {
   private final Edm edm;
 
   public TecEdmInfo(final Edm edm) {

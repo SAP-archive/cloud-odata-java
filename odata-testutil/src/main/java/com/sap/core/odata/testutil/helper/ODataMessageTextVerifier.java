@@ -57,8 +57,7 @@ public class ODataMessageTextVerifier {
 
   private void assertExistMessage(final MessageReference msgRef) {
     final String text = getMessage(msgRef);
-    if (text == null)
-    {
+    if (text == null) {
       return; // checked in getMessage
     }
 

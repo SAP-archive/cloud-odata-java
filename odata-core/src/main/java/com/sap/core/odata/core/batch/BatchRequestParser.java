@@ -191,71 +191,56 @@ public class BatchRequestParser {
 
   private ODataRequest parseRequest(final Scanner scanner, final boolean isChangeSet) throws BatchException {
     try {
-    ODataRequest request;
-    if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
-      scanner.next(REG_EX_REQUEST_LINE);
-      currentLineNumber++;
-      String method = null;
-      String uri = null;
-      MatchResult result = scanner.match();
-      if (result.groupCount() == 2) {
-        method = result.group(1);
-        uri = result.group(2).trim();
+      ODataRequest request;
+      if (scanner.hasNext(REG_EX_REQUEST_LINE)) {
+        scanner.next(REG_EX_REQUEST_LINE);
+        currentLineNumber++;
+        String method = null;
+        String uri = null;
+        MatchResult result = scanner.match();
+        if (result.groupCount() == 2) {
+          method = result.group(1);
+          uri = result.group(2).trim();
+        } else {
+          currentLineNumber++;
+          throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
+        }
+        PathInfo pathInfo = parseRequestUri(uri);
+        Map<String, String> queryParameters = parseQueryParameters(uri);
+        if (isChangeSet) {
+          if (!HTTP_CHANGESET_METHODS.contains(method)) {
+            throw new BatchException(BatchException.INVALID_CHANGESET_METHOD.addContent(currentLineNumber));
+          }
+        } else if (!HTTP_BATCH_METHODS.contains(method)) {
+          throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD.addContent(currentLineNumber));
+        }
+        ODataHttpMethod httpMethod = ODataHttpMethod.valueOf(method);
+        Map<String, List<String>> headers = parseRequestHeaders(scanner);
+        if (currentMimeHeaderContentId != null) {
+          List<String> headerList = new ArrayList<String>();
+          headerList.add(currentMimeHeaderContentId);
+          headers.put(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH), headerList);
+        }
+
+        String contentType = getContentTypeHeader(headers);
+        List<String> acceptHeaders = getAcceptHeader(headers);
+        List<Locale> acceptLanguages = getAcceptLanguageHeader(headers);
+        parseNewLine(scanner);
+        InputStream body;
+        body = new ByteArrayInputStream("".getBytes("UTF-8"));
+        if (isChangeSet) {
+          body = parseBody(scanner);
+        }
+        if (contentType != null) {
+          request = ODataRequest.method(httpMethod).queryParameters(queryParameters).requestHeaders(headers).pathInfo(pathInfo).acceptableLanguages(acceptLanguages).contentType(contentType).body(body).acceptHeaders(acceptHeaders).build();
+        } else {
+          request = ODataRequest.method(httpMethod).queryParameters(queryParameters).requestHeaders(headers).pathInfo(pathInfo).acceptableLanguages(acceptLanguages).body(body).acceptHeaders(acceptHeaders).build();
+        }
       } else {
         currentLineNumber++;
         throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
       }
-      PathInfo pathInfo = parseRequestUri(uri);
-      Map<String, String> queryParameters = parseQueryParameters(uri);
-      if (isChangeSet) {
-        if (!HTTP_CHANGESET_METHODS.contains(method)) {
-          throw new BatchException(BatchException.INVALID_CHANGESET_METHOD.addContent(currentLineNumber));
-        }
-      } else if (!HTTP_BATCH_METHODS.contains(method)) {
-        throw new BatchException(BatchException.INVALID_QUERY_OPERATION_METHOD.addContent(currentLineNumber));
-      }
-      ODataHttpMethod httpMethod = ODataHttpMethod.valueOf(method);
-      Map<String, List<String>> headers = parseRequestHeaders(scanner);
-      if (currentMimeHeaderContentId != null) {
-        List<String> headerList = new ArrayList<String>();
-        headerList.add(currentMimeHeaderContentId);
-        headers.put(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH), headerList);
-      }
-
-      String contentType = getContentTypeHeader(headers);
-      List<String> acceptHeaders = getAcceptHeader(headers);
-      List<Locale> acceptLanguages = getAcceptLanguageHeader(headers);
-      parseNewLine(scanner);
-      InputStream body;
-        body = new ByteArrayInputStream("".getBytes("UTF-8"));
-      if (isChangeSet) {
-        body = parseBody(scanner);
-      }
-      if (contentType != null) {
-        request = ODataRequest.method(httpMethod)
-            .queryParameters(queryParameters)
-            .requestHeaders(headers)
-            .pathInfo(pathInfo)
-            .acceptableLanguages(acceptLanguages)
-            .contentType(contentType)
-            .body(body)
-            .acceptHeaders(acceptHeaders)
-            .build();
-      } else {
-        request = ODataRequest.method(httpMethod)
-            .queryParameters(queryParameters)
-            .requestHeaders(headers)
-            .pathInfo(pathInfo)
-            .acceptableLanguages(acceptLanguages)
-            .body(body)
-            .acceptHeaders(acceptHeaders)
-            .build();
-      }
-    } else {
-      currentLineNumber++;
-      throw new BatchException(BatchException.INVALID_REQUEST_LINE.addContent(scanner.next()).addContent(currentLineNumber));
-    }
-    return request;
+      return request;
     } catch (UnsupportedEncodingException e) {
       throw new ODataRuntimeException(e);
     }
@@ -277,8 +262,7 @@ public class BatchRequestParser {
           } else if (HttpHeaders.ACCEPT_LANGUAGE.equalsIgnoreCase(headerName)) {
             List<String> acceptLanguageHeaders = parseAcceptableLanguages(headerValue);
             headers.put(headerName, acceptLanguageHeaders);
-          }
-          else if (!BatchConstants.HTTP_CONTENT_ID.equalsIgnoreCase(headerName)) {
+          } else if (!BatchConstants.HTTP_CONTENT_ID.equalsIgnoreCase(headerName)) {
             if (headers.containsKey(headerName)) {
               headers.get(headerName).add(headerValue);
             } else {
@@ -387,26 +371,26 @@ public class BatchRequestParser {
 
   private InputStream parseBody(final Scanner scanner) {
     try {
-    String body = null;
-    InputStream requestBody;
-    while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
-      if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
-        if (body == null) {
-          body = scanner.next();
+      String body = null;
+      InputStream requestBody;
+      while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
+        if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
+          if (body == null) {
+            body = scanner.next();
+          } else {
+            body = body + LF + scanner.next();
+          }
         } else {
-          body = body + LF + scanner.next();
+          scanner.next();
         }
-      } else {
-        scanner.next();
+        currentLineNumber++;
       }
-      currentLineNumber++;
-    }
-    if (body != null) {
+      if (body != null) {
         requestBody = new ByteArrayInputStream(body.getBytes("UTF-8"));
-    } else {
-      requestBody = new ByteArrayInputStream("".getBytes("UTF-8"));
-    }
-    return requestBody;
+      } else {
+        requestBody = new ByteArrayInputStream("".getBytes("UTF-8"));
+      }
+      return requestBody;
     } catch (UnsupportedEncodingException e) {
       throw new ODataRuntimeException(e);
     }
