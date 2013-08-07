@@ -69,12 +69,10 @@ public class XmlEntityConsumer {
     EntityProviderException cachedException = null;
 
     try {
-      XmlEntryConsumer xec = new XmlEntryConsumer();
       reader = createStaxReader(content);
-
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      ODataEntry result = xec.readEntry(reader, eia, properties);
-      return result;
+
+      return new XmlEntryConsumer().readEntry(reader, eia, properties);
     } catch (EntityProviderException e) {
       cachedException = e;
       throw cachedException;

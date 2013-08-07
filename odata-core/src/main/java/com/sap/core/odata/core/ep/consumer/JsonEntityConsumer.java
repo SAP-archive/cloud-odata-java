@@ -32,9 +32,7 @@ public class JsonEntityConsumer {
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       reader = createJsonReader(content);
 
-      JsonEntryConsumer jec = new JsonEntryConsumer(reader, eia, properties);
-      ODataEntry result = jec.readSingleEntry();
-      return result;
+      return new JsonEntryConsumer(reader, eia, properties).readSingleEntry();
     } catch (UnsupportedEncodingException e) {
       cachedException = new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
       throw cachedException;

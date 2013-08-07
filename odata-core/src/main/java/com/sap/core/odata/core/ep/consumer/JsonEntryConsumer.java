@@ -93,7 +93,8 @@ public class JsonEntryConsumer {
       handleName(name);
     }
 
-    //TODO: validate created entry
+    if (!readProperties.getMergeSemantic())
+      EntryHelper.validateMandatoryPropertiesAvailable(eia, entryResult);
   }
 
   private void handleName(final String name) throws IOException, EdmException, EntityProviderException {

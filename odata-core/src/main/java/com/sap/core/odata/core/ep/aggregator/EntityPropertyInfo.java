@@ -39,13 +39,7 @@ public class EntityPropertyInfo {
   }
 
   public boolean isMandatory() {
-    if (facets == null) {
-      return false;
-    } else if (facets.isNullable() == null) {
-      return false;
-    } else {
-      return !facets.isNullable();
-    }
+    return !(facets == null || facets.isNullable() == null || facets.isNullable());
   }
 
   public boolean isComplex() {

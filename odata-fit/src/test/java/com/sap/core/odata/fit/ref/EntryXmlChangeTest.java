@@ -1,12 +1,12 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpResponse;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -71,9 +71,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
   @Test
   public void createWithLargeProperty() throws Exception {
-    String largeTeamName = StringHelper.generateData(888888);
+    final String largeTeamName = StringHelper.generateData(888888);
     // Create an entry for a type that has no media resource.
-    String requestBody = getBody(callUri("Teams('1')"))
+    final String requestBody = getBody(callUri("Teams('1')"))
         .replace("'1'", "'9'")
         .replace("Id>1", "Id>9")
         .replace("Team 1", largeTeamName)
@@ -84,6 +84,19 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertXpathEvaluatesTo(largeTeamName, "/atom:entry/atom:content/m:properties/d:Name", getBody(response));
+  }
+
+  @Test
+  public void createMinimal() throws Exception {
+    final String requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" + "\n"
+        + "       xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"
+        + "       xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">" + "\n"
+        + "  <content><m:properties><d:Id>99</d:Id></m:properties></content>" + "\n"
+        + "</entry>";
+
+    final HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + ";type=entry");
+    assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
   }
 
   @Test
@@ -189,24 +202,30 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
   @Test
   public void update() throws Exception {
-    final String requestBody = getBody(callUri("Employees('1')"))
-        .replace("'1'", "'9'")
-        .replace("EmployeeId>1", "EmployeeId>9")
-        .replace(EMPLOYEE_1_NAME, "Mister X")
+    final String requestBody = getBody(callUri("Employees('2')"))
+        .replace("'2'", "'9'")
+        .replace("EmployeeId>2", "EmployeeId>9")
+        .replace(EMPLOYEE_2_NAME, "Mister X")
+        .replace("<d:Age>" + EMPLOYEE_2_AGE + "</d:Age>", "")
+        .replace(">2003-07-01T00:00:00", " m:null='true'>")
         .replaceAll("<link.+?/>", "");
-    final HttpResponse response = callUri(ODataHttpMethod.PUT, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
+    final HttpResponse response = callUri(ODataHttpMethod.PUT, "Employees('1')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
     assertFalse(response.containsHeader(HttpHeaders.LOCATION));
-    assertXpathEvaluatesTo("Mister X", "/atom:entry/m:properties/d:EmployeeName", getBody(callUri("Employees('2')")));
+    final String body = getBody(callUri("Employees('1')"));
+    assertXpathEvaluatesTo("Mister X", "/atom:entry/m:properties/d:EmployeeName", body);
+    assertXpathEvaluatesTo("0", "/atom:entry/m:properties/d:Age", body);
+    assertXpathEvaluatesTo("true", "/atom:entry/m:properties/d:EntryDate/@m:null", body);
   }
 
   @Test
   public void updateUnknownProperty() throws Exception {
-    final String requestBody = getBody(callUri("Employees('1')"))
-        .replace("<d:Age>52</d:Age>", "<d:Age>33</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
+    final String requestBody = getBody(callUri("Employees('2')"))
+        .replace("<d:Age>" + EMPLOYEE_2_AGE + "</d:Age>",
+            "<d:Age>33</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
 
-    putUri("Employees('1')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
+    putUri("Employees('2')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
     // check nothing has changed
-    assertXpathEvaluatesTo("52", "/atom:entry/m:properties/d:Age", getBody(callUri("Employees('1')")));
+    assertXpathEvaluatesTo(EMPLOYEE_2_AGE, "/atom:entry/m:properties/d:Age", getBody(callUri("Employees('2')")));
   }
 
   @Test
@@ -236,7 +255,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         + "  </m:properties>" + "\n"
         + "</entry>";
     callUri(ODataHttpMethod.PATCH, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
-    assertXpathEvaluatesTo(CITY_1_NAME, "/atom:entry/m:properties/d:Location/d:City/d:CityName", getBody(callUri("Employees('2')")));
+    final String body = getBody(callUri("Employees('2')"));
+    assertXpathEvaluatesTo(CITY_1_NAME, "/atom:entry/m:properties/d:Location/d:City/d:CityName", body);
+    assertXpathEvaluatesTo(EMPLOYEE_2_AGE, "/atom:entry/m:properties/d:Age", body);
 
     requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\">" + "\n"
         + "  <content xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"
@@ -254,9 +275,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   public void delete() throws Exception {
     final String uri = "Employees('2')";
     deleteUriOk(uri);
-    final String requestBody = getBody(callUri(uri, HttpStatusCodes.NOT_FOUND));
 
-    XMLAssert.assertXpathExists("/m:error", requestBody);
+    final String requestBody = getBody(callUri(uri, HttpStatusCodes.NOT_FOUND));
+    assertXpathExists("/m:error", requestBody);
     assertXpathEvaluatesTo("Requested entity could not be found.", "/m:error/m:message", requestBody);
   }
 }
