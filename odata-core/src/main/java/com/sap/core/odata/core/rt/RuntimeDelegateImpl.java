@@ -4,6 +4,9 @@ import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.batch.BatchResponsePart.BatchResponsePartBuilder;
+import com.sap.core.odata.api.client.batch.BatchChangeSet.BatchChangeSetBuilder;
+import com.sap.core.odata.api.client.batch.BatchChangeSetPart.BatchChangeSetPartBuilder;
+import com.sap.core.odata.api.client.batch.BatchQueryPart.BatchQueryPartBuilder;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -18,6 +21,9 @@ import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.ODataResponseImpl;
+import com.sap.core.odata.core.batch.BatchChangeSetImpl;
+import com.sap.core.odata.core.batch.BatchChangeSetPartImpl;
+import com.sap.core.odata.core.batch.BatchQueryPartImpl;
 import com.sap.core.odata.core.batch.BatchResponsePartImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.parser.EdmxProvider;
@@ -82,6 +88,24 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   protected ODataRequestBuilder createODataRequestBuilder() {
     ODataRequestImpl request = new ODataRequestImpl();
     return request.new ODataRequestBuilderImpl();
+  }
+  
+  @Override
+  protected BatchChangeSetBuilder createBatchChangeSetBuilder() {
+    BatchChangeSetImpl changeSet = new BatchChangeSetImpl();
+    return changeSet.new BatchChangeSetBuilderImpl();
+  }
+
+  @Override
+  protected BatchQueryPartBuilder createBatchQueryRequestBuilder() {
+    BatchQueryPartImpl batchQueryRequest = new BatchQueryPartImpl();
+    return batchQueryRequest.new BatchQueryRequestBuilderImpl();
+  }
+
+  @Override
+  protected BatchChangeSetPartBuilder createBatchChangeSetRequest() {
+   BatchChangeSetPartImpl batchChangeSetRequest = new BatchChangeSetPartImpl();;
+   return batchChangeSetRequest.new BatchChangeSetRequestBuilderImpl();
   }
 
 }

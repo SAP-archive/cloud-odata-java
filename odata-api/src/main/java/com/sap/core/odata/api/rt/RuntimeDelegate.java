@@ -4,6 +4,9 @@ import java.io.InputStream;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.batch.BatchResponsePart.BatchResponsePartBuilder;
+import com.sap.core.odata.api.client.batch.BatchChangeSet.BatchChangeSetBuilder;
+import com.sap.core.odata.api.client.batch.BatchChangeSetPart.BatchChangeSetPartBuilder;
+import com.sap.core.odata.api.client.batch.BatchQueryPart.BatchQueryPartBuilder;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
@@ -77,6 +80,12 @@ public abstract class RuntimeDelegate {
     protected abstract BatchResponsePartBuilder createBatchResponsePartBuilder();
 
     protected abstract ODataRequestBuilder createODataRequestBuilder();
+    
+    protected abstract BatchChangeSetBuilder createBatchChangeSetBuilder();
+
+    protected abstract BatchQueryPartBuilder createBatchQueryRequestBuilder();
+
+    protected abstract BatchChangeSetPartBuilder createBatchChangeSetRequest();
 
   }
 
@@ -166,5 +175,17 @@ public abstract class RuntimeDelegate {
 
   public static ODataRequestBuilder createODataRequestBuilder() {
     return RuntimeDelegate.getInstance().createODataRequestBuilder();
+  }
+  
+  public static BatchChangeSetBuilder createBatchChangeSetBuilder() {
+    return RuntimeDelegate.getInstance().createBatchChangeSetBuilder();
+  }
+
+  public static BatchQueryPartBuilder createBatchQueryPartBuilder() {
+    return RuntimeDelegate.getInstance().createBatchQueryRequestBuilder();
+  }
+
+  public static BatchChangeSetPartBuilder createBatchChangeSetPartBuilder() {
+    return RuntimeDelegate.getInstance().createBatchChangeSetRequest();
   }
 }
