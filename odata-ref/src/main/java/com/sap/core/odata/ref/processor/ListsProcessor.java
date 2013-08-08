@@ -15,7 +15,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.batch.BatchHandler;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -1635,8 +1635,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     List<BatchResponsePart> batchResponseParts = new ArrayList<BatchResponsePart>();
     PathInfo pathInfo = getContext().getPathInfo();
     EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-    List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
-    for (BatchPart batchPart : batchParts) {
+    List<BatchRequestPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
+    for (BatchRequestPart batchPart : batchParts) {
       batchResponseParts.add(handler.handleBatchPart(batchPart));
     }
     batchResponse = EntityProvider.writeBatchResponse(batchResponseParts);

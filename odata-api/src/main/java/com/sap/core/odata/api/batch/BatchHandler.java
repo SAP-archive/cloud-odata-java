@@ -9,12 +9,12 @@ import com.sap.core.odata.api.processor.ODataResponse;
  */
 public interface BatchHandler {
   /**
-   * <p>Handles the {@link BatchPart} in a way that it results in a corresponding {@link BatchResponsePart}.</p>
-   * @param batchPart the incoming batchPart
+   * <p>Handles the {@link BatchRequestPart} in a way that it results in a corresponding {@link BatchResponsePart}.</p>
+   * @param batchRequestPart the incoming MIME part
    * @return the corresponding result
    * @throws ODataException
    */
-  public BatchResponsePart handleBatchPart(BatchPart batchPart) throws ODataException;
+  public BatchResponsePart handleBatchPart(BatchRequestPart batchRequestPart) throws ODataException;
 
   /**
    * <p>Delegates a handling of the request {@link ODataRequest} to the request handler and provides ODataResponse {@link ODataResponse}.</p>

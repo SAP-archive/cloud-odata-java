@@ -9,7 +9,7 @@ import com.sap.core.odata.api.processor.ODataRequest;
  * <p> BatchPart represents a distinct MIME part of a Batch Request body. It can be ChangeSet or Query Operation
  * @author SAP AG
  */
-public interface BatchPart {
+public interface BatchRequestPart {
 
   /**
    * Get the info if a BatchPart is a ChangeSet

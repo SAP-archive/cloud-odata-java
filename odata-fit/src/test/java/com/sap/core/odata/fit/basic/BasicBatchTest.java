@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.batch.BatchHandler;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
@@ -123,8 +123,8 @@ public class BasicBatchTest extends AbstractBasicTest {
         pathInfo.setServiceRoot(new URI("http://localhost:19000/odata"));
 
         EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-        List<BatchPart> batchParts = EntityProvider.parseBatchRequest(requestContentType, content, batchProperties);
-        for (BatchPart batchPart : batchParts) {
+        List<BatchRequestPart> batchParts = EntityProvider.parseBatchRequest(requestContentType, content, batchProperties);
+        for (BatchRequestPart batchPart : batchParts) {
           batchResponseParts.add(handler.handleBatchPart(batchPart));
         }
         batchResponse = EntityProvider.writeBatchResponse(batchResponseParts);

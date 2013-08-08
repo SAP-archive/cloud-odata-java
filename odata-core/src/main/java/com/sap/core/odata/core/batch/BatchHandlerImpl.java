@@ -11,7 +11,7 @@ import java.util.Map;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.batch.BatchHandler;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
@@ -37,7 +37,7 @@ public class BatchHandlerImpl implements BatchHandler {
   }
 
   @Override
-  public BatchResponsePart handleBatchPart(final BatchPart batchPart) throws ODataException {
+  public BatchResponsePart handleBatchPart(final BatchRequestPart batchPart) throws ODataException {
     if (batchPart.isChangeSet()) {
       List<ODataRequest> changeSetRequests = batchPart.getRequests();
       contentIdMap = new HashMap<String, String>();

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.batch.BatchException;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -171,8 +171,8 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
-    List<BatchPart> batchParts = new BatchRequestParser(contentType, properties).parse(content);
+  public List<BatchRequestPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
+    List<BatchRequestPart> batchParts = new BatchRequestParser(contentType, properties).parse(content);
     return batchParts;
   }
 

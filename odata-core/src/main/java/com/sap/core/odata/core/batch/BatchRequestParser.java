@@ -19,7 +19,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.batch.BatchException;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
@@ -76,10 +76,10 @@ public class BatchRequestParser {
     batchRequestPathInfo = properties.getPathInfo();
   }
 
-  public List<BatchPart> parse(final InputStream in) throws BatchException {
+  public List<BatchRequestPart> parse(final InputStream in) throws BatchException {
     Scanner scanner = new Scanner(in, "UTF-8").useDelimiter(LF);
     baseUri = getBaseUri();
-    List<BatchPart> requestList;
+    List<BatchRequestPart> requestList;
     try {
       requestList = parseBatchRequest(scanner);
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
@@ -93,8 +93,8 @@ public class BatchRequestParser {
     return requestList;
   }
 
-  private List<BatchPart> parseBatchRequest(final Scanner scanner) throws BatchException {
-    List<BatchPart> requests = new LinkedList<BatchPart>();
+  private List<BatchRequestPart> parseBatchRequest(final Scanner scanner) throws BatchException {
+    List<BatchRequestPart> requests = new LinkedList<BatchRequestPart>();
     if (contentTypeMime != null) {
       boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
@@ -113,7 +113,6 @@ public class BatchRequestParser {
       throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
     }
     return requests;
-
   }
 
   //The method parses additional information prior to the first boundary delimiter line
@@ -124,9 +123,9 @@ public class BatchRequestParser {
     }
   }
 
-  private BatchPart parseMultipart(final Scanner scanner, final String boundary, final boolean isChangeSet) throws BatchException {
+  private BatchRequestPart parseMultipart(final Scanner scanner, final String boundary, final boolean isChangeSet) throws BatchException {
     Map<String, String> mimeHeaders = new HashMap<String, String>();
-    BatchPart multipart = null;
+    BatchRequestPart multipart = null;
     List<ODataRequest> requests = new ArrayList<ODataRequest>();
     if (scanner.hasNext("--" + boundary + REG_EX_ZERO_OR_MORE_WHITESPACES)) {
       scanner.next();
@@ -144,7 +143,7 @@ public class BatchRequestParser {
           parseNewLine(scanner);// mandatory
 
           requests.add(parseRequest(scanner, isChangeSet));
-          multipart = new BatchPartImpl(false, requests);
+          multipart = new BatchRequestPartImpl(false, requests);
         } else {
           throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.HTTP_APPLICATION_HTTP));
         }
@@ -153,7 +152,7 @@ public class BatchRequestParser {
           validateEncoding(mimeHeaders.get(BatchConstants.HTTP_CONTENT_TRANSFER_ENCODING.toLowerCase(Locale.ENGLISH)));
           parseNewLine(scanner);// mandatory
           requests.add(parseRequest(scanner, isChangeSet));
-          multipart = new BatchPartImpl(false, requests);
+          multipart = new BatchRequestPartImpl(false, requests);
         } else if (contentType.matches(REG_EX_OPTIONAL_WHITESPACE + BatchConstants.MULTIPART_MIXED + ANY_CHARACTERS)) {
           String changeSetBoundary = getBoundary(contentType);
           if (boundary.equals(changeSetBoundary)) {
@@ -163,14 +162,14 @@ public class BatchRequestParser {
           parseNewLine(scanner);// mandatory
           Pattern changeSetCloseDelimiter = Pattern.compile("--" + changeSetBoundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
           while (!scanner.hasNext(changeSetCloseDelimiter)) {
-            BatchPart part = parseMultipart(scanner, changeSetBoundary, true);
+            BatchRequestPart part = parseMultipart(scanner, changeSetBoundary, true);
             if (part.getRequests().size() == 1) {
               changeSetRequests.add(part.getRequests().get(0));
             }
           }
           scanner.next(changeSetCloseDelimiter);
           currentLineNumber++;
-          multipart = new BatchPartImpl(true, changeSetRequests);
+          multipart = new BatchRequestPartImpl(true, changeSetRequests);
         } else {
           throw new BatchException(BatchException.INVALID_CONTENT_TYPE.addContent(BatchConstants.MULTIPART_MIXED + " or " + BatchConstants.HTTP_APPLICATION_HTTP));
         }
@@ -232,9 +231,24 @@ public class BatchRequestParser {
           body = parseBody(scanner);
         }
         if (contentType != null) {
-          request = ODataRequest.method(httpMethod).queryParameters(queryParameters).requestHeaders(headers).pathInfo(pathInfo).acceptableLanguages(acceptLanguages).contentType(contentType).body(body).acceptHeaders(acceptHeaders).build();
+          request = ODataRequest.method(httpMethod)
+              .queryParameters(queryParameters)
+              .requestHeaders(headers)
+              .pathInfo(pathInfo)
+              .acceptableLanguages(acceptLanguages)
+              .contentType(contentType)
+              .body(body)
+              .acceptHeaders(acceptHeaders)
+              .build();
         } else {
-          request = ODataRequest.method(httpMethod).queryParameters(queryParameters).requestHeaders(headers).pathInfo(pathInfo).acceptableLanguages(acceptLanguages).body(body).acceptHeaders(acceptHeaders).build();
+          request = ODataRequest.method(httpMethod)
+              .queryParameters(queryParameters)
+              .requestHeaders(headers)
+              .pathInfo(pathInfo)
+              .acceptableLanguages(acceptLanguages)
+              .body(body)
+              .acceptHeaders(acceptHeaders)
+              .build();
         }
       } else {
         currentLineNumber++;

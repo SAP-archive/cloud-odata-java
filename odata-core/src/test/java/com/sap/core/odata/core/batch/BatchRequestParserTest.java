@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.batch.BatchException;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpMethod;
 import com.sap.core.odata.api.ep.EntityProviderBatchProperties;
@@ -60,10 +60,10 @@ public class BatchRequestParserTest {
     }
 
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
-    for (BatchPart object : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parser.parse(in);
+    assertNotNull(batchRequestParts);
+    assertEquals(false, batchRequestParts.isEmpty());
+    for (BatchRequestPart object : batchRequestParts) {
       if (!object.isChangeSet()) {
         assertEquals(1, object.getRequests().size());
         ODataRequest retrieveRequest = object.getRequests().get(0);
@@ -136,8 +136,8 @@ public class BatchRequestParserTest {
         + "\r\n"
         + "\r\n"
         + "--batch_8194-cf13-1f56--";
-    List<BatchPart> batchParts = parse(batch);
-    for (BatchPart object : batchParts) {
+    List<BatchRequestPart> BatchRequestParts = parse(batch);
+    for (BatchRequestPart object : BatchRequestParts) {
       if (!object.isChangeSet()) {
         assertEquals(1, object.getRequests().size());
         ODataRequest retrieveRequest = object.getRequests().get(0);
@@ -183,8 +183,8 @@ public class BatchRequestParserTest {
         + "--changeset_f980-1cb6-94dd--" + "\r\n"
         + "\r\n"
         + "--batch_8194-cf13-1f56--";
-    List<BatchPart> batchParts = parse(batch);
-    for (BatchPart object : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parse(batch);
+    for (BatchRequestPart object : batchRequestParts) {
       if (object.isChangeSet()) {
         List<ODataRequest> requests = object.getRequests();
         for (ODataRequest request : requests) {
@@ -206,9 +206,9 @@ public class BatchRequestParserTest {
         + "--batch_1.2+34:2j)0?--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
+    List<BatchRequestPart> batchRequestParts = parser.parse(in);
+    assertNotNull(batchRequestParts);
+    assertEquals(false, batchRequestParts.isEmpty());
   }
 
   @Test(expected = BatchException.class)
@@ -428,8 +428,8 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    List<BatchPart> batchParts = parse(batch);
-    for (BatchPart multipart : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parse(batch);
+    for (BatchRequestPart multipart : batchRequestParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
         ODataRequest retrieveRequest = multipart.getRequests().get(0);
@@ -455,8 +455,8 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    List<BatchPart> batchParts = parse(batch);
-    for (BatchPart multipart : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parse(batch);
+    for (BatchRequestPart multipart : batchRequestParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
         ODataRequest retrieveRequest = multipart.getRequests().get(0);
@@ -483,8 +483,8 @@ public class BatchRequestParserTest {
         + "\n"
         + "\n"
         + "--batch_8194-cf13-1f56--";
-    List<BatchPart> batchParts = parse(batch);
-    for (BatchPart multipart : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parse(batch);
+    for (BatchRequestPart multipart : batchRequestParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
         ODataRequest retrieveRequest = multipart.getRequests().get(0);
@@ -536,9 +536,9 @@ public class BatchRequestParserTest {
         + "--batch_8194-cf13-1f56--";
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    for (BatchPart multipart : batchParts) {
+    List<BatchRequestPart> batchRequestParts = parser.parse(in);
+    assertNotNull(batchRequestParts);
+    for (BatchRequestPart multipart : batchRequestParts) {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
         ODataRequest retrieveRequest = multipart.getRequests().get(0);
@@ -558,13 +558,13 @@ public class BatchRequestParserTest {
     }
   }
 
-  private List<BatchPart> parse(final String batch) throws BatchException {
+  private List<BatchRequestPart> parse(final String batch) throws BatchException {
     InputStream in = new ByteArrayInputStream(batch.getBytes());
     BatchRequestParser parser = new BatchRequestParser(contentType, batchProperties);
-    List<BatchPart> batchParts = parser.parse(in);
-    assertNotNull(batchParts);
-    assertEquals(false, batchParts.isEmpty());
-    return batchParts;
+    List<BatchRequestPart> batchRequestParts = parser.parse(in);
+    assertNotNull(batchRequestParts);
+    assertEquals(false, batchRequestParts.isEmpty());
+    return batchRequestParts;
   }
 
   private void parseInvalidBatchBody(final String batch) throws BatchException {
