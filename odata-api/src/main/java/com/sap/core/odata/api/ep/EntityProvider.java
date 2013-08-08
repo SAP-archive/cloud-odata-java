@@ -7,6 +7,8 @@ import java.util.Map;
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
+import com.sap.core.odata.api.client.batch.BatchPart;
+import com.sap.core.odata.api.client.batch.BatchSingleResponse;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -324,6 +326,25 @@ public final class EntityProvider {
      * @throws BatchException 
      */
     ODataResponse writeBatchResponse(List<BatchResponsePart> batchResponseParts) throws BatchException;
+
+    /**
+     * Create Batch Request body as InputStream.
+     * 
+     * @param batchParts a list of BatchPartRequests {@link BatchPart}
+     * @param boundary 
+     * @return Batch Request as InputStream
+     */
+    InputStream writeBatchRequestBody(List<BatchPart> batchParts, String boundary);
+
+    /** 
+     * Parse Batch Response body (as {@link InputStream}) and provide a list of single responses as {@link BatchSingleResponse}
+     *
+     * @param content response body
+     * @param contentType format of content in the given input stream (incl. boundary parameter)
+     * @return list of {@link BatchSingleResponse}
+     * @throws BatchException 
+     */
+    List<BatchSingleResponse> parseBatchResponse(String contentType, InputStream content) throws BatchException;
 
   }
 
@@ -676,6 +697,29 @@ public final class EntityProvider {
    */
   public static ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     return createEntityProvider().writeBatchResponse(batchResponseParts);
+  }
+
+  /**
+   * Create Batch Request body as InputStream.
+   * 
+   * @param batchParts a list of BatchPartRequests {@link BatchPart}
+   * @param boundary 
+   * @return Batch Request as InputStream
+   */
+  public static InputStream writeBatchRequestBody(final List<BatchPart> batchParts, final String boundary) {
+    return createEntityProvider().writeBatchRequestBody(batchParts, boundary);
+  }
+
+  /** 
+   * Parse Batch Response body (as {@link InputStream}) and provide a list of single responses as {@link BatchSingleResponse}
+   *
+   * @param content response body
+   * @param contentType format of content in the given input stream (inclusive boundary parameter)
+   * @return list of {@link BatchSingleResponse}
+   * @throws BatchException 
+   */
+  public static List<BatchSingleResponse> parseBatchResponse(final InputStream content, final String contentType) throws BatchException {
+    return createEntityProvider().parseBatchResponse(contentType, content);
   }
 
 }
