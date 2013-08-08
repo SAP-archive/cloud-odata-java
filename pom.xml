@@ -1,267 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.sap.core.odata</groupId>
-	<artifactId>com.sap.core.odata.parent</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+  <groupId>com.sap.core.odata</groupId>
+  <artifactId>com.sap.core.odata.parent</artifactId>
+  <version>1.3.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<inceptionYear>2012</inceptionYear>
+  <inceptionYear>2012</inceptionYear>
 
-	<parent>
-		<groupId>com.sap.ldi</groupId>
-		<artifactId>ldi-parent</artifactId>
-		<version>6.9.0</version>
-	</parent>
+  <parent>
+    <groupId>com.sap.ldi</groupId>
+    <artifactId>ldi-parent</artifactId>
+    <version>6.9.0</version>
+  </parent>
 
-	<!-- <licenses> -->
-	<!-- <license> -->
-	<!-- <name>The Apache Software License, Version 2.0</name> -->
-	<!-- <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> -->
-	<!-- <distribution>repo</distribution> -->
-	<!-- <comments>A business-friendly OSS license</comments> -->
-	<!-- </license> -->
-	<!-- </licenses> -->
+  <!-- <licenses> -->
+  <!-- <license> -->
+  <!-- <name>The Apache Software License, Version 2.0</name> -->
+  <!-- <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> -->
+  <!-- <distribution>repo</distribution> -->
+  <!-- <comments>A business-friendly OSS license</comments> -->
+  <!-- </license> -->
+  <!-- </licenses> -->
 
-	<developers>
-		<developer>
-			<id>stephan.klevenz</id>
-			<name>Stephan Klevenz</name>
-			<email>stephan.klevenz@sap.com</email>
-		</developer>
-		<developer>
-			<id>christian.amend</id>
-			<name>Christian Amend</name>
-			<email>christian.amend@sap.com</email>
-		</developer>
-		<developer>
-			<id>michael.bolz</id>
-			<name>Michael Bolz</name>
-			<email>michael.bolz@sap.com</email>
-		</developer>
-		<developer>
-			<id>klaus.straubinger</id>
-			<name>Klaus Straubinger</name>
-			<email>klaus.straubinger@sap.com</email>
-		</developer>
-		<developer>
-			<id>jens.huesken</id>
-			<name>Jens Huesken</name>
-			<email>jens.huesken@sap.com</email>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <id>stephan.klevenz</id>
+      <name>Stephan Klevenz</name>
+      <email>stephan.klevenz@sap.com</email>
+    </developer>
+    <developer>
+      <id>christian.amend</id>
+      <name>Christian Amend</name>
+      <email>christian.amend@sap.com</email>
+    </developer>
+    <developer>
+      <id>michael.bolz</id>
+      <name>Michael Bolz</name>
+      <email>michael.bolz@sap.com</email>
+    </developer>
+    <developer>
+      <id>klaus.straubinger</id>
+      <name>Klaus Straubinger</name>
+      <email>klaus.straubinger@sap.com</email>
+    </developer>
+    <developer>
+      <id>jens.huesken</id>
+      <name>Jens Huesken</name>
+      <email>jens.huesken@sap.com</email>
+    </developer>
+  </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- required for correct Sonar coverage data reporting (list of artifactIds) -->
-		<projectsToInstrument>com.sap.core.odata.api,com.sap.core.odata.core,com.sap.core.odata.ref</projectsToInstrument>
-		<sonar.skippedModules>com.sap.core.odata.expr</sonar.skippedModules>
-		<jax.ws.rs.version>2.0-m10</jax.ws.rs.version>
-		<!-- <jsr311.version>1.1.1</jsr311.version> -->
-		<joda.version>2.1</joda.version>
-		<cxf.version>2.7.5</cxf.version>
-		<jetty.version>7.5.4.v20111024</jetty.version>
-		<httpclient.version>4.2.3</httpclient.version>
-		<slf4j.version>1.7.1</slf4j.version>
-		<commonscodec.version>1.6</commonscodec.version>
-		<commonslang.version>3.1</commonslang.version>
-		<gson.version>2.2.2</gson.version>
+    <!-- required for correct Sonar coverage data reporting (list of artifactIds) -->
+    <projectsToInstrument>com.sap.core.odata.api,com.sap.core.odata.core,com.sap.core.odata.ref</projectsToInstrument>
+    <sonar.skippedModules>com.sap.core.odata.expr</sonar.skippedModules>
+    <jax.ws.rs.version>2.0-m10</jax.ws.rs.version>
+    <!-- <jsr311.version>1.1.1</jsr311.version> -->
+    <joda.version>2.1</joda.version>
+    <cxf.version>2.7.5</cxf.version>
+    <jetty.version>7.5.4.v20111024</jetty.version>
+    <httpclient.version>4.2.3</httpclient.version>
+    <slf4j.version>1.7.1</slf4j.version>
+    <commonscodec.version>1.6</commonscodec.version>
+    <commonslang.version>3.1</commonslang.version>
+    <gson.version>2.2.2</gson.version>
 
-		<antlr.version>3.4</antlr.version>
+    <antlr.version>3.4</antlr.version>
 
-		<mockito.version>1.9.0</mockito.version>
-		<junit.version>4.10</junit.version>
-		<xmlunit.version>1.3</xmlunit.version>
-	</properties>
+    <mockito.version>1.9.0</mockito.version>
+    <junit.version>4.10</junit.version>
+    <xmlunit.version>1.3</xmlunit.version>
+  </properties>
 
-	<modules>
-		<module>odata-api</module>
-		<module>odata-testutil</module>
-		<module>odata-core</module>
-		<module>odata-fit</module>
-		<module>odata-ref</module>
-		<module>odata-web</module>
-		<module>odata-expr</module>
-	</modules>
+  <modules>
+    <module>odata-api</module>
+    <module>odata-testutil</module>
+    <module>odata-core</module>
+    <module>odata-fit</module>
+    <module>odata-ref</module>
+    <module>odata-web</module>
+    <module>odata-expr</module>
+  </modules>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshot.repository</id>
-			<url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshot.repository</id>
+      <url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-	<build>
+  <build>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>2.2.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.7</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.9</version>
-				</plugin>
-				<plugin>
-					<groupId>com.keyboardsamurais.maven</groupId>
-					<artifactId>maven-timestamp-plugin</artifactId>
-					<version>1.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.antlr</groupId>
-					<artifactId>antlr3-maven-plugin</artifactId>
-					<version>${antlr.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.3.7</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.10</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>com.keyboardsamurais.maven</groupId>
-				<artifactId>maven-timestamp-plugin</artifactId>
-				<configuration>
-					<propertyName>timestamp</propertyName>
-					<timestampPattern>dd.MM.yyyy HH:mm</timestampPattern>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<wtpversion>2.0</wtpversion>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<tags>
-								<tag>
-									<name>com.sap.core.odata.DoNotImplement</name>
-									<placement>a</placement>
-									<head>Do not implement this interface or class</head>
-								</tag>
-							</tags>
-							<additionalJOptions>
-								<additionalJOption>-quiet</additionalJOption>
-							</additionalJOptions>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-       <plugin>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <configuration>
-            <outputFileFormat>xml</outputFileFormat>
-            <consoleOutput>false</consoleOutput>
-            <enableRSS>false</enableRSS>
-            <linkXRef>false</linkXRef>
-            <configLocation>src/checkstyle/config.xml</configLocation>
-            <sourceDirectory>${basedir}/src</sourceDirectory>
-            <encoding>UTF-8</encoding>
-            <failOnViolation>true</failOnViolation>
-            <violationSeverity>error</violationSeverity>
-          </configuration>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
         </plugin>
-		</plugins>
-	</build>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.9</version>
+        </plugin>
+        <plugin>
+          <groupId>com.keyboardsamurais.maven</groupId>
+          <artifactId>maven-timestamp-plugin</artifactId>
+          <version>1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr3-maven-plugin</artifactId>
+          <version>${antlr.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.3.7</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xmlunit</groupId>
-			<artifactId>xmlunit</artifactId>
-			<version>${xmlunit.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <plugins>
+      <plugin>
+        <groupId>com.keyboardsamurais.maven</groupId>
+        <artifactId>maven-timestamp-plugin</artifactId>
+        <configuration>
+          <propertyName>timestamp</propertyName>
+          <timestampPattern>dd.MM.yyyy HH:mm</timestampPattern>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <wtpversion>2.0</wtpversion>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <tags>
+                <tag>
+                  <name>com.sap.core.odata.DoNotImplement</name>
+                  <placement>a</placement>
+                  <head>Do not implement this interface or class</head>
+                </tag>
+              </tags>
+              <additionalJOptions>
+                <additionalJOption>-quiet</additionalJOption>
+              </additionalJOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <outputFileFormat>xml</outputFileFormat>
+          <consoleOutput>false</consoleOutput>
+          <enableRSS>false</enableRSS>
+          <linkXRef>false</linkXRef>
+          <configLocation>src/checkstyle/config.xml</configLocation>
+          <sourceDirectory>${basedir}/src</sourceDirectory>
+          <encoding>{$project.build.sourceEncoding}</encoding>
+          <failOnViolation>true</failOnViolation>
+          <violationSeverity>error</violationSeverity>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <encoding>$project.build.sourceEncoding}</encoding>
+          <inputEncoding>{$project.build.sourceEncoding}</inputEncoding>
+          <outputEncoding>{$project.build.sourceEncoding}</outputEncoding>
+          <argLine>-Xms256m -Xmx1024m -XX:MaxPermSize=256m -ea -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>${xmlunit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
