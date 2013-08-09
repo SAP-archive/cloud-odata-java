@@ -119,7 +119,7 @@ public class XmlPropertyConsumer {
           name2Value.put(childName, value);
           reader.nextTag();
         }
-        result = name2Value.isEmpty() ? null : name2Value;
+        result = name2Value;
       } else {
         result = convert(propertyInfo, reader.getElementText(), typeMappings.getMappingClass(name));
       }

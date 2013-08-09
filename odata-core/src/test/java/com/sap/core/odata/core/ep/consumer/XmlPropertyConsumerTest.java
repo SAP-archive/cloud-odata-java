@@ -1,31 +1,26 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmStructuralType;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -229,12 +224,9 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     try {
       Map<String, Object> resultMap = new XmlPropertyConsumer().readProperty(reader, property, false,
           createTypeMappings("Location", createTypeMappings("City", createTypeMappings("PostalCode", Integer.class))));
-
-      //      Map<String, Object> resultMap = xpc.readProperty(reader, property, false, 
-      //          createTypeMappings("PostalCode", Integer.class));
-      Assert.assertNotNull(resultMap);
+      assertNotNull(resultMap);
     } catch (EntityProviderException e) {
-      Assert.assertTrue(e.getCause() instanceof EdmSimpleTypeException);
+      assertTrue(e.getCause() instanceof EdmSimpleTypeException);
       throw e;
     }
   }
@@ -253,30 +245,11 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
             "</Location>";
     XMLStreamReader reader = createReaderForTest(xml, true);
 
-    final EdmComplexType locationComplexType = mock(EdmComplexType.class);
-    when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-    when(locationComplexType.getName()).thenReturn("c_Location");
-    when(locationComplexType.getNamespace()).thenReturn("RefScenario");
-    when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
-
-    final EdmProperty locationComplexProperty = mock(EdmProperty.class);
-    when(locationComplexProperty.getType()).thenReturn(locationComplexType);
-    when(locationComplexProperty.getName()).thenReturn("Location");
-    createProperty("Country", EdmSimpleTypeKind.String, locationComplexType);
-
-    final EdmComplexType cityComplexType = mock(EdmComplexType.class);
-    when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-    when(cityComplexType.getName()).thenReturn("c_City");
-    when(cityComplexType.getNamespace()).thenReturn("RefScenario");
-    when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
-
-    final EdmProperty cityProperty = mock(EdmProperty.class);
-    when(cityProperty.getType()).thenReturn(cityComplexType);
-    when(cityProperty.getName()).thenReturn("City");
-    when(locationComplexType.getProperty("City")).thenReturn(cityProperty);
-
-    createProperty("PostalCode", EdmSimpleTypeKind.Int32, cityComplexType);
-    createProperty("CityName", EdmSimpleTypeKind.String, cityComplexType);
+    EdmProperty locationComplexProperty = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+    EdmProperty cityProperty = (EdmProperty) ((EdmComplexType) locationComplexProperty.getType()).getProperty("City");
+    EdmProperty postalCodeProperty = (EdmProperty) ((EdmComplexType) cityProperty.getType()).getProperty("PostalCode");
+    // Change the type of the PostalCode property to one that allows different Java types.
+    when(postalCodeProperty.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
 
     // Execute test
     Map<String, Object> typeMappings =
@@ -449,11 +422,17 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     new XmlPropertyConsumer().readProperty(reader, property, false);
   }
 
-  private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {
-    final EdmProperty property = mock(EdmProperty.class);
-    when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());
-    when(property.getName()).thenReturn(name);
-    when(entityType.getProperty(name)).thenReturn(property);
-    return property;
+  @Test
+  public void complexPropertyEmpty() throws Exception {
+    final String xml = "<Location xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\" />";
+    XMLStreamReader reader = createReaderForTest(xml, true);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Location");
+
+    final Map<String, Object> resultMap = new XmlPropertyConsumer().readProperty(reader, property, false);
+
+    assertNotNull(resultMap.get("Location"));
+    @SuppressWarnings("unchecked")
+    final Map<String, Object> innerMap = (Map<String, Object>) resultMap.get("Location");
+    assertTrue(innerMap.isEmpty());
   }
 }
