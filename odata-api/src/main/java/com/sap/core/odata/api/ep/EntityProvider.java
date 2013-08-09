@@ -204,13 +204,18 @@ public final class EntityProvider {
     ODataFeed readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
     /**
-     * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
-     * 
-     * @param contentType format of content in the given input stream.
-     * @param entitySet entity data model for entity set to be read
-     * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+     * Reads (de-serializes) data from <code>content</code> (as {@link InputStream})
+     * in specified format (given as <code>contentType</code>) based on
+     * <code>entity data model</code> (given as {@link EdmEntitySet})
+     * and provides this data as {@link ODataEntry}.
+     * Does not return complete entry data but only data present in the
+     * de-serialized content.
+     * @param contentType format of content in the given input stream
+     * @param entitySet   entity data model for entity set to be read
+     * @param content     data in form of an {@link InputStream} which
+     *                    contains the data in specified format
+     * @param properties  additional properties necessary for reading
+     *                    content from {@link InputStream} into {@link Map}.
      * @return entry as {@link ODataEntry}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */

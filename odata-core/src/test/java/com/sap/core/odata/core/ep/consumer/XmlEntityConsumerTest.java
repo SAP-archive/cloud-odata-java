@@ -1355,12 +1355,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Missing _d_ namespace at mandatory property/tag (_Version_) results in an exception.
-   * 
+   * Missing _d_ namespace at non-nullable property/tag (_Version_) is allowed.
    * @throws Exception
    */
-  @Test(expected = EntityProviderException.class)
-  public void validationOfNamespacesMissingD_NamespaceAtRequiredTag() throws Exception {
+  public void validationOfNamespacesMissingD_NamespaceAtNonNullableTag() throws Exception {
     String roomWithValidNamespaces =
         "<?xml version='1.0' encoding='UTF-8'?>" +
             "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
@@ -1382,7 +1380,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     Mockito.when(facets.isNullable()).thenReturn(false);
 
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, false, EntityProviderException.MISSING_PROPERTY.addContent("Version"));
+    final ODataEntry result = new XmlEntityConsumer().readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    assertNotNull(result);
   }
 
   private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final MessageReference messageReference) throws ODataMessageException {
@@ -1660,29 +1659,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
-  }
-
-  @Test(expected = EntityProviderException.class)
-  public void readEntryMissingProperty() throws Exception {
-    // prepare
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
-    EdmFacets facets = Mockito.mock(EdmFacets.class);
-    Mockito.when(facets.isNullable()).thenReturn(false);
-    Mockito.when(property.getFacets()).thenReturn(facets);
-    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
-    InputStream contentBody = createContentAsStream(content);
-
-    // execute
-    try {
-      new XmlEntityConsumer().readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
-    } catch (EntityProviderException e) {
-      // do some assertions...
-      assertEquals(EntityProviderException.MISSING_PROPERTY.getKey(), e.getMessageReference().getKey());
-      assertEquals("Age", e.getMessageReference().getContent().get(0));
-      // ...and then re-throw
-      throw e;
-    }
   }
 
   @Test

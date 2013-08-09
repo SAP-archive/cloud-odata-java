@@ -13,6 +13,7 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -25,7 +26,8 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlPropertyConsumer {
 
-  public static final String TRUE = "true";
+  protected static final String TRUE = "true";
+  protected static final String FALSE = "false";
 
   public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge) throws EntityProviderException {
     return readProperty(reader, property, merge, null);
@@ -84,67 +86,54 @@ public class XmlPropertyConsumer {
   }
 
   protected Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, final EntityTypeMapping typeMappings) throws EntityProviderException, EdmException {
-    Map<String, Object> name2Value = new HashMap<String, Object>();
+    final String name = propertyInfo.getName();
     Object result = null;
 
     try {
-      reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
+      reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, name);
       final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
+      if (!(nullAttribute == null || TRUE.equals(nullAttribute) || FALSE.equals(nullAttribute)))
+        throw new EntityProviderException(EntityProviderException.COMMON);
+
       if (TRUE.equals(nullAttribute)) {
+        if (propertyInfo.isMandatory())
+          throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(name));
         reader.nextTag();
       } else if (propertyInfo.isComplex()) {
         final String typeAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_TYPE);
-        String expectedTypeAttributeValue = propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
-        if (typeAttribute != null && !expectedTypeAttributeValue.equals(typeAttribute)) {
-          throw new EntityProviderException(EntityProviderException.INVALID_COMPLEX_TYPE.addContent(expectedTypeAttributeValue).addContent(typeAttribute));
+        if (typeAttribute != null) {
+          final String expectedTypeAttributeValue = propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
+          if (!expectedTypeAttributeValue.equals(typeAttribute))
+            throw new EntityProviderException(EntityProviderException.INVALID_COMPLEX_TYPE.addContent(expectedTypeAttributeValue).addContent(typeAttribute));
         }
 
         reader.nextTag();
+        Map<String, Object> name2Value = new HashMap<String, Object>();
         while (reader.hasNext() && !reader.isEndElement()) {
-          String childName = reader.getLocalName();
-          EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
-          if (childProperty == null) {
+          final String childName = reader.getLocalName();
+          final EntityPropertyInfo childProperty = ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfo(childName);
+          if (childProperty == null)
             throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
-          }
-          Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
+          final Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(name));
           name2Value.put(childName, value);
           reader.nextTag();
         }
+        result = name2Value.isEmpty() ? null : name2Value;
       } else {
-        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
-        result = convert(propertyInfo, reader.getElementText(), mapping);
+        result = convert(propertyInfo, reader.getElementText(), typeMappings.getMappingClass(name));
       }
-      reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
+      reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, name);
 
-      // if reading finished check which result must be returned
-      if (result != null) {
-        return result;
-      } else if (!name2Value.isEmpty()) {
-        return name2Value;
-      }
+      return result;
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
     }
-    return null;
   }
 
-  private EntityPropertyInfo getChildProperty(final String childPropertyName, final EntityPropertyInfo property) throws EdmException, EntityProviderException {
-    if (property.isComplex()) {
-      EntityComplexPropertyInfo complex = (EntityComplexPropertyInfo) property;
-      return complex.getPropertyInfo(childPropertyName);
-    }
-    throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(
-        "Expected complex property but found simple for property with name '" + property.getName() + "'"));
-  }
-
-  private Object convert(final EntityPropertyInfo property, final String value, final Class<?> typeMapping) throws EdmException, EntityProviderException {
-    if (!property.isComplex()) {
-      EdmSimpleType type = (EdmSimpleType) property.getType();
-      return type.valueOfString(value, EdmLiteralKind.DEFAULT, property.getFacets(),
-          typeMapping == null ? type.getDefaultType() : typeMapping);
-    }
-    throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(
-        "Expected simple property but found complex for property with name '" + property.getName() + "'"));
+  private Object convert(final EntityPropertyInfo property, final String value, final Class<?> typeMapping) throws EdmSimpleTypeException {
+    final EdmSimpleType type = (EdmSimpleType) property.getType();
+    return type.valueOfString(value, EdmLiteralKind.DEFAULT, property.getFacets(),
+        typeMapping == null ? type.getDefaultType() : typeMapping);
   }
 }

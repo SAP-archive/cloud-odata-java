@@ -67,9 +67,6 @@ public class XmlEntryConsumer {
         }
       }
 
-      if (!readProperties.getMergeSemantic())
-        EntryHelper.validateMandatoryPropertiesAvailable(eia, readEntryResult);
-
       return readEntryResult;
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);

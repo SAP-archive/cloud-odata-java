@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import com.google.gson.stream.JsonReader;
 import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -175,6 +176,26 @@ public class JsonPropertyConsumerTest extends BaseTest {
     Map<String, Object> resultMap = new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, readProperties);
 
     assertEquals(propertyValue, resultMap.get("Name"));
+  }
+
+  @Test
+  public void simplePropertyNull() throws Exception {
+    JsonReader reader = prepareReader("{\"Name\":null}");
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Room").getProperty("Name");
+    final Map<String, Object> resultMap = new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
+    assertTrue(resultMap.containsKey("Name"));
+    assertNull(resultMap.get("Name"));
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void simplePropertyNullValueNotAllowed() throws Exception {
+    JsonReader reader = prepareReader("{\"Age\":null}");
+    EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isNullable()).thenReturn(false);
+    when(property.getFacets()).thenReturn(facets);
+
+    new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
   }
 
   @Test
@@ -442,18 +463,42 @@ public class JsonPropertyConsumerTest extends BaseTest {
   }
 
   @Test
-  public void complexPropertyEmpty() throws Exception {
-    String cityProperty = "{\"d\":{\"City\":null}}";
-    JsonReader reader = prepareReader(cityProperty);
-    EdmComplexType complexPropertyType = (EdmComplexType) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees").getEntityType().getProperty("Location").getType();
-    EdmProperty edmProperty = (EdmProperty) complexPropertyType.getProperty("City");
+  public void complexPropertyNull() throws Exception {
+    final String locationProperty = "{\"Location\":null}";
+    JsonReader reader = prepareReader(locationProperty);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees").getEntityType().getProperty("Location");
 
-    Map<String, Object> propertyData = new JsonPropertyConsumer().readPropertyStandalone(reader, edmProperty, null);
+    final Map<String, Object> propertyData = new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
     assertNotNull(propertyData);
     assertEquals(1, propertyData.size());
-    @SuppressWarnings("unchecked")
-    Map<String, Object> innerResult = (Map<String, Object>) propertyData.get("City");
-    assertNull(innerResult);
+    assertTrue(propertyData.containsKey("Location"));
+    assertNull(propertyData.get("Location"));
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void complexPropertyNullValueNotAllowed() throws Exception {
+    final String locationProperty = "{\"Location\":null}";
+    JsonReader reader = prepareReader(locationProperty);
+    EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees").getEntityType().getProperty("Location");
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isNullable()).thenReturn(false);
+    when(property.getFacets()).thenReturn(facets);
+
+    new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
+  }
+
+  @Test
+  public void complexPropertyEmpty() throws Exception {
+    final String cityProperty = "{\"d\":{\"City\":null}}";
+    JsonReader reader = prepareReader(cityProperty);
+    final EdmComplexType complexPropertyType = (EdmComplexType) MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees").getEntityType().getProperty("Location").getType();
+    final EdmProperty property = (EdmProperty) complexPropertyType.getProperty("City");
+
+    final Map<String, Object> propertyData = new JsonPropertyConsumer().readPropertyStandalone(reader, property, null);
+    assertNotNull(propertyData);
+    assertEquals(1, propertyData.size());
+    assertTrue(propertyData.containsKey("City"));
+    assertNull(propertyData.get("City"));
   }
 
   @Test(expected = EntityProviderException.class)

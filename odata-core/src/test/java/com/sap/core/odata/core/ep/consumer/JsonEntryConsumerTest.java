@@ -16,11 +16,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
@@ -221,16 +218,6 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
   public void emptyEntry() throws Exception {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     new JsonEntityConsumer().readEntry(entitySet, createContentAsStream("{}"), DEFAULT_PROPERTIES);
-  }
-
-  @Test(expected = EntityProviderException.class)
-  public void entryWithoutMandatoryProperty() throws Exception {
-    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Name");
-    EdmFacets facets = Mockito.mock(EdmFacets.class);
-    Mockito.when(facets.isNullable()).thenReturn(false);
-    Mockito.when(property.getFacets()).thenReturn(facets);
-    new JsonEntityConsumer().readEntry(entitySet, createContentAsStream("{\"Id\":\"99\"}"), DEFAULT_PROPERTIES);
   }
 
   @Test(expected = EntityProviderException.class)

@@ -8,16 +8,16 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 
 /**
- * Collects informations about a property of an entity.
+ * Collects information about a property of an entity.
  * @author SAP AG
  */
 public class EntityPropertyInfo {
-  private String name;
-  private EdmType type;
-  private EdmFacets facets;
-  private EdmCustomizableFeedMappings customMapping;
-  private String mimeType;
-  private EdmMapping mapping;
+  private final String name;
+  private final EdmType type;
+  private final EdmFacets facets;
+  private final EdmCustomizableFeedMappings customMapping;
+  private final String mimeType;
+  private final EdmMapping mapping;
 
   EntityPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final String mimeType, final EdmMapping mapping) {
     this.name = name;
