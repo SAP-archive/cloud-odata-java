@@ -48,8 +48,8 @@ public class BatchHandlerImpl implements BatchHandler {
       }
       ODataRequest request = batchPart.getRequests().get(0);
       ODataRequestHandler handler = createHandler(request);
-      String mimeHeaderContentId = request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
-      String requestHeaderContentId = request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+      String mimeHeaderContentId = request.getRequestHeaderValue(BatchHelper.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+      String requestHeaderContentId = request.getRequestHeaderValue(BatchHelper.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
       ODataResponse response = setContentIdHeader(handler.handle(request), mimeHeaderContentId, requestHeaderContentId);
       List<ODataResponse> responses = new ArrayList<ODataResponse>(1);
       responses.add(response);
@@ -60,8 +60,8 @@ public class BatchHandlerImpl implements BatchHandler {
   @Override
   public ODataResponse handleRequest(final ODataRequest suppliedRequest) throws ODataException {
     ODataRequest request;
-    String mimeHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
-    String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+    String mimeHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchHelper.MIME_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
+    String requestHeaderContentId = suppliedRequest.getRequestHeaderValue(BatchHelper.REQUEST_HEADER_CONTENT_ID.toLowerCase(Locale.ENGLISH));
 
     List<PathSegment> odataSegments = suppliedRequest.getPathInfo().getODataSegments();
     if (!odataSegments.isEmpty() && odataSegments.get(0).getPath().matches("\\$.*")) {
@@ -124,12 +124,12 @@ public class BatchHandlerImpl implements BatchHandler {
   private ODataResponse setContentIdHeader(final ODataResponse response, final String mimeHeaderContentId, final String requestHeaderContentId) {
     ODataResponse modifiedResponse;
     if (requestHeaderContentId != null && mimeHeaderContentId != null) {
-      modifiedResponse = ODataResponse.fromResponse(response).header(BatchConstants.REQUEST_HEADER_CONTENT_ID, requestHeaderContentId)
-          .header(BatchConstants.MIME_HEADER_CONTENT_ID, mimeHeaderContentId).build();
+      modifiedResponse = ODataResponse.fromResponse(response).header(BatchHelper.REQUEST_HEADER_CONTENT_ID, requestHeaderContentId)
+          .header(BatchHelper.MIME_HEADER_CONTENT_ID, mimeHeaderContentId).build();
     } else if (requestHeaderContentId != null) {
-      modifiedResponse = ODataResponse.fromResponse(response).header(BatchConstants.REQUEST_HEADER_CONTENT_ID, requestHeaderContentId).build();
+      modifiedResponse = ODataResponse.fromResponse(response).header(BatchHelper.REQUEST_HEADER_CONTENT_ID, requestHeaderContentId).build();
     } else if (mimeHeaderContentId != null) {
-      modifiedResponse = ODataResponse.fromResponse(response).header(BatchConstants.MIME_HEADER_CONTENT_ID, mimeHeaderContentId).build();
+      modifiedResponse = ODataResponse.fromResponse(response).header(BatchHelper.MIME_HEADER_CONTENT_ID, mimeHeaderContentId).build();
     } else {
       return response;
     }

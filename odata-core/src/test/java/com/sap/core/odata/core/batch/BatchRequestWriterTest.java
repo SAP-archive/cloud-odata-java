@@ -150,8 +150,8 @@ public class BatchRequestWriterTest {
 
     assertTrue(requestBody.contains("POST Employees('2') HTTP/1.1"));
     assertTrue(requestBody.contains("PUT $/ManagerId HTTP/1.1"));
-    assertTrue(requestBody.contains(BatchConstants.HTTP_CONTENT_ID + ": 1"));
-    assertTrue(requestBody.contains(BatchConstants.HTTP_CONTENT_ID + ": 2"));
+    assertTrue(requestBody.contains(BatchHelper.HTTP_CONTENT_ID + ": 1"));
+    assertTrue(requestBody.contains(BatchHelper.HTTP_CONTENT_ID + ": 2"));
     assertTrue(requestBody.contains(body));
 
   }
