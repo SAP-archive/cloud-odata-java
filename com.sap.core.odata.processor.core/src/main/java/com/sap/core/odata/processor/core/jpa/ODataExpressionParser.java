@@ -149,10 +149,10 @@ public class ODataExpressionParser {
         first = first.substring(1, first.length() - 1);
         if (methodFlag == 1) {
           methodFlag = 0;
-          return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END)", second, first);
+          return String.format("(CASE WHEN (%s LIKE '%%%s%%') THEN TRUE ELSE FALSE END)", second, first);
         }
         else {
-          return String.format("(CASE WHEN %s LIKE '%%%s%%' THEN TRUE ELSE FALSE END) = true", second, first);
+          return String.format("(CASE WHEN (%s LIKE '%%%s%%') THEN TRUE ELSE FALSE END) = true", second, first);
         }
       case TOLOWER:
         return String.format("LOWER(%s)", first);
