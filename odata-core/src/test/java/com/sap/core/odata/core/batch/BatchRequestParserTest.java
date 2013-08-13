@@ -149,7 +149,7 @@ public class BatchRequestParserTest {
         for (ODataRequest request : requests) {
           assertEquals(ODataHttpMethod.POST, request.getMethod());
           assertEquals("100000", request.getRequestHeaderValue(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
-          assertEquals("1", request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+          assertEquals("1", request.getRequestHeaderValue(BatchHelper.MIME_HEADER_CONTENT_ID.toLowerCase()));
           assertEquals("application/octet-stream", request.getContentType());
           InputStream body = request.getBody();
           assertEquals(content, StringHelper.inputStreamToString(body));
@@ -411,6 +411,18 @@ public class BatchRequestParserTest {
   }
 
   @Test(expected = BatchException.class)
+  public void testUriWithAbsolutePath() throws BatchException {
+    String batch = "--batch_8194-cf13-1f56" + "\n"
+        + MIME_HEADERS
+        + "\n"
+        + "GET /odata/Employees('1')/EmployeeName HTTP/1.1" + "\n"
+        + "\n"
+        + "\n"
+        + "--batch_8194-cf13-1f56--";
+    parseInvalidBatchBody(batch);
+  }
+
+  @Test(expected = BatchException.class)
   public void testNoCloseDelimiter3() throws BatchException {
     String batch = "--batch_8194-cf13-1f56" + "\n" + GET_REQUEST + "--batch_8194-cf13-1f56-"/*no hash*/;
     parseInvalidBatchBody(batch);
@@ -542,14 +554,14 @@ public class BatchRequestParserTest {
       if (!multipart.isChangeSet()) {
         assertEquals(1, multipart.getRequests().size());
         ODataRequest retrieveRequest = multipart.getRequests().get(0);
-        assertEquals("BBB", retrieveRequest.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+        assertEquals("BBB", retrieveRequest.getRequestHeaderValue(BatchHelper.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
       } else {
         for (ODataRequest request : multipart.getRequests()) {
           if (ODataHttpMethod.POST.equals(request.getMethod())) {
-            assertEquals(CONTENT_ID_REFERENCE, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
+            assertEquals(CONTENT_ID_REFERENCE, request.getRequestHeaderValue(BatchHelper.MIME_HEADER_CONTENT_ID.toLowerCase()));
           } else if (ODataHttpMethod.PUT.equals(request.getMethod())) {
-            assertEquals(PUT_MIME_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.MIME_HEADER_CONTENT_ID.toLowerCase()));
-            assertEquals(PUT_REQUEST_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchConstants.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
+            assertEquals(PUT_MIME_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchHelper.MIME_HEADER_CONTENT_ID.toLowerCase()));
+            assertEquals(PUT_REQUEST_HEADER_CONTENT_ID, request.getRequestHeaderValue(BatchHelper.REQUEST_HEADER_CONTENT_ID.toLowerCase()));
             assertNull(request.getPathInfo().getRequestUri());
             assertEquals("$" + CONTENT_ID_REFERENCE, request.getPathInfo().getODataSegments().get(0).getPath());
           }

@@ -113,20 +113,19 @@ public class ClientBatchTest extends AbstractRefTest {
     Map<String, String> changeSetHeaders = new HashMap<String, String>();
     changeSetHeaders.put("content-type", "application/octet-stream");
     changeSetHeaders.put("Accept", "application/atomsvc+xml;q=0.8, application/json;odata=verbose;q=0.5, */*;q=0.1");
-    changeSetHeaders.put("content-id", "1");
     BatchChangeSetPart changeRequest = BatchChangeSetPart.method(POST)
         .uri("Employees")
+        .contentId("1")
         .body("gAAAAgABwESAAMAAAABAAEA")
         .headers(changeSetHeaders)
         .build();
     changeSet.add(changeRequest);
 
     changeSetHeaders = new HashMap<String, String>();
-    ;
     changeSetHeaders.put("content-type", "application/json;odata=verbose");
-    changeSetHeaders.put("content-id", "2");
     BatchChangeSetPart changeRequest2 = BatchChangeSetPart.method(PUT)
         .uri("$1/EmployeeName")
+        .contentId("2")
         .body("{\"EmployeeName\":\"Frederic Fall MODIFIED\"}")
         .headers(changeSetHeaders)
         .build();
@@ -135,7 +134,10 @@ public class ClientBatchTest extends AbstractRefTest {
 
     Map<String, String> getRequestHeaders = new HashMap<String, String>();
     getRequestHeaders.put("content-id", "3");
-    BatchPart request = BatchQueryPart.method(GET).uri("Employees('7')/EmployeeName").headers(getRequestHeaders).build();
+    BatchPart request = BatchQueryPart.method(GET)
+        .uri("Employees('7')/EmployeeName")
+        .contentId("3")
+        .headers(getRequestHeaders).build();
     batch.add(request);
 
     InputStream body = EntityProvider.writeBatchRequestBody(batch, BOUNDARY);

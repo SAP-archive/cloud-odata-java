@@ -3,6 +3,7 @@ package com.sap.core.odata.core.batch;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.batch.BatchException;
 import com.sap.core.odata.api.client.batch.BatchSingleResponse;
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 
 public class BatchResponseParserTest {
@@ -17,7 +19,7 @@ public class BatchResponseParserTest {
   private static final String LF = "\r\n";
 
   @Test
-  public void test() throws BatchException {
+  public void testSimpleBatchResponse() throws BatchException {
     String getResponse = "--batch_123" + LF
         + "Content-Type: application/http" + LF
         + "Content-Transfer-Encoding: binary" + LF
@@ -45,9 +47,29 @@ public class BatchResponseParserTest {
   }
 
   @Test
-  public void test2() throws BatchException {
+  public void testBatchResponse() throws BatchException, IOException {
+    String fileName = "/batchResponse.txt";
+    InputStream in = ClassLoader.class.getResourceAsStream(fileName);
+    if (in == null) {
+      throw new IOException("Requested file '" + fileName + "' was not found.");
+    }
+    BatchResponseParser parser = new BatchResponseParser("multipart/mixed;boundary=batch_123");
+    List<BatchSingleResponse> responses = parser.parse(in);
+    for (BatchSingleResponse response : responses) {
+      if ("1".equals(response.getContentId())) {
+        assertEquals("204", response.getStatusCode());
+        assertEquals("No Content", response.getStatusInfo());
+      } else if ("3".equals(response.getContentId())) {
+        assertEquals("200", response.getStatusCode());
+        assertEquals("OK", response.getStatusInfo());
+      }
+    }
+  }
+
+  @Test
+  public void testResponseToChangeSet() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
         + LF
         + "--changeset_12ks93js84d" + LF
         + "Content-Type: application/http" + LF
@@ -75,7 +97,7 @@ public class BatchResponseParserTest {
   @Test(expected = BatchException.class)
   public void testInvalidMimeHeader() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
         + LF
         + "--changeset_12ks93js84d" + LF
         + "Content-Type: application/http" + LF
@@ -95,7 +117,7 @@ public class BatchResponseParserTest {
   @Test(expected = BatchException.class)
   public void testMissingMimeHeader() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
         + LF
         + "--changeset_12ks93js84d" + LF
         + LF
@@ -113,7 +135,7 @@ public class BatchResponseParserTest {
   @Test(expected = BatchException.class)
   public void testInvalidContentType() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + LF //Missing boundary parameter
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + LF //Missing boundary parameter
         + LF
         + "--changeset_12ks93js84d" + LF
         + "Content-Type: application/http" + LF
@@ -133,7 +155,7 @@ public class BatchResponseParserTest {
   @Test(expected = BatchException.class)
   public void testInvalidStatusLine() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
         + LF
         + "--changeset_12ks93js84d" + LF
         + "Content-Type: application/http" + LF
@@ -154,7 +176,7 @@ public class BatchResponseParserTest {
   @Test(expected = BatchException.class)
   public void testMissingCloseDelimiter() throws BatchException {
     String putResponse = "--batch_123" + LF
-        + "Content-Type: " + BatchConstants.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
+        + "Content-Type: " + HttpContentType.MULTIPART_MIXED + ";boundary=changeset_12ks93js84d" + LF
         + LF
         + "--changeset_12ks93js84d" + LF
         + "Content-Type: application/http" + LF
