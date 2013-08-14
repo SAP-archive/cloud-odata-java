@@ -212,6 +212,49 @@ public class BatchResponseParserTest {
     parseInvalidBatchResponseBody(getResponse);
   }
 
+  @Test(expected = BatchException.class)
+  public void testInvalidBoundary() throws BatchException {
+    String getResponse = "--batch_321" + LF
+        + "Content-Type: application/http" + LF
+        + "Content-Transfer-Encoding: binary" + LF
+        + "Content-ID: 1" + LF
+        + LF
+        + "HTTP/1.1 200 OK" + LF
+        + "DataServiceVersion: 2.0" + LF
+        + "Content-Type: text/plain;charset=utf-8" + LF
+        + LF
+        + "Frederic Fall" + LF
+        + LF
+        + "--batch_123--";
+
+    parseInvalidBatchResponseBody(getResponse);
+  }
+
+  @Test(expected = BatchException.class)
+  public void testInvalidBoundary2() throws BatchException {
+    String getResponse = "--batch_123" + LF
+        + "Content-Type: application/http" + LF
+        + "Content-Transfer-Encoding: binary" + LF
+        + LF
+        + "HTTP/1.1 200 OK" + LF
+        + "Content-Type: text/plain;charset=utf-8" + LF
+        + "Content-Length: 13" + LF
+        + LF
+        + "Frederic Fall" + LF
+        + LF
+        + "batch_123" + LF
+        + "Content-Type: application/http" + LF
+        + "Content-Transfer-Encoding: binary" + LF
+        + LF
+        + "HTTP/1.1 200 OK" + LF
+        + "Content-Type: text/plain;charset=utf-8" + LF
+        + LF
+        + "Walter Winter" + LF
+        + LF
+        + "--batch_123--";
+    parseInvalidBatchResponseBody(getResponse);
+  }
+
   private void parseInvalidBatchResponseBody(final String putResponse) throws BatchException {
     InputStream in = new ByteArrayInputStream(putResponse.getBytes());
     BatchResponseParser parser = new BatchResponseParser("multipart/mixed;boundary=batch_123");

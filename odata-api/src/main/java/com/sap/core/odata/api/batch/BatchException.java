@@ -31,7 +31,7 @@ public class BatchException extends ODataMessageException {
   /** INVALID_QUERY_PARAMETER requires no content value */
   public static final MessageReference INVALID_QUERY_PARAMETER = createMessageReference(BatchException.class, "INVALID_QUERY_PARAMETER");
 
-  /** INVALID_URI requires no content value */
+  /** INVALID_URI requires 1 content value('line number') */
   public static final MessageReference INVALID_URI = createMessageReference(BatchException.class, "INVALID_URI");
 
   /** INVALID_BOUNDARY requires 1 content value('line number') */
@@ -78,6 +78,9 @@ public class BatchException extends ODataMessageException {
 
   /** TRUNCETED_BODY requires 1 content value ('line number') */
   public static final MessageReference TRUNCATED_BODY = createMessageReference(BatchException.class, "TRUNCATED_BODY");
+
+  /** UNSUPPORTED_ABSOLUTE_PATH requires 1 content value ('line number') */
+  public static final MessageReference UNSUPPORTED_ABSOLUTE_PATH = createMessageReference(BatchException.class, "UNSUPPORTED_ABSOLUTE_PATH");
 
   public BatchException(final MessageReference messageReference) {
     super(messageReference);

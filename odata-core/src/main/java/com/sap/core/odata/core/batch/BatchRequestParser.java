@@ -69,7 +69,7 @@ public class BatchRequestParser {
     httpChangesetMethods.add("MERGE");
     httpChangesetMethods.add("PATCH");
     HTTP_CHANGESET_METHODS = Collections.unmodifiableSet(httpChangesetMethods);
-    
+
     HashSet<String> httpBatchMethods = new HashSet<String>();
     httpBatchMethods.add("GET");
     HTTP_BATCH_METHODS = Collections.unmodifiableSet(httpBatchMethods);
@@ -102,7 +102,7 @@ public class BatchRequestParser {
     if (contentTypeMime != null) {
       boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
-      String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
+      final String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
       while (scanner.hasNext() && !scanner.hasNext(closeDelimiter)) {
         requests.add(parseMultipart(scanner, boundary, false));
         parseNewLine(scanner);
@@ -167,9 +167,7 @@ public class BatchRequestParser {
           Pattern changeSetCloseDelimiter = Pattern.compile("--" + changeSetBoundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES);
           while (!scanner.hasNext(changeSetCloseDelimiter)) {
             BatchRequestPart part = parseMultipart(scanner, changeSetBoundary, true);
-            if (part.getRequests().size() == 1) {
-              changeSetRequests.add(part.getRequests().get(0));
-            }
+            changeSetRequests.addAll(part.getRequests());
           }
           scanner.next(changeSetCloseDelimiter);
           currentLineNumber++;
@@ -227,11 +225,11 @@ public class BatchRequestParser {
       List<String> acceptHeaders = getAcceptHeader(headers);
       List<Locale> acceptLanguages = getAcceptLanguageHeader(headers);
       parseNewLine(scanner);
-      InputStream body = new ByteArrayInputStream(BatchHelper.getBytes(""));
+      InputStream body = new ByteArrayInputStream(new byte[0]);
       if (isChangeSet) {
         body = parseBody(scanner);
       }
-      
+
       ODataRequestBuilder requestBuilder = ODataRequest.method(httpMethod)
           .queryParameters(queryParameters)
           .requestHeaders(headers)
@@ -293,38 +291,64 @@ public class BatchRequestParser {
     PathInfoImpl pathInfo = new PathInfoImpl();
     pathInfo.setServiceRoot(batchRequestPathInfo.getServiceRoot());
     pathInfo.setPrecedingPathSegment(batchRequestPathInfo.getPrecedingSegments());
-    Scanner uriScanner = new Scanner(uri);
-    Pattern regexRequestUri = Pattern.compile("(?:" + baseUri + "/)?([^/][^?]*)(\\?.*)?");
-    if (uriScanner.hasNext(regexRequestUri)) {
-      uriScanner.next(regexRequestUri);
-      MatchResult result = uriScanner.match();
-      if (result.groupCount() == 2) {
-        String odataPathSegmentsAsString = result.group(1);
-        String queryParametersAsString = result.group(2) != null ? result.group(2) : "";
-        pathInfo.setODataPathSegment(parseODataPathSegments(odataPathSegmentsAsString));
-        try {
-          if (!odataPathSegmentsAsString.startsWith("$")) {
-            String requestUri = baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString;
-            pathInfo.setRequestUri(new URI(requestUri));
+    final String odataPathSegmentsAsString;
+    final String queryParametersAsString;
+    try {
+      Scanner uriScanner = new Scanner(uri).useDelimiter(LF);
+      URI uriObject = new URI(uri);
+      if (uriObject.isAbsolute()) {
+        Pattern regexRequestUri = Pattern.compile(baseUri + "/([^/][^?]*)(\\?.*)?");
+        if (uriScanner.hasNext(regexRequestUri)) {
+          uriScanner.next(regexRequestUri);
+          MatchResult result = uriScanner.match();
+          if (result.groupCount() == 2) {
+            odataPathSegmentsAsString = result.group(1);
+            queryParametersAsString = result.group(2) != null ? result.group(2) : "";
+          } else {
+            uriScanner.close();
+            throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
           }
-        } catch (URISyntaxException e) {
+        } else {
           uriScanner.close();
-          throw new BatchException(BatchException.INVALID_URI, e);
+          throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
         }
       } else {
-        uriScanner.close();
-        throw new BatchException(BatchException.INVALID_URI);
+        Pattern regexRequestUri = Pattern.compile("([^/][^?]*)(\\?.*)?");
+        if (uriScanner.hasNext(regexRequestUri)) {
+          uriScanner.next(regexRequestUri);
+          MatchResult result = uriScanner.match();
+          if (result.groupCount() == 2) {
+            odataPathSegmentsAsString = result.group(1);
+            queryParametersAsString = result.group(2) != null ? result.group(2) : "";
+          } else {
+            uriScanner.close();
+            throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
+          }
+        } else if (uriScanner.hasNext("/(.*)")) {
+          uriScanner.close();
+          throw new BatchException(BatchException.UNSUPPORTED_ABSOLUTE_PATH.addContent(currentLineNumber));
+        }
+        else {
+          uriScanner.close();
+          throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
+        }
+
       }
-    } else {
       uriScanner.close();
-      throw new BatchException(BatchException.INVALID_URI);
+      pathInfo.setODataPathSegment(parseODataPathSegments(odataPathSegmentsAsString));
+      if (!odataPathSegmentsAsString.startsWith("$")) {
+        String requestUri = baseUri + "/" + odataPathSegmentsAsString + queryParametersAsString;
+        pathInfo.setRequestUri(new URI(requestUri));
+      }
+      return pathInfo;
+    } catch (URISyntaxException e1) {
+      throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
     }
-    uriScanner.close();
-    return pathInfo;
+
   }
 
   private Map<String, String> parseQueryParameters(final String uri) throws BatchException {
-    Scanner uriScanner = new Scanner(uri);
+    Scanner uriScanner = new Scanner(uri).useDelimiter("\n");
     Map<String, String> queryParametersMap = new HashMap<String, String>();
     Pattern regex = Pattern.compile("(?:" + baseUri + "/)?" + "[^?]+" + "\\?(.*)");
     if (uriScanner.hasNext(regex)) {
@@ -349,7 +373,7 @@ public class BatchRequestParser {
 
       } else {
         uriScanner.close();
-        throw new BatchException(BatchException.INVALID_URI);
+        throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
       }
     }
     uriScanner.close();
@@ -376,6 +400,8 @@ public class BatchRequestParser {
 
   private InputStream parseBody(final Scanner scanner) {
     StringBuilder body = null;
+    final InputStream requestBody;
+
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
         if (body == null) {
@@ -388,8 +414,7 @@ public class BatchRequestParser {
       }
       currentLineNumber++;
     }
-    
-    final InputStream requestBody;
+
     if (body != null) {
       requestBody = new ByteArrayInputStream(BatchHelper.getBytes(body.toString()));
     } else {

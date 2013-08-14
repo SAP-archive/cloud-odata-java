@@ -3,6 +3,7 @@ package com.sap.core.odata.core.batch;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +48,7 @@ public class BatchResponseParser {
     Scanner scanner = new Scanner(in, BatchHelper.DEFAULT_ENCODING).useDelimiter(LF);
     List<BatchSingleResponse> responseList;
     try {
-      responseList = parseBatchResponse(scanner);
+      responseList = Collections.unmodifiableList(parseBatchResponse(scanner));
     } finally {// NOPMD (suppress DoNotThrowExceptionInFinally)
       scanner.close();
       try {
@@ -64,10 +65,9 @@ public class BatchResponseParser {
     if (contentTypeMime != null) {
       boundary = getBoundary(contentTypeMime);
       parsePreamble(scanner);
-      String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
+      final String closeDelimiter = "--" + boundary + "--" + REG_EX_ZERO_OR_MORE_WHITESPACES;
       while (scanner.hasNext() && !scanner.hasNext(closeDelimiter)) {
         responses.addAll(parseMultipart(scanner, boundary, false));
-        //parseNewLine(scanner);
       }
       if (scanner.hasNext(closeDelimiter)) {
         scanner.next(closeDelimiter);
@@ -99,7 +99,7 @@ public class BatchResponseParser {
       mimeHeaders = parseMimeHeaders(scanner);
       currentContentId = mimeHeaders.get(BatchHelper.HTTP_CONTENT_ID.toLowerCase(Locale.ENGLISH));
 
-      String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH));
+      final String contentType = mimeHeaders.get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH));
       if (contentType == null) {
         throw new BatchException(BatchException.MISSING_CONTENT_TYPE);
       }
@@ -154,8 +154,8 @@ public class BatchResponseParser {
     if (scanner.hasNext(REG_EX_STATUS_LINE)) {
       scanner.next(REG_EX_STATUS_LINE);
       currentLineNumber++;
-      String statusCode = null;
-      String statusInfo = null;
+      final String statusCode;
+      final String statusInfo;
       MatchResult result = scanner.match();
       if (result.groupCount() == 2) {
         statusCode = result.group(1);
@@ -242,34 +242,34 @@ public class BatchResponseParser {
   }
 
   private String parseBody(final Scanner scanner) {
-    String body = null;
+    StringBuilder body = null;
     while (scanner.hasNext() && !scanner.hasNext(REG_EX_ANY_BOUNDARY_STRING)) {
       if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
-        String nextLine = scanner.next();
         if (body == null) {
-          body = nextLine;
+          body = new StringBuilder(scanner.next());
         } else {
-          body = body + LF + nextLine;
+          body.append(LF).append(scanner.next());
         }
       } else {
         scanner.next();
       }
       currentLineNumber++;
     }
-    return body;
+    String responseBody = body != null ? body.toString() : null;
+    return responseBody;
   }
 
   private String parseBody(final Scanner scanner, final int contentLength) {
-    String body = null;
+    StringBuilder body = null;
     int length = 0;
     while (scanner.hasNext() && length < contentLength) {
       if (!scanner.hasNext(REG_EX_ZERO_OR_MORE_WHITESPACES)) {
         String nextLine = scanner.next();
         length += BatchHelper.getBytes(nextLine).length;
         if (body == null) {
-          body = nextLine;
+          body = new StringBuilder(nextLine);
         } else {
-          body = body + LF + nextLine;
+          body.append(LF).append(nextLine);
         }
       } else {
         scanner.next();
@@ -280,7 +280,8 @@ public class BatchResponseParser {
         currentLineNumber++;
       }
     }
-    return body;
+    String responseBody = body != null ? body.toString() : null;
+    return responseBody;
   }
 
   private String getBoundary(final String contentType) throws BatchException {
