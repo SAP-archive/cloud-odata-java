@@ -155,7 +155,7 @@ public class EdmMockUtilV2 {
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTE) ||
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MDOUBLE) ||
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY)) {
-      EasyMock.expect(edmProperty.getName()).andReturn(propertyName);
+      EasyMock.expect(edmProperty.getName()).andReturn(propertyName).anyTimes();
       EasyMock.expect(edmProperty.getMapping()).andStubReturn((EdmMapping) mockEdmMapping(entityName, propertyName, null));
       EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.SIMPLE);
       EasyMock.expect(edmProperty.getType()).andReturn(edmType);
