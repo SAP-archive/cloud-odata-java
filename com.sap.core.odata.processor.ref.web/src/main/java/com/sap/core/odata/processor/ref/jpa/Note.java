@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -43,7 +43,7 @@ public class Note {
   private long soId;
 
   /*@JoinColumn(name = "SO_ID",referencedColumnName = "SO_ID",insertable = false,updatable = false)*/
-  @OneToOne
+  @ManyToOne
   private SalesOrderHeader salesOrderHeader;
 
   //	public Calendar getCreationTime() {

@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.api.jpa.access;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
@@ -18,8 +19,8 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 /**
  * The interface provides methods for processing OData Requests for Create, Read, Update, Delete operations. 
- * You need to pass the OData request and the API created a JPA response. The JPA response is a JPA entity. 
- * You can now work with the JPA entities directly once it is retrieved from the persistence.
+ * Pass the OData request or parsed OData request (Map of properties) as request. 
+ * A JPA entity is returned as a response. 
  * 
  * @author SAP AG
  */
@@ -90,53 +91,6 @@ public interface JPAProcessor {
       throws ODataJPAModelException, ODataJPARuntimeException;
 
   /**
-   * Processes OData request for creating Entity. The method returns an Object
-   * which is created. Null means object was not created.
-   * 
-   * @param createView
-   * @param content
-   * @param requestContentType
-   * @param contentType
-   * @return Created Object
-   * 
-   * @throws ODataJPAModelException
-   * @throws ODataJPARuntimeException
-   */
-
-  public <T> List<T> process(PostUriInfo createView, InputStream content,
-      String requestContentType) throws ODataJPAModelException,
-      ODataJPARuntimeException;
-
-  /**
-   * Processes OData request for updating Entity. The method returns an Object
-   * which is updated. Null means object was not found or updated.
-   * 
-   * @param deleteuriInfo
-   * @param contentType
-   * @return Deleted Object
-   * 
-   * @throws ODataJPAModelException
-   * @throws ODataJPARuntimeException
-   */
-  public <T> Object process(PutMergePatchUriInfo updateView,
-      InputStream content, String requestContentType)
-      throws ODataJPAModelException, ODataJPARuntimeException;
-
-  /**
-   * Processes OData request for deleting Entity. The method returns an Object
-   * which is deleted. Null means object was not found.
-   * 
-   * @param deleteuriInfo
-   * @param contentType
-   * @return Deleted Object
-   * 
-   * @throws ODataJPAModelException
-   * @throws ODataJPARuntimeException
-   */
-  public Object process(DeleteUriInfo deleteuriInfo, String contentType)
-      throws ODataJPAModelException, ODataJPARuntimeException;
-
-  /**
    * Processes OData request for executing custom operations. The method
    * returns a List of Object. The list contains one entry if the the custom
    * operations return type has multiplicity of ONE.
@@ -174,6 +128,84 @@ public interface JPAProcessor {
    * @throws ODataJPARuntimeException
    */
   public <T> List<T> process(GetEntitySetLinksUriInfo uriParserResultView)
+      throws ODataJPAModelException, ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for creating Entity. The method returns an Object
+   * which is created.  A Null reference implies object was not created.
+   * 
+   * @param createView
+   * @param content
+   * @param requestContentType
+   * @param contentType
+   * @return Created Object
+   * 
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+
+  public <T> List<T> process(PostUriInfo createView, InputStream content,
+      String requestContentType) throws ODataJPAModelException,
+      ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for creating Entity. The method expects a parsed OData request which is a Map of properties.
+   * The method returns an Object that is created. A Null reference implies object was not created.
+   * 
+   * @param createView
+   * @param content
+   * @param requestContentType
+   * @param contentType
+   * @return Created Object
+   * 
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+
+  public <T> List<T> process(PostUriInfo createView, Map<String, Object> content) throws ODataJPAModelException,
+      ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for updating Entity. The method returns an Object
+   * which is updated.  A Null reference implies object was not created.
+   * 
+   * @param deleteuriInfo
+   * @param contentType
+   * @return Deleted Object
+   * 
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+  public <T> Object process(PutMergePatchUriInfo updateView,
+      InputStream content, String requestContentType)
+      throws ODataJPAModelException, ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for updating Entity. The method returns an Object
+   * which is updated.  A Null reference implies object was not created.
+   * 
+   * @param deleteuriInfo
+   * @param contentType
+   * @return Deleted Object
+   * 
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+  public <T> Object process(PutMergePatchUriInfo updateView, Map<String, Object> content)
+      throws ODataJPAModelException, ODataJPARuntimeException;
+
+  /**
+   * Processes OData request for deleting Entity. The method returns an Object
+   * which is deleted.  A Null reference implies object was not created.
+   * 
+   * @param deleteuriInfo
+   * @param contentType
+   * @return Deleted Object
+   * 
+   * @throws ODataJPAModelException
+   * @throws ODataJPARuntimeException
+   */
+  public Object process(DeleteUriInfo deleteuriInfo, String contentType)
       throws ODataJPAModelException, ODataJPARuntimeException;
 
   /**

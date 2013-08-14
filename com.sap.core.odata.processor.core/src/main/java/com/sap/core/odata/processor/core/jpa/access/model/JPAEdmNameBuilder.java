@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
+import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
@@ -139,6 +140,7 @@ public class JPAEdmNameBuilder {
 
     JPAEdmMapping mapping = new JPAEdmMappingImpl();
     ((Mapping) mapping).setInternalName(jpaAttributeName);
+    mapping.setJPAType(jpaAttribute.getJavaType());
 
     AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute
         .getJavaMember();
@@ -239,7 +241,11 @@ public class JPAEdmNameBuilder {
       edmComplexTypeName = jpaEmbeddableTypeName;
     }
 
-    view.getEdmComplexType().setName(edmComplexTypeName);
+    ComplexType complexType = view.getEdmComplexType();
+    complexType.setName(edmComplexTypeName);
+    JPAEdmMapping mapping = new JPAEdmMappingImpl();
+    mapping.setJPAType(view.getJPAEmbeddableType().getJavaType());
+    complexType.setMapping((Mapping) mapping);
 
   }
 

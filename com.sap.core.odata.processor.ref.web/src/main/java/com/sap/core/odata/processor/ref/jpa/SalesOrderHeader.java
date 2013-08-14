@@ -9,8 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,7 +38,6 @@ public class SalesOrderHeader {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "SO_ID")
   private long soId;
 
@@ -89,12 +86,14 @@ public class SalesOrderHeader {
   }
 
   public Date getCreationDate() {
+    if(creationDate == null) return null;
     long dbTime = creationDate.getTime();
     Date originalDate = new Date(dbTime + TimeZone.getDefault().getOffset(dbTime));
     return originalDate;
   }
 
   public void setCreationDate(final Date creationDate) {
+    if(creationDate == null) return;
     long originalTime = creationDate.getTime();
     Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
     this.creationDate = newDate;
