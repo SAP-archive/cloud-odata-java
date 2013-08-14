@@ -145,6 +145,11 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
+          <configuration>
+            <instructions>
+              <_snapshot>${maven.build.timestamp}</_snapshot>
+            </instructions>
+          </configuration>
           <version>2.3.7</version>
         </plugin>
         <plugin>
