@@ -339,7 +339,7 @@ public final class EntityProvider {
      * @param boundary 
      * @return Batch Request as InputStream
      */
-    InputStream writeBatchRequestBody(List<BatchPart> batchParts, String boundary);
+    InputStream writeBatchRequest(List<BatchPart> batchParts, String boundary);
 
     /** 
      * Parse Batch Response body (as {@link InputStream}) and provide a list of single responses as {@link BatchSingleResponse}
@@ -711,8 +711,8 @@ public final class EntityProvider {
    * @param boundary 
    * @return Batch Request as InputStream
    */
-  public static InputStream writeBatchRequestBody(final List<BatchPart> batchParts, final String boundary) {
-    return createEntityProvider().writeBatchRequestBody(batchParts, boundary);
+  public static InputStream writeBatchRequest(final List<BatchPart> batchParts, final String boundary) {
+    return createEntityProvider().writeBatchRequest(batchParts, boundary);
   }
 
   /** 

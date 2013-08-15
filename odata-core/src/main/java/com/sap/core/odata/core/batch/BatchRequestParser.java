@@ -341,8 +341,8 @@ public class BatchRequestParser {
         pathInfo.setRequestUri(new URI(requestUri));
       }
       return pathInfo;
-    } catch (URISyntaxException e1) {
-      throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
+    } catch (URISyntaxException e) {
+      throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber), e);
     }
 
   }

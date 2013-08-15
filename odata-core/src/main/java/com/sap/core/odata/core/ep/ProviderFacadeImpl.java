@@ -187,7 +187,7 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public InputStream writeBatchRequestBody(final List<BatchPart> batchParts, final String boundary) {
+  public InputStream writeBatchRequest(final List<BatchPart> batchParts, final String boundary) {
     BatchRequestWriter batchWriter = new BatchRequestWriter();
     return batchWriter.writeBatchRequest(batchParts, boundary);
   }

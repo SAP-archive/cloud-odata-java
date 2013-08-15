@@ -40,7 +40,7 @@ public class ClientBatchTest extends AbstractRefTest {
     BatchPart request = BatchQueryPart.method(GET).uri("$metadata").build();
     batch.add(request);
 
-    InputStream body = EntityProvider.writeBatchRequestBody(batch, BOUNDARY);
+    InputStream body = EntityProvider.writeBatchRequest(batch, BOUNDARY);
     String batchRequestBody = StringHelper.inputStreamToString(body, true);
     checkMimeHeaders(batchRequestBody);
     checkBoundaryDelimiters(batchRequestBody);
@@ -80,7 +80,7 @@ public class ClientBatchTest extends AbstractRefTest {
         .build();
     batch.add(request);
 
-    InputStream body = EntityProvider.writeBatchRequestBody(batch, BOUNDARY);
+    InputStream body = EntityProvider.writeBatchRequest(batch, BOUNDARY);
     String bodyAsString = StringHelper.inputStreamToString(body, true);
     checkMimeHeaders(bodyAsString);
     checkBoundaryDelimiters(bodyAsString);
@@ -140,7 +140,7 @@ public class ClientBatchTest extends AbstractRefTest {
         .headers(getRequestHeaders).build();
     batch.add(request);
 
-    InputStream body = EntityProvider.writeBatchRequestBody(batch, BOUNDARY);
+    InputStream body = EntityProvider.writeBatchRequest(batch, BOUNDARY);
     String bodyAsString = StringHelper.inputStreamToString(body, true);
     checkMimeHeaders(bodyAsString);
     checkBoundaryDelimiters(bodyAsString);
@@ -176,7 +176,7 @@ public class ClientBatchTest extends AbstractRefTest {
         .build();
     batch.add(request);
 
-    InputStream body = EntityProvider.writeBatchRequestBody(batch, BOUNDARY);
+    InputStream body = EntityProvider.writeBatchRequest(batch, BOUNDARY);
     String bodyAsString = StringHelper.inputStreamToString(body, true);
     checkMimeHeaders(bodyAsString);
     checkBoundaryDelimiters(bodyAsString);
