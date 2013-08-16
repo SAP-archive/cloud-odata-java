@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Type;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,8 +20,8 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
-import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAPluralAttributeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 
@@ -164,14 +165,17 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 
   @SuppressWarnings("hiding")
   private class AttributeMock<Object, String> extends
-      JPAAttributeMock<Object, String> {
+      JPAPluralAttributeMock {
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Class<String> getJavaType() {
-      return (Class<String>) java.lang.String.class;
+    public boolean isCollection() {
+      return true;
     }
 
+    @Override
+    public Type<java.lang.String> getElementType() {
+      return new ElementType();
+    }
   }
 
   private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
@@ -179,6 +183,20 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
     public String getName() {
       return "SalesOrderHeader";
     }
+  }
+
+  private class ElementType implements Type<String> {
+
+    @Override
+    public javax.persistence.metamodel.Type.PersistenceType getPersistenceType() {
+      return PersistenceType.BASIC;
+    }
+
+    @Override
+    public Class<String> getJavaType() {
+      return String.class;
+    }
+
   }
 
 }

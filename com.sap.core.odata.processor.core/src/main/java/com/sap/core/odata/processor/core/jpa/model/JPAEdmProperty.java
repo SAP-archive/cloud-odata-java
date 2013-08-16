@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -284,8 +285,16 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
           {
             navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
           }
+
           currentEntityName = entityTypeView.getJPAEntityType().getName();
-          targetEntityName = currentAttribute.getJavaType().getSimpleName();
+
+          if (currentAttribute.isCollection()) {
+            PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>) currentAttribute;
+            targetEntityName = jpattr.getElementType().getJavaType()
+                .getSimpleName();
+          }
+          else
+            targetEntityName = currentAttribute.getJavaType().getSimpleName();
           Integer sequenceNumber = associationCount.get(currentEntityName + targetEntityName);
           if (sequenceNumber == null) {
             sequenceNumber = new Integer(1);
