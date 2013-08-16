@@ -114,6 +114,7 @@
 						<Bundle-DocURL>${project.url}</Bundle-DocURL>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>
 			</plugin>
