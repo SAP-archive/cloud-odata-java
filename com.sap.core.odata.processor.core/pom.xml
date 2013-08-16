@@ -110,7 +110,8 @@
 				<configuration>
 					<instructions>
 						<Import-Package>*</Import-Package>
-						<Export-Package>com.sap.core.odata.processor.core.jpa.factory;version=${project.version}</Export-Package>
+						<Export-Package>com.sap.core.odata.processor.core.jpa,
+						com.sap.core.odata.processor.core.jpa.factory;version=${project.version}</Export-Package>
 						<Bundle-DocURL>${project.url}</Bundle-DocURL>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
