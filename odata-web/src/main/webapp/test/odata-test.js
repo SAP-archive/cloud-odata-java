@@ -328,9 +328,12 @@ var entry={
    ManagerId: "1",
    RoomId: "104",
    TeamId: "4",
-   Age: 52,
+   Age: 50,
    ImageUrl: "Employees('1')/$value",
-   ne_Manager: {
+   Location:{
+	   __metadata:{type:"RefScenario.c_Location"},City:{__metadata:{type:"RefScenario.c_City"},PostalCode:"69124",CityName:"Heidelberg"},Country:"Germany"
+		},
+  ne_Manager: {
       __deferred: {
         uri: "Employees('1')/ne_Manager"
        }
