@@ -290,6 +290,9 @@ public class JPAProcessorImpl implements JPAProcessor {
         final ODataEntityParser oDataEntityParser = new ODataEntityParser(oDataJPAContext);
         final ODataEntry oDataEntry = oDataEntityParser.parseEntry(oDataEntitySet, content, requestedContentType, false);
         virtualJPAEntity.create(oDataEntry);
+        JPALink link = new JPALink(oDataJPAContext);
+        link.setSourceJPAEntity(jpaEntity);
+        link.create(createView, content, requestedContentType, requestedContentType);
       }
       else if (properties != null)
         virtualJPAEntity.create(properties);
@@ -298,10 +301,6 @@ public class JPAProcessorImpl implements JPAProcessor {
 
       em.getTransaction().begin();
       jpaEntity = virtualJPAEntity.getJPAEntity();
-
-      JPALink link = new JPALink(oDataJPAContext);
-      link.setSourceJPAEntity(jpaEntity);
-      link.create(createView, content, requestedContentType, requestedContentType);
 
       em.persist(jpaEntity);
       if (em.contains(jpaEntity)) {
