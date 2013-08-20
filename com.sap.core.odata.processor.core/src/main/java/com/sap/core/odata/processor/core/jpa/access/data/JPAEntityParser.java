@@ -283,6 +283,28 @@ public final class JPAEntityParser {
     return navigationMap;
   }
 
+  public Method getAccessModifierSet(final Object jpaEntity, final String methodName) throws ODataJPARuntimeException {
+    Class<?> jpaType = jpaEntity.getClass();
+    String methodNameGet = ACCESS_MODIFIER_GET + methodName.substring(3);
+    Method method = null;
+
+    try {
+      method = jpaType.getMethod(methodNameGet, (Class<?>[]) null);
+      Class<?> parameterType = method.getReturnType();
+      method = jpaType.getMethod(methodName, new Class<?>[] { parameterType });
+    } catch (NoSuchMethodException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (SecurityException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
+
+    return method;
+  }
+
   public HashMap<String, Method> getAccessModifiers(final Object jpaEntity,
       final EdmStructuralType structuralType, final String accessModifier) throws ODataJPARuntimeException {
 

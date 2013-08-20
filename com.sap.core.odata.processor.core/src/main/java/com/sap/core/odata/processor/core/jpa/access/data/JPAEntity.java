@@ -23,13 +23,11 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 public class JPAEntity {
 
   private Object jpaEntity = null;
-  //private Object jpaEmbeddableKey = null;
   private EdmEntityType oDataEntityType = null;
   private EdmEntitySet oDataEntitySet = null;
   private Class<?> jpaType = null;
   private HashMap<String, Method> accessModifiersWrite = null;
   private JPAEntityParser jpaEntityParser = null;
-  private boolean isKeyBuilt = false;
   public HashMap<EdmNavigationProperty, EdmEntitySet> inlinedEntities = null;
 
   public JPAEntity(EdmEntityType oDataEntityType, EdmEntitySet oDataEntitySet) {
@@ -73,8 +71,19 @@ public class JPAEntity {
             .throwException(ODataJPARuntimeException.GENERAL, null);
 
       final HashMap<String, String> embeddableKeys = jpaEntityParser.getJPAEmbeddableKeyMap(jpaEntity.getClass().getName());
+      List<String> propertyNames = null;
+      if (embeddableKeys != null)
+      {
+        setEmbeddableKeyProperty(embeddableKeys, oDataEntityType.getKeyProperties(), oDataEntryProperties, jpaEntity);
+        propertyNames = new ArrayList<String>();
+        propertyNames.addAll(oDataEntryProperties.keySet());
+        for (String propertyName : oDataEntityType.getKeyPropertyNames())
+          propertyNames.remove(propertyName);
+      }
+      else
+        propertyNames = (List<String>) oDataEntryProperties.keySet();
 
-      for (String propertyName : oDataEntryProperties.keySet()) {
+      for (String propertyName : propertyNames) {
         EdmTyped edmTyped = (EdmTyped) oDataEntityType.getProperty(propertyName);
 
         Method accessModifier = null;
@@ -86,11 +95,7 @@ public class JPAEntity {
               continue;
           }
           accessModifier = accessModifiersWrite.get(propertyName);
-          if (embeddableKeys != null && isKeyBuilt == false) {
-            isKeyBuilt = true;
-          }
-          else
-            setProperty(accessModifier, jpaEntity, oDataEntryProperties.get(propertyName));
+          setProperty(accessModifier, jpaEntity, oDataEntryProperties.get(propertyName));
           break;
         case COMPLEX:
           structuralType = (EdmStructuralType) edmTyped.getType();
@@ -203,43 +208,51 @@ public class JPAEntity {
       method.invoke(entity, entityPropertyValue);
   }
 
-  //  protected void setEmbeddableKeyProperty(HashMap<String, String> embeddableKeys, List<EdmProperty> oDataEntryKeyProperties,
-  //      Map<String, Object> oDataEntryProperties, Object entity)
-  //      throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-  //      InvocationTargetException, EdmException, InstantiationException {
-  //
-  //    HashMap<String, Object> embeddableTypeMap = new HashMap<String, Object>();
-  //
-  //    for (EdmProperty edmProperty : oDataEntryKeyProperties)
-  //    {
-  //      if (oDataEntryProperties.containsKey(edmProperty.getName()) == false)
-  //        continue;
-  //
-  //      String edmPropertyName = edmProperty.getName();
-  //      String embeddableKeyNameComposite = embeddableKeys.get(edmPropertyName);
-  //      String embeddableKeyNameSplit[] = embeddableKeyNameComposite.split("\\.");
-  //
-  //      JPAEdmMapping mapping = (JPAEdmMapping) edmProperty.getMapping();
-  //
-  //      for (int i = mapping.getJPATypeHierachy().length - 1; i >= 0; i--)
-  //      {
-  //        String typeName = mapping.getJPATypeHierachy()[i].getName();
-  //        Object embeddableObj = embeddableTypeMap.get(typeName);
-  //        if (embeddableObj == null) {
-  //          embeddableObj = instantiateEmbeddableKey(edmProperty, i);
-  //          embeddableTypeMap.put(typeName, embeddableObj);
-  //          Method method = entity.getClass().getMethod(embeddableKeyNameSplit[0], embeddableObj.getClass());
-  //          method.invoke(entity, embeddableObj);
-  //        }
-  //
-  //        Object oDataEntryKeyPropertyValue = oDataEntryProperties.get(edmPropertyName);
-  //
-  //        Method method = embeddableObj.getClass().getMethod(embeddableKeyNameSplit[i + 1], oDataEntryKeyPropertyValue.getClass());
-  //        method.invoke(embeddableObj, oDataEntryKeyPropertyValue);
-  //      }
-  //
-  //    }
-  //  }
+  protected void setEmbeddableKeyProperty(HashMap<String, String> embeddableKeys, List<EdmProperty> oDataEntryKeyProperties,
+      Map<String, Object> oDataEntryProperties, Object entity)
+      throws ODataJPARuntimeException, EdmException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+
+    HashMap<String, Object> embeddableObjMap = new HashMap<String, Object>();
+    List<EdmProperty> leftODataEntryKeyProperties = new ArrayList<EdmProperty>();
+    HashMap<String, String> leftEmbeddableKeys = new HashMap<String, String>();
+
+    for (EdmProperty edmProperty : oDataEntryKeyProperties)
+    {
+      if (oDataEntryProperties.containsKey(edmProperty.getName()) == false)
+        continue;
+
+      String edmPropertyName = edmProperty.getName();
+      String embeddableKeyNameComposite = embeddableKeys.get(edmPropertyName);
+      String embeddableKeyNameSplit[] = embeddableKeyNameComposite.split("\\.");
+      String methodPartName = null;
+      Method method = null;
+      Object embeddableObj = null;
+
+      if (embeddableObjMap.containsKey(embeddableKeyNameSplit[0]) == false) {
+        methodPartName = embeddableKeyNameSplit[0];
+        method = jpaEntityParser.getAccessModifierSet(entity, methodPartName);
+        embeddableObj = method.getParameterTypes()[0].newInstance();
+        method.invoke(entity, embeddableObj);
+        embeddableObjMap.put(embeddableKeyNameSplit[0], embeddableObj);
+      }
+      else
+        embeddableObj = embeddableObjMap.get(embeddableKeyNameSplit[0]);
+
+      if (embeddableKeyNameSplit.length == 2) {
+        methodPartName = embeddableKeyNameSplit[1];
+        method = jpaEntityParser.getAccessModifierSet(embeddableObj, methodPartName);
+        Object simpleObj = oDataEntryProperties.get(edmProperty.getName());
+        method.invoke(embeddableObj, simpleObj);
+      }
+      else if (embeddableKeyNameSplit.length > 2) // Deeply nested
+      {
+        leftODataEntryKeyProperties.add(edmProperty);
+        leftEmbeddableKeys.put(edmPropertyName, embeddableKeyNameComposite.split(embeddableKeyNameSplit[0] + ".", 2)[1]);
+        setEmbeddableKeyProperty(leftEmbeddableKeys, leftODataEntryKeyProperties, oDataEntryProperties, embeddableObj);
+      }
+
+    }
+  }
 
   protected Object instantiateEmbeddableKey(EdmProperty edmProperty, int nestingLevel) throws EdmException, InstantiationException, IllegalAccessException {
     JPAEdmMapping propertyMapping = (JPAEdmMapping) edmProperty.getMapping();
