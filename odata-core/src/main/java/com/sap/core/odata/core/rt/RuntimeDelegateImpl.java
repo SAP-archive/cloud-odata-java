@@ -89,7 +89,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
     ODataRequestImpl request = new ODataRequestImpl();
     return request.new ODataRequestBuilderImpl();
   }
-  
+
   @Override
   protected BatchChangeSetBuilder createBatchChangeSetBuilder() {
     BatchChangeSetImpl changeSet = new BatchChangeSetImpl();
@@ -104,8 +104,9 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
 
   @Override
   protected BatchChangeSetPartBuilder createBatchChangeSetRequest() {
-   BatchChangeSetPartImpl batchChangeSetRequest = new BatchChangeSetPartImpl();;
-   return batchChangeSetRequest.new BatchChangeSetRequestBuilderImpl();
+    BatchChangeSetPartImpl batchChangeSetRequest = new BatchChangeSetPartImpl();
+    ;
+    return batchChangeSetRequest.new BatchChangeSetRequestBuilderImpl();
   }
 
 }

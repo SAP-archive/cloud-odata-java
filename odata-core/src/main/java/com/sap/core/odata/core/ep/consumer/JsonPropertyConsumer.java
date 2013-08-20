@@ -123,8 +123,9 @@ public class JsonPropertyConsumer {
   private Object readComplexProperty(final JsonReader reader, final EntityComplexPropertyInfo complexPropertyInfo, final Object typeMapping) throws EdmException, EntityProviderException, IOException {
     if (reader.peek().equals(JsonToken.NULL)) {
       reader.nextNull();
-      if (complexPropertyInfo.isMandatory())
+      if (complexPropertyInfo.isMandatory()) {
         throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(complexPropertyInfo.getName()));
+      }
       return null;
     }
 

@@ -80,7 +80,7 @@ public abstract class RuntimeDelegate {
     protected abstract BatchResponsePartBuilder createBatchResponsePartBuilder();
 
     protected abstract ODataRequestBuilder createODataRequestBuilder();
-    
+
     protected abstract BatchChangeSetBuilder createBatchChangeSetBuilder();
 
     protected abstract BatchQueryPartBuilder createBatchQueryRequestBuilder();
@@ -176,7 +176,7 @@ public abstract class RuntimeDelegate {
   public static ODataRequestBuilder createODataRequestBuilder() {
     return RuntimeDelegate.getInstance().createODataRequestBuilder();
   }
-  
+
   public static BatchChangeSetBuilder createBatchChangeSetBuilder() {
     return RuntimeDelegate.getInstance().createBatchChangeSetBuilder();
   }

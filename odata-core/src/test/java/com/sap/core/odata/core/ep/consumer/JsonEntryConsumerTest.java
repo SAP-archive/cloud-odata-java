@@ -169,7 +169,7 @@ public class JsonEntryConsumerTest extends AbstractConsumerTest {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     final String content = "{\"Id\":\"99\",\"Seats\":null}";
 
-    for (final boolean merge : new boolean[] {false, true}) {
+    for (final boolean merge : new boolean[] { false, true }) {
       final ODataEntry result = new JsonEntityConsumer().readEntry(entitySet, createContentAsStream(content),
           EntityProviderReadProperties.init().mergeSemantic(merge).build());
 

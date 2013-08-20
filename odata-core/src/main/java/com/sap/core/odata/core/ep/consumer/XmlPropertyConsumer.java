@@ -93,19 +93,22 @@ public class XmlPropertyConsumer {
       reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, name);
       final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
-      if (!(nullAttribute == null || TRUE.equals(nullAttribute) || FALSE.equals(nullAttribute)))
+      if (!(nullAttribute == null || TRUE.equals(nullAttribute) || FALSE.equals(nullAttribute))) {
         throw new EntityProviderException(EntityProviderException.COMMON);
+      }
 
       if (TRUE.equals(nullAttribute)) {
-        if (propertyInfo.isMandatory())
+        if (propertyInfo.isMandatory()) {
           throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY_VALUE.addContent(name));
+        }
         reader.nextTag();
       } else if (propertyInfo.isComplex()) {
         final String typeAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_TYPE);
         if (typeAttribute != null) {
           final String expectedTypeAttributeValue = propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
-          if (!expectedTypeAttributeValue.equals(typeAttribute))
+          if (!expectedTypeAttributeValue.equals(typeAttribute)) {
             throw new EntityProviderException(EntityProviderException.INVALID_COMPLEX_TYPE.addContent(expectedTypeAttributeValue).addContent(typeAttribute));
+          }
         }
 
         reader.nextTag();
@@ -113,8 +116,9 @@ public class XmlPropertyConsumer {
         while (reader.hasNext() && !reader.isEndElement()) {
           final String childName = reader.getLocalName();
           final EntityPropertyInfo childProperty = ((EntityComplexPropertyInfo) propertyInfo).getPropertyInfo(childName);
-          if (childProperty == null)
+          if (childProperty == null) {
             throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(childName));
+          }
           final Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(name));
           name2Value.put(childName, value);
           reader.nextTag();

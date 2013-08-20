@@ -1518,9 +1518,10 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     for (final String propertyName : type.getPropertyNames()) {
       final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
-      if (type instanceof EdmEntityType && ((EdmEntityType) type).getKeyProperties().contains(property))
+      if (type instanceof EdmEntityType && ((EdmEntityType) type).getKeyProperties().contains(property)) {
         continue;
-      if (!merge || valueMap.containsKey(propertyName))
+      }
+      if (!merge || valueMap.containsKey(propertyName)) {
         if (property.isSimple()) {
           setPropertyValue(data, property, valueMap.get(propertyName));
         } else {
@@ -1528,6 +1529,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           final Map<String, Object> values = (Map<String, Object>) valueMap.get(propertyName);
           setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), values, merge);
         }
+      }
     }
 
     context.stopRuntimeMeasurement(timingHandle);

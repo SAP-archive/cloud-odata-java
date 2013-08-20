@@ -497,7 +497,7 @@ public class EdmParserTest extends AbstractXmlProducerTestHelper {
   @Test(expected = EntityProviderException.class)
   public void testMissingAssociation() throws Exception {
     final String xmlWithAssociation = "<edmx:Edmx Version=\"1.0\" xmlns:edmx=\"" + Edm.NAMESPACE_EDMX_2007_06 + "\">" + "<edmx:DataServices m:DataServiceVersion=\"2.0\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">" + "<Schema Namespace=\"" + NAMESPACE + "\" xmlns=\"" + Edm.NAMESPACE_EDM_2008_09 + "\">" + "<EntityType Name= \"Employee\">" + "<Key><PropertyRef Name=\"EmployeeId\"/></Key>" + "<Property Name=\"" + propertyNames[0] + "\" Type=\"Edm.String\" Nullable=\"false\"/>" + "<NavigationProperty Name=\"ne_Manager\" Relationship=\"RefScenario.ManagerEmployees\" FromRole=\"r_Employees\" ToRole=\"r_Manager\" />" + "</EntityType>" + "<EntityContainer Name=\"Container1\" m:IsDefaultEntityContainer=\"true\">" + "<EntitySet Name=\"Employees\" EntityType=\"RefScenario.Employee\"/>" + "<AssociationSet Name=\"" + ASSOCIATION
-    //        + "\" Association=\"RefScenario." + ASSOCIATION 
+        //        + "\" Association=\"RefScenario." + ASSOCIATION 
         + "\">" + "<End EntitySet=\"Employees\" Role=\"r_Employees\"/>" + "</AssociationSet>" + "</EntityContainer>" + "</Schema>" + "</edmx:DataServices></edmx:Edmx>";
     EdmParser parser = new EdmParser();
     XMLStreamReader reader = createStreamReader(xmlWithAssociation);
