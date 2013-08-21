@@ -4,8 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -71,17 +73,17 @@ public class JPAEntity {
             .throwException(ODataJPARuntimeException.GENERAL, null);
 
       final HashMap<String, String> embeddableKeys = jpaEntityParser.getJPAEmbeddableKeyMap(jpaEntity.getClass().getName());
-      List<String> propertyNames = null;
+      Set<String> propertyNames = null;
       if (embeddableKeys != null)
       {
         setEmbeddableKeyProperty(embeddableKeys, oDataEntityType.getKeyProperties(), oDataEntryProperties, jpaEntity);
-        propertyNames = new ArrayList<String>();
+        propertyNames = new HashSet<String>();
         propertyNames.addAll(oDataEntryProperties.keySet());
         for (String propertyName : oDataEntityType.getKeyPropertyNames())
           propertyNames.remove(propertyName);
       }
       else
-        propertyNames = (List<String>) oDataEntryProperties.keySet();
+        propertyNames = oDataEntryProperties.keySet();
 
       for (String propertyName : propertyNames) {
         EdmTyped edmTyped = (EdmTyped) oDataEntityType.getProperty(propertyName);
