@@ -157,6 +157,6 @@ public class ODataSingleProcessorServiceTest extends BaseTest {
   @Test
   public void defaultSupportedContentTypesForBatch() throws Exception {
     List<String> types = service.getSupportedContentTypes(BatchProcessor.class);
-    assertTrue(types.contains(ContentType.MULTIPART_MIXED.toContentTypeString()));
+    assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 }

@@ -188,7 +188,8 @@ public class ODataSingleProcessorService implements ODataService {
     }
 
     if (processorFeature == BatchProcessor.class) {
-      result.add(HttpContentType.MULTIPART_MIXED);
+      //set wildcard for now to ignore accept header completely, reasoning: there is only one representation for $batch
+      result.add(HttpContentType.WILDCARD);
     } else if (processorFeature == EntityProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
       result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
