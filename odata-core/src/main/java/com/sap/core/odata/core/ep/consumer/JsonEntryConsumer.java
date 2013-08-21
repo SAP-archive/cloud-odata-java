@@ -104,11 +104,9 @@ public class JsonEntryConsumer {
 
   private void readEntryContent() throws IOException, EdmException, EntityProviderException {
     while (reader.hasNext()) {
-      String name = reader.nextName();
+      final String name = reader.nextName();
       handleName(name);
     }
-
-    //TODO: validate created entry
   }
 
   private void handleName(final String name) throws IOException, EdmException, EntityProviderException {

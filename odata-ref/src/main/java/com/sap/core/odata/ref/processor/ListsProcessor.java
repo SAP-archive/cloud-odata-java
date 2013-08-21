@@ -30,7 +30,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.batch.BatchHandler;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -345,12 +345,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     } else {
       final EntityProviderReadProperties properties = EntityProviderReadProperties.init()
-          .mergeSemantic(true)
+          .mergeSemantic(false)
           .addTypeMappings(getStructuralTypeTypeMap(data, entityType))
           .build();
       final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, properties);
 
-      setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
+      setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), false);
 
       dataSource.createData(entitySet, data);
 
@@ -1101,7 +1101,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           final List<ODataEntry> relatedValueList = feed.getEntries();
           for (final ODataEntry relatedValues : relatedValueList) {
             Object relatedData = dataSource.newDataObject(relatedEntitySet);
-            setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValues.getProperties(), true);
+            setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValues.getProperties(), false);
             dataSource.createData(relatedEntitySet, relatedData);
             dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntityType));
             createInlinedEntities(relatedEntitySet, relatedData, relatedValues);
@@ -1109,7 +1109,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         } else if (relatedValue instanceof ODataEntry) {
           final ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
           Object relatedData = dataSource.newDataObject(relatedEntitySet);
-          setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValueEntry.getProperties(), true);
+          setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValueEntry.getProperties(), false);
           dataSource.createData(relatedEntitySet, relatedData);
           dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData, relatedEntityType));
           createInlinedEntities(relatedEntitySet, relatedData, relatedValueEntry);
@@ -1520,6 +1520,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       } else {
         typeMap.put(propertyName, getStructuralTypeTypeMap(getPropertyValue(data, property), (EdmStructuralType) property.getType()));
       }
+
     }
 
     context.stopRuntimeMeasurement(timingHandle);
@@ -1536,15 +1537,12 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (type instanceof EdmEntityType && ((EdmEntityType) type).getKeyProperties().contains(property)) {
         continue;
       }
-      if (property.isSimple()) {
-        final Object value = valueMap.get(propertyName);
-        if (value != null || !merge) {
-          setPropertyValue(data, property, value);
-        }
-      } else {
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> values = (Map<String, Object>) valueMap.get(propertyName);
-        if (values != null || !merge) {
+      if (!merge || valueMap.containsKey(propertyName)) {
+        if (property.isSimple()) {
+          setPropertyValue(data, property, valueMap.get(propertyName));
+        } else {
+          @SuppressWarnings("unchecked")
+          final Map<String, Object> values = (Map<String, Object>) valueMap.get(propertyName);
           setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), values, merge);
         }
       }
@@ -1655,8 +1653,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     List<BatchResponsePart> batchResponseParts = new ArrayList<BatchResponsePart>();
     PathInfo pathInfo = getContext().getPathInfo();
     EntityProviderBatchProperties batchProperties = EntityProviderBatchProperties.init().pathInfo(pathInfo).build();
-    List<BatchPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
-    for (BatchPart batchPart : batchParts) {
+    List<BatchRequestPart> batchParts = EntityProvider.parseBatchRequest(contentType, content, batchProperties);
+    for (BatchRequestPart batchPart : batchParts) {
       batchResponseParts.add(handler.handleBatchPart(batchPart));
     }
     batchResponse = EntityProvider.writeBatchResponse(batchResponseParts);

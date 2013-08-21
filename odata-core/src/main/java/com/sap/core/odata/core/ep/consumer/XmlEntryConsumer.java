@@ -16,7 +16,6 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,10 +82,6 @@ public class XmlEntryConsumer {
         }
       }
 
-      if (!readProperties.getMergeSemantic()) {
-        validateMandatoryPropertiesAvailable(eia, readEntryResult);
-      }
-
       return readEntryResult;
     } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.EXCEPTION_OCCURRED.addContent(e.getClass().getSimpleName()), e);
@@ -102,8 +97,7 @@ public class XmlEntryConsumer {
   }
 
   /**
-   * Initialize the {@link XmlEntryConsumer} to be ready for read of an entry.
-   * 
+   * Initializes the {@link XmlEntryConsumer} to be ready for reading an entry.
    * @param readProperties
    * @throws EntityProviderException
    */
@@ -117,27 +111,6 @@ public class XmlEntryConsumer {
     readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata, expandSelectTree);
     typeMappings = EntityTypeMapping.create(readProperties.getTypeMappings());
     foundPrefix2NamespaceUri.putAll(readProperties.getValidatedPrefixNamespaceUris());
-  }
-
-  /**
-   * Validates that all mandatory properties are found and set at the {@link #readEntryResult} entity.
-   * If a mandatory property is missing an {@link EntityProviderException} is thrown.
-   * 
-   * @param eia entity info which contains the information which properties are mandatory
-   * @param entry entry for which the mandatory properties are validated
-   * @throws EntityProviderException if a mandatory property is missing
-   */
-  private void validateMandatoryPropertiesAvailable(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
-    Collection<EntityPropertyInfo> propertyInfos = new ArrayList<EntityPropertyInfo>(eia.getPropertyInfos());
-    propertyInfos.removeAll(eia.getKeyPropertyInfos());
-    Map<String, Object> data = entry.getProperties();
-
-    for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
-      boolean mandatory = entityPropertyInfo.isMandatory();
-      if (mandatory && !data.containsKey(entityPropertyInfo.getName())) {
-        throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
-      }
-    }
   }
 
   private void handleStartedTag(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties readProperties)

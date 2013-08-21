@@ -16,6 +16,7 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -228,6 +230,13 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "    <d:Type>image/png</d:Type>" +
       "  </m:properties>" +
       "</entry>";
+
+  public XmlEntityConsumerTest() {
+    // CHECKSTYLE:OFF:Regexp
+    System.setProperty("javax.xml.stream.XMLInputFactory", "com.ctc.wstx.stax.WstxInputFactory"); //NOSONAR
+    System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
+    // CHECKSTYLE:ON
+  }
 
   private static class EmployeeCallback implements OnReadInlineContent {
     List<ODataEntry> employees;
@@ -1363,12 +1372,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Missing _d_ namespace at mandatory property/tag (_Version_) results in an exception.
-   * 
+   * Missing _d_ namespace at non-nullable property/tag (_Version_) is allowed.
    * @throws Exception
    */
-  @Test(expected = EntityProviderException.class)
-  public void validationOfNamespacesMissingD_NamespaceAtRequiredTag() throws Exception {
+  public void validationOfNamespacesMissingD_NamespaceAtNonNullableTag() throws Exception {
     String roomWithValidNamespaces =
         "<?xml version='1.0' encoding='UTF-8'?>" +
             "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
@@ -1384,9 +1391,14 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
             "  </content>" +
             "</entry>";
 
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    final EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Version");
+    EdmFacets facets = property.getFacets();
+    Mockito.when(facets.isNullable()).thenReturn(false);
+
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, false, EntityProviderException.MISSING_PROPERTY.addContent("Version"));
+    final ODataEntry result = new XmlEntityConsumer().readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    assertNotNull(result);
   }
 
   private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final MessageReference messageReference) throws ODataMessageException {
@@ -1509,7 +1521,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
   }
@@ -1554,7 +1566,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("Employees('1')/$value", properties.get("ImageUrl"));
   }
@@ -1588,7 +1600,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1623,7 +1635,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1636,7 +1648,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   @SuppressWarnings("unchecked")
   public void testReadEntryMissingKeyProperty() throws Exception {
     // prepare
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML.replace("<d:EmployeeId>1</d:EmployeeId>", ""));
 
     // execute
@@ -1648,7 +1660,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(8, properties.size());
 
     assertNull(properties.get("EmployeeId"));
-    //    assertEquals("1", properties.get("EmployeeId"));
     assertEquals("Walter Winter", properties.get("EmployeeName"));
     assertEquals("1", properties.get("ManagerId"));
     assertEquals("1", properties.get("RoomId"));
@@ -1662,41 +1673,28 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
-  @Test(expected = EntityProviderException.class)
-  public void testReadEntryMissingProperty() throws Exception {
-    // prepare
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
-    EdmFacets facets = Mockito.mock(EdmFacets.class);
-    Mockito.when(facets.isNullable()).thenReturn(false);
-    Mockito.when(property.getFacets()).thenReturn(facets);
-    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
+  @Test
+  public void readEntryNullProperty() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    final String content = EMPLOYEE_1_XML.replace("<d:EntryDate>1999-01-01T00:00:00</d:EntryDate>",
+        "<d:EntryDate m:null='true' />");
     InputStream contentBody = createContentAsStream(content);
 
-    // execute
-    try {
-      XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
+    final ODataEntry result = new XmlEntityConsumer().readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
-      // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
-      Map<String, Object> properties = result.getProperties();
-      assertEquals(9, properties.size());
-    } catch (EntityProviderException e) {
-      // do some assertions...
-      assertEquals(EntityProviderException.MISSING_PROPERTY.getKey(), e.getMessageReference().getKey());
-      assertEquals("Age", e.getMessageReference().getContent().get(0));
-      // ...and then re-throw
-      throw e;
-    }
+    final Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+    assertTrue(properties.containsKey("EntryDate"));
+    assertNull(properties.get("EntryDate"));
   }
 
   @Test(expected = EntityProviderException.class)
-  public void testReadEntryTooManyValues() throws Exception {
+  public void readEntryTooManyValues() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "<d:Age>52</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
@@ -1704,12 +1702,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     try {
-      XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
-
-      // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
-      Map<String, Object> properties = result.getProperties();
-      assertEquals(9, properties.size());
+      new XmlEntityConsumer().readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
     } catch (EntityProviderException e) {
       // do some assertions...
       assertEquals(EntityProviderException.INVALID_PROPERTY.getKey(), e.getMessageReference().getKey());
@@ -1752,7 +1745,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1824,7 +1817,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1856,7 +1849,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1888,7 +1881,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Integer.valueOf(52), properties.get("Age"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
-    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(915148800000L, entryDate.getTimeInMillis());
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
@@ -1958,7 +1951,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
     assertEquals(Short.valueOf("52"), properties.get("Age"));
-    assertEquals(Long.valueOf(915148800000l), properties.get("EntryDate"));
+    assertEquals(Long.valueOf(915148800000L), properties.get("EntryDate"));
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
@@ -2010,7 +2003,30 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
-  public void testReadEntryRooms() throws Exception {
+  public void readIncompleteEntry() throws Exception {
+    final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(ROOM_1_XML);
+    final ODataEntry result = new XmlEntityConsumer().readEntry(entitySet, reqContent, EntityProviderReadProperties.init().build());
+
+    final EntryMetadata entryMetadata = result.getMetadata();
+    assertEquals("http://localhost:19000/test/Rooms('1')", entryMetadata.getId());
+    assertEquals("W/\"1\"", entryMetadata.getEtag());
+    assertNull(entryMetadata.getUri());
+
+    final MediaMetadata mediaMetadata = result.getMediaMetadata();
+    assertEquals(HttpContentType.APPLICATION_XML, mediaMetadata.getContentType());
+    assertNull(mediaMetadata.getSourceLink());
+    assertNull(mediaMetadata.getEditLink());
+    assertNull(mediaMetadata.getEtag());
+
+    final Map<String, Object> properties = result.getProperties();
+    assertEquals(1, properties.size());
+    assertEquals("1", properties.get("Id"));
+    assertFalse(properties.containsKey("Seats"));
+  }
+
+  @Test
+  public void readIncompleteEntryMerge() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");

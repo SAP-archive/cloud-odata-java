@@ -290,14 +290,12 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ODataFeed readFeed(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    JsonEntityConsumer jec = new JsonEntityConsumer();
-    return jec.readFeed(entitySet, content, properties);
+    return new JsonEntityConsumer().readFeed(entitySet, content, properties);
   }
 
   @Override
   public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
-    JsonEntityConsumer jec = new JsonEntityConsumer();
-    return jec.readEntry(entitySet, content, properties);
+    return new JsonEntityConsumer().readEntry(entitySet, content, properties);
   }
 
   @Override
@@ -317,8 +315,7 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
 
   @Override
   public ServiceDocument readServiceDocument(final InputStream serviceDocument) throws EntityProviderException {
-    JsonServiceDocumentConsumer serviceDocConsumer = new JsonServiceDocumentConsumer();
-    return serviceDocConsumer.parseJson(serviceDocument);
+    return new JsonServiceDocumentConsumer().parseJson(serviceDocument);
   }
 
 }

@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sap.core.odata.core.batch;
+package com.sap.core.odata.api.batch;
 
-public class BatchConstants {
+import java.util.List;
 
-  public static final String HTTP_APPLICATION_HTTP = "application/http";
+import com.sap.core.odata.api.processor.ODataRequest;
 
-  public static final String MULTIPART_MIXED = "multipart/mixed";
+/**
+ * A BatchPart
+ * <p> BatchPart represents a distinct MIME part of a Batch Request body. It can be ChangeSet or Query Operation
+ * @author SAP AG
+ */
+public interface BatchRequestPart {
 
-  public static final String BINARY_ENCODING = "binary";
+  /**
+   * Get the info if a BatchPart is a ChangeSet
+   * @return true or false
+   */
+  public boolean isChangeSet();
 
-  public static final String HTTP_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
-
-  public static final String HTTP_CONTENT_ID = "Content-Id";
-
-  public static final String MIME_HEADER_CONTENT_ID = "MimeHeader-ContentId";
-
-  public static final String REQUEST_HEADER_CONTENT_ID = "RequestHeader-ContentId";
+  /**
+   * Get requests. If a BatchPart is a Query Operation, the list contains one request.
+   * @return a list of {@link ODataRequest}
+   */
+  public List<ODataRequest> getRequests();
 }
