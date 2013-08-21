@@ -232,16 +232,25 @@
       </plugin>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>verify</phase>
+                        <goals>
+                        <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
         <configuration>
           <outputFileFormat>xml</outputFileFormat>
-          <consoleOutput>false</consoleOutput>
+          <consoleOutput>true</consoleOutput>
           <enableRSS>false</enableRSS>
           <linkXRef>false</linkXRef>
           <configLocation>src/checkstyle/config.xml</configLocation>
           <sourceDirectory>${basedir}/src</sourceDirectory>
           <encoding>${project.build.sourceEncoding}</encoding>
           <failOnViolation>true</failOnViolation>
-          <violationSeverity>error</violationSeverity>
+          <violationSeverity>warning</violationSeverity>
         </configuration>
       </plugin>
       <plugin>

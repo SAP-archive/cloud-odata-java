@@ -1505,6 +1505,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       } else {
         typeMap.put(propertyName, getStructuralTypeTypeMap(getPropertyValue(data, property), (EdmStructuralType) property.getType()));
       }
+
     }
 
     context.stopRuntimeMeasurement(timingHandle);

@@ -30,8 +30,10 @@ public class XmlLinkConsumerTest extends AbstractConsumerTest {
       "<uri xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">" + SERVICE_ROOT + "Employees('6')</uri>";
 
   public XmlLinkConsumerTest() {
+    // CHECKSTYLE:OFF:Regexp
     System.setProperty("javax.xml.stream.XMLInputFactory", "com.ctc.wstx.stax.WstxInputFactory"); //NOSONAR
     System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
+    // CHECKSTYLE:ON
   }
 
   @Test

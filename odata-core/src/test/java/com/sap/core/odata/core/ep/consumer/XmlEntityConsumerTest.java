@@ -217,8 +217,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "</entry>";
 
   public XmlEntityConsumerTest() {
+    // CHECKSTYLE:OFF:Regexp
     System.setProperty("javax.xml.stream.XMLInputFactory", "com.ctc.wstx.stax.WstxInputFactory"); //NOSONAR
     System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory"); //NOSONAR
+    // CHECKSTYLE:ON
   }
 
   private static class EmployeeCallback implements OnReadInlineContent {

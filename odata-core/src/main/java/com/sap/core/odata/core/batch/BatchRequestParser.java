@@ -327,8 +327,7 @@ public class BatchRequestParser {
         } else if (uriScanner.hasNext("/(.*)")) {
           uriScanner.close();
           throw new BatchException(BatchException.UNSUPPORTED_ABSOLUTE_PATH.addContent(currentLineNumber));
-        }
-        else {
+        } else {
           uriScanner.close();
           throw new BatchException(BatchException.INVALID_URI.addContent(currentLineNumber));
         }
