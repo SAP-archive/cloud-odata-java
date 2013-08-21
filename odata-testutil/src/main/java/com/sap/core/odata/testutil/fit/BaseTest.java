@@ -20,13 +20,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides basic support for JUnit tests<br>
@@ -40,7 +39,7 @@ public abstract class BaseTest {
     DOMConfigurator.configureAndWatch("/log4j.xml");
   }
 
-  protected final Logger log = LoggerFactory.getLogger(this.getClass());
+  protected final Logger log = Logger.getLogger(this.getClass());
 
   private final Map<Class<?>, Level> disabledLoggings = new HashMap<Class<?>, Level>();
 

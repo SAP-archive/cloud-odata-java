@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.processor.ODataRequest;
 
-public class BatchPartImpl implements BatchPart {
+public class BatchRequestPartImpl implements BatchRequestPart {
 
   private List<ODataRequest> requests = new ArrayList<ODataRequest>();
   private boolean isChangeSet;
 
-  public BatchPartImpl() {}
+  public BatchRequestPartImpl() {}
 
-  public BatchPartImpl(final boolean isChangeSet, final List<ODataRequest> requests) {
+  public BatchRequestPartImpl(final boolean isChangeSet, final List<ODataRequest> requests) {
     this.isChangeSet = isChangeSet;
     this.requests = requests;
   }

@@ -101,10 +101,8 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataMessageException {
-    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
-    {
-      if (ET_KEY_IS_STRING.getName().equals(edmFQName.getName()))
-      {
+    if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
+      if (ET_KEY_IS_STRING.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
@@ -115,9 +113,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
 
         return new EntityType().setName(ET_KEY_IS_STRING.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyString"));
-      }
-      else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName()))
-      {
+      } else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
@@ -128,9 +124,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
         return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
 
-      }
-      else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName()))
-      {
+      } else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
@@ -140,9 +134,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
             .setFacets(new Facets().setNullable(false)));
 
         return new EntityType().setName(ET_COMPLEX_KEY.getName()).setProperties(properties).setKey(createKey("KeyInteger", "KeyString"));
-      }
-      else if (ET_ALL_TYPES.getName().equals(edmFQName.getName()))
-      {
+      } else if (ET_ALL_TYPES.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
@@ -161,9 +153,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("Time").setType(EdmSimpleTypeKind.Time));
         properties.add(new ComplexProperty().setName("Complex").setType(CT_ALL_TYPES));
         return new EntityType().setName(ET_ALL_TYPES.getName()).setProperties(properties);
-      }
-      else if (ET_STRING_FACETS.getName().equals(edmFQName.getName()))
-      {
+      } else if (ET_STRING_FACETS.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
 
         properties.add(new SimpleProperty().setName("StringDefaultValue").setType(EdmSimpleTypeKind.String)
@@ -200,8 +190,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("Street").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("City").setType(EdmSimpleTypeKind.String));
         return new ComplexType().setName(CT_ADDRESS.getName()).setAbstract(false).setProperties(properties);
-      }
-      else if (CT_ALL_TYPES.getName().equals(edmFQName.getName())) {
+      } else if (CT_ALL_TYPES.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
@@ -250,8 +239,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
   @Override
   public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataMessageException {
-    if (ENTITY_CONTAINER_1.equals(entityContainer))
-    {
+    if (ENTITY_CONTAINER_1.equals(entityContainer)) {
       if (ES_KEY_IS_STRING.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_KEY_IS_STRING);
       } else if (ES_KEY_IS_INTEGER.equals(name)) {

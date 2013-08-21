@@ -71,7 +71,6 @@ public class EdmParser {
   private List<NavigationProperty> navProperties = new ArrayList<NavigationProperty>();
   private String currentHandledStartTagName;
   private String currentNamespace;
-  private final String DEFAULT_NAMESPACE = "";
 
   public DataServices readMetadata(final XMLStreamReader reader, final boolean validate)
       throws EntityProviderException {
@@ -715,7 +714,7 @@ public class EdmParser {
       annotationAttribute.setName(reader.getAttributeLocalName(i));
       annotationAttribute.setPrefix(reader.getAttributePrefix(i));
       String namespace = reader.getAttributeNamespace(i);
-      if (!DEFAULT_NAMESPACE.equals(namespace)) {
+      if (namespace != null && !isDefaultNamespace(namespace)) {
         annotationAttribute.setNamespace(namespace);
       }
       annotationAttributes.add(annotationAttribute);
@@ -738,7 +737,8 @@ public class EdmParser {
   private List<AnnotationAttribute> readAnnotationAttribute(final XMLStreamReader reader) {
     List<AnnotationAttribute> annotationAttributes = new ArrayList<AnnotationAttribute>();
     for (int i = 0; i < reader.getAttributeCount(); i++) {
-      if (!mandatoryNamespaces.containsValue(reader.getAttributeNamespace(i)) && !DEFAULT_NAMESPACE.equals(reader.getAttributeNamespace(i))) {
+      String namespace = reader.getAttributeNamespace(i);
+      if (namespace != null && !isDefaultNamespace(namespace) && !mandatoryNamespaces.containsValue(namespace)) {
         annotationAttributes.add(new AnnotationAttribute().setName(reader.getAttributeLocalName(i)).
             setPrefix(reader.getAttributePrefix(i)).setNamespace(reader.getAttributeNamespace(i)).setText(reader.getAttributeValue(i)));
       }
@@ -747,6 +747,10 @@ public class EdmParser {
       return null;
     }
     return annotationAttributes;
+  }
+
+  private boolean isDefaultNamespace(final String namespace) {
+    return namespace.isEmpty();
   }
 
   private void checkAllMandatoryNamespacesAvailable() throws EntityProviderException {
@@ -764,7 +768,7 @@ public class EdmParser {
     for (int i = 0; i < namespaceCount; i++) {
       String namespacePrefix = reader.getNamespacePrefix(i);
       String namespaceUri = reader.getNamespaceURI(i);
-      if (namespacePrefix == null || DEFAULT_NAMESPACE.equals(namespacePrefix)) {
+      if (namespacePrefix == null || isDefaultNamespace(namespacePrefix)) {
         namespacePrefix = Edm.PREFIX_EDM;
       }
       namespaceMap.put(namespacePrefix, namespaceUri);

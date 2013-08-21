@@ -22,28 +22,28 @@ import java.util.Map;
 import com.sap.core.odata.api.ep.callback.OnReadInlineContent;
 
 /**
- * The {@link EntityProviderReadProperties} contains all necessary settings to read an entity with the {@link EntityProvider}.
- * 
- * The main settings are
+ * <p>The {@link EntityProviderReadProperties} contains all necessary settings
+ * to read an entity with the {@link EntityProvider}.</p>
+ * <p>The main settings are
  * <ul>
  * <li>the <code>mergeSemantic</code></li>
  * <li>the <code>callback for inlined navigation properties</code></li>
  * <li>and the <code>type mappings</code></li>
  * </ul>
- * 
+ * </p>
  * @author SAP AG
  */
 public class EntityProviderReadProperties {
   /** Callback which is necessary if entity contains inlined navigation properties. */
   private OnReadInlineContent callback;
   /**
-   * if merge is <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-   * otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
+   * if merge is <code>true</code> the input content is in context of a <b>merge</b> (e.g. MERGE, PATCH) read request, 
+   * otherwise if <code>false</code> it is a <b>non-merge</b> (e.g. CREATE) read request
    */
   private boolean merge;
   /**
-   * typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used 
-   * for a type mapping during read of content. If according <code>edm property</code> can not be read
+   * typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used
+   * for a type mapping during reading of content. If according <code>edm property</code> can not be read
    * into given <code>java class</code> an {@link EntityProviderException} is thrown.
    * Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
    */
@@ -75,6 +75,14 @@ public class EntityProviderReadProperties {
     return callback;
   }
 
+  /**
+   * <p>Gets the merge semantics.</p>
+   * <p>Merge semantics is set if the input content has to be treated in the context
+   * of a request to merge incoming data with existing data (e.g., indicated by the
+   * HTTP verbs <code>MERGE</code> or <code>PATCH</code> in a server application).
+   * Otherwise the request, even if not all data are supplied, is supposed to
+   * overwrite the existing entity completely.</p>
+   */
   public boolean getMergeSemantic() {
     return merge;
   }
@@ -94,6 +102,11 @@ public class EntityProviderReadProperties {
       addTypeMappings(propertiesFrom.typeMappings);
     }
 
+    /**
+     * Sets the merge semantics.
+     * @param mergeSemantic whether merge semantics is requested
+     * @see EntityProviderReadProperties#getMergeSemantic()
+     */
     public EntityProviderReadPropertiesBuilder mergeSemantic(final boolean mergeSemantic) {
       properties.merge = mergeSemantic;
       return this;

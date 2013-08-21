@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import org.apache.http.HttpEntity;
 
@@ -97,15 +98,15 @@ public class StringHelper {
   }
 
   /**
-   * Generate a string with given length containing random upper case characters ([A-Z]).
-   * 
-   * @param len length of to generated string
-   * @return random upper case characters ([A-Z]).
+   * Generates a string with given length containing random upper case characters ([A-Z]).
+   * @param len length of the generated string
+   * @return random upper case characters ([A-Z])
    */
   public static String generateData(final int len) {
+    Random random = new Random();
     StringBuilder b = new StringBuilder(len);
     for (int j = 0; j < len; j++) {
-      char c = (char) (Math.random() * 26 + 65);
+      final char c = (char) ('A' + random.nextInt('Z' - 'A' + 1));
       b.append(c);
     }
     return b.toString();

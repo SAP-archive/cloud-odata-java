@@ -88,7 +88,7 @@ public class BatchTest extends AbstractRefTest {
     assertNotNull(response);
     assertEquals(202, response.getStatusLine().getStatusCode());
 
-    String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent());
+    String responseBody = StringHelper.inputStreamToString(response.getEntity().getContent(), true);
     return responseBody;
   }
 

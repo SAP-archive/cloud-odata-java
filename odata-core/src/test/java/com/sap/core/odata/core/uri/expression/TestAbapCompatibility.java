@@ -233,8 +233,7 @@ public class TestAbapCompatibility extends TestBase {
   }
 
   @Test
-  public void abapTestFilterParser() //copy of ABAP method test_filter_parser
-  {
+  public void abapTestFilterParser() { //copy of ABAP method test_filter_parser 
     //lcl_helper=>veri_expression( iv_expression = 'W/X' iv_expected = '{W/X}' ).
     GetPTF("W/X").aSerialized("{W/X}");
 
@@ -368,22 +367,19 @@ public class TestAbapCompatibility extends TestBase {
     //iv_expression = `concat('a' 'b')`
     //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid_parameter
     //iv_expected_msg    = 'Invalid parameter for function ''concat'''  ).
-    GetPTF("concat('a' 'b')")
-        .aExMsgText("\")\" or \",\" expected after position 10 in \"concat('a' 'b')\".");
+    GetPTF("concat('a' 'b')").aExMsgText("\")\" or \",\" expected after position 10 in \"concat('a' 'b')\".");
 
     //lcl_helper=>veri_expression_ex(
     //iv_expression = `concat('125')`
     //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_few_parameter
     //iv_expected_msg    = 'Too few parameters for function ''concat'''  ).
-    GetPTF("concat('125')")
-        .aExMsgText("No applicable method found for \"concat\" at position 1 in \"concat('125')\" with the specified arguments. Method \"concat\" requires 2 or more arguments.");
+    GetPTF("concat('125')").aExMsgText("No applicable method found for \"concat\" at position 1 in \"concat('125')\" with the specified arguments. Method \"concat\" requires 2 or more arguments.");
 
     //lcl_helper=>veri_expression_ex(
     //iv_expression = `indexof('a','b','c')`
     //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
     //iv_expected_msg    = 'Too many parameters for function ''indexof'''  ).
-    GetPTF("indexof('a','b','c')")
-        .aExMsgText("No applicable method found for \"indexof\" at position 1 in \"indexof('a','b','c')\" with the specified arguments. Method \"indexof\" requires exact 2 argument(s).");
+    GetPTF("indexof('a','b','c')").aExMsgText("No applicable method found for \"indexof\" at position 1 in \"indexof('a','b','c')\" with the specified arguments. Method \"indexof\" requires exact 2 argument(s).");
 
     //lcl_helper=>veri_expression_ex(
     //iv_expression = `replace('aBa','B','CCC')`
@@ -403,8 +399,7 @@ public class TestAbapCompatibility extends TestBase {
 
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=replace('aBa','B','CCC')
     //-->Unknown function 'replace' at position 0.
-    GetPTF("replace('aBa','B','CCC')")
-        .aExMsgText("Unknown function \"replace\" at position 1 in \"replace('aBa','B','CCC')\".");
+    GetPTF("replace('aBa','B','CCC')").aExMsgText("Unknown function \"replace\" at position 1 in \"replace('aBa','B','CCC')\".");
 
   }
 

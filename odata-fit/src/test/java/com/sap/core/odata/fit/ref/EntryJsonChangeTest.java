@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpMethod;
 
 /**
  * Tests employing the reference scenario changing entities in JSON format.
@@ -40,6 +41,14 @@ public class EntryJsonChangeTest extends AbstractRefTest {
     checkUri("Buildings('4')/nb_Rooms('101')?$format=json");
 
     postUri("Buildings()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
+  }
+
+  @Test
+  public void createEntryMinimal() throws Exception {
+    final String requestBody = "{\"Id\":\"99\"}";
+    final HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_JSON, HttpStatusCodes.CREATED);
+    assertFalse(getBody(response).isEmpty());
+    checkUri("Teams('4')?$format=json");
   }
 
   @Test
@@ -94,6 +103,7 @@ public class EntryJsonChangeTest extends AbstractRefTest {
     final String requestBody = "{\"Id\":\"99\",\"Name\":\"Building 4\",\"Image\":null,"
         + "\"nb_Rooms\":[{\"Id\":\"201\",\"Name\":\"Room 201\",\"Seats\":1,\"Version\":1,"
         + "\"nr_Employees\":[{\"EmployeeId\":\"99\",\"EmployeeName\":\"Ms X\",\"Age\":22,"
+        + "\"Location\":{\"City\":{\"PostalCode\":null,\"CityName\":null},\"Country\":null},"
         + "\"EntryDate\":\"\\/Date(1424242424242)\\/\","
         + "\"ne_Manager\":{\"__deferred\":{\"uri\":\"" + getEndpoint() + "Managers('1')\"}}}]}]}";
     final HttpResponse response = postUri("Buildings()", requestBody, HttpContentType.APPLICATION_JSON, HttpStatusCodes.CREATED);
@@ -110,8 +120,22 @@ public class EntryJsonChangeTest extends AbstractRefTest {
         + "\"RoomId\":\"1\",\"TeamId\":\"1\","
         + "\"Location\":{\"City\":{\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"},"
         + "              \"Country\":\"Germany\"},"
-        + "\"Age\":52,\"EntryDate\":null,\"ImageUrl\":\"http://some.host:80/image.url\"}";
+        + "\"EntryDate\":null,\"ImageUrl\":\"http://some.host:80/image.url\"}";
     putUri("Employees('2')", requestBody, HttpContentType.APPLICATION_JSON, HttpStatusCodes.NO_CONTENT);
     assertEquals("Mister X", getBody(callUri("Employees('2')/EmployeeName/$value")));
+    assertEquals("0", getBody(callUri("Employees('2')/Age/$value")));
+    assertEquals("{\"d\":{\"EntryDate\":null}}", getBody(callUri("Employees('2')/EntryDate?$format=json")));
+  }
+
+  @Test
+  public void patchEntry() throws Exception {
+    final String requestBody = "{\"Location\":"
+        + "{\"City\":{\"PostalCode\":\"69124\",\"CityName\":\"" + CITY_1_NAME + "\"},"
+        + " \"Country\":\"Germany\"},\"EntryDate\":null}";
+    callUri(ODataHttpMethod.PATCH, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_JSON, HttpStatusCodes.NO_CONTENT);
+    assertEquals(CITY_1_NAME, getBody(callUri("Employees('2')/Location/City/CityName/$value")));
+    assertEquals("{\"d\":{\"EntryDate\":null}}", getBody(callUri("Employees('2')/EntryDate?$format=json")));
+    assertEquals(EMPLOYEE_2_NAME, getBody(callUri("Employees('2')/EmployeeName/$value")));
+    assertEquals(EMPLOYEE_2_AGE, getBody(callUri("Employees('2')/Age/$value")));
   }
 }

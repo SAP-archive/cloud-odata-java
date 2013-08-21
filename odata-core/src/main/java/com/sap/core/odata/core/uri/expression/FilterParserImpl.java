@@ -242,8 +242,7 @@ public class FilterParserImpl implements FilterParser {
       if ((expression == null) && (expectAnotherExpression == true)) {
         //Tested with TestParserExceptions.TestPMreadParameters CASE 4 e.g. "$filter=concat(,"
         throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(token, curExpression);
-      } else if (expression != null) //parameter list may be empty
-      {
+      } else if (expression != null) {//parameter list may be empty
         methodExpression.appendParameter(expression);
       }
 

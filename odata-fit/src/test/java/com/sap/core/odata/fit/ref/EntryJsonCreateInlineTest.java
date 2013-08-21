@@ -285,6 +285,8 @@ public class EntryJsonCreateInlineTest extends AbstractRefJsonTest {
         + "\"RoomId\": \"1\","
         + "\"TeamId\": \"1\","
         + "\"Age\": 52,"
+        + "\"Location\":{\"City\":{\"PostalCode\":\"69124\",\"CityName\":\"Heidelberg\"},"
+        + "              \"Country\":\"Germany\"},"
         + "\"ImageUrl\": \"" + getEndpoint() + "Employees('1')/$value\"}]},"
         + "\"nr_Building\":{\"__deferred\":{\"uri\":\"" + getEndpoint() + "Rooms('1')/nr_Building\"}}}}";
 

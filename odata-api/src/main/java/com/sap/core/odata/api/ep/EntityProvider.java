@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.batch.BatchException;
-import com.sap.core.odata.api.batch.BatchPart;
+import com.sap.core.odata.api.batch.BatchRequestPart;
 import com.sap.core.odata.api.batch.BatchResponsePart;
+import com.sap.core.odata.api.client.batch.BatchPart;
+import com.sap.core.odata.api.client.batch.BatchSingleResponse;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -217,13 +219,18 @@ public final class EntityProvider {
     ODataFeed readFeed(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
     /**
-     * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-     * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
-     * 
-     * @param contentType format of content in the given input stream.
-     * @param entitySet entity data model for entity set to be read
-     * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
+     * Reads (de-serializes) data from <code>content</code> (as {@link InputStream})
+     * in specified format (given as <code>contentType</code>) based on
+     * <code>entity data model</code> (given as {@link EdmEntitySet})
+     * and provides this data as {@link ODataEntry}.
+     * Does not return complete entry data but only data present in the
+     * de-serialized content.
+     * @param contentType format of content in the given input stream
+     * @param entitySet   entity data model for entity set to be read
+     * @param content     data in form of an {@link InputStream} which
+     *                    contains the data in specified format
+     * @param properties  additional properties necessary for reading
+     *                    content from {@link InputStream} into {@link Map}.
      * @return entry as {@link ODataEntry}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
@@ -328,7 +335,7 @@ public final class EntityProvider {
      * @return list of {@link BatchPart}
      * @throws BatchException  if parsing fails
      */
-    List<BatchPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws BatchException;
+    List<BatchRequestPart> parseBatchRequest(String contentType, InputStream content, EntityProviderBatchProperties properties) throws BatchException;
 
     /**
      * Write responses of Batch Response Parts in Batch Response as {@link ODataResponse}.
@@ -339,6 +346,26 @@ public final class EntityProvider {
      * @throws BatchException 
      */
     ODataResponse writeBatchResponse(List<BatchResponsePart> batchResponseParts) throws BatchException;
+
+    /**
+     * Create Batch Request body as InputStream.
+     * 
+     * @param batchParts a list of BatchPartRequests {@link BatchPart}
+     * @param boundary 
+     * @return Batch Request as InputStream
+     */
+    InputStream writeBatchRequest(List<BatchPart> batchParts, String boundary);
+
+    /** 
+     * Parse Batch Response body (as {@link InputStream}) and provide a list of single responses as {@link BatchSingleResponse}
+     *
+     * @param content response body
+     * @param contentType format of content in the given input stream (incl. boundary parameter)
+     * @return list of {@link BatchSingleResponse}
+     * @throws BatchException 
+     */
+    List<BatchSingleResponse> parseBatchResponse(String contentType, InputStream content) throws BatchException;
+
   }
 
   /**
@@ -668,15 +695,15 @@ public final class EntityProvider {
   }
 
   /**
-   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Parts as {@link BatchPart}
+   * Parse Batch Request body <code>inputStream</code> (as {@link InputStream}) and provide a list of Batch Request parts as {@link BatchRequestPart}
    * 
    * @param contentType format of content in the given input stream
    * @param content request body
    * @param properties additional properties necessary for parsing. Must not be null.
-   * @return list of {@link BatchPart}
+   * @return list of {@link BatchRequestPart}
    * @throws BatchException if parsing fails
    */
-  public static List<BatchPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
+  public static List<BatchRequestPart> parseBatchRequest(final String contentType, final InputStream content, final EntityProviderBatchProperties properties) throws BatchException {
     return createEntityProvider().parseBatchRequest(contentType, content, properties);
   }
 
@@ -690,6 +717,29 @@ public final class EntityProvider {
    */
   public static ODataResponse writeBatchResponse(final List<BatchResponsePart> batchResponseParts) throws BatchException {
     return createEntityProvider().writeBatchResponse(batchResponseParts);
+  }
+
+  /**
+   * Create Batch Request body as InputStream.
+   * 
+   * @param batchParts a list of BatchPartRequests {@link BatchPart}
+   * @param boundary 
+   * @return Batch Request as InputStream
+   */
+  public static InputStream writeBatchRequest(final List<BatchPart> batchParts, final String boundary) {
+    return createEntityProvider().writeBatchRequest(batchParts, boundary);
+  }
+
+  /** 
+   * Parse Batch Response body (as {@link InputStream}) and provide a list of single responses as {@link BatchSingleResponse}
+   *
+   * @param content response body
+   * @param contentType format of content in the given input stream (inclusive boundary parameter)
+   * @return list of {@link BatchSingleResponse}
+   * @throws BatchException 
+   */
+  public static List<BatchSingleResponse> parseBatchResponse(final InputStream content, final String contentType) throws BatchException {
+    return createEntityProvider().parseBatchResponse(contentType, content);
   }
 
 }
