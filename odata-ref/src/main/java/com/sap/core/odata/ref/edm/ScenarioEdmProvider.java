@@ -308,7 +308,7 @@ public class ScenarioEdmProvider extends EdmProvider {
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (COMPLEX_TYPE_1.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();
-        properties.add(new ComplexProperty().setName("City").setType(COMPLEX_TYPE_2));
+        properties.add(new ComplexProperty().setName("City").setType(COMPLEX_TYPE_2).setFacets(new Facets().setNullable(false)));
         properties.add(new SimpleProperty().setName("Country").setType(EdmSimpleTypeKind.String));
         return new ComplexType().setName(COMPLEX_TYPE_1.getName()).setProperties(properties);
 
