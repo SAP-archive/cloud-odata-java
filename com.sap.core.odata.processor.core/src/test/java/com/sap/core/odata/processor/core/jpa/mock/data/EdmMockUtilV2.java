@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.mock.data;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import org.easymock.EasyMock;
 
@@ -32,7 +33,7 @@ public class EdmMockUtilV2 {
 
     EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
     EasyMock.expect(entityType.getName()).andReturn(entityName).anyTimes();
-    EasyMock.expect(entityType.getKeyPropertyNames()).andReturn(mockKeyPropertyNames(entityName));
+    EasyMock.expect(entityType.getKeyPropertyNames()).andReturn(mockSimpleKeyPropertyNames(entityName));
     EasyMock.expect(entityType.getPropertyNames()).andReturn(mockPropertyNames(entityName));
     EasyMock.expect(entityType.getNavigationPropertyNames()).andReturn(mockNavigationPropertyNames(entityName));
     EasyMock.expect(entityType.getKind()).andReturn(EdmTypeKind.ENTITY);
@@ -60,7 +61,7 @@ public class EdmMockUtilV2 {
     return propertyNames;
   }
 
-  public static List<String> mockKeyPropertyNames(String entityName) {
+  public static List<String> mockSimpleKeyPropertyNames(String entityName) {
     List<String> keyPropertyNames = new ArrayList<String>();
     if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
       keyPropertyNames.add(JPATypeMock.PROPERTY_NAME_MINT);
@@ -129,7 +130,6 @@ public class EdmMockUtilV2 {
   public static EdmNavigationProperty mockEdmNavigationProperty(String navigationPropertyName, EdmMultiplicity multiplicity) throws EdmException {
 
     EdmEntityType edmEntityType = mockEdmEntityType(JPARelatedTypeMock.ENTITY_NAME);
-    //EasyMock.replay(edmEntityType);
 
     EdmNavigationProperty navigationProperty = EasyMock.createMock(EdmNavigationProperty.class);
     EasyMock.expect(navigationProperty.getType()).andReturn(edmEntityType).anyTimes();
@@ -148,19 +148,24 @@ public class EdmMockUtilV2 {
   public static EdmProperty mockEdmProperty(String entityName, String propertyName) throws EdmException {
     EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
     EdmType edmType = EasyMock.createMock(EdmType.class);
+    EasyMock.expect(edmProperty.getName()).andReturn(propertyName).anyTimes();
+    EasyMock.expect(edmProperty.getMapping()).andStubReturn((EdmMapping) mockEdmMapping(entityName, propertyName, null));
     if (propertyName.equals(JPATypeMock.PROPERTY_NAME_MINT) ||
         propertyName.equals(JPATypeMock.PROPERTY_NAME_MSTRING) ||
         propertyName.equals(JPATypeMock.PROPERTY_NAME_MDATETIME) ||
+        propertyName.equals(JPATypeMock.JPATypeEmbeddableMock.PROPERTY_NAME_MSHORT) ||
+        propertyName.equals(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MFLOAT) ||
+        propertyName.equals(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MUUID) ||
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MLONG) ||
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTE) ||
         propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MDOUBLE) ||
-        propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY)) {
-      EasyMock.expect(edmProperty.getName()).andReturn(propertyName).anyTimes();
-      EasyMock.expect(edmProperty.getMapping()).andStubReturn((EdmMapping) mockEdmMapping(entityName, propertyName, null));
+        propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY))
       EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.SIMPLE);
-      EasyMock.expect(edmProperty.getType()).andReturn(edmType);
-    }
+    else if (propertyName.equals(JPATypeMock.JPATypeEmbeddableMock.PROPERTY_NAME_MEMBEDDABLE) ||
+        propertyName.equals(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE))
+      EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.COMPLEX);
 
+    EasyMock.expect(edmProperty.getType()).andReturn(edmType);
     EasyMock.replay(edmType);
     EasyMock.replay(edmProperty);
     return edmProperty;
@@ -206,6 +211,18 @@ public class EdmMockUtilV2 {
     else if (propertyName.equals(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY)) {
       mapping.setJPAType(byte[].class);
       ((Mapping) mapping).setInternalName(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY);
+    }
+    else if (propertyName.equals(JPATypeMock.JPATypeEmbeddableMock.PROPERTY_NAME_MSHORT)) {
+      mapping.setJPAType(Short.class);
+      ((Mapping) mapping).setInternalName(JPATypeMock.JPATypeEmbeddableMock.PROPERTY_NAME_MSHORT);
+    }
+    else if (propertyName.equals(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MFLOAT)) {
+      mapping.setJPAType(Float.class);
+      ((Mapping) mapping).setInternalName(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MFLOAT);
+    }
+    else if (propertyName.equals(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MUUID)) {
+      mapping.setJPAType(UUID.class);
+      ((Mapping) mapping).setInternalName(JPATypeMock.JPATypeEmbeddableMock2.PROPERTY_NAME_MUUID);
     }
     return mapping;
   }

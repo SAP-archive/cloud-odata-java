@@ -41,7 +41,7 @@ public class JPAEntity {
     } catch (EdmException e) {
       return;
     }
-    jpaEntityParser = JPAEntityParser.create();
+    jpaEntityParser = new JPAEntityParser();
   }
 
   public void setAccessModifersWrite(HashMap<String, Method> accessModifiersWrite) {

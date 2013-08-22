@@ -27,20 +27,11 @@ public final class JPAEntityParser {
   private HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
   private HashMap<String, HashMap<String, String>> jpaEmbeddableKeyMap = null;
 
-  private static JPAEntityParser jpaEntityParser;
-
-  private JPAEntityParser() {
+  public JPAEntityParser() {
     jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>(
         MAX_SIZE);
     jpaEmbeddableKeyMap = new HashMap<String, HashMap<String, String>>();
   };
-
-  public static final JPAEntityParser create() {
-    if (jpaEntityParser == null) {
-      jpaEntityParser = new JPAEntityParser();
-    }
-    return jpaEntityParser;
-  }
 
   public HashMap<String, Method> getJPAEntityAccessMap(String jpaEntityName) {
     return jpaEntityAccessMap.get(jpaEntityName);

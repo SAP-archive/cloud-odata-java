@@ -22,6 +22,11 @@ public class JPAEntityTest {
   private JPAEntity jpaEntity = null;
 
   @Test
+  public void testCreateODataEntryWithEmbeddableKey() {
+
+  }
+
+  @Test
   public void testCreateODataEntry() {
     try {
       EdmEntitySet edmEntitySet = EdmMockUtilV2.mockEdmEntitySet(JPATypeMock.ENTITY_NAME);
