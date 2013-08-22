@@ -27,6 +27,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
+import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
@@ -154,6 +155,7 @@ public class JPAEdmNameBuilder {
 
     JPAEdmMapping mapping = new JPAEdmMappingImpl();
     ((Mapping) mapping).setInternalName(jpaAttributeName);
+    mapping.setJPAType(jpaAttribute.getJavaType());
 
     AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute
         .getJavaMember();
@@ -254,7 +256,11 @@ public class JPAEdmNameBuilder {
       edmComplexTypeName = jpaEmbeddableTypeName;
     }
 
-    view.getEdmComplexType().setName(edmComplexTypeName);
+    ComplexType complexType = view.getEdmComplexType();
+    complexType.setName(edmComplexTypeName);
+    JPAEdmMapping mapping = new JPAEdmMappingImpl();
+    mapping.setJPAType(view.getJPAEmbeddableType().getJavaType());
+    complexType.setMapping((Mapping) mapping);
 
   }
 
@@ -348,18 +354,13 @@ public class JPAEdmNameBuilder {
 
     name = null;
     String jpaEntityTypeName = null;
-    try {
-
-      PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>) propertyView
-          .getJPAAttribute();
-
-      jpaEntityTypeName = jpattr.getElementType().getJavaType()
+    Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
+    if (jpaAttribute.isCollection())
+      jpaEntityTypeName = ((PluralAttribute<?, ?, ?>) jpaAttribute).getElementType().getJavaType()
           .getSimpleName();
-
-    } catch (Exception e) {
+    else
       jpaEntityTypeName = propertyView.getJPAAttribute().getJavaType()
           .getSimpleName();
-    }
 
     JPAEdmMappingModelAccess mappingModelAccess = assocaitionEndView
         .getJPAEdmMappingModelAccess();
@@ -466,77 +467,44 @@ public class JPAEdmNameBuilder {
     JPAEdmMappingModelAccess mappingModelAccess = navPropertyView
         .getJPAEdmMappingModelAccess();
 
-    try {
-      PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>) propertyView
-          .getJPAAttribute();
+    String targetEntityTypeName = null;
+    if (jpaAttribute.isCollection())
+       targetEntityTypeName = ((PluralAttribute<?, ?, ?>) jpaAttribute).getElementType().getJavaType().getSimpleName();
+    else
+      targetEntityTypeName = jpaAttribute.getJavaType().getSimpleName();
 
-      if (mappingModelAccess != null
-          && mappingModelAccess.isMappingModelExists()) {
-        toName = mappingModelAccess.mapJPAEntityType(jpattr
-            .getElementType().getJavaType().getSimpleName());
-        fromName = mappingModelAccess
-            .mapJPAEntityType(jpaEntityTypeName);
-        navPropName = mappingModelAccess.mapJPARelationship(
-            jpaEntityTypeName, jpattr.getName());
-      }
-      if (toName == null) {
-        toName = jpattr.getElementType().getJavaType().getSimpleName();
-      }
-      if (fromName == null) {
-        fromName = jpaEntityTypeName;
-      }
-
-      if (navPropName == null) {
-        navPropName = toName.concat(NAVIGATION_NAME);
-      }
-      if (count > 1) {
-        navPropName = navPropName + Integer.toString(count - 1);
-      }
-      navProp.setName(navPropName);
-
-      if (toName.equals(associationEndTypeOne.getName())) {
-        navProp.setFromRole(association.getEnd2().getRole());
-        navProp.setToRole(association.getEnd1().getRole());
-      } else if (toName.equals(associationEndTypeTwo.getName())) {
-        navProp.setToRole(association.getEnd2().getRole());
-        navProp.setFromRole(association.getEnd1().getRole());
-      }
-
-    } catch (Exception e) {
-      if (mappingModelAccess != null
-          && mappingModelAccess.isMappingModelExists()) {
-        navPropName = mappingModelAccess.mapJPARelationship(
-            jpaEntityTypeName, jpaAttribute.getName());
-        toName = mappingModelAccess.mapJPAEntityType(jpaAttribute
-            .getJavaType().getSimpleName());
-        fromName = mappingModelAccess
-            .mapJPAEntityType(jpaEntityTypeName);
-      }
-      if (toName == null) {
-        toName = jpaAttribute.getJavaType().getSimpleName();
-      }
-      if (fromName == null) {
-        fromName = jpaEntityTypeName;
-      }
-
-      if (navPropName == null) {
-        navPropName = toName.concat(NAVIGATION_NAME);
-      }
-      if (count > 1) {
-        navPropName = navPropName + Integer.toString(count - 1);
-      }
-      navProp.setName(navPropName);
-
-      if (toName.equals(associationEndTypeOne.getName())) {
-        navProp.setFromRole(association.getEnd2().getRole());
-        navProp.setToRole(association.getEnd1().getRole());
-      } else if (toName.equals(associationEndTypeTwo.getName())) {
-
-        navProp.setToRole(association.getEnd2().getRole());
-        navProp.setFromRole(association.getEnd1().getRole());
-      }
+    if (mappingModelAccess != null
+        && mappingModelAccess.isMappingModelExists()) {
+      navPropName = mappingModelAccess.mapJPARelationship(
+          jpaEntityTypeName, jpaAttribute.getName());
+      toName = mappingModelAccess.mapJPAEntityType(targetEntityTypeName);
+      fromName = mappingModelAccess
+          .mapJPAEntityType(jpaEntityTypeName);
+    }
+    if (toName == null) {
+      toName = targetEntityTypeName;
     }
 
+    if (fromName == null) {
+      fromName = jpaEntityTypeName;
+    }
+
+    if (navPropName == null) {
+      navPropName = toName.concat(NAVIGATION_NAME);
+    }
+    if (count > 1) {
+      navPropName = navPropName + Integer.toString(count - 1);
+    }
+    navProp.setName(navPropName);
+
+    if (toName.equals(associationEndTypeOne.getName())) {
+      navProp.setFromRole(association.getEnd2().getRole());
+      navProp.setToRole(association.getEnd1().getRole());
+    } else if (toName.equals(associationEndTypeTwo.getName())) {
+
+      navProp.setToRole(association.getEnd2().getRole());
+      navProp.setFromRole(association.getEnd1().getRole());
+    }
   }
 
 }

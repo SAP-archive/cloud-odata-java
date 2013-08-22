@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.access.data;
+package com.sap.core.odata.processor.core.jpa.mock.data;
 
 import static org.junit.Assert.fail;
 
@@ -21,14 +21,16 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
-import com.sap.core.odata.processor.core.jpa.cud.SalesOrderLineItem;
+import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
-public class TestUtil {
+public class EdmMockUtil {
 
   public static ExpandSelectTreeNode mockExpandSelectTreeNode() {
     ExpandSelectTreeNode nextExpandNode = EasyMock
@@ -301,17 +303,17 @@ public class TestUtil {
 
   public static EdmEntityType mockTargetEdmEntityType() {
     EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
-    EdmMapping mapping = EasyMock.createMock(EdmMapping.class);
+    JPAEdmMapping mapping = new JPAEdmMappingImpl();
 
     List<String> propertyNames = new ArrayList<String>();
     propertyNames.add("price");
     try {
-      EasyMock.expect(mapping.getInternalName()).andStubReturn(
-          "SalesOrderLineItem");
-      EasyMock.replay(mapping);
       EasyMock.expect(entityType.getName()).andStubReturn(
           "SalesOrderLineItem");
-      EasyMock.expect(entityType.getMapping()).andStubReturn(mapping);
+      mapping.setJPAType(JPATypeMock.class);
+      ((Mapping)mapping).setInternalName("SalesOrderLineItem");
+      ((Mapping)mapping).setInternalName("SalesOrderLineItem");
+      EasyMock.expect(entityType.getMapping()).andStubReturn((EdmMapping) mapping);
       EdmProperty property = mockEdmPropertyOfTarget();
       EasyMock.expect(entityType.getProperty("price")).andStubReturn(
           property);

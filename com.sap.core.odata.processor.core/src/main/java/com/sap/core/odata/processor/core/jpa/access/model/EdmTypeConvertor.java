@@ -17,7 +17,6 @@ package com.sap.core.odata.processor.core.jpa.access.model;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -55,14 +54,20 @@ public class EdmTypeConvertor {
         else if (edmSimpleType == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
           return byte[].class;
         }
-        else if (edmSimpleType == EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance()) {
+        else if (edmSimpleType == EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance()) {
           return Byte.TYPE;
         }
+        else if (edmSimpleType == EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance()) {
+          return Short.TYPE;
+        }
         else if (edmSimpleType == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()) {
-          return Boolean.TYPE;
+          return Boolean.TYPE;  
         }
         else if (edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()) {
-          return Date.class;
+          return Calendar.class;
+        }
+        else if (edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
+          return Calendar.class;
         }
         else if (edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()) {
           return Calendar.class;

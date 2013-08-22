@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.cud;
+package com.sap.core.odata.processor.core.jpa.mock.data;
 
 public class SalesOrderLineItem {
 

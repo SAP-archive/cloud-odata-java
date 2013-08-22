@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.access.data;
+package com.sap.core.odata.processor.core.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -49,12 +49,12 @@ public class ODataExpressionParserTest {
   private static final String EXPECTED_STR_9 = "gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId";
   private static final String EXPECTED_STR_10 = "gwt1.SalesOrder";
   private static final String EXPECTED_STR_11 = "NOT(gwt1.deliveryStatus)";
-  private static final String EXPECTED_STR_12 = "(CASE WHEN gwt1.currencyCode LIKE '%Ru%' THEN TRUE ELSE FALSE END) = true";
+  private static final String EXPECTED_STR_12 = "(CASE WHEN (gwt1.currencyCode LIKE '%Ru%') THEN TRUE ELSE FALSE END) = true";
   private static final String EXPECTED_STR_13 = "SUBSTRING(gwt1.currencyCode, 1 + 1 , 2) = 'NR'";
   private static final String EXPECTED_STR_14 = "LOWER(gwt1.currencyCode) = 'inr rupees'";
-  private static final String EXPECTED_STR_15 = "(CASE WHEN LOWER(gwt1.currencyCode) LIKE '%nr rupees%' THEN TRUE ELSE FALSE END) = true";
-  private static final String EXPECTED_STR_16 = "(CASE WHEN gwt1.currencyCode LIKE '%INR%' THEN TRUE ELSE FALSE END) = true";
-  private static final String EXPECTED_STR_17 = "(CASE WHEN LOWER(gwt1.currencyCode) LIKE '%nr rupees%' THEN TRUE ELSE FALSE END) = true";
+  private static final String EXPECTED_STR_15 = "(CASE WHEN (LOWER(gwt1.currencyCode) LIKE '%nr rupees%') THEN TRUE ELSE FALSE END) = true";
+  private static final String EXPECTED_STR_16 = "(CASE WHEN (gwt1.currencyCode LIKE '%INR%') THEN TRUE ELSE FALSE END) = true";
+  private static final String EXPECTED_STR_17 = "(CASE WHEN (LOWER(gwt1.currencyCode) LIKE '%nr rupees%') THEN TRUE ELSE FALSE END) = true";
 
   private static final String ADDRESS = "Address";
   private static final String CITY = "city";
@@ -521,10 +521,10 @@ public class ODataExpressionParserTest {
       EasyMock.expect(kpProperty2.getType()).andStubReturn(
           EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
       EasyMock.expect(keyPredicate1.getProperty()).andStubReturn(kpProperty1);
-      EasyMock.expect(kpProperty1.getMapping()).andReturn(edmMapping);
+      EasyMock.expect(kpProperty1.getMapping()).andStubReturn(edmMapping);
       EasyMock.expect(edmMapping.getInternalName()).andReturn(SAMPLE_DATA_FIELD1);
       EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
-      EasyMock.expect(kpProperty2.getMapping()).andReturn(edmMapping);
+      EasyMock.expect(kpProperty2.getMapping()).andStubReturn(edmMapping);
     } catch (EdmException e) {
       fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1 + e.getMessage() + ODataJPATestConstants.EXCEPTION_MSG_PART_2);
     }

@@ -83,7 +83,44 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven.bundle}</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<instructions>
+						<Import-Package>*</Import-Package>
+						<Export-Package>com.sap.core.odata.processor.core.jpa.factory;version=${project.version}</Export-Package>
+						<Bundle-DocURL>${project.url}</Bundle-DocURL>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<_snapshot>${maven.build.timestamp}</_snapshot>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 	<url>https://projectportal.wdf.sap.corp/projects/com.sap.core.odata.processor</url>
 	<description>OData Processor Implementation contains 1) JPA Implementation</description>
 	<inceptionYear>December 2012</inceptionYear>

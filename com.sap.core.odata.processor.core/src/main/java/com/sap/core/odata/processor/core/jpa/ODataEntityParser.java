@@ -11,6 +11,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -32,7 +33,14 @@ public final class ODataEntityParser {
   public final ODataEntry parseEntry(final EdmEntitySet entitySet,
       final InputStream content, final String requestContentType, final boolean merge)
       throws ODataBadRequestException {
-    return null;
+    ODataEntry entryValues;
+    try {
+      EntityProviderReadProperties entityProviderProperties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, entityProviderProperties);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
+    return entryValues;
 
   }
 

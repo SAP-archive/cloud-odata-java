@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.sap.core.odata.processor.core.jpa.model;
 
-import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,17 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
-import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
@@ -212,8 +209,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
                   .getJavaType(), currentAttribute);
 
           currentSimpleProperty.setType(simpleTypeKind);
-          currentSimpleProperty
-              .setFacets(setFacets(currentAttribute));
+          JPAEdmFacets.setFacets(currentAttribute, currentSimpleProperty);
 
           properties.add(currentSimpleProperty);
 
@@ -266,8 +262,8 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
             currentComplexProperty.setType(new FullQualifiedName(
                 schemaView.getEdmSchema().getNamespace(),
                 complexType.getName()));
-            currentComplexProperty
-                .setFacets(setFacets(currentAttribute));
+            //            currentComplexProperty
+            //                .setFacets(setFacets(currentAttribute));
             properties.add(currentComplexProperty);
             List<String> nonKeyComplexTypes = schemaView.getNonKeyComplexTypeList();
             if (!nonKeyComplexTypes.contains(currentComplexProperty.getType().getName()))
@@ -304,8 +300,14 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
           {
             navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
           }
+
           currentEntityName = entityTypeView.getJPAEntityType().getName();
-          targetEntityName = currentAttribute.getJavaType().getSimpleName();
+
+          if (currentAttribute.isCollection())
+            targetEntityName = ((PluralAttribute<?, ?, ?>) currentAttribute).getElementType().getJavaType()
+                .getSimpleName();
+          else
+            targetEntityName = currentAttribute.getJavaType().getSimpleName();
           Integer sequenceNumber = associationCount.get(currentEntityName + targetEntityName);
           if (sequenceNumber == null) {
             sequenceNumber = new Integer(1);
@@ -343,35 +345,6 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
         jpaAttributes.remove(smallestJpaAttribute);
       }
       return jpaAttributeList;
-    }
-
-    private EdmFacets setFacets(final Attribute<?, ?> jpaAttribute)
-        throws ODataJPAModelException, ODataJPARuntimeException {
-
-      Facets facets = new Facets();
-      if (jpaAttribute.getJavaMember() instanceof AnnotatedElement) {
-        Column column = ((AnnotatedElement) jpaAttribute
-            .getJavaMember()).getAnnotation(Column.class);
-        if (column != null) {
-          EdmSimpleTypeKind attrEmdType = JPATypeConvertor
-              .convertToEdmSimpleType(jpaAttribute.getJavaType(), jpaAttribute);
-          if (column.nullable()) {
-            facets.setNullable(true);
-          } else {
-            facets.setNullable(false);
-          }
-          if (column.length() != 0
-              && attrEmdType.equals(EdmSimpleTypeKind.String)) {
-            facets.setMaxLength(column.length());
-          }
-          if (column.precision() != 0
-              && attrEmdType.equals(EdmSimpleTypeKind.Double)) {
-            facets.setPrecision(column.precision());
-          }
-        }
-        return facets;
-      }
-      return facets;
     }
   }
 

@@ -33,15 +33,16 @@ public class JPAEntityParserTest {
    */
   @Test
   public void testCreate() {
-    JPAEntityParser resultParser1 = JPAEntityParser.create();
-    JPAEntityParser resultParser2 = JPAEntityParser.create();
+    JPAEntityParser resultParser1 = new JPAEntityParser();
+    JPAEntityParser resultParser2 = new JPAEntityParser();
 
-    assertEquals(resultParser1, resultParser2);
+    if (resultParser1.equals(resultParser2))
+      fail();
   }
 
   @Test
   public void testparse2EdmPropertyValueMap() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -103,7 +104,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testparse2EdmPropertyValueMapEdmExcep() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -117,14 +118,14 @@ public class JPAEntityParserTest {
     try {
       EasyMock.expect(edmType.getKind())
           .andStubReturn(EdmTypeKind.SIMPLE);
-      EasyMock.expect(edmType.getName()).andStubThrow(
-          new EdmException(null));
+      EasyMock.expect(edmType.getName()).andReturn("identifier");
       EasyMock.replay(edmType);
       EasyMock.expect(edmMapping.getInternalName()).andStubReturn("id");
       EasyMock.replay(edmMapping);
       EasyMock.expect(edmTyped.getType()).andStubThrow(
           new EdmException(null));
       EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
+      EasyMock.expect(edmTyped.getName()).andReturn("identifier");
       EasyMock.replay(edmTyped);
       EasyMock.expect(structuralType.getProperty("identifier"))
           .andStubReturn(edmTyped);
@@ -136,6 +137,7 @@ public class JPAEntityParserTest {
       EasyMock.expect(edmMapping01.getInternalName()).andStubReturn(
           "value");
       EasyMock.replay(edmMapping01);
+      EasyMock.expect(edmTyped01.getName()).andReturn("value");
       EasyMock.expect(edmTyped01.getType()).andStubReturn(edmType01);
       EasyMock.expect(edmTyped01.getMapping())
           .andStubReturn(edmMapping01);
@@ -166,7 +168,7 @@ public class JPAEntityParserTest {
   @Test
   public void testparse2EdmPropertyListMap()
   {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     Map<String, Object> edmEntity = new HashMap<String, Object>();
     edmEntity.put("SoId", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("NewOrder");
@@ -201,7 +203,7 @@ public class JPAEntityParserTest {
   @Test
   public void testparse2EdmPropertyValueMapFromList()
   {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     demoItem jpaEntity = new demoItem("laptop", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
     jpaEntity.setRelatedEntity(relatedEntity);
@@ -252,7 +254,7 @@ public class JPAEntityParserTest {
   @Test
   public void testparse2EdmPropertyValueMapFromListComplex()
   {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     demoItem jpaEntity = new demoItem("laptop", 1);
     DemoRelatedEntity relatedEntity = new DemoRelatedEntity("DemoOrder");
     jpaEntity.setRelatedEntity(relatedEntity);
@@ -321,7 +323,7 @@ public class JPAEntityParserTest {
    */
   @Test
   public void testGetGettersWithOutMapping() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     try {
 
       /*
@@ -358,7 +360,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testGetGettersWithNullPropname() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     try {
 
       /*
@@ -403,7 +405,7 @@ public class JPAEntityParserTest {
    */
   @Test
   public void testGetGettersWithMapping() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
     EasyMock.expect(edmMapping.getInternalName()).andStubReturn("field1");
     EasyMock.replay(edmMapping);
@@ -440,7 +442,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testGetGettersNoSuchMethodException() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     try {
 
       Method getGetterName = resultParser.getClass().getDeclaredMethod(
@@ -460,7 +462,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testParse2EdmPropertyValueMap() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     Object jpaEntity = new DemoItem2("abc");
     try {
       resultParser.parse2EdmPropertyValueMap(jpaEntity, getEdmPropertyList());
@@ -472,7 +474,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testGetGetterEdmException() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     Object jpaEntity = new demoItem("abc", 10);
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
@@ -509,7 +511,7 @@ public class JPAEntityParserTest {
 
   @Test
   public void testForNullJPAEntity() {
-    JPAEntityParser resultParser = JPAEntityParser.create();
+    JPAEntityParser resultParser = new JPAEntityParser();
     EdmStructuralType structuralType = EasyMock
         .createMock(EdmStructuralType.class);
     Object map;

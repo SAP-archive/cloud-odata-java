@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.cud;
+package com.sap.core.odata.processor.core.jpa.access.data;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +22,6 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.core.jpa.ODataEntityParser;
-import com.sap.core.odata.processor.core.jpa.access.data.JPAEntityParser;
 
 public class JPALink {
 
@@ -96,7 +95,7 @@ public class JPALink {
           }
         }
 
-        JPAEntityParser entityParser = JPAEntityParser.create();
+        JPAEntityParser entityParser = new JPAEntityParser();
         Method setMethod = entityParser.getAccessModifier(sourceJPAEntity,
             navigationProperty, JPAEntityParser.ACCESS_MODIFIER_SET);
 
@@ -199,7 +198,7 @@ public class JPALink {
           }
         }
 
-        JPAEntityParser entityParser = JPAEntityParser.create();
+        JPAEntityParser entityParser = new JPAEntityParser();
         Method setMethod = entityParser.getAccessModifier(sourceJPAEntity,
             navigationProperty, JPAEntityParser.ACCESS_MODIFIER_SET);
 

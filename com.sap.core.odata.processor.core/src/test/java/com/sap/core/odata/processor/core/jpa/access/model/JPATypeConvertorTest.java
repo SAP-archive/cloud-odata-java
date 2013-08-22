@@ -77,7 +77,7 @@ public class JPATypeConvertorTest {
     assertEquals(EdmSimpleTypeKind.Double, edmSimpleKindTypeDouble);
     assertEquals(EdmSimpleTypeKind.Single, edmSimpleKindTypeFloat);
     assertEquals(EdmSimpleTypeKind.Decimal, edmSimpleKindTypeBigDecimal);
-    assertEquals(EdmSimpleTypeKind.Byte, edmSimpleKindTypeByte);
+    assertEquals(EdmSimpleTypeKind.SByte, edmSimpleKindTypeByte);
     assertEquals(EdmSimpleTypeKind.Boolean, edmSimpleKindTypeBoolean);
     //assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeDate);
     assertEquals(EdmSimpleTypeKind.Guid, edmSimpleKindTypeUUID);
