@@ -82,7 +82,7 @@ public class JPATypeMock {
   }
 
   /*========================================================================= */
-  protected static class JPATypeEmbeddableMock {
+  public static class JPATypeEmbeddableMock {
 
     public static final String ENTITY_NAME = "JPATypeEmbeddableMock";
     public static final String PROPERTY_NAME_MSHORT = "mShort";
@@ -110,7 +110,7 @@ public class JPATypeMock {
   }
 
   /*========================================================================= */
-  protected static class JPATypeEmbeddableMock2 {
+  public static class JPATypeEmbeddableMock2 {
 
     public static final String ENTITY_NAME = "JPATypeEmbeddableMock2";
     public static final String PROPERTY_NAME_MUUID = "mUUID";

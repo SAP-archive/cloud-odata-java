@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.easymock.EasyMock;
 
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.feed.ODataFeed;
 import com.sap.core.odata.processor.core.jpa.mock.data.JPATypeMock.JPARelatedTypeMock;
+import com.sap.core.odata.processor.core.jpa.mock.data.JPATypeMock.JPATypeEmbeddableMock;
+import com.sap.core.odata.processor.core.jpa.mock.data.JPATypeMock.JPATypeEmbeddableMock2;
 
 public class ODataEntryMockUtil {
 
@@ -22,10 +25,22 @@ public class ODataEntryMockUtil {
   public static final double VALUE_MDOUBLE = 20.12;
   public static final byte VALUE_MBYTE = 0XA;
   public static final byte[] VALUE_MBYTEARRAY = { 0XA, 0XB };
+  public static final float VALUE_MFLOAT = 2.00F;
+  public static final UUID VALUE_UUID = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
+  public static final short VALUE_SHORT = 2;
 
   public static ODataEntry mockODataEntry(String entityName) {
     ODataEntry oDataEntry = EasyMock.createMock(ODataEntry.class);
     EasyMock.expect(oDataEntry.getProperties()).andReturn(mockODataEntryProperties(entityName)).anyTimes();
+
+    EasyMock.expect(oDataEntry.containsInlineEntry()).andReturn(false);
+    EasyMock.replay(oDataEntry);
+    return oDataEntry;
+  }
+
+  public static ODataEntry mockODataEntryWithComplexType(String entityName) {
+    ODataEntry oDataEntry = EasyMock.createMock(ODataEntry.class);
+    EasyMock.expect(oDataEntry.getProperties()).andReturn(mockODataEntryPropertiesWithComplexType(entityName)).anyTimes();
 
     EasyMock.expect(oDataEntry.containsInlineEntry()).andReturn(false);
     EasyMock.replay(oDataEntry);
@@ -50,6 +65,21 @@ public class ODataEntryMockUtil {
       propertyMap.put(JPARelatedTypeMock.PROPERTY_NAME_MBYTE, VALUE_MBYTE);
       propertyMap.put(JPARelatedTypeMock.PROPERTY_NAME_MBYTEARRAY, VALUE_MBYTEARRAY);
     }
+    else if (entityName.equals(JPATypeEmbeddableMock.ENTITY_NAME)) {
+      propertyMap.put(JPATypeEmbeddableMock.PROPERTY_NAME_MSHORT, VALUE_SHORT);
+      propertyMap.put(JPATypeEmbeddableMock.PROPERTY_NAME_MEMBEDDABLE, mockODataEntryProperties(JPATypeEmbeddableMock2.ENTITY_NAME));
+    }
+    else if (entityName.equals(JPATypeEmbeddableMock2.ENTITY_NAME)) {
+      propertyMap.put(JPATypeEmbeddableMock2.PROPERTY_NAME_MFLOAT, VALUE_MFLOAT);
+      propertyMap.put(JPATypeEmbeddableMock2.PROPERTY_NAME_MUUID, VALUE_UUID);
+    }
+
+    return propertyMap;
+  }
+
+  public static Map<String, Object> mockODataEntryPropertiesWithComplexType(String entityName) {
+    Map<String, Object> propertyMap = mockODataEntryProperties(entityName);
+    propertyMap.put(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE, mockODataEntryProperties(JPATypeEmbeddableMock.ENTITY_NAME));
     return propertyMap;
   }
 

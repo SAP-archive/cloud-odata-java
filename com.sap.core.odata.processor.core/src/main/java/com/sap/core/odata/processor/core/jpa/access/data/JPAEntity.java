@@ -195,7 +195,7 @@ public class JPAEntity {
     for (String edmPropertyName : edmComplexType.getPropertyNames()) {
       EdmTyped edmTyped = (EdmTyped) edmComplexType.getProperty(edmPropertyName);
       accessModifier = accessModifiers.get(edmPropertyName);
-      if (edmTyped.getType().getKind().toString().equals(EdmTypeKind.COMPLEX)) {
+      if (edmTyped.getType().getKind().toString().equals(EdmTypeKind.COMPLEX.toString())) {
         EdmStructuralType structualType = (EdmStructuralType) edmTyped.getType();
         setComplexProperty(accessModifier, embeddableObject, structualType, (HashMap<String, Object>) propertyValue.get(edmPropertyName));
       }
