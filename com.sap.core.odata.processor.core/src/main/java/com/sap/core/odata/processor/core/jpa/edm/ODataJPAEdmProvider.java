@@ -92,7 +92,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
         getSchemas();
       }
       List<EntityContainer> containerList = schemas.get(0).getEntityContainers();
-      if (containerList == null) return null;
+      if (containerList == null) {
+        return null;
+      }
       for (EntityContainer container : containerList) {
         if (name == null && container.isDefaultEntityContainer()) {
           entityContainerInfos.put(name, container);
@@ -124,7 +126,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
       for (Schema schema : schemas) {
         String schemaNamespace = schema.getNamespace();
         if (schemaNamespace.equals(entityTypeNamespace)) {
-          if (schema.getEntityTypes() == null) return null;
+          if (schema.getEntityTypes() == null) {
+            return null;
+          }
           for (EntityType et : schema.getEntityTypes()) {
             if (et.getName().equals(entityTypeName)) {
               entityTypes.put(strEdmFQName, et);
@@ -151,7 +155,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
       for (Schema schema : schemas) {
         if (schema.getNamespace().equals(edmFQName.getNamespace())) {
-          if (schema.getComplexTypes() == null) return null;
+          if (schema.getComplexTypes() == null) {
+            return null;
+          }
           for (ComplexType ct : schema.getComplexTypes()) {
             if (ct.getName().equals(edmFQName.getName())) {
               complexTypes.put(edmFQName.toString(), ct);
@@ -177,7 +183,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
       for (Schema schema : schemas) {
         if (schema.getNamespace().equals(edmFQName.getNamespace())) {
-          if (schema.getAssociations() == null) return null;
+          if (schema.getAssociations() == null) {
+            return null;
+          }
           for (Association association : schema.getAssociations()) {
             if (association.getName().equals(
                 edmFQName.getName())) {
@@ -268,7 +276,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
     }
 
     if (container != null && name != null) {
-      if (container.getFunctionImports() == null) return null;
+      if (container.getFunctionImports() == null) {
+        return null;
+      }
       for (FunctionImport fi : container.getFunctionImports()) {
         if (name.equals(fi.getName())) {
           functionImports.put(name, fi);

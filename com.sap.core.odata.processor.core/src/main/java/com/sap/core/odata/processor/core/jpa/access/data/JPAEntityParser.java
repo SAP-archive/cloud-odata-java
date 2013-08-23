@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2013 SAP AG
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package com.sap.core.odata.processor.core.jpa.access.data;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,19 +27,18 @@ public final class JPAEntityParser {
   private HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
   private HashMap<String, HashMap<String, String>> jpaEmbeddableKeyMap = null;
 
-  private static JPAEntityParser jpaEntityParser;
-
-  private JPAEntityParser() {
+  public JPAEntityParser() {
     jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>(
         MAX_SIZE);
     jpaEmbeddableKeyMap = new HashMap<String, HashMap<String, String>>();
   };
 
-  public static final JPAEntityParser create() {
-    if (jpaEntityParser == null) {
-      jpaEntityParser = new JPAEntityParser();
-    }
-    return jpaEntityParser;
+  public HashMap<String, Method> getJPAEntityAccessMap(final String jpaEntityName) {
+    return jpaEntityAccessMap.get(jpaEntityName);
+  }
+
+  public HashMap<String, String> getJPAEmbeddableKeyMap(final String jpaEntityName) {
+    return jpaEmbeddableKeyMap.get(jpaEntityName);
   }
 
   /**
@@ -165,7 +149,7 @@ public final class JPAEntityParser {
 
     if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey)) {
       jpaEntityAccessMap.put(jpaEntityAccessKey,
-          getAccessModifier(jpaEntity, structuralType, ACCESS_MODIFIER_GET));
+          getAccessModifiers(jpaEntity, structuralType, ACCESS_MODIFIER_GET));
     }
 
     HashMap<String, Object> edmEntity = new HashMap<String, Object>();
@@ -290,7 +274,29 @@ public final class JPAEntityParser {
     return navigationMap;
   }
 
-  public HashMap<String, Method> getAccessModifier(final Object jpaEntity,
+  public Method getAccessModifierSet(final Object jpaEntity, final String methodName) throws ODataJPARuntimeException {
+    Class<?> jpaType = jpaEntity.getClass();
+    String methodNameGet = ACCESS_MODIFIER_GET + methodName.substring(3);
+    Method method = null;
+
+    try {
+      method = jpaType.getMethod(methodNameGet, (Class<?>[]) null);
+      Class<?> parameterType = method.getReturnType();
+      method = jpaType.getMethod(methodName, new Class<?>[] { parameterType });
+    } catch (NoSuchMethodException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    } catch (SecurityException e) {
+      throw ODataJPARuntimeException
+          .throwException(ODataJPARuntimeException.GENERAL
+              .addContent(e.getMessage()), e);
+    }
+
+    return method;
+  }
+
+  public HashMap<String, Method> getAccessModifiers(final Object jpaEntity,
       final EdmStructuralType structuralType, final String accessModifier) throws ODataJPARuntimeException {
 
     HashMap<String, Method> accessModifierMap = new HashMap<String, Method>();
@@ -307,10 +313,17 @@ public final class JPAEntityParser {
         if (nameParts.length > 1) {
           embeddableKey.put(propertyName, name);
         } else {
-          accessModifierMap.put(
-              propertyName,
-              jpaEntity.getClass().getMethod(name,
-                  (Class<?>[]) null));
+          if (accessModifier.equals(ACCESS_MODIFIER_SET)) {
+            JPAEdmMapping jpaEdmMapping = (JPAEdmMapping) property.getMapping();
+            accessModifierMap.put(
+                propertyName,
+                jpaEntity.getClass().getMethod(name, new Class<?>[] { jpaEdmMapping.getJPAType() }));
+          } else {
+            accessModifierMap.put(
+                propertyName,
+                jpaEntity.getClass().getMethod(name,
+                    (Class<?>[]) null));
+          }
         }
       }
     } catch (NoSuchMethodException e) {
@@ -334,7 +347,7 @@ public final class JPAEntityParser {
     return accessModifierMap;
   }
 
-  private static String getAccessModifierName(final String propertyName, final EdmMapping mapping, final String accessModifier)
+  public static String getAccessModifierName(final String propertyName, final EdmMapping mapping, final String accessModifier)
       throws ODataJPARuntimeException {
     String name = null;
     StringBuilder builder = new StringBuilder();
