@@ -155,7 +155,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
         newMapping.setMimeType(mapping.getMimeType());
         newMapping.setObject(mapping.getObject());
         newMapping.setJPAType(oldMapping.getJPAType());
-        
+
         newSimpleProperty.setMapping(newMapping);
         expandedList.add(newSimpleProperty);
       } catch (ClassCastException e) {

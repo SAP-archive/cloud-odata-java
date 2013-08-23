@@ -99,7 +99,7 @@ public class ODataJPAEdmProviderTest {
     assertEquals("salesorderprocessingContainer", entityContainerName);
     assertNotNull(entityContainer);
   }
-  
+
   @Test
   public void testDefaultGetEntityContainerInfo() {
     String entityContainerName = null;

@@ -48,7 +48,7 @@ public class JPAEntityTest {
     assertEquals(jpaEmbeddableMock.getMShort(), ODataEntryMockUtil.VALUE_SHORT);
     JPATypeEmbeddableMock2 jpaEmbeddableMock2 = jpaEmbeddableMock.getMEmbeddable();
     assertNotNull(jpaEmbeddableMock2);
-    assertEquals(jpaEmbeddableMock2.getMFloat(), ODataEntryMockUtil.VALUE_MFLOAT,1);
+    assertEquals(jpaEmbeddableMock2.getMFloat(), ODataEntryMockUtil.VALUE_MFLOAT, 1);
     assertEquals(jpaEmbeddableMock2.getMUUID(), ODataEntryMockUtil.VALUE_UUID);
   }
 

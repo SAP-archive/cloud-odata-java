@@ -32,15 +32,16 @@ public class EdmMockUtilV2 {
 
   }
 
-  public static EdmEntityType mockEdmEntityType(String entityName, boolean withComplexType) throws EdmException {
+  public static EdmEntityType mockEdmEntityType(final String entityName, final boolean withComplexType) throws EdmException {
 
     EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
     EasyMock.expect(entityType.getName()).andReturn(entityName).anyTimes();
     EasyMock.expect(entityType.getKeyPropertyNames()).andReturn(mockSimpleKeyPropertyNames(entityName));
-    if (withComplexType == false)
+    if (withComplexType == false) {
       EasyMock.expect(entityType.getPropertyNames()).andReturn(mockPropertyNames(entityName)).anyTimes();
-    else
+    } else {
       EasyMock.expect(entityType.getPropertyNames()).andReturn(mockPropertyNamesWithComplexType(entityName)).anyTimes();
+    }
 
     EasyMock.expect(entityType.getNavigationPropertyNames()).andReturn(mockNavigationPropertyNames(entityName));
     EasyMock.expect(entityType.getKind()).andReturn(EdmTypeKind.ENTITY);
@@ -62,14 +63,14 @@ public class EdmMockUtilV2 {
     return entityType;
   }
 
-  public static List<String> mockNavigationPropertyNames(String entityName) {
+  public static List<String> mockNavigationPropertyNames(final String entityName) {
     List<String> propertyNames = new ArrayList<String>();
     propertyNames.add(JPATypeMock.NAVIGATION_PROPERTY_X);
     propertyNames.add(JPATypeMock.NAVIGATION_PROPERTY_XS);
     return propertyNames;
   }
 
-  public static List<String> mockSimpleKeyPropertyNames(String entityName) {
+  public static List<String> mockSimpleKeyPropertyNames(final String entityName) {
     List<String> keyPropertyNames = new ArrayList<String>();
     if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
       keyPropertyNames.add(JPATypeMock.PROPERTY_NAME_MINT);
@@ -81,7 +82,7 @@ public class EdmMockUtilV2 {
     return keyPropertyNames;
   }
 
-  public static List<String> mockPropertyNames(String entityName) {
+  public static List<String> mockPropertyNames(final String entityName) {
     List<String> propertyNames = new ArrayList<String>();
 
     if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
@@ -107,7 +108,7 @@ public class EdmMockUtilV2 {
     return propertyNames;
   }
 
-  public static List<String> mockPropertyNamesWithComplexType(String entityName) {
+  public static List<String> mockPropertyNamesWithComplexType(final String entityName) {
     List<String> propertyNames = mockPropertyNames(entityName);
     propertyNames.add(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE);
 
@@ -115,7 +116,7 @@ public class EdmMockUtilV2 {
 
   }
 
-  public static EdmAssociationEnd mockEdmAssociatioEnd(String navigationPropertyName, String role) throws EdmException {
+  public static EdmAssociationEnd mockEdmAssociatioEnd(final String navigationPropertyName, final String role) throws EdmException {
     EdmAssociationEnd associationEnd = EasyMock.createMock(EdmAssociationEnd.class);
     EasyMock.expect(associationEnd.getMultiplicity()).andReturn(EdmMultiplicity.ONE);
     EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
@@ -127,7 +128,7 @@ public class EdmMockUtilV2 {
     return associationEnd;
   }
 
-  public static EdmAssociation mockEdmAssociation(String navigationPropertyName) throws EdmException {
+  public static EdmAssociation mockEdmAssociation(final String navigationPropertyName) throws EdmException {
     EdmAssociation edmAssociation = EasyMock.createMock(EdmAssociation.class);
     EasyMock.expect(edmAssociation.getEnd("TO")).andReturn(mockEdmAssociatioEnd(navigationPropertyName, "TO"));
     EasyMock.expect(edmAssociation.getEnd("FROM")).andReturn(mockEdmAssociatioEnd(navigationPropertyName, "FROM"));
@@ -135,7 +136,7 @@ public class EdmMockUtilV2 {
     return edmAssociation;
   }
 
-  public static EdmEntitySet mockEdmEntitySet(String entityName, boolean withComplexType) throws EdmException {
+  public static EdmEntitySet mockEdmEntitySet(final String entityName, final boolean withComplexType) throws EdmException {
     EdmEntitySet entitySet = null;
     if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
       entitySet = EasyMock.createMock(EdmEntitySet.class);
@@ -151,7 +152,7 @@ public class EdmMockUtilV2 {
     return entitySet;
   }
 
-  public static EdmNavigationProperty mockEdmNavigationProperty(String navigationPropertyName, EdmMultiplicity multiplicity) throws EdmException {
+  public static EdmNavigationProperty mockEdmNavigationProperty(final String navigationPropertyName, final EdmMultiplicity multiplicity) throws EdmException {
 
     EdmEntityType edmEntityType = mockEdmEntityType(JPARelatedTypeMock.ENTITY_NAME, false);
 
@@ -161,15 +162,16 @@ public class EdmMockUtilV2 {
     EasyMock.expect(navigationProperty.getMapping()).andReturn((EdmMapping) mockEdmMapping(null, null, navigationPropertyName));
     EasyMock.expect(navigationProperty.getToRole()).andReturn("TO");
     EasyMock.expect(navigationProperty.getRelationship()).andReturn(mockEdmAssociation(navigationPropertyName));
-    if (multiplicity.equals(EdmMultiplicity.ONE))
+    if (multiplicity.equals(EdmMultiplicity.ONE)) {
       EasyMock.expect(navigationProperty.getName()).andReturn(JPATypeMock.NAVIGATION_PROPERTY_X);
+    }
 
     EasyMock.replay(navigationProperty);
 
     return navigationProperty;
   }
 
-  public static EdmProperty mockEdmProperty(String entityName, String propertyName) throws EdmException {
+  public static EdmProperty mockEdmProperty(final String entityName, final String propertyName) throws EdmException {
     EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
 
     if (propertyName.equals(JPATypeMock.PROPERTY_NAME_MINT) ||
@@ -205,13 +207,14 @@ public class EdmMockUtilV2 {
     return edmProperty;
   }
 
-  public static EdmComplexType mockComplexType(String complexPropertyName) throws EdmException {
+  public static EdmComplexType mockComplexType(final String complexPropertyName) throws EdmException {
 
     String complexTypeName = null;
-    if (complexPropertyName.equals(JPATypeEmbeddableMock.PROPERTY_NAME_MEMBEDDABLE))
+    if (complexPropertyName.equals(JPATypeEmbeddableMock.PROPERTY_NAME_MEMBEDDABLE)) {
       complexTypeName = JPATypeEmbeddableMock2.ENTITY_NAME;
-    else if (complexPropertyName.equals(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE))
+    } else if (complexPropertyName.equals(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE)) {
       complexTypeName = JPATypeEmbeddableMock.ENTITY_NAME;
+    }
 
     EdmComplexType edmComplexType = EasyMock.createMock(EdmComplexType.class);
     EasyMock.expect(edmComplexType.getKind()).andReturn(EdmTypeKind.COMPLEX);
@@ -231,18 +234,19 @@ public class EdmMockUtilV2 {
     return edmComplexType;
   }
 
-  public static JPAEdmMapping mockEdmMapping(String entityName, String propertyName, String navigationPropertyName) {
+  public static JPAEdmMapping mockEdmMapping(final String entityName, final String propertyName, final String navigationPropertyName) {
     JPAEdmMapping mapping = new JPAEdmMappingImpl();
 
     if (propertyName == null && entityName != null) {
-      if (entityName.equals(JPATypeMock.ENTITY_NAME))
+      if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
         mapping.setJPAType(JPATypeMock.class);
-      else if (entityName.equals(JPARelatedTypeMock.ENTITY_NAME))
+      } else if (entityName.equals(JPARelatedTypeMock.ENTITY_NAME)) {
         mapping.setJPAType(JPARelatedTypeMock.class);
-      else if (entityName.equals(JPATypeEmbeddableMock.ENTITY_NAME))
+      } else if (entityName.equals(JPATypeEmbeddableMock.ENTITY_NAME)) {
         mapping.setJPAType(JPATypeEmbeddableMock.class);
-      else if (entityName.equals(JPATypeEmbeddableMock2.ENTITY_NAME))
+      } else if (entityName.equals(JPATypeEmbeddableMock2.ENTITY_NAME)) {
         mapping.setJPAType(JPATypeEmbeddableMock2.class);
+      }
     }
     else if (entityName == null && navigationPropertyName != null) {
       mapping.setJPAType(JPARelatedTypeMock.class);

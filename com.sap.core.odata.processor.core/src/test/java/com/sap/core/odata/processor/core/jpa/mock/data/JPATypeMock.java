@@ -29,7 +29,7 @@ public class JPATypeMock {
     return mString;
   }
 
-  public void setMString(String mString) {
+  public void setMString(final String mString) {
     this.mString = mString;
   }
 
@@ -37,7 +37,7 @@ public class JPATypeMock {
     return key;
   }
 
-  public void setKey(JPATypeEmbeddableMock key) {
+  public void setKey(final JPATypeEmbeddableMock key) {
     this.key = key;
   }
 
@@ -45,7 +45,7 @@ public class JPATypeMock {
     return mInt;
   }
 
-  public void setMInt(int mInt) {
+  public void setMInt(final int mInt) {
     this.mInt = mInt;
   }
 
@@ -53,7 +53,7 @@ public class JPATypeMock {
     return mDateTime;
   }
 
-  public void setMDateTime(Calendar mDateTime) {
+  public void setMDateTime(final Calendar mDateTime) {
     this.mDateTime = mDateTime;
   }
 
@@ -61,7 +61,7 @@ public class JPATypeMock {
     return mRelatedEntity;
   }
 
-  public void setMRelatedEntity(JPARelatedTypeMock mRelatedEntity) {
+  public void setMRelatedEntity(final JPARelatedTypeMock mRelatedEntity) {
     this.mRelatedEntity = mRelatedEntity;
   }
 
@@ -69,7 +69,7 @@ public class JPATypeMock {
     return mRelatedEntities;
   }
 
-  public void setMRelatedEntities(List<JPARelatedTypeMock> mRelatedEntities) {
+  public void setMRelatedEntities(final List<JPARelatedTypeMock> mRelatedEntities) {
     this.mRelatedEntities = mRelatedEntities;
   }
 
@@ -77,7 +77,7 @@ public class JPATypeMock {
     return complexType;
   }
 
-  public void setComplexType(JPATypeEmbeddableMock complexType) {
+  public void setComplexType(final JPATypeEmbeddableMock complexType) {
     this.complexType = complexType;
   }
 
@@ -95,7 +95,7 @@ public class JPATypeMock {
       return mShort;
     }
 
-    public void setMShort(short mShort) {
+    public void setMShort(final short mShort) {
       this.mShort = mShort;
     }
 
@@ -103,7 +103,7 @@ public class JPATypeMock {
       return mEmbeddable;
     }
 
-    public void setMEmbeddable(JPATypeEmbeddableMock2 mEmbeddable) {
+    public void setMEmbeddable(final JPATypeEmbeddableMock2 mEmbeddable) {
       this.mEmbeddable = mEmbeddable;
     }
 
@@ -123,7 +123,7 @@ public class JPATypeMock {
       return mUUID;
     }
 
-    public void setMUUID(UUID mUUID) {
+    public void setMUUID(final UUID mUUID) {
       this.mUUID = mUUID;
     }
 
@@ -131,7 +131,7 @@ public class JPATypeMock {
       return mFloat;
     }
 
-    public void setMFloat(float mFloat) {
+    public void setMFloat(final float mFloat) {
       this.mFloat = mFloat;
     }
 
@@ -154,15 +154,15 @@ public class JPATypeMock {
       return mLong;
     }
 
-    public void setMLong(long key) {
-      this.mLong = key;
+    public void setMLong(final long key) {
+      mLong = key;
     }
 
     public double getMDouble() {
       return mDouble;
     }
 
-    public void setMDouble(double mDouble) {
+    public void setMDouble(final double mDouble) {
       this.mDouble = mDouble;
     }
 
@@ -170,7 +170,7 @@ public class JPATypeMock {
       return mByte;
     }
 
-    public void setMByte(byte mByte) {
+    public void setMByte(final byte mByte) {
       this.mByte = mByte;
     }
 
@@ -178,7 +178,7 @@ public class JPATypeMock {
       return mByteArray;
     }
 
-    public void setMByteArray(byte mByteArray[]) {
+    public void setMByteArray(final byte mByteArray[]) {
       this.mByteArray = mByteArray;
     }
 

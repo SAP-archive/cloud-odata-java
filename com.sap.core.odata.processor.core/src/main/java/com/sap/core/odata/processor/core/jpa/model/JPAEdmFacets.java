@@ -22,7 +22,9 @@ public final class JPAEdmFacets {
           .getJavaMember()).getAnnotation(Column.class);
     }
 
-    if (column == null) return;
+    if (column == null) {
+      return;
+    }
 
     setNullable(column, edmProperty);
 

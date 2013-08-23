@@ -258,10 +258,12 @@ public class ODataExpressionParser {
       literal = keyPredicate.getLiteral();
       try {
         EdmMapping mapping = keyPredicate.getProperty().getMapping();
-        if (mapping != null)
+        if (mapping != null) {
           propertyName = keyPredicate.getProperty().getMapping().getInternalName();
-        else
+        }
+        else {
           propertyName = keyPredicate.getProperty().getName(); // Get external Name
+        }
         edmSimpleType = (EdmSimpleType) keyPredicate.getProperty().getType();
       } catch (EdmException e) {
         throw ODataJPARuntimeException.throwException(

@@ -3,7 +3,6 @@ package com.sap.core.odata.processor.core.jpa.mock.data;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class SalesOrderHeader {
 
   private int id;

@@ -311,8 +311,8 @@ public class EdmMockUtil {
       EasyMock.expect(entityType.getName()).andStubReturn(
           "SalesOrderLineItem");
       mapping.setJPAType(JPATypeMock.class);
-      ((Mapping)mapping).setInternalName("SalesOrderLineItem");
-      ((Mapping)mapping).setInternalName("SalesOrderLineItem");
+      ((Mapping) mapping).setInternalName("SalesOrderLineItem");
+      ((Mapping) mapping).setInternalName("SalesOrderLineItem");
       EasyMock.expect(entityType.getMapping()).andStubReturn((EdmMapping) mapping);
       EdmProperty property = mockEdmPropertyOfTarget();
       EasyMock.expect(entityType.getProperty("price")).andStubReturn(

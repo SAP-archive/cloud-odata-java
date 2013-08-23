@@ -57,19 +57,4 @@ public interface JPAEdmMapping {
    */
   public Class<?> getJPAType();
 
-  /**
-   * The method returns the Type Hierarchy for those embeddable types
-   * that are expanded as simple properties.
-   * @return an array of Types in specific order. The first entry in the
-   * array corresponds to the the outer most enclosing entity.
-   */
-  public Class<?>[] getJPATypeHierachy();
-  
-  /**
-   * The method adds the give type to the end of Type Hierarchy list.
-   * 
-   * @return an integer reflecting the position where the entry has been added.
-   */
-  public int addToJPATypeHierachy(Class<?> type);
-
 }

@@ -33,7 +33,6 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.ODataExpressionParser;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class ODataExpressionParserTest {

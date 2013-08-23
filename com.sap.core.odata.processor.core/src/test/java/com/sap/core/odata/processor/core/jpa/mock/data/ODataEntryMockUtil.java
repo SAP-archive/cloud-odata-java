@@ -29,7 +29,7 @@ public class ODataEntryMockUtil {
   public static final UUID VALUE_UUID = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
   public static final short VALUE_SHORT = 2;
 
-  public static ODataEntry mockODataEntry(String entityName) {
+  public static ODataEntry mockODataEntry(final String entityName) {
     ODataEntry oDataEntry = EasyMock.createMock(ODataEntry.class);
     EasyMock.expect(oDataEntry.getProperties()).andReturn(mockODataEntryProperties(entityName)).anyTimes();
 
@@ -38,7 +38,7 @@ public class ODataEntryMockUtil {
     return oDataEntry;
   }
 
-  public static ODataEntry mockODataEntryWithComplexType(String entityName) {
+  public static ODataEntry mockODataEntryWithComplexType(final String entityName) {
     ODataEntry oDataEntry = EasyMock.createMock(ODataEntry.class);
     EasyMock.expect(oDataEntry.getProperties()).andReturn(mockODataEntryPropertiesWithComplexType(entityName)).anyTimes();
 
@@ -47,7 +47,7 @@ public class ODataEntryMockUtil {
     return oDataEntry;
   }
 
-  public static Map<String, Object> mockODataEntryProperties(String entityName) {
+  public static Map<String, Object> mockODataEntryProperties(final String entityName) {
     Map<String, Object> propertyMap = new HashMap<String, Object>();
 
     if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
@@ -77,13 +77,13 @@ public class ODataEntryMockUtil {
     return propertyMap;
   }
 
-  public static Map<String, Object> mockODataEntryPropertiesWithComplexType(String entityName) {
+  public static Map<String, Object> mockODataEntryPropertiesWithComplexType(final String entityName) {
     Map<String, Object> propertyMap = mockODataEntryProperties(entityName);
     propertyMap.put(JPATypeMock.PROPERTY_NAME_MCOMPLEXTYPE, mockODataEntryProperties(JPATypeEmbeddableMock.ENTITY_NAME));
     return propertyMap;
   }
 
-  public static Map<String, Object> mockODataEntryPropertiesWithInline(String entityName) {
+  public static Map<String, Object> mockODataEntryPropertiesWithInline(final String entityName) {
     Map<String, Object> propertyMap = mockODataEntryProperties(entityName);
     List<ODataEntry> relatedEntries = new ArrayList<ODataEntry>();
     relatedEntries.add(mockODataEntry(JPARelatedTypeMock.ENTITY_NAME));
@@ -96,13 +96,14 @@ public class ODataEntryMockUtil {
 
   }
 
-  public static ODataEntry mockODataEntryWithInline(String entityName) {
+  public static ODataEntry mockODataEntryWithInline(final String entityName) {
     ODataEntry oDataEntry = EasyMock.createMock(ODataEntry.class);
     EasyMock.expect(oDataEntry.getProperties()).andReturn(mockODataEntryPropertiesWithInline(entityName)).anyTimes();
-    if (entityName.equals(JPATypeMock.ENTITY_NAME))
+    if (entityName.equals(JPATypeMock.ENTITY_NAME)) {
       EasyMock.expect(oDataEntry.containsInlineEntry()).andReturn(true);
-    else
+    } else {
       EasyMock.expect(oDataEntry.containsInlineEntry()).andReturn(false);
+    }
     EasyMock.replay(oDataEntry);
     return oDataEntry;
   }

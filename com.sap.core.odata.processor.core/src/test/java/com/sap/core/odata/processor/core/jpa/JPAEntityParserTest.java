@@ -36,8 +36,9 @@ public class JPAEntityParserTest {
     JPAEntityParser resultParser1 = new JPAEntityParser();
     JPAEntityParser resultParser2 = new JPAEntityParser();
 
-    if (resultParser1.equals(resultParser2))
+    if (resultParser1.equals(resultParser2)) {
       fail();
+    }
   }
 
   @Test

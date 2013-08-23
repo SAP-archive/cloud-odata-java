@@ -303,11 +303,12 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
           currentEntityName = entityTypeView.getJPAEntityType().getName();
 
-          if (currentAttribute.isCollection())
+          if (currentAttribute.isCollection()) {
             targetEntityName = ((PluralAttribute<?, ?, ?>) currentAttribute).getElementType().getJavaType()
                 .getSimpleName();
-          else
+          } else {
             targetEntityName = currentAttribute.getJavaType().getSimpleName();
+          }
           Integer sequenceNumber = associationCount.get(currentEntityName + targetEntityName);
           if (sequenceNumber == null) {
             sequenceNumber = new Integer(1);

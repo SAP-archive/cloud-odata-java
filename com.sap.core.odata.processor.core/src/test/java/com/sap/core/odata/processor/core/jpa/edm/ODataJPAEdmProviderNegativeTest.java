@@ -147,7 +147,7 @@ public class ODataJPAEdmProviderNegativeTest {
     }
 
   }
-  
+
   @Test
   public void testNullGetFunctionImport2() {
 

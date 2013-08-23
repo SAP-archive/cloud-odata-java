@@ -355,12 +355,13 @@ public class JPAEdmNameBuilder {
     name = null;
     String jpaEntityTypeName = null;
     Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
-    if (jpaAttribute.isCollection())
+    if (jpaAttribute.isCollection()) {
       jpaEntityTypeName = ((PluralAttribute<?, ?, ?>) jpaAttribute).getElementType().getJavaType()
           .getSimpleName();
-    else
+    } else {
       jpaEntityTypeName = propertyView.getJPAAttribute().getJavaType()
           .getSimpleName();
+    }
 
     JPAEdmMappingModelAccess mappingModelAccess = assocaitionEndView
         .getJPAEdmMappingModelAccess();
@@ -468,10 +469,11 @@ public class JPAEdmNameBuilder {
         .getJPAEdmMappingModelAccess();
 
     String targetEntityTypeName = null;
-    if (jpaAttribute.isCollection())
-       targetEntityTypeName = ((PluralAttribute<?, ?, ?>) jpaAttribute).getElementType().getJavaType().getSimpleName();
-    else
+    if (jpaAttribute.isCollection()) {
+      targetEntityTypeName = ((PluralAttribute<?, ?, ?>) jpaAttribute).getElementType().getJavaType().getSimpleName();
+    } else {
       targetEntityTypeName = jpaAttribute.getJavaType().getSimpleName();
+    }
 
     if (mappingModelAccess != null
         && mappingModelAccess.isMappingModelExists()) {

@@ -33,11 +33,11 @@ public final class JPAEntityParser {
     jpaEmbeddableKeyMap = new HashMap<String, HashMap<String, String>>();
   };
 
-  public HashMap<String, Method> getJPAEntityAccessMap(String jpaEntityName) {
+  public HashMap<String, Method> getJPAEntityAccessMap(final String jpaEntityName) {
     return jpaEntityAccessMap.get(jpaEntityName);
   }
 
-  public HashMap<String, String> getJPAEmbeddableKeyMap(String jpaEntityName) {
+  public HashMap<String, String> getJPAEmbeddableKeyMap(final String jpaEntityName) {
     return jpaEmbeddableKeyMap.get(jpaEntityName);
   }
 
@@ -318,12 +318,12 @@ public final class JPAEntityParser {
             accessModifierMap.put(
                 propertyName,
                 jpaEntity.getClass().getMethod(name, new Class<?>[] { jpaEdmMapping.getJPAType() }));
-          }
-          else
+          } else {
             accessModifierMap.put(
                 propertyName,
                 jpaEntity.getClass().getMethod(name,
                     (Class<?>[]) null));
+          }
         }
       }
     } catch (NoSuchMethodException e) {

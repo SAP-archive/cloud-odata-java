@@ -97,7 +97,7 @@ public class JPATypeConvertor {
     throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()), null);
   }
 
-  private static EdmSimpleTypeKind dateConversion(final Attribute<?, ?> currentAttribute, boolean isInherited) throws ODataJPAModelException {
+  private static EdmSimpleTypeKind dateConversion(final Attribute<?, ?> currentAttribute, final boolean isInherited) throws ODataJPAModelException {
     try {
       Field jpaField = currentAttribute.getDeclaringType().getJavaType().getDeclaredField(currentAttribute.getName());
       if (isInherited) {
