@@ -102,6 +102,10 @@
 
 		<version.eclipselink>2.1.2</version.eclipselink>
 		<version.javax.persistence>2.0.3</version.javax.persistence>
+		<version.eclipselink>2.1.2</version.eclipselink>
+		<version.javax.persistence>2.0.3</version.javax.persistence>
+		<version.hsqldb>1.8.0.10</version.hsqldb>
+		<version.maven.bundle>2.4.0</version.maven.bundle>
 	</properties>
 
 	<modules>

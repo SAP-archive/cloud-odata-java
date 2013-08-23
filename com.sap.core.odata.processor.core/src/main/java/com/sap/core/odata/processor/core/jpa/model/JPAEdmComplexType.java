@@ -133,6 +133,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
     if (expandedList == null) {
       expandedList = new ArrayList<Property>();
     }
+
     for (Property property : complexType.getProperties())
     {
       try {
@@ -153,11 +154,13 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
         newMapping.setInternalName(embeddablePropertyName + "." + mapping.getInternalName());
         newMapping.setMimeType(mapping.getMimeType());
         newMapping.setObject(mapping.getObject());
+        newMapping.setJPAType(oldMapping.getJPAType());
+
         newSimpleProperty.setMapping(newMapping);
         expandedList.add(newSimpleProperty);
       } catch (ClassCastException e) {
         ComplexProperty complexProperty = (ComplexProperty) property;
-        String name = complexProperty.getMapping().getInternalName();
+        String name = embeddablePropertyName + "." + complexProperty.getMapping().getInternalName();
         expandEdmComplexType(searchComplexTypeByName(complexProperty.getName()), expandedList, name);
       }
     }

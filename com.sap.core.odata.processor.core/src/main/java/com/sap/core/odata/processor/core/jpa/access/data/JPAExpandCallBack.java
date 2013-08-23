@@ -59,7 +59,7 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
     Map<String, Object> edmPropertyValueMap = null;
     List<EdmNavigationProperty> currentNavPropertyList = null;
     Map<String, ExpandSelectTreeNode> navigationLinks = null;
-    JPAEntityParser jpaResultParser = JPAEntityParser.create();
+    JPAEntityParser jpaResultParser = new JPAEntityParser();
     EdmNavigationProperty currentNavigationProperty = context.getNavigationProperty();
     try {
       Object inlinedEntry = entry.get(currentNavigationProperty.getName());
@@ -94,7 +94,7 @@ public class JPAExpandCallBack implements OnWriteFeedContent, OnWriteEntryConten
     HashMap<String, Object> inlinedEntry = (HashMap<String, Object>) context.getEntryData();
     List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
     Map<String, Object> edmPropertyValueMap = null;
-    JPAEntityParser jpaResultParser = JPAEntityParser.create();
+    JPAEntityParser jpaResultParser = new JPAEntityParser();
     List<EdmNavigationProperty> currentNavPropertyList = null;
     EdmNavigationProperty currentNavigationProperty = context.getNavigationProperty();
     try {

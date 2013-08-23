@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2013 SAP AG
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package com.sap.core.odata.processor.core.jpa;
 
 import java.io.InputStream;
@@ -26,6 +11,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -47,7 +33,14 @@ public final class ODataEntityParser {
   public final ODataEntry parseEntry(final EdmEntitySet entitySet,
       final InputStream content, final String requestContentType, final boolean merge)
       throws ODataBadRequestException {
-    return null;
+    ODataEntry entryValues;
+    try {
+      EntityProviderReadProperties entityProviderProperties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, entityProviderProperties);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
+    return entryValues;
 
   }
 
