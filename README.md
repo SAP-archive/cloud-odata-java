@@ -45,7 +45,7 @@ and import generated projects into Eclipse.
 
 To consume libraries with Maven add following dependencies to your pom.xml:
 
-    $odata.lib.version=0.6.0
+    $odata.lib.version=0.7.0
 
     <dependency>
       <groupId>com.sap.odata</groupId>
@@ -100,7 +100,8 @@ Contributions to this project are very welcome, but can only be accepted if the 
 Version History
 ---------------
 
-0.7.0-SNAPSHOT advanced $batch (content id handling) <br/>
+0.8.0-SNAPSHOT deprecated <br/>
+0.7.0  advanced $batch (content id handling) <br/>
 0.6.0  Support of tumbestones and $batch
 0.5.0  Service Document parsing / performance optimization<br/>
 0.4.1  JPA processor support  
@@ -112,7 +113,4 @@ Version History
 Roadmap
 -------
 
-1. $batch
-2. Conditional Handling  
-3. Client Support
-
+Go to [Apache Olingo (incubation)](http://olingo.incubator.apache.org/)
