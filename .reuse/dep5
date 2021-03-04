@@ -1,0 +1,9 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: OData Library (Java)
+Upstream-Contact: Michael Bolz <michael.bolz@sap.com>
+Source: https://github.com/SAP/cloud-odata-java
+
+Files: *
+Copyright: 2020 SAP SE or an SAP affiliate company and OData library contributors
+License: Apache-2.0
+
